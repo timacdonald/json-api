@@ -1,0 +1,26 @@
+{
+    "autoload": {
+        "psr-4": {
+            "TiMacDonald\\JsonApi\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "orchestra/testbench": "^6.19",
+        "phpunit/phpunit": "^9",
+        "phpstan/phpstan": "^0.12.94",
+        "phpstan/phpstan-strict-rules": "^0.12.10",
+        "infection/infection": "^0.24.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "TiMacDonald\\JsonApi\\JsonApiServiceProvider"
+            ]
+        }
+    }
+}

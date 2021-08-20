@@ -3,6 +3,7 @@
 namespace Tests;
 
 use Exception;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Orchestra\Testbench\TestCase;
@@ -85,45 +86,6 @@ class JsonApiTest extends TestCase
                 'relationships' => [],
             ]
         ]);
-    }
-
-    public function test_it_throws_when_unable_to_determine_id_of_non_object(): void
-    {
-        $this->app->bind(ResourceTypeResolver::class, fn () => fn (array $resource) => 'expectedType');
-        Route::get('test-route', fn () => new class([]) extends JsonApiResource {
-            //
-        });
-
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Unable to automatically detect the resource id for type array. You should register your own custom ResourceIdResolver in the container or override the resourceId() method on the JsonResource.');
-
-        $this->withoutExceptionHandling()->getJson('test-route');
-    }
-
-    public function test_it_throws_when_unable_to_determine_id_of_object(): void
-    {
-        $this->app->bind(ResourceTypeResolver::class, fn () => fn (array $resource) => 'expectedType');
-        Route::get('test-route', fn () => new class(new BadResourceType()) extends JsonApiResource {
-            //
-        });
-
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Unable to automatically detect the resource id for class Tests\\BadResourceType. You should register your own custom ResourceIdResolver in the container or override the resourceId() method on the JsonResource.');
-
-        $this->withoutExceptionHandling()->getJson('test-route');
-    }
-
-    public function test_it_throws_when_unable_to_determine_type(): void
-    {
-        $this->app->bind(ResourceIdResolver::class, fn () => fn (array $resource) => 'expected id');
-        Route::get('test-route', fn () => new class([]) extends JsonApiResource {
-            //
-        });
-
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Unable to automatically detect the resource type for type array. You should register your own custom ResourceTypeResolver in the container or override the resourceType() method on the JsonResource.');
-
-        $this->withoutExceptionHandling()->getJson('test-route');
     }
 
     public function test_it_includes_attributes_by_default(): void
@@ -401,7 +363,7 @@ class JsonApiTest extends TestCase
     }
 }
 
-class BasicResource
+class BasicResource extends Model
 {
     public function __construct(private string $id)
     {

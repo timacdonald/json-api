@@ -20,7 +20,7 @@ use TiMacDonald\JsonApi\Contracts\ResourceTypeResolver;
 
 abstract class JsonApiResource extends JsonResource
 {
-    private string $includePrefix = '';
+    use InteractsWithIncludesPrefix;
 
     /**
      * @return array<string, mixed>
@@ -198,29 +198,5 @@ abstract class JsonApiResource extends JsonResource
             'id' => self::resourceId($resource),
             'type' => self::resourceType($resource),
         ];
-    }
-
-    /**
-     * @param string $prefix
-     */
-    private function withIncludePrefix(string $prefix): self
-    {
-        $this->includePrefix = Str::finish($prefix, '.');
-
-        return $this;
-    }
-
-    /**
-     * @param string $prefix
-     * @return string
-     */
-    private function nestedIncludePrefix(string $prefix): string
-    {
-        return "{$this->includePrefix}{$prefix}";
-    }
-
-    private function hasIncludePrefix(): bool
-    {
-        return $this->includePrefix !== '';
     }
 }

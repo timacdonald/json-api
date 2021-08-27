@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TiMacDonald\JsonApi;
 
 use Closure;
@@ -8,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use ReflectionClass;
+use RuntimeException;
 use TiMacDonald\JsonApi\Contracts\ResourceIdResolver;
 use TiMacDonald\JsonApi\Contracts\ResourceTypeResolver;
 
@@ -27,14 +30,30 @@ class JsonApiServiceProvider extends ServiceProvider implements DeferrableProvid
     public function register(): void
     {
         $this->app->singleton(ResourceIdResolver::class, function (): Closure {
-            return function (Model $resource): string {
-                return $resource->getKey();
+            return function ($resourceObject): string {
+                if ($resourceObject instanceof Model) {
+                    return (string) $resourceObject->getKey();
+                }
+
+                if (is_object($resourceObject)) {
+                    throw new RuntimeException('Unable to resolve Resource Object id for class '.$resourceObject::class.'.');
+                }
+
+                throw new RuntimeException('Unable to resolve Resource Object id for type '.gettype($resourceObject).'.');
             };
         });
 
         $this->app->singleton(ResourceTypeResolver::class, function (): Closure {
-            return function (Model $resource): string {
-                return Str::of($resource::class)->classBasename()->camel();
+            return function ($resourceObject): string {
+                if ($resourceObject instanceof Model) {
+                    return Str::camel((new $resourceObject)->getTable());
+                }
+
+                if (! is_object($resourceObject)) {
+                    throw new RuntimeException('Unable to resolve Resource Object type for type '.gettype($resourceObject).'.');
+                }
+
+                throw new RuntimeException('Unable to resolve Resource Object type for class '.$resourceObject::class.'.');
             };
         });
     }

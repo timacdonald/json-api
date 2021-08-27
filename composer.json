@@ -22,5 +22,9 @@
                 "TiMacDonald\\JsonApi\\JsonApiServiceProvider"
             ]
         }
+    },
+    "require": {
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "spatie/once": "^3.0"
     }
 }

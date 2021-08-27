@@ -20,7 +20,7 @@ This is a WIP project currently being built out via livestream on [my YouTube ch
 
 [JSON:API docs: Identification](https://jsonapi.org/format/#document-resource-object-identification)
 
-The `"id"` and `"type"` of an object is automatically resolved for you under-the-hood if you are using resources solely with Eloquent models.
+The `"id"` and `"type"` of a resource is automatically resolved for you under-the-hood if you are using resources solely with Eloquent models.
 
 The default bindings resolve the `"id"` by calling `(string) $model->getKey()` and they resolves the `"type"` by using a camel case of the model's table name, e.g. `blog_posts` becomes `blogPosts`.
 

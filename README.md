@@ -1,4 +1,4 @@
-# JSON:API JsonResource for Laravel
+# JSON:API Resource for Laravel
 
 A lightweight Laravel implementation of JSON:API.
 

@@ -6,7 +6,7 @@ This is a WIP project currently being built out via livestream on [my YouTube ch
 
 #### TODO
 
-- [ ] Nested resources
+- [x] Nested resources
 - [ ] Top-level collections
 - [ ] Nested collections
 - [ ] Caching for performance (use a weakmap with the request as the key?)

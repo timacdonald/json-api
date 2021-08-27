@@ -11,6 +11,7 @@ This is a WIP project currently being built out via livestream on [my YouTube ch
 - [ ] Nested collections
 - [ ] Caching for performance (use a weakmap with the request as the key?)
 - [ ] Document that this is to be used in conjunction with Spatie Query Builder
+- [ ] document why whenLoaded isn't great
 - [ ] How to handle single resources loading / allow listing (can we PR Spatie Query Builder for this or does it already support it?).
 
 # Basic usage

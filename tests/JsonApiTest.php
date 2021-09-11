@@ -7,6 +7,7 @@ namespace Tests;
 use RuntimeException;
 use Exception;
 use Illuminate\Contracts\Support\DeferrableProvider;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -17,6 +18,7 @@ use TiMacDonald\JsonApi\Contracts\ResourceIdResolver;
 use TiMacDonald\JsonApi\Contracts\ResourceTypeable;
 use TiMacDonald\JsonApi\Contracts\ResourceTypeResolver;
 use TiMacDonald\JsonApi\JsonApiResource;
+use TiMacDonald\JsonApi\JsonApiResourceCollection;
 use TiMacDonald\JsonApi\JsonApiServiceProvider;
 use stdClass;
 
@@ -528,6 +530,157 @@ class JsonApiTest extends TestCase
         ]);
     }
 
+    // public function test_it_excludes_attributes_in_nested_resources(): void
+    // {
+    //     $this->markTestSkipped();
+    // }
+
+    // public function test_cached_includes_are_cleaned_up_after_rendering_response(): void
+    // {
+    //     $resource = new BasicResource(['id' => 'expected-id']);
+    //     $resource->nested = new NestedResource(['id' => 'nested-level-1']);
+    //     $resource->nested->nested = new NestedResource(['id' => 'nested-level-2']);
+    //     $jsonResource = new class($resource) extends JsonApiResource {
+    //         public function getCache()
+    //         {
+    //             return $this->parsedIncludesCache;
+    //         }
+
+    //         protected function toAttributes(Request $request): array
+    //         {
+    //             return [
+    //                 'name' => 'Tim',
+    //             ];
+    //         }
+
+    //         protected function toRelationships(Request $request): array
+    //         {
+    //             return [
+    //                 'nested-relation' => fn () => new class($this->resource->nested) extends JsonApiResource {
+    //                     public function getCache()
+    //                     {
+    //                         return $this->parsedIncludesCache;
+    //                     }
+
+    //                     public function toAttributes(Request $request): array
+    //                     {
+    //                         return [
+    //                             'name' => 'Taz',
+    //                         ];
+    //                     }
+
+    //                     public function toRelationships(Request $request): array
+    //                     {
+    //                         return [
+    //                             'nested-relation' => fn () => new class($this->resource->nested) extends JsonApiResource {
+    //                                 public function toAttributes(Request $request): array
+    //                                 {
+    //                                     return [
+    //                                         'name' => 'Rusty',
+    //                                     ];
+    //                                 }
+    //                             },
+    //                         ];
+    //                     }
+    //                 },
+    //             ];
+    //         }
+    //     };
+    //     $request = Request::create('http://example.com?include=nested-relation.nested-relation');
+
+    //     $jsonResource->toArray($request);
+    //     $jsonResource->with($request);
+    //     dd($jsonResource->getCache());
+    // }
+
+    public function test_it_includes_nested_resources_when_their_key_is_the_same(): void
+    {
+        $resource = new BasicResource(['id' => 'expected-id']);
+        Route::get('test-route', fn () => new class($resource) extends JsonApiResource {
+            protected function toAttributes(Request $request): array
+            {
+                return [
+                    'name' => 'Tim',
+                ];
+            }
+
+            protected function toRelationships(Request $request): array
+            {
+                return [
+                    'nested-relation' => fn () => new class(new NestedResource(['id' => 'nested-level-1'])) extends JsonApiResource {
+                        public function toAttributes(Request $request): array
+                        {
+                            return [
+                                'name' => 'Taz',
+                            ];
+                        }
+
+                        public function toRelationships(Request $request): array
+                        {
+                            return [
+                                'nested-relation' => fn () => new class(new NestedResource(['id' => 'nested-level-2'])) extends JsonApiResource {
+                                    public function toAttributes(Request $request): array
+                                    {
+                                        return [
+                                            'name' => 'Rusty',
+                                        ];
+                                    }
+                                },
+                            ];
+                        }
+                    },
+                ];
+            }
+        });
+
+        $response = $this->getJson('test-route?include=nested-relation.nested-relation');
+
+        $response->assertOk();
+
+        $response->assertExactJson([
+            'data' => [
+                'id' => 'expected-id',
+                'type' => 'basicResources',
+                'attributes' => [
+                    'name' => 'Tim',
+                ],
+                'relationships' => [
+                    'nested-relation' => [
+                        'data' => [
+                            'id' => 'nested-level-1',
+                            'type' => 'nestedResources',
+                        ]
+                    ],
+                ],
+            ],
+            'included' => [
+                [
+                    'id' => 'nested-level-1',
+                    'type' => 'nestedResources',
+                    'attributes' => [
+                        'name' => 'Taz',
+                    ],
+                    'relationships' => [
+                        'nested-relation' => [
+                            'data' => [
+                                'id' => 'nested-level-2',
+                                'type' => 'nestedResources',
+                            ],
+                        ],
+                    ]
+                ],
+                [
+                    'id' => 'nested-level-2',
+                    'type' => 'nestedResources',
+                    'attributes' => [
+                        'name' => 'Rusty',
+                    ],
+                    'relationships' => []
+                ],
+            ],
+        ]);
+    }
+
     public function test_it_throws_when_requested_includes_is_an_array(): void
     {
         $resource = new BasicResource(['id' => 'expected-id']);
@@ -542,6 +695,298 @@ class JsonApiTest extends TestCase
             'message' => 'The include parameter must be a comma seperated list of relationship paths.'
         ]);
     }
+
+    public function test_it_can_return_a_collection(): void
+    {
+        $collection = new Collection([
+            new BasicResource(['id' => 'expected-id-1']),
+            new BasicResource(['id' => 'expected-id-2']),
+        ]);
+        Route::get('test-route', fn () => BasicJsonApiResource::collection($collection));
+
+        $response = $this->get('test-route');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                [
+                    'id' => 'expected-id-1',
+                    'type' => 'basicResources',
+                    'attributes' => [],
+                    'relationships' => [],
+                ],
+                [
+                    'id' => 'expected-id-2',
+                    'type' => 'basicResources',
+                    'attributes' => [],
+                    'relationships' => [],
+                ]
+            ]
+        ]);
+    }
+
+    public function test_it_can_include_relationships_for_a_collection(): void
+    {
+        $collection = new Collection([
+            BasicResource::make(['id' => 'parent-id-1'])
+                ->setRelation('nested', NestedResource::make(['id' => 'nested-id-1'])),
+            BasicResource::make(['id' => 'parent-id-2'])
+                ->setRelation('nested', NestedResource::make(['id' => 'nested-id-2'])),
+        ]);
+        Route::get('test-route', fn () => JsonResourceWithInclude::collection($collection));
+
+        $response = $this->get('test-route?include=nested');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                [
+                    'id' => 'parent-id-1',
+                    'type' => 'basicResources',
+                    'attributes' => [],
+                    'relationships' => [
+                        'nested' => [
+                            'data' => [
+                                'id' => 'nested-id-1',
+                                'type' => 'nestedResources',
+                            ]
+                        ]
+                    ],
+                ],
+                [
+                    'id' => 'parent-id-2',
+                    'type' => 'basicResources',
+                    'attributes' => [],
+                    'relationships' => [
+                        'nested' => [
+                            'data' => [
+                                'id' => 'nested-id-2',
+                                'type' => 'nestedResources',
+                            ]
+                        ]
+                    ],
+                ]
+            ],
+            'included' => [
+                [
+                    'id' => 'nested-id-1',
+                    'type' => 'nestedResources',
+                    'attributes' => [],
+                    'relationships' => [],
+                ],
+                [
+                    'id' => 'nested-id-2',
+                    'type' => 'nestedResources',
+                    'attributes' => [],
+                    'relationships' => [],
+                ]
+            ]
+        ]);
+    }
+
+    public function test_it_can_include_a_collection_for_a_resource(): void
+    {
+        $resource = BasicResource::make(['id' => 'parent-id-1']);
+        $nesteds = new Collection([
+            NestedResource::make(['id' => 'nested-id-1']),
+            NestedResource::make(['id' => 'nested-id-2']),
+        ]);
+        $resource->setRelation('nesteds', $nesteds);
+        Route::get('test-route', fn () => JsonResourceWithInclude::make($resource));
+
+        $response = $this->get('test-route?include=nesteds');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                'id' => 'parent-id-1',
+                'type' => 'basicResources',
+                'attributes' => [],
+                'relationships' => [
+                    'nesteds' => [
+                        [
+                            'data' => [
+                                'id' => 'nested-id-1',
+                                'type' => 'nestedResources',
+                            ]
+                        ],
+                        [
+                            'data' => [
+                                'id' => 'nested-id-2',
+                                'type' => 'nestedResources',
+                            ]
+                        ]
+                    ]
+                ],
+            ],
+            'included' => [
+                [
+                    'id' => 'nested-id-1',
+                    'type' => 'nestedResources',
+                    'attributes' => [],
+                    'relationships' => [],
+                ],
+                [
+                    'id' => 'nested-id-2',
+                    'type' => 'nestedResources',
+                    'attributes' => [],
+                    'relationships' => [],
+                ]
+            ]
+        ]);
+    }
+
+    public function test_it_can_include_a_collection_for_a_collection_of_a_resource(): void
+    {
+        $resource = BasicResource::make(['id' => 'parent-id-1']);
+        $nesteds = new Collection([
+            NestedResource::make(['id' => 'nested-id-1']),
+            NestedResource::make(['id' => 'nested-id-2']),
+        ]);
+        $resource->setRelation('nesteds', $nesteds);
+        $nesteds[0]->setRelation('nesteds', new Collection([
+            NestedResource::make(['id' => 'nested-id-3']),
+            NestedResource::make(['id' => 'nested-id-4']),
+        ]));
+        $nesteds[1]->setRelation('nesteds', new Collection);
+        Route::get('test-route', fn () => JsonResourceWithInclude::make($resource));
+
+        $response = $this->get('test-route?include=nesteds.nesteds');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                'id' => 'parent-id-1',
+                'type' => 'basicResources',
+                'attributes' => [],
+                'relationships' => [
+                    'nesteds' => [
+                        [
+                            'data' => [
+                                'id' => 'nested-id-1',
+                                'type' => 'nestedResources',
+                            ]
+                        ],
+                        [
+                            'data' => [
+                                'id' => 'nested-id-2',
+                                'type' => 'nestedResources',
+                            ]
+                        ]
+                    ]
+                ],
+            ],
+            'included' => [
+                [
+                    'id' => 'nested-id-1',
+                    'type' => 'nestedResources',
+                    'attributes' => [],
+                    'relationships' => [
+                        'nesteds' => [
+                            [
+                                'data' => [
+                                    'id' => 'nested-id-3',
+                                    'type' => 'nestedResources',
+                                ]
+                        ],
+                        [
+                            'data' => [
+                                'id' => 'nested-id-4',
+                                'type' => 'nestedResources',
+                            ]
+                        ]
+                        ]
+                    ],
+                ],
+                [
+                    'id' => 'nested-id-2',
+                    'type' => 'nestedResources',
+                    'attributes' => [],
+                    'relationships' => [
+                        'nesteds' => [],
+                    ],
+                ],
+                [
+                    'id' => 'nested-id-3',
+                    'type' => 'nestedResources',
+                    'attributes' => [],
+                    'relationships' => [],
+                ],
+                [
+                    'id' => 'nested-id-4',
+                    'type' => 'nestedResources',
+                    'attributes' => [],
+                    'relationships' => [],
+                ]
+            ]
+        ]);
+    }
+
+    public function test_it_can_use_sparse_fieldsets_with_nested_collections(): void
+    {
+        $resource = BasicResource::make(['id' => 'parent-id-1']);
+        $nesteds = new Collection([
+            NestedResource::make(['id' => 'nested-id-1', 'name' => 'Tim']),
+            NestedResource::make(['id' => 'nested-id-2', 'name' => 'Jaz']),
+        ]);
+        $resource->setRelation('nesteds', $nesteds);
+        Route::get('test-route', fn () => new class($resource) extends JsonApiResource {
+            public function toRelationships(Request $request): array
+            {
+                return [
+                    'nesteds' => fn () => new class($this->nesteds, JsonResourceWithAttributes::class) extends JsonApiResourceCollection {
+                    },
+                ];
+            }
+        });
+
+        $response = $this->get('test-route?include=nesteds&fields[nestedResources]=name');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                'id' => 'parent-id-1',
+                'type' => 'basicResources',
+                'attributes' => [],
+                'relationships' => [
+                    'nesteds' => [
+                        [
+                            'data' => [
+                                'id' => 'nested-id-1',
+                                'type' => 'nestedResources',
+                            ]
+                        ],
+                        [
+                            'data' => [
+                                'id' => 'nested-id-2',
+                                'type' => 'nestedResources',
+                            ]
+                        ]
+                    ]
+                ],
+            ],
+            'included' => [
+                [
+                    'id' => 'nested-id-1',
+                    'type' => 'nestedResources',
+                    'attributes' => [
+                        'name' => 'Tim',
+                        // 'location' => 'Melbourne',
+                    ],
+                    'relationships' => [],
+                ],
+                [
+                    'id' => 'nested-id-2',
+                    'type' => 'nestedResources',
+                    'attributes' => [
+                        'name' => 'Jaz',
+                        // 'location' => 'Melbourne',
+                    ],
+                    'relationships' => [],
+                ]
+            ]
+        ]);
+    }
 }
 
 /**
@@ -554,6 +999,9 @@ class BasicResource extends Model
     protected $keyType = 'string';
 }
 
+/**
+ * @property NestedResource $nested
+ */
 class NestedResource extends Model
 {
     protected $guarded = [];
@@ -564,4 +1012,26 @@ class NestedResource extends Model
 class BasicJsonApiResource extends JsonApiResource
 {
     //
+}
+
+class JsonResourceWithInclude extends JsonApiResource
+{
+    public function toRelationships(Request $request): array
+    {
+        return [
+            'nested' => fn () => JsonResourceWithInclude::make($this->nested),
+            'nesteds' => fn () => JsonResourceWithInclude::collection($this->nesteds),
+        ];
+    }
+}
+
+class JsonResourceWithAttributes extends JsonApiResource
+{
+    public function toAttributes(Request $request): array
+    {
+        return [
+            'name' => $this->name,
+            'location' => 'Melbourne',
+        ];
+    }
 }

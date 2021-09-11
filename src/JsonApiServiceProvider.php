@@ -46,7 +46,7 @@ class JsonApiServiceProvider extends ServiceProvider implements DeferrableProvid
         $this->app->singleton(ResourceTypeResolver::class, function (): Closure {
             return function ($resourceObject): string {
                 if ($resourceObject instanceof Model) {
-                    return Str::camel((new $resourceObject)->getTable());
+                    return Str::camel($resourceObject->getTable());
                 }
 
                 if (! is_object($resourceObject)) {

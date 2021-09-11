@@ -67,7 +67,7 @@ class UserResource extends JsonApiResource
     public function toRelationships(Request $request): array
     {
         return [
-            'posts' => fn () => PostResource::collect($this->posts),
+            'posts' => fn () => PostResource::collection($this->posts),
             'subscription' => fn () => SubscriptionResource::make($this->subscription),
         ];
     }

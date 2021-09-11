@@ -8,3 +8,4 @@ parameters:
     checkUninitializedProperties: true
 includes:
     - vendor/phpstan/phpstan-strict-rules/rules.neon
+    - vendor/nunomaduro/larastan/extension.neon

@@ -25,6 +25,16 @@ abstract class JsonApiResource extends JsonResource
     use Concerns\Relationships;
     use Concerns\ResourceIdentification;
 
+    public static function minimalAttributes(): void
+    {
+        static::$minimalAttributes = true;
+    }
+
+    public static function maximalAttributes(): void
+    {
+        static::$minimalAttributes = false;
+    }
+
     /**
      * @return array<string, mixed>
      */

@@ -987,6 +987,26 @@ class JsonApiTest extends TestCase
             ]
         ]);
     }
+
+    public function test_it_can_specify_minimal_attributes(): void
+    {
+        JsonApiResource::minimalAttributes();
+        $resource = new BasicResource(['id' => 'expected-id', 'name' => 'missing name']);
+        Route::get('test-route', fn () => JsonResourceWithAttributes::make($resource));
+
+        $response = $this->get('test-route');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                'type' => 'basicResources',
+                'id' => 'expected-id',
+                'attributes' => [],
+                'relationships' => [],
+            ],
+        ]);
+        JsonApiResource::maximalAttributes();
+    }
 }
 
 /**

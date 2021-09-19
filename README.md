@@ -188,6 +188,24 @@ The `Closure` is only called when the attribute is going to be included in the r
 /api/users/8?fields[users]=name,profile_image
 ```
 
+### Minimal attributes
+
+Out of the box the resource provides a maximal attribute payload when sparse fieldsets are not specified i.e. all specified attributes are returned by default. If you prefer to instead make it that spare fieldsets are required in order to retrieve any attributes, you can specify the use of minimal attributes in your applications service provider.
+
+```php
+<?php
+
+class AppServiceProvider extends ServiceProvider
+{
+    public function boot()
+    {
+        JsonApiResource::minimalAttributes();
+
+        // ...
+    }
+}
+```
+
 ## Relationships
 
 [JSON:API docs: Inclusion of Related Resources](https://jsonapi.org/format/#fetching-includes)

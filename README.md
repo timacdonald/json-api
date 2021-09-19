@@ -190,7 +190,7 @@ The `Closure` is only called when the attribute is going to be included in the r
 
 ### Minimal attributes
 
-Out of the box the resource provides a maximal attribute payload when sparse fieldsets are not specified i.e. all specified attributes are returned by default. If you prefer to instead make it that spare fieldsets are required in order to retrieve any attributes, you can specify the use of minimal attributes in your applications service provider.
+Out of the box the resource provides a maximal attribute payload when sparse fieldsets are not used i.e. all specified attributes are returned by default. If you prefer to instead make it that spare fieldsets are required in order to retrieve any attributes, you can specify the use of minimal attributes in your applications service provider.
 
 ```php
 <?php

@@ -1,4 +1,5 @@
 {
+    "name": "timacdonald/json-api",
     "autoload": {
         "psr-4": {
             "TiMacDonald\\JsonApi\\": "src"

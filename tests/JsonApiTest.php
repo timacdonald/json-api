@@ -635,6 +635,15 @@ class JsonApiTest extends TestCase
         JsonApiResource::maximalAttributes();
     }
 
+    public function test_it_casts_empty_attributes_and_relationships_to_an_object(): void
+    {
+        $resource = BasicResource::make(['id' => 'expected-id']);
+        Route::get('test-route', fn () => BasicJsonApiResource::make($resource));
+
+        $response = $this->get('test-route');
+
+        $this->assertStringContainsString('"attributes":{},"relationships":{}', $response->content());
+    }
     // public function test_it_excludes_attributes_in_nested_resources(): void
     // {
     //     $this->markTestSkipped();

@@ -80,8 +80,8 @@ abstract class JsonApiResource extends JsonResource
         $toArray = [
             'id' => self::resourceId($this->resource),
             'type' => self::resourceType($this->resource),
-            'attributes' => $this->parseAttributes($request),
-            'relationships' => $this->parseRelationships($request),
+            'attributes' => (object) $this->parseAttributes($request),
+            'relationships' => (object) $this->parseRelationships($request),
         ];
 
         $meta = $this->toMeta($request);

@@ -206,6 +206,42 @@ class AppServiceProvider extends ServiceProvider
 }
 ```
 
+### Include available attributes via "meta"
+
+You are able to have the available attributes for a resource exposed via the objects meta key. This is an opt-in feature that you can turn on in your service provider. This will be mostly only useful in conjunction with 'minimal attributes' turned on.
+
+```php
+<?php
+
+class AppServiceProvider extends ServiceProvider
+{
+    public function boot()
+    {
+        JsonApiResource::includeAvailableAttributesViaMeta();
+
+        // ...
+    }
+}
+```
+
+A user resource with a `"name"`, `"email"`, and `"location"` attribute may have the following representation...
+
+```json
+{
+    "id": "5",
+    "type": "users",
+    "attributes": {},
+    "relationships": {},
+    "meta": {
+        "availableAttributes": [
+            "name",
+            "email",
+            "location"
+        ]
+    }
+}
+```
+
 ## Relationships
 
 [JSON:API docs: Inclusion of Related Resources](https://jsonapi.org/format/#fetching-includes)

@@ -35,6 +35,16 @@ abstract class JsonApiResource extends JsonResource
         static::$minimalAttributes = false;
     }
 
+    public static function includeAvailableAttributesViaMeta(): void
+    {
+        static::$includeAvailableAttributesViaMeta = true;
+    }
+
+    public static function excludeAvailableAttributesViaMeta(): void
+    {
+        static::$includeAvailableAttributesViaMeta = false;
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -61,17 +71,26 @@ abstract class JsonApiResource extends JsonResource
      *      id: string,
      *      type: string,
      *      attributes: array<string, mixed>,
-     *      relationships: array<string, array{data: array{id: string, type: string}}>
+     *      relationships: array<string, array{data: array{id: string, type: string}}>,
+     *      meta?: array{availableAttributes?: array<string>}
      * }
      */
     public function toArray($request): array
     {
-        return [
+        $toArray = [
             'id' => self::resourceId($this->resource),
             'type' => self::resourceType($this->resource),
             'attributes' => $this->parseAttributes($request),
             'relationships' => $this->parseRelationships($request),
         ];
+
+        $meta = $this->toMeta($request);
+
+        if ($meta !== []) {
+            $toArray = array_merge($toArray, ['meta' => $meta]);
+        }
+
+        return $toArray;
     }
 
     /**
@@ -82,11 +101,25 @@ abstract class JsonApiResource extends JsonResource
     {
         $includes = $this->resolveNestedIncludes($request);
 
-        if (count($includes) === 0) {
-            return [];
+        if (count($includes) > 0) {
+            return ['included' => $includes];
         }
 
-        return ['included' => $includes];
+        return [];
+    }
+
+    /**
+     * @return array{availableAttributes?: array<string>}
+     */
+    private function toMeta(Request $request): array
+    {
+        if (self::$includeAvailableAttributesViaMeta) {
+            return [
+                'availableAttributes' => $this->availableAttributes($request),
+            ];
+        }
+
+        return [];
     }
 
     /**

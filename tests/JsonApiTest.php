@@ -530,6 +530,111 @@ class JsonApiTest extends TestCase
         ]);
     }
 
+    public function test_it_can_add_available_attributes_to_the_meta_object_of_a_resource(): void
+    {
+        $resource = new BasicResource(['id' => 'expected-id', 'name' => 'Tim']);
+        Route::get('test-route', fn () => new JsonResourceWithAttributes($resource));
+
+        JsonApiResource::includeAvailableAttributesViaMeta();
+        $response = $this->getJson('test-route');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                'id' => 'expected-id',
+                'type' => 'basicResources',
+                'attributes' => [
+                    'name' => 'Tim',
+                    'location' => 'Melbourne',
+                ],
+                'relationships' => [],
+                'meta' => [
+                    'availableAttributes' => [
+                        'name',
+                        'location',
+                    ],
+                ],
+            ]
+        ]);
+
+        JsonApiResource::excludeAvailableAttributesViaMeta();
+    }
+
+    public function test_it_can_add_available_attributes_to_the_meta_object_of_included_resources(): void
+    {
+        $resource = new BasicResource(['id' => 'expected-id', 'name' => 'Tim']);
+        $resource->nested = new NestedResource(['id' => 'nested-id', 'location' => 'Melbourne']);
+
+        Route::get('test-route', fn () => new class($resource) extends JsonApiResource {
+            public function toAttributes(Request $request): array
+            {
+                return [
+                    'name' => $this->name,
+                ];
+            }
+
+            public function toRelationships(Request $request): array
+            {
+                return [
+                    'nested' => fn () => new class($this->nested) extends JsonApiResource {
+                        public function toAttributes(Request $request): array
+                        {
+                            return [
+                                'location' => $this->location,
+                            ];
+                        }
+                    },
+                ];
+            }
+        });
+
+        JsonApiResource::minimalAttributes();
+        JsonApiResource::includeAvailableAttributesViaMeta();
+        $response = $this->getJson('test-route?include=nested');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                'id' => 'expected-id',
+                'type' => 'basicResources',
+                'attributes' => [
+                    //
+                ],
+                'relationships' => [
+                    'nested' => [
+                        'data' => [
+                            'id' => 'nested-id',
+                            'type' => 'nestedResources'
+                        ]
+                    ]
+                ],
+                'meta' => [
+                    'availableAttributes' => [
+                        'name',
+                    ],
+                ],
+            ],
+            'included' => [
+                [
+                    'id' => 'nested-id',
+                    'type' => 'nestedResources',
+                    'attributes' => [
+                        //
+                    ],
+                    'relationships' => [],
+                    'meta' => [
+                        'availableAttributes' => [
+                            'location',
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+
+        JsonApiResource::excludeAvailableAttributesViaMeta();
+        JsonApiResource::maximalAttributes();
+    }
+
     // public function test_it_excludes_attributes_in_nested_resources(): void
     // {
     //     $this->markTestSkipped();
@@ -1006,6 +1111,12 @@ class JsonApiTest extends TestCase
             ],
         ]);
         JsonApiResource::maximalAttributes();
+    }
+
+    public function test_it_has_test_assertions(): void
+    {
+        //assertResource(UserResource::class);
+        $this->markTestIncomplete('TODO');
     }
 }
 

@@ -6,7 +6,6 @@
         }
     },
     "require": {
-        "friendsofphp/php-cs-fixer": "^3.0",
         "spatie/once": "^3.0"
     },
     "autoload-dev": {
@@ -15,6 +14,7 @@
         }
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0",
         "infection/infection": "^0.24.0",
         "nunomaduro/larastan": "^0.7.12",
         "orchestra/testbench": "^6.19",

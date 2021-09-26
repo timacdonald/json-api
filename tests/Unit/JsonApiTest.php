@@ -2,46 +2,29 @@
 
 declare(strict_types=1);
 
-namespace Tests;
+namespace Tests\Unit;
 
-use RuntimeException;
-use Exception;
-use Illuminate\Contracts\Support\DeferrableProvider;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Route;
-use Orchestra\Testbench\TestCase;
-use SebastianBergmann\Environment\Runtime;
-use TiMacDonald\JsonApi\Contracts\ResourceIdResolver;
-use TiMacDonald\JsonApi\Contracts\ResourceTypeable;
-use TiMacDonald\JsonApi\Contracts\ResourceTypeResolver;
-use TiMacDonald\JsonApi\JsonApiResource;
-use TiMacDonald\JsonApi\JsonApiResourceCollection;
-use TiMacDonald\JsonApi\JsonApiServiceProvider;
 use stdClass;
+use Exception;
+use Tests\TestCase;
+use RuntimeException;
+use Illuminate\Http\Request;
+use Tests\Models\BasicResource;
+use Tests\Models\NestedResource;
+use Illuminate\Support\Facades\Route;
+use TiMacDonald\JsonApi\JsonApiResource;
+use Tests\Resources\BasicJsonApiResource;
+use Tests\Resources\JsonResourceWithInclude;
+use Illuminate\Database\Eloquent\Collection;
+use TiMacDonald\JsonApi\JsonApiServiceProvider;
+use Tests\Resources\JsonResourceWithAttributes;
+use TiMacDonald\JsonApi\JsonApiResourceCollection;
+use Illuminate\Contracts\Support\DeferrableProvider;
+use TiMacDonald\JsonApi\Contracts\ResourceIdResolver;
+use TiMacDonald\JsonApi\Contracts\ResourceTypeResolver;
 
 class JsonApiTest extends TestCase
 {
-    /**
-     * @param \Illuminate\Contracts\Foundation\Application $app
-     * @return array<class-string>
-     */
-    protected function getPackageProviders($app): array
-    {
-        return [
-            JsonApiServiceProvider::class,
-        ];
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->withoutExceptionHandling();
-    }
-
     public function test_it_resolves_the_id_and_type_of_a_model(): void
     {
         $resource = new BasicResource(['id' => 'expected-id']);
@@ -107,7 +90,7 @@ class JsonApiTest extends TestCase
 
     public function test_it_throws_when_unable_to_automatically_resolve_type_of_a_non_object(): void
     {
-        $this->app->bind(ResourceIdResolver::class, fn () =>fn () =>  'id');
+        $this->app->bind(ResourceIdResolver::class, fn () => fn () => 'id');
         $resource = [];
         Route::get('test-route', fn () => new BasicJsonApiResource($resource));
 
@@ -119,7 +102,7 @@ class JsonApiTest extends TestCase
 
     public function test_it_throws_when_unable_to_automatically_resolve_type_of_an_object(): void
     {
-        $this->app->bind(ResourceIdResolver::class, fn () =>fn () =>  'id');
+        $this->app->bind(ResourceIdResolver::class, fn () => fn () => 'id');
         $resource = new stdClass;
         Route::get('test-route', fn () => new BasicJsonApiResource($resource));
 
@@ -276,7 +259,7 @@ class JsonApiTest extends TestCase
                 'type' => 'basicResources',
                 'attributes' => [
                     //
-               ],
+                ],
                 'relationships' => [],
             ]
         ]);
@@ -1002,13 +985,13 @@ class JsonApiTest extends TestCase
                                     'id' => 'nested-id-3',
                                     'type' => 'nestedResources',
                                 ]
-                        ],
-                        [
-                            'data' => [
-                                'id' => 'nested-id-4',
-                                'type' => 'nestedResources',
+                            ],
+                            [
+                                'data' => [
+                                    'id' => 'nested-id-4',
+                                    'type' => 'nestedResources',
+                                ]
                             ]
-                        ]
                         ]
                     ],
                 ],
@@ -1126,52 +1109,5 @@ class JsonApiTest extends TestCase
     {
         //assertResource(UserResource::class);
         $this->markTestIncomplete('TODO');
-    }
-}
-
-/**
- * @property NestedResource $nested
- */
-class BasicResource extends Model
-{
-    protected $guarded = [];
-
-    protected $keyType = 'string';
-}
-
-/**
- * @property NestedResource $nested
- */
-class NestedResource extends Model
-{
-    protected $guarded = [];
-
-    protected $keyType = 'string';
-}
-
-class BasicJsonApiResource extends JsonApiResource
-{
-    //
-}
-
-class JsonResourceWithInclude extends JsonApiResource
-{
-    public function toRelationships(Request $request): array
-    {
-        return [
-            'nested' => fn () => JsonResourceWithInclude::make($this->nested),
-            'nesteds' => fn () => JsonResourceWithInclude::collection($this->nesteds),
-        ];
-    }
-}
-
-class JsonResourceWithAttributes extends JsonApiResource
-{
-    public function toAttributes(Request $request): array
-    {
-        return [
-            'name' => $this->name,
-            'location' => 'Melbourne',
-        ];
     }
 }

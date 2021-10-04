@@ -39,9 +39,7 @@ trait Relationships
     private function nestedIncludes(Request $request): Collection
     {
         return $this->requestedRelationships($request)
-            ->flatMap(function (JsonApiResource | JsonApiResourceCollection $resource, string $key) use ($request): Collection {
-                return $resource->includes($request);
-            });
+            ->flatMap(fn (JsonApiResource | JsonApiResourceCollection $resource, string $key): Collection => $resource->includes($request));
     }
 
     private function requestedRelationshipsAsIdentifiers(Request $request): Collection

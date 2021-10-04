@@ -19,7 +19,6 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
             ->reject(fn (?JsonApiResource $resource) => $resource === null)
             ->uniqueStrict(fn (JsonApiResource $resource) => $resource->toRelationshipIdentifier($request));
 
-        // TODO Pagination
         if ($includes->isEmpty()) {
             return [];
         }

@@ -87,7 +87,6 @@ abstract class JsonApiResource extends JsonResource
             return $toArray;
         }
 
-        // TODO: links, etc...
         return array_merge($toArray, ['meta' => $meta]);
     }
 

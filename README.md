@@ -6,11 +6,11 @@ This is a WIP project currently being built out via livestream on [my YouTube ch
 
 #### TODO
 
+- [ ] Links, etc
+- [ ] Available relationships
 - [ ] Pagination tests
 - [ ] collection counts
-- [ ] allow filtering of attributes and relationships via "when" helpers
-- [ ] Holistic naming
-- [ ] Perf testing for recalled methods and recursion. Can we push some of the recursive work to the calling place in with()?
+- [ ] allow filtering of attributes and relationships via "when" helpers. This should be possible outside the relationship closure so that it is filtered from the "availableRelationsips" as well as internally
 - [ ] Document that this is to be used in conjunction with Spatie Query Builder
 - [ ] document why whenLoaded isn't great
 - [ ] How to handle single resources loading / allow listing (can we PR Spatie Query Builder for this or does it already support it?).

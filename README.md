@@ -39,9 +39,6 @@ To provide a set of attributes for a resource, you can implement the `toAttribut
 
 class UserResource extends JsonApiResource
 {
-    /**
-     * @return array<string, mixed>
-     */
     public function toAttributes(Request $request): array
     {
         return [
@@ -64,9 +61,6 @@ Just like we saw with attributes above, we can specify relationships that should
 
 class UserResource extends JsonApiResource
 {
-    /**
-     * @return array<string, Closure(Request $request): JsonApiResource>
-     */
     public function toRelationships(Request $request): array
     {
         return [

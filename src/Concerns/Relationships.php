@@ -24,9 +24,6 @@ trait Relationships
         return $this;
     }
 
-    /**
-     * @return array<string, JsonApiResource>
-     */
     public function includes(Request $request): Collection
     {
         return $this->requestedRelationships($request)
@@ -39,7 +36,7 @@ trait Relationships
             ->flatten();
     }
 
-    private function nestedIncludes(Request $request)
+    private function nestedIncludes(Request $request): Collection
     {
         return $this->requestedRelationships($request)
             ->flatMap(static function (JsonApiResource | JsonApiResourceCollection $resource, string $key) use ($request): Collection {
@@ -47,9 +44,6 @@ trait Relationships
             });
     }
 
-    /**
-     * @return array{data: array{id: string, type: string}}
-     */
     public function toRelationshipIdentifier(Request $request): array
     {
         return [
@@ -60,18 +54,12 @@ trait Relationships
         ];
     }
 
-    /**
-     * @return Collection<string, array{data: array{id: string, type: string}}>
-     */
     private function requestedRelationshipsAsIdentifiers(Request $request): Collection
     {
         return $this->requestedRelationships($request)
             ->map(static fn (JsonApiResource | JsonApiResourceCollection $resource): array => $resource->toRelationshipIdentifier($request));
     }
 
-    /**
-     * @return Collection<string, JsonApiResourceCollection|JsonApiResource >
-     */
     private function requestedRelationships(Request $request): Collection
     {
         return Collection::make($this->toRelationships($request))

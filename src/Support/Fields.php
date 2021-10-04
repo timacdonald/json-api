@@ -12,9 +12,6 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Fields
 {
-    /**
-     * @return ?array<string>
-     */
     public static function parse(Request $request, string $resourceType): ?array
     {
         $typeFields = $request->query('fields') ?? [];

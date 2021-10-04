@@ -20,7 +20,6 @@ use TiMacDonald\JsonApi\Exceptions\ResourceIdentificationException;
 abstract class JsonApiResource extends JsonResource
 {
     use Concerns\Attributes;
-
     use Concerns\Relationships;
 
     public static function minimalAttributes(): void
@@ -33,9 +32,6 @@ abstract class JsonApiResource extends JsonResource
         static::$includeAvailableAttributesViaMeta = true;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
     protected function toAttributes(Request $request): array
     {
         return [
@@ -43,9 +39,6 @@ abstract class JsonApiResource extends JsonResource
         ];
     }
 
-    /**
-     * @return array<string, Closure(Request $request): JsonApiResource>
-     */
     protected function toRelationships(Request $request): array
     {
         return [
@@ -53,9 +46,6 @@ abstract class JsonApiResource extends JsonResource
         ];
     }
 
-    /**
-     * @return array{availableAttributes?: array<string>}
-     */
     protected function toMeta(Request $request): array
     {
         if (self::$includeAvailableAttributesViaMeta) {
@@ -85,17 +75,6 @@ abstract class JsonApiResource extends JsonResource
         throw ResourceIdentificationException::attemptingToDetermineTypeFor($this->resource);
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return array{
-     *                id: string,
-     *                type: string,
-     *                attributes: stdClass,
-     *                relationships: stdClass,
-     *                meta?: array{availableAttributes?: array<string>}
-     *                }
-     */
     public function toArray($request): array
     {
         $toArray = [
@@ -115,11 +94,6 @@ abstract class JsonApiResource extends JsonResource
         return array_merge($toArray, ['meta' => $meta]);
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return array{included?: array<JsonApiResource>}
-     */
     public function with($request): array
     {
         $includes = $this->includes($request);
@@ -131,14 +105,11 @@ abstract class JsonApiResource extends JsonResource
         return [];
     }
 
-    /**
-     * @return JsonApiResourceCollection<JsonApiResource>
-     */
     public static function collection(mixed $resource): JsonApiResourceCollection
     {
         return tap(new JsonApiResourceCollection($resource, static::class), static function (JsonApiResourceCollection $collection): void {
             if (property_exists(static::class, 'preserveKeys')) {
-                $collection->preserveKeys = (new static([]))->preserveKeys === true; // @phpstan-ignore-line
+                $collection->preserveKeys = (new static([]))->preserveKeys === true;
             }
         });
     }

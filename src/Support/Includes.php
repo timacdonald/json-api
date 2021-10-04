@@ -13,9 +13,6 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Includes
 {
-    /**
-     * @return Collection<string>
-     */
     public static function parse(Request $request, string $prefix): Collection
     {
         $includes = $request->query('include') ?? '';
@@ -29,6 +26,6 @@ class Includes
             ->when($prefix !== '', static function (Collection $includes) use ($prefix): Collection {
                 return $includes->filter(static fn (Stringable $include) => $include->startsWith($prefix));
             })
-            ->map(static fn (Stringable $include): string => $include->after($prefix)->before('.'));
+            ->map(static fn (Stringable $include): string => (string) $include->after($prefix)->before('.'));
     }
 }

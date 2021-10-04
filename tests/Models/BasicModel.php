@@ -7,7 +7,12 @@ namespace Tests\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property NestedResource $relation
+ * @property array $posts
+ * @property self $author
+ * @property self $license
+ * @property self $feature_image
+ * @property self $avatar
+ * @property self|array $child
  */
 class BasicModel extends Model
 {

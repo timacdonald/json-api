@@ -12,9 +12,6 @@ use Tests\Models\BasicModel;
 use Tests\Resources\BasicJsonApiResource;
 use TiMacDonald\JsonApi\Exceptions\ResourceIdentificationException;
 
-/**
- * @small
- */
 class ResourceIdentificationTest extends TestCase
 {
     public function testItResolvesTheIdAndTypeOfAModel(): void
@@ -44,7 +41,7 @@ class ResourceIdentificationTest extends TestCase
         ])->setKeyType('int');
         Route::get('test-route', static fn () => BasicJsonApiResource::make($user));
 
-        $this->assertSame(55, $user->getKey());
+        self::assertSame(55, $user->getKey());
 
         $response = $this->getJson('test-route');
 

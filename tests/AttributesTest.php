@@ -13,9 +13,6 @@ use Tests\Resources\BasicJsonApiResource;
 use Tests\Resources\UserResource;
 use TiMacDonald\JsonApi\JsonApiResource;
 
-/**
- * @small
- */
 class AttributesTest extends TestCase
 {
     public function testItIncludesAllAttributesByDefault(): void

@@ -10,9 +10,6 @@ use Tests\Models\BasicModel;
 use Tests\Resources\BasicJsonApiResource;
 use Tests\Resources\UserResource;
 
-/**
- * @small
- */
 class JsonApiTest extends TestCase
 {
     public function testItCanReturnASingleResource(): void
@@ -83,6 +80,6 @@ class JsonApiTest extends TestCase
 
         $response = $this->get('test-route');
 
-        $this->assertStringContainsString('"attributes":{},"relationships":{}', $response->content());
+        self::assertStringContainsString('"attributes":{},"relationships":{}', $response->content());
     }
 }

@@ -29,9 +29,6 @@ trait Attributes
         static::$includeAvailableAttributesViaMeta = false;
     }
 
-    /**
-     * @return Collection<string, mixed>
-     */
     private function requestedAttributes(Request $request): Collection
     {
         return Collection::make($this->toAttributes($request))
@@ -39,9 +36,6 @@ trait Attributes
             ->map(static fn (mixed $value): mixed => value($value, $request));
     }
 
-    /**
-     * @return array<string>|null
-     */
     private function fields(Request $request): ?array
     {
         $fields = Fields::parse($request, $this->toType($request));
@@ -55,9 +49,6 @@ trait Attributes
             : null;
     }
 
-    /**
-     * @return array<string>
-     */
     private function availableAttributes(Request $request): array
     {
         return array_keys($this->toAttributes($request));

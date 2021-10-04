@@ -14,9 +14,6 @@ use Tests\Resources\PostResource;
 use Tests\Resources\UserResource;
 use TiMacDonald\JsonApi\JsonApiResource;
 
-/**
- * @small
- */
 class RelationshipsTest extends TestCase
 {
     public function testItThrowsWhenTheIncludeQueryParameterIsAnArray(): void
@@ -213,9 +210,11 @@ class RelationshipsTest extends TestCase
 
     public function testItCanIncludeNestedResourcesWhenTheirKeyIsTheSame(): void
     {
-        $parent = BasicModel::make(['id' => 'parent-id']);
-        $parent->child = BasicModel::make(['id' => 'child-id-1']);
-        $parent->child->child = BasicModel::make(['id' => 'child-id-2']);
+        $parent = BasicModel::make([
+            'id' => 'parent-id',
+        ])->setRelation('child', BasicModel::make([
+            'id' => 'child-id-1',
+        ])->setRelation('child', BasicModel::make(['id' => 'child-id-2'])));
         Route::get('test-route', fn () => new class($parent) extends JsonApiResource {
             protected function toRelationships(Request $request): array
             {
@@ -275,12 +274,14 @@ class RelationshipsTest extends TestCase
 
     public function testItCanIncludeANestedCollectionOfResourcesWhenTheirKeyIsTheSame(): void
     {
-        $parent = BasicModel::make(['id' => 'parent-id']);
-        $parent->child = BasicModel::make(['id' => 'child-id-1']);
-        $parent->child->child = [
+        $parent = BasicModel::make([
+            'id' => 'parent-id'
+        ])->setRelation('child', BasicModel::make([
+            'id' => 'child-id-1',
+        ])->setRelation('child', [
             BasicModel::make(['id' => 'child-id-2']),
             BasicModel::make(['id' => 'child-id-3']),
-        ];
+        ]));
         Route::get('test-route', fn () => new class($parent) extends JsonApiResource {
             protected function toRelationships(Request $request): array
             {

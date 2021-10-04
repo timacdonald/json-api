@@ -6,6 +6,7 @@ This is a WIP project currently being built out via livestream on [my YouTube ch
 
 #### TODO
 
+- [ ] update docs
 - [ ] Links, etc
 - [ ] Available relationships
 - [ ] Pagination tests

@@ -9,37 +9,33 @@ use Illuminate\Support\Collection;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use TiMacDonald\JsonApi\Support\Fields;
 
+/**
+ * @internal
+ */
 trait Attributes
 {
     private static bool $minimalAttributes = false;
 
     private static bool $includeAvailableAttributesViaMeta = false;
 
-    /**
-     * @return array<string, mixed>
-     */
-    private function resolveAttributes(Request $request): array
+    public static function maximalAttributes(): void
     {
-        return once(fn () => $this->toAttributes($request));
+        static::$minimalAttributes = false;
+    }
+
+    public static function excludeAvailableAttributesViaMeta(): void
+    {
+        static::$includeAvailableAttributesViaMeta = false;
     }
 
     /**
-     * @return array<string, mixed>
+     * @return Collection<string, mixed>
      */
-    private function parseAttributes(Request $request): array
+    private function requestedAttributes(Request $request): Collection
     {
-        return Collection::make($this->resolveAttributes($request))
+        return Collection::make($this->toAttributes($request))
             ->only($this->fields($request))
-            ->map(fn (mixed $value): mixed => value($value, $request))
-            ->all();
-    }
-
-    /**
-     * @return array<string>
-     */
-    private function availableAttributes(Request $request): array
-    {
-        return array_keys($this->resolveAttributes($request));
+            ->map(fn (mixed $value): mixed => value($value, $request));
     }
 
     /**
@@ -47,7 +43,7 @@ trait Attributes
      */
     private function fields(Request $request): ?array
     {
-        $fields = Fields::parse($request, static::resourceType($this->resource));
+        $fields = Fields::parse($request, $this->toType($request));
 
         if ($fields !== null) {
             return $fields;
@@ -56,5 +52,13 @@ trait Attributes
         return static::$minimalAttributes
             ? []
             : null;
+    }
+
+    /**
+     * @return array<string>
+     */
+    private function availableAttributes(Request $request): array
+    {
+        return array_keys($this->toAttributes($request));
     }
 }

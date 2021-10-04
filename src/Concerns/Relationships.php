@@ -14,13 +14,16 @@ use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
 use TiMacDonald\JsonApi\Support\Includes;
 
+/**
+ * @internal
+ */
 trait Relationships
 {
     private string $includePrefix = '';
 
     public function withIncludePrefix(string $prefix): self
     {
-        $this->includePrefix = Str::finish($prefix, '.');
+        $this->includePrefix = "{$this->includePrefix}{$prefix}.";
 
         return $this;
     }
@@ -28,56 +31,64 @@ trait Relationships
     /**
      * @return array<string, JsonApiResource>
      */
-    public function resolveNestedIncludes(Request $request): array
+    public function includes(Request $request): Collection
     {
-        $includes = $this->parseIncludes($request);
-
-        $nested = $includes->flatMap(function (JsonApiResource | JsonApiResourceCollection $resource, string $key) use ($request): array {
-            return $resource->withIncludePrefix("{$this->includePrefix}{$key}")->resolveNestedIncludes($request);
-        });
-
-        return $includes
-            ->map(function (JsonApiResource | JsonApiResourceCollection $include): JsonApiResource | Collection {
-                return $include instanceof JsonApiResource ? $include : $include->collection;
+        return $this->requestedRelationships($request)
+            ->map(function (JsonApiResource | JsonApiResourceCollection $include): Collection | JsonApiResource {
+                return $include instanceof JsonApiResource
+                    ? $include
+                    : $include->collection;
             })
-            ->merge($nested)
-            ->values()
-            ->flatten()
-            ->all();
+            ->merge($this->nestedIncludes($request))
+            ->flatten();
+    }
+
+    private function nestedIncludes(Request $request)
+    {
+        return $this->requestedRelationships($request)
+            ->flatMap(function (JsonApiResource | JsonApiResourceCollection $resource, string $key) use ($request): Collection {
+                return $resource->includes($request);
+            });
     }
 
     /**
      * @return array{data: array{id: string, type: string}}
      */
-    public function toRelationshipIdentifier(): array
+    public function toRelationshipIdentifier(Request $request): array
     {
         return [
             'data' => [
-                'id' => self::resourceId($this->resource),
-                'type' => self::resourceType($this->resource),
+                'id' => $this->toId($request),
+                'type' => $this->toType($request),
             ],
         ];
     }
 
     /**
-     * @return array<string, array{data: array{id: string, type: string}}>
+     * @return Collection<string, array{data: array{id: string, type: string}}>
      */
-    private function parseRelationships(Request $request): array
+    private function requestedRelationshipsAsIdentifiers(Request $request): Collection
     {
-        return $this->parseIncludes($request)
-            ->map(function (JsonApiResource | JsonApiResourceCollection $resource): array {
-                return $resource->toRelationshipIdentifier();
-            })
-            ->all();
+        return $this->requestedRelationships($request)
+            ->map(fn (JsonApiResource | JsonApiResourceCollection $resource): array => $resource->toRelationshipIdentifier($request));
     }
 
     /**
      * @return Collection<string, JsonApiResource | JsonApiResourceCollection>
      */
-    private function parseIncludes(Request $request): Collection
+    private function requestedRelationships(Request $request): Collection
     {
         return Collection::make($this->toRelationships($request))
             ->only(Includes::parse($request, $this->includePrefix))
-            ->map(fn (mixed $value): JsonApiResource | JsonApiResourceCollection => $value($request));
+            ->map(
+                fn (mixed $value, string $key): JsonApiResource | JsonApiResourceCollection => $value($request)->withIncludePrefix($key)
+            )
+            ->each(function (JsonApiResource | JsonApiResourceCollection $resource) use ($request): void {
+                if ($resource instanceof JsonApiResource) {
+                    return;
+                }
+
+                $resource->collection = $resource->collection->unique(fn (JsonApiResource $resource) => $resource->toRelationshipIdentifier($request));
+            });
     }
 }

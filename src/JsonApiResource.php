@@ -7,6 +7,7 @@ namespace TiMacDonald\JsonApi;
 use Closure;
 use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -14,35 +15,27 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Support\Stringable;
+use RuntimeException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use TiMacDonald\JsonApi\Contracts\ResourceIdResolver;
 use TiMacDonald\JsonApi\Contracts\ResourceTypeable;
 use TiMacDonald\JsonApi\Contracts\ResourceTypeResolver;
+use stdClass;
+use TiMacDonald\JsonApi\Exceptions\ResourceIdentificationException;
 
 abstract class JsonApiResource extends JsonResource
 {
     use Concerns\Attributes;
     use Concerns\Relationships;
-    use Concerns\ResourceIdentification;
 
     public static function minimalAttributes(): void
     {
         static::$minimalAttributes = true;
     }
 
-    public static function maximalAttributes(): void
-    {
-        static::$minimalAttributes = false;
-    }
-
     public static function includeAvailableAttributesViaMeta(): void
     {
         static::$includeAvailableAttributesViaMeta = true;
-    }
-
-    public static function excludeAvailableAttributesViaMeta(): void
-    {
-        static::$includeAvailableAttributesViaMeta = false;
     }
 
     /**
@@ -66,31 +59,65 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
+     * @return array{availableAttributes?: array<string>}
+     */
+    protected function toMeta(Request $request): array
+    {
+        if (self::$includeAvailableAttributesViaMeta) {
+            return [
+                'availableAttributes' => $this->availableAttributes($request),
+            ];
+        }
+
+        return [];
+    }
+
+    protected function toId(Request $request): string
+    {
+        if ($this->resource instanceof Model) {
+            return (string) $this->resource->getKey();
+        }
+
+        throw ResourceIdentificationException::attemptingToDetermineIdFor($this->resource);
+    }
+
+    protected function toType(Request $request): string
+    {
+        if ($this->resource instanceof Model) {
+            return Str::camel($this->resource->getTable());
+        }
+
+        throw ResourceIdentificationException::attemptingToDetermineTypeFor($this->resource);
+    }
+
+    /**
      * @param Request $request
      * @return array{
      *      id: string,
      *      type: string,
-     *      attributes: array<string, mixed>,
-     *      relationships: array<string, array{data: array{id: string, type: string}}>,
+     *      attributes: stdClass,
+     *      relationships: stdClass,
      *      meta?: array{availableAttributes?: array<string>}
      * }
      */
     public function toArray($request): array
     {
         $toArray = [
-            'id' => self::resourceId($this->resource),
-            'type' => self::resourceType($this->resource),
-            'attributes' => (object) $this->parseAttributes($request),
-            'relationships' => (object) $this->parseRelationships($request),
+            'id' => $this->toId($request),
+            'type' => $this->toType($request),
+            'attributes' => (object) $this->requestedAttributes($request)->all(),
+            'relationships' => (object) $this->requestedRelationshipsAsIdentifiers($request)->all(),
         ];
+
 
         $meta = $this->toMeta($request);
 
-        if ($meta !== []) {
-            $toArray = array_merge($toArray, ['meta' => $meta]);
+        if ($meta === []) {
+            return $toArray;
         }
 
-        return $toArray;
+        // TODO: links, etc...
+        return array_merge($toArray, ['meta' => $meta]);
     }
 
     /**
@@ -99,24 +126,10 @@ abstract class JsonApiResource extends JsonResource
      */
     public function with($request): array
     {
-        $includes = $this->resolveNestedIncludes($request);
+        $includes = $this->includes($request);
 
         if (count($includes) > 0) {
-            return ['included' => $includes];
-        }
-
-        return [];
-    }
-
-    /**
-     * @return array{availableAttributes?: array<string>}
-     */
-    private function toMeta(Request $request): array
-    {
-        if (self::$includeAvailableAttributesViaMeta) {
-            return [
-                'availableAttributes' => $this->availableAttributes($request),
-            ];
+            return ['included' => $includes->all()];
         }
 
         return [];

@@ -21,12 +21,5 @@
         "phpstan/phpstan": "^0.12.94",
         "phpstan/phpstan-strict-rules": "^0.12.10",
         "phpunit/phpunit": "^9.0"
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "TiMacDonald\\JsonApi\\JsonApiServiceProvider"
-            ]
-        }
     }
 }

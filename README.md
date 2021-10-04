@@ -8,6 +8,9 @@ This is a WIP project currently being built out via livestream on [my YouTube ch
 
 - [ ] Pagination tests
 - [ ] collection counts
+- [ ] allow filtering of attributes and relationships via "when" helpers
+- [ ] Holistic naming
+- [ ] Perf testing for recalled methods and recursion. Can we push some of the recursive work to the calling place in with()?
 - [ ] Document that this is to be used in conjunction with Spatie Query Builder
 - [ ] document why whenLoaded isn't great
 - [ ] How to handle single resources loading / allow listing (can we PR Spatie Query Builder for this or does it already support it?).

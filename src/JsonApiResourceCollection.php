@@ -4,12 +4,13 @@ namespace TiMacDonald\JsonApi;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Collection;
 
 class JsonApiResourceCollection extends AnonymousResourceCollection
 {
     /**
      * @param Request $request
-     * @return array{included?: array<JsonApiResource>}
+     * @return array{included?: Collection<JsonApiResource>}
      */
     public function with($request): array
     {
@@ -17,10 +18,11 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
             ->map(fn (JsonApiResource $resource) => $resource->with($request))
             ->pluck('included')
             ->flatten()
-            ->filter()
-            ->all();
+            ->reject(fn (?JsonApiResource $resource) => $resource === null)
+            ->unique(fn (JsonApiResource $resource) => $resource->toRelationshipIdentifier($request));
 
-        if (count($includes) === 0) {
+        // TODO Pagination
+        if ($includes->isEmpty()) {
             return [];
         }
 
@@ -40,16 +42,16 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     /**
      * @return array<array<JsonApiResource>>
      */
-    public function resolveNestedIncludes(Request $request): array
+    public function includes(Request $request): Collection
     {
-        return $this->collection->map(fn (JsonApiResource $resource) => $resource->resolveNestedIncludes($request))->all();
+        return $this->collection->map(fn (JsonApiResource $resource) => $resource->includes($request));
     }
 
     /**
      * @return array<array{data: array{id: string, type: string}}>
      */
-    public function toRelationshipIdentifier()
+    public function toRelationshipIdentifier(Request $request): array
     {
-        return $this->collection->map(fn (JsonApiResource $resource) => $resource->toRelationshipIdentifier())->all();
+        return $this->collection->map(fn (JsonApiResource $resource) => $resource->toRelationshipIdentifier($request))->all();
     }
 }

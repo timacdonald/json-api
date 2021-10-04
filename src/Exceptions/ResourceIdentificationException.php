@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TiMacDonald\JsonApi\Exceptions;
 
+use function gettype;
+use function is_object;
 use RuntimeException;
 
 class ResourceIdentificationException extends RuntimeException

@@ -5,11 +5,7 @@ declare(strict_types=1);
 namespace TiMacDonald\JsonApi\Concerns;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
-use Illuminate\Support\Stringable;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
 use TiMacDonald\JsonApi\Support\Includes;
@@ -34,7 +30,7 @@ trait Relationships
     public function includes(Request $request): Collection
     {
         return $this->requestedRelationships($request)
-            ->map(function (JsonApiResource | JsonApiResourceCollection $include): Collection | JsonApiResource {
+            ->map(static function (JsonApiResource | JsonApiResourceCollection $include): Collection | JsonApiResource {
                 return $include instanceof JsonApiResource
                     ? $include
                     : $include->collection;
@@ -46,7 +42,7 @@ trait Relationships
     private function nestedIncludes(Request $request)
     {
         return $this->requestedRelationships($request)
-            ->flatMap(function (JsonApiResource | JsonApiResourceCollection $resource, string $key) use ($request): Collection {
+            ->flatMap(static function (JsonApiResource | JsonApiResourceCollection $resource, string $key) use ($request): Collection {
                 return $resource->includes($request);
             });
     }
@@ -70,25 +66,25 @@ trait Relationships
     private function requestedRelationshipsAsIdentifiers(Request $request): Collection
     {
         return $this->requestedRelationships($request)
-            ->map(fn (JsonApiResource | JsonApiResourceCollection $resource): array => $resource->toRelationshipIdentifier($request));
+            ->map(static fn (JsonApiResource | JsonApiResourceCollection $resource): array => $resource->toRelationshipIdentifier($request));
     }
 
     /**
-     * @return Collection<string, JsonApiResource | JsonApiResourceCollection>
+     * @return Collection<string, JsonApiResourceCollection|JsonApiResource >
      */
     private function requestedRelationships(Request $request): Collection
     {
         return Collection::make($this->toRelationships($request))
             ->only(Includes::parse($request, $this->includePrefix))
             ->map(
-                fn (mixed $value, string $key): JsonApiResource | JsonApiResourceCollection => $value($request)->withIncludePrefix($key)
+                static fn (mixed $value, string $key): JsonApiResource | JsonApiResourceCollection => $value($request)->withIncludePrefix($key)
             )
-            ->each(function (JsonApiResource | JsonApiResourceCollection $resource) use ($request): void {
+            ->each(static function (JsonApiResource | JsonApiResourceCollection $resource) use ($request): void {
                 if ($resource instanceof JsonApiResource) {
                     return;
                 }
 
-                $resource->collection = $resource->collection->unique(fn (JsonApiResource $resource) => $resource->toRelationshipIdentifier($request));
+                $resource->collection = $resource->collection->unique(static fn (JsonApiResource $resource) => $resource->toRelationshipIdentifier($request));
             });
     }
 }

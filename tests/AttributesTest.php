@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests;
 
 use Exception;
@@ -11,9 +13,12 @@ use Tests\Resources\BasicJsonApiResource;
 use Tests\Resources\UserResource;
 use TiMacDonald\JsonApi\JsonApiResource;
 
+/**
+ * @small
+ */
 class AttributesTest extends TestCase
 {
-    public function test_it_includes_all_attributes_by_default(): void
+    public function testItIncludesAllAttributesByDefault(): void
     {
         $model = BasicModel::make([
             'id' => 'expected-id',
@@ -42,11 +47,11 @@ class AttributesTest extends TestCase
                     'email' => 'tim@example.com',
                 ],
                 'relationships' => [],
-            ]
+            ],
         ]);
     }
 
-    public function test_it_excludes_attributes_when_using_sparse_fieldsets(): void
+    public function testItExcludesAttributesWhenUsingSparseFieldsets(): void
     {
         $model = BasicModel::make([
             'id' => 'expected-id',
@@ -77,11 +82,11 @@ class AttributesTest extends TestCase
                     'location' => 'Melbourne',
                 ],
                 'relationships' => [],
-            ]
+            ],
         ]);
     }
 
-    public function test_it_excludes_all_attributes_when_none_explicitly_requested(): void
+    public function testItExcludesAllAttributesWhenNoneExplicitlyRequested(): void
     {
         $model = BasicModel::make([
             'id' => 'expected-id',
@@ -109,11 +114,11 @@ class AttributesTest extends TestCase
                 'type' => 'basicModels',
                 'attributes' => [],
                 'relationships' => [],
-            ]
+            ],
         ]);
     }
 
-    public function test_it_resolves_closure_wrapped_attributes(): void
+    public function testItResolvesClosureWrappedAttributes(): void
     {
         $model = BasicModel::make([
             'id' => 'expected-id',
@@ -139,20 +144,20 @@ class AttributesTest extends TestCase
                     'location' => 'Melbourne',
                 ],
                 'relationships' => [],
-            ]
+            ],
         ]);
     }
 
-    public function test_it_doesnt_resolve_closure_wrapped_attributes_when_not_requested(): void
+    public function testItDoesntResolveClosureWrappedAttributesWhenNotRequested(): void
     {
         $model = BasicModel::make([
             'id' => 'expected-id',
         ]);
-        Route::get('test-route', fn () => new class($model) extends JsonApiResource {
+        Route::get('test-route', static fn () => new class($model) extends JsonApiResource {
             protected function toAttributes(Request $request): array
             {
                 return [
-                    'location' => fn () => throw new Exception('xxxx'),
+                    'location' => static fn () => throw new Exception('xxxx'),
                 ];
             }
         });
@@ -166,20 +171,20 @@ class AttributesTest extends TestCase
                 'type' => 'basicModels',
                 'attributes' => [],
                 'relationships' => [],
-            ]
+            ],
         ]);
     }
 
-    public function test_closure_wrapped_attributes_get_the_request_at_an_argument(): void
+    public function testClosureWrappedAttributesGetTheRequestAtAnArgument(): void
     {
         $model = BasicModel::make([
             'id' => 'expected-id',
         ]);
-        Route::get('test-route', fn () => new class($model) extends JsonApiResource {
+        Route::get('test-route', static fn () => new class($model) extends JsonApiResource {
             protected function toAttributes(Request $request): array
             {
                 return [
-                    'request_is_the_same' => fn ($attributeArgument) => $request === $attributeArgument,
+                    'request_is_the_same' => static fn ($attributeArgument) => $request === $attributeArgument,
                 ];
             }
         });
@@ -195,14 +200,14 @@ class AttributesTest extends TestCase
                     'request_is_the_same' => true,
                 ],
                 'relationships' => [],
-            ]
+            ],
         ]);
     }
 
-    public function test_it_throws_when_fields_parameter_is_not_an_array(): void
+    public function testItThrowsWhenFieldsParameterIsNotAnArray(): void
     {
         $model = BasicModel::make(['id' => 'expected-id']);
-        Route::get('test-route', fn () => new BasicJsonApiResource($model));
+        Route::get('test-route', static fn () => new BasicJsonApiResource($model));
 
         $response = $this->getJson('test-route?fields=name');
 
@@ -212,10 +217,10 @@ class AttributesTest extends TestCase
         ]);
     }
 
-    public function test_it_throws_when_fields_parameter_is_not_a_string_value(): void
+    public function testItThrowsWhenFieldsParameterIsNotAStringValue(): void
     {
         $model = BasicModel::make(['id' => 'expected-id']);
-        Route::get('test-route', fn () => new BasicJsonApiResource($model));
+        Route::get('test-route', static fn () => new BasicJsonApiResource($model));
 
         $response = $this->getJson('test-route?fields[basicModels][foo]=name');
 
@@ -225,14 +230,14 @@ class AttributesTest extends TestCase
         ]);
     }
 
-    public function test_it_can_specify_minimal_attributes(): void
+    public function testItCanSpecifyMinimalAttributes(): void
     {
         JsonApiResource::minimalAttributes();
         $user = BasicModel::make([
             'id' => 'user-id',
             'name' => 'user-name',
         ]);
-        Route::get('test-route', fn () => UserResource::make($user));
+        Route::get('test-route', static fn () => UserResource::make($user));
 
         $response = $this->get('test-route');
 
@@ -248,7 +253,7 @@ class AttributesTest extends TestCase
         JsonApiResource::maximalAttributes();
     }
 
-    public function test_it_can_add_available_attributes_to_the_meta_object_of_a_resource(): void
+    public function testItCanAddAvailableAttributesToTheMetaObjectOfAResource(): void
     {
         JsonApiResource::minimalAttributes();
         JsonApiResource::includeAvailableAttributesViaMeta();
@@ -256,7 +261,7 @@ class AttributesTest extends TestCase
             'id' => 'user-id',
             'name' => 'user-name',
         ]);
-        Route::get('test-route', fn () => UserResource::make($user));
+        Route::get('test-route', static fn () => UserResource::make($user));
 
         $response = $this->getJson('test-route');
 
@@ -272,76 +277,75 @@ class AttributesTest extends TestCase
                         'name',
                     ],
                 ],
-            ]
+            ],
         ]);
 
         JsonApiResource::excludeAvailableAttributesViaMeta();
         JsonApiResource::maximalAttributes();
     }
 
-    public function test_it_can_use_sparse_fieldsets_with_nested_collections(): void
+    public function testItCanUseSparseFieldsetsWithIncludedCollections(): void
     {
-        $resource = BasicModel::make(['id' => 'parent-id-1']);
-        $nesteds = new Collection([
-            NestedResource::make(['id' => 'nested-id-1', 'name' => 'Tim']),
-            NestedResource::make(['id' => 'nested-id-2', 'name' => 'Jaz']),
+        $user = BasicModel::make([
+            'id' => 'user-id',
+            'name' => 'user-name',
+        ])->setRelation('posts', [
+            BasicModel::make([
+                'id' => 'post-id-1',
+                'title' => 'post-title-1',
+                'content' => 'post-content-1',
+            ]),
+            BasicModel::make([
+                'id' => 'post-id-2',
+                'title' => 'post-title-2',
+                'content' => 'post-content-2',
+            ]),
         ]);
-        $resource->setRelation('nesteds', $nesteds);
-        Route::get('test-route', fn () => new class($resource) extends JsonApiResource {
-            public function toRelationships(Request $request): array
-            {
-                return [
-                    'nesteds' => fn () => new class($this->nesteds, JsonResourceWithAttributes::class) extends JsonApiResourceCollection {
-                    },
-                ];
-            }
-        });
+        Route::get('test-route', static fn () => UserResource::make($user));
 
-        $response = $this->get('test-route?include=nesteds&fields[nestedResources]=name');
+        $response = $this->get('test-route?include=posts&fields[basicModels]=title');
 
         $response->assertOk();
         $response->assertExactJson([
             'data' => [
-                'id' => 'parent-id-1',
-                'type' => 'basicResources',
+                'id' => 'user-id',
+                'type' => 'basicModels',
                 'attributes' => [],
                 'relationships' => [
-                    'nesteds' => [
+                    'posts' => [
                         [
                             'data' => [
-                                'id' => 'nested-id-1',
-                                'type' => 'nestedResources',
-                            ]
+                                'id' => 'post-id-1',
+                                'type' => 'basicModels',
+                            ],
                         ],
                         [
                             'data' => [
-                                'id' => 'nested-id-2',
-                                'type' => 'nestedResources',
-                            ]
-                        ]
-                    ]
+                                'id' => 'post-id-2',
+                                'type' => 'basicModels',
+                            ],
+                        ],
+                    ],
                 ],
             ],
             'included' => [
                 [
-                    'id' => 'nested-id-1',
-                    'type' => 'nestedResources',
+                    'id' => 'post-id-1',
+                    'type' => 'basicModels',
                     'attributes' => [
-                        'name' => 'Tim',
-                        // 'location' => 'Melbourne',
+                        'title' => 'post-title-1',
                     ],
                     'relationships' => [],
                 ],
                 [
-                    'id' => 'nested-id-2',
-                    'type' => 'nestedResources',
+                    'id' => 'post-id-2',
+                    'type' => 'basicModels',
                     'attributes' => [
-                        'name' => 'Jaz',
-                        // 'location' => 'Melbourne',
+                        'title' => 'post-title-2',
                     ],
                     'relationships' => [],
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 }

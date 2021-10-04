@@ -1,11 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Resources;
 
 use Illuminate\Http\Request;
-use Tests\Resources\ImageResource;
-use Tests\Resources\LicenseResource;
-use Tests\Resources\PostResource;
 use TiMacDonald\JsonApi\JsonApiResource;
 
 class UserResource extends JsonApiResource

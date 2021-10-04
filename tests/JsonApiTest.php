@@ -4,31 +4,24 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use RuntimeException;
-use Exception;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Route;
 use Orchestra\Testbench\TestCase;
-use SebastianBergmann\Environment\Runtime;
 use Tests\Models\BasicModel;
 use Tests\Resources\BasicJsonApiResource;
 use Tests\Resources\UserResource;
-use TiMacDonald\JsonApi\JsonApiResource;
-use TiMacDonald\JsonApi\JsonApiResourceCollection;
-use stdClass;
 
+/**
+ * @small
+ */
 class JsonApiTest extends TestCase
 {
-    public function test_it_can_return_a_single_resource(): void
+    public function testItCanReturnASingleResource(): void
     {
         $user = BasicModel::make([
             'id' => 'user-id',
             'name' => 'user-name',
         ]);
-        Route::get('test-route', fn () => UserResource::make($user));
+        Route::get('test-route', static fn () => UserResource::make($user));
 
         $response = $this->get('test-route');
 
@@ -41,11 +34,11 @@ class JsonApiTest extends TestCase
                     'name' => 'user-name',
                 ],
                 'relationships' => [],
-            ]
+            ],
         ]);
     }
 
-    public function test_it_can_return_a_collection(): void
+    public function testItCanReturnACollection(): void
     {
         $users = [
             BasicModel::make([
@@ -57,7 +50,7 @@ class JsonApiTest extends TestCase
                 'name' => 'user-name-2',
             ]),
         ];
-        Route::get('test-route', fn () => UserResource::collection($users));
+        Route::get('test-route', static fn () => UserResource::collection($users));
 
         $response = $this->get('test-route');
 
@@ -68,7 +61,7 @@ class JsonApiTest extends TestCase
                     'id' => 'user-id-1',
                     'type' => 'basicModels',
                     'attributes' => [
-                        'name' => 'user-name-1'
+                        'name' => 'user-name-1',
                     ],
                     'relationships' => [],
                 ],
@@ -76,54 +69,20 @@ class JsonApiTest extends TestCase
                     'id' => 'user-id-2',
                     'type' => 'basicModels',
                     'attributes' => [
-                        'name' => 'user-name-2'
+                        'name' => 'user-name-2',
                     ],
                     'relationships' => [],
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 
-    public function test_it_casts_empty_attributes_and_relationships_to_an_object(): void
+    public function testItCastsEmptyAttributesAndRelationshipsToAnObject(): void
     {
-        Route::get('test-route', fn () => BasicJsonApiResource::make(BasicModel::make()));
+        Route::get('test-route', static fn () => BasicJsonApiResource::make(BasicModel::make()));
 
         $response = $this->get('test-route');
 
         $this->assertStringContainsString('"attributes":{},"relationships":{}', $response->content());
-    }
-
-    // public function test_it_excludes_attributes_in_nested_resources(): void
-    // {
-    //     $this->markTestSkipped();
-    // }
-
-
-
-    public function test_it_has_test_assertions(): void
-    {
-        //assertResource(UserResource::class);
-        $this->markTestIncomplete('TODO');
-    }
-}
-
-/**
- * @property NestedResource $nested
- */
-class NestedResource extends Model
-{
-    protected $guarded = [];
-
-    protected $keyType = 'string';
-}
-
-class JsonResourceWithAttributes extends JsonApiResource
-{
-    public function toAttributes(Request $request): array
-    {
-        return [
-            'name' => $this->name,
-            'location' => 'Melbourne',
-        ];
     }
 }

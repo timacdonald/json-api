@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi\Concerns;
 
+use function array_keys;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use TiMacDonald\JsonApi\Support\Fields;
+use function value;
 
 /**
  * @internal
@@ -35,11 +36,11 @@ trait Attributes
     {
         return Collection::make($this->toAttributes($request))
             ->only($this->fields($request))
-            ->map(fn (mixed $value): mixed => value($value, $request));
+            ->map(static fn (mixed $value): mixed => value($value, $request));
     }
 
     /**
-     * @return null|array<string>
+     * @return array<string>|null
      */
     private function fields(Request $request): ?array
     {

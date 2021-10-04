@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests;
 
 use Exception;
-ute Illuminate\Http\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Orchestra\Testbench\TestCase;
 use Tests\Models\BasicModel;
@@ -12,32 +14,36 @@ use Tests\Resources\PostResource;
 use Tests\Resources\UserResource;
 use TiMacDonald\JsonApi\JsonApiResource;
 
+/**
+ * @small
+ */
 class RelationshipsTest extends TestCase
 {
-    public function test_it_throws_when_the_include_query_parameter_is_an_array(): void
+    public function testItThrowsWhenTheIncludeQueryParameterIsAnArray(): void
     {
         $post = BasicModel::make([]);
-        Route::get('test-route', fn () => PostResource::make($post));
+        Route::get('test-route', static fn () => PostResource::make($post));
 
         $response = $this->getJson('test-route?include[]=name');
 
         $response->assertStatus(400);
         $response->assertExactJson([
-            'message' => 'The include parameter must be a comma seperated list of relationship paths.'
+            'message' => 'The include parameter must be a comma seperated list of relationship paths.',
         ]);
     }
 
-    public function test_it_doesnt_resolve_relationship_closures_unless_included(): void
+    public function testItDoesntResolveRelationshipClosuresUnlessIncluded(): void
     {
         $post = BasicModel::make([
             'id' => 'post-id',
             'title' => 'post-title',
+            'content' => 'post-content',
         ]);
-        Route::get('test-route', fn () => new class($post) extends PostResource {
+        Route::get('test-route', static fn () => new class($post) extends PostResource {
             protected function toRelationships(Request $request): array
             {
                 return [
-                    'author' => fn () => throw new Exception('xxxx'),
+                    'author' => static fn () => throw new Exception('xxxx'),
                 ];
             }
         });
@@ -51,23 +57,25 @@ class RelationshipsTest extends TestCase
                 'type' => 'basicModels',
                 'attributes' => [
                     'title' => 'post-title',
+                    'content' => 'post-content',
                 ],
                 'relationships' => [],
-            ]
+            ],
         ]);
     }
 
-    public function test_it_can_include_a_single_to_one_resource_for_a_single_resource(): void
+    public function testItCanIncludeASingleToOneResourceForASingleResource(): void
     {
         $post = BasicModel::make([
             'id' => 'post-id',
             'title' => 'post-title',
+            'content' => 'post-content',
         ]);
         $post->author = BasicModel::make([
             'id' => 'author-id',
             'name' => 'author-name',
         ]);
-        Route::get('test-route', fn () => PostResource::make($post));
+        Route::get('test-route', static fn () => PostResource::make($post));
 
         $response = $this->getJson('test-route?include=author');
 
@@ -78,6 +86,7 @@ class RelationshipsTest extends TestCase
                 'type' => 'basicModels',
                 'attributes' => [
                     'title' => 'post-title',
+                    'content' => 'post-content',
                 ],
                 'relationships' => [
                     'author' => [
@@ -95,17 +104,18 @@ class RelationshipsTest extends TestCase
                     'attributes' => [
                         'name' => 'author-name',
                     ],
-                    'relationships' => []
+                    'relationships' => [],
                 ],
             ],
         ]);
     }
 
-    public function test_it_can_include_nested_to_one_resources_for_a_single_resource(): void
+    public function testItCanIncludeNestedToOneResourcesForASingleResource(): void
     {
         $post = BasicModel::make([
             'id' => 'post-id',
             'title' => 'post-title',
+            'content' => 'post-content',
         ]);
         $post->author = BasicModel::make([
             'id' => 'author-id',
@@ -123,7 +133,7 @@ class RelationshipsTest extends TestCase
             'id' => 'feature-image-id',
             'url' => 'https://example.com/doggo.png',
         ]);
-        Route::get('test-route', fn () => PostResource::make($post));
+        Route::get('test-route', static fn () => PostResource::make($post));
 
         $response = $this->getJson('test-route?include=author.avatar,author.license,featureImage');
 
@@ -134,20 +144,21 @@ class RelationshipsTest extends TestCase
                 'type' => 'basicModels',
                 'attributes' => [
                     'title' => 'post-title',
+                    'content' => 'post-content',
                 ],
                 'relationships' => [
                     'author' => [
                         'data' => [
                             'id' => 'author-id',
                             'type' => 'basicModels',
-                        ]
+                        ],
                     ],
                     'featureImage' => [
                         'data' => [
                             'id' => 'feature-image-id',
                             'type' => 'basicModels',
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
             ],
             'included' => [
@@ -170,7 +181,7 @@ class RelationshipsTest extends TestCase
                                 'type' => 'basicModels',
                             ],
                         ],
-                    ]
+                    ],
                 ],
                 [
                     'id' => 'feature-image-id',
@@ -178,15 +189,15 @@ class RelationshipsTest extends TestCase
                     'attributes' => [
                         'url' => 'https://example.com/doggo.png',
                     ],
-                    'relationships' => []
+                    'relationships' => [],
                 ],
                 [
                     'id' => 'license-id',
                     'type' => 'basicModels',
                     'attributes' => [
-                        'key' => 'license-key'
+                        'key' => 'license-key',
                     ],
-                    'relationships' => []
+                    'relationships' => [],
                 ],
                 [
                     'id' => 'avatar-id',
@@ -194,13 +205,13 @@ class RelationshipsTest extends TestCase
                     'attributes' => [
                         'url' => 'https://example.com/avatar.png',
                     ],
-                    'relationships' => []
+                    'relationships' => [],
                 ],
             ],
         ]);
     }
 
-    public function test_it_can_include_nested_resources_when_their_key_is_the_same(): void
+    public function testItCanIncludeNestedResourcesWhenTheirKeyIsTheSame(): void
     {
         $parent = BasicModel::make(['id' => 'parent-id']);
         $parent->child = BasicModel::make(['id' => 'child-id-1']);
@@ -213,7 +224,7 @@ class RelationshipsTest extends TestCase
                         public function toRelationships(Request $request): array
                         {
                             return [
-                                'child' => fn () => BasicJsonApiResource::make($this->child)
+                                'child' => fn () => BasicJsonApiResource::make($this->child),
                             ];
                         }
                     },
@@ -234,7 +245,7 @@ class RelationshipsTest extends TestCase
                         'data' => [
                             'id' => 'child-id-1',
                             'type' => 'basicModels',
-                        ]
+                        ],
                     ],
                 ],
             ],
@@ -250,19 +261,19 @@ class RelationshipsTest extends TestCase
                                 'type' => 'basicModels',
                             ],
                         ],
-                    ]
+                    ],
                 ],
                 [
                     'id' => 'child-id-2',
                     'type' => 'basicModels',
                     'attributes' => [],
-                    'relationships' => []
+                    'relationships' => [],
                 ],
             ],
         ]);
     }
 
-    public function test_it_can_include_a_nested_collection_of_resources_when_their_key_is_the_same(): void
+    public function testItCanIncludeANestedCollectionOfResourcesWhenTheirKeyIsTheSame(): void
     {
         $parent = BasicModel::make(['id' => 'parent-id']);
         $parent->child = BasicModel::make(['id' => 'child-id-1']);
@@ -299,7 +310,7 @@ class RelationshipsTest extends TestCase
                         'data' => [
                             'id' => 'child-id-1',
                             'type' => 'basicModels',
-                        ]
+                        ],
                     ],
                 ],
             ],
@@ -320,32 +331,34 @@ class RelationshipsTest extends TestCase
                                 'data' => [
                                     'id' => 'child-id-3',
                                     'type' => 'basicModels',
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
-                    ]
+                    ],
                 ],
                 [
                     'id' => 'child-id-2',
                     'type' => 'basicModels',
                     'attributes' => [],
-                    'relationships' => []
+                    'relationships' => [],
                 ],
                 [
                     'id' => 'child-id-3',
                     'type' => 'basicModels',
                     'attributes' => [],
                     'relationships' => [],
-                ]
+                ],
             ],
         ]);
     }
-    public function test_it_can_include_to_one_resources_for_a_collection_of_resources(): void
+
+    public function testItCanIncludeToOneResourcesForACollectionOfResources(): void
     {
         $posts = [
             BasicModel::make([
                 'id' => 'post-id-1',
-                'title' => 'post-title-1'
+                'title' => 'post-title-1',
+                'content' => 'post-content-1',
             ])->setRelation('author', BasicModel::make([
                 'id' => 'author-id-1',
                 'name' => 'author-name-1',
@@ -353,12 +366,13 @@ class RelationshipsTest extends TestCase
             BasicModel::make([
                 'id' => 'post-id-2',
                 'title' => 'post-title-2',
+                'content' => 'post-content-2',
             ])->setRelation('author', BasicModel::make([
                 'id' => 'author-id-2',
                 'name' => 'author-name-2',
             ])),
         ];
-        Route::get('test-route', fn () => PostResource::collection($posts));
+        Route::get('test-route', static fn () => PostResource::collection($posts));
 
         $response = $this->get('test-route?include=author');
 
@@ -370,14 +384,15 @@ class RelationshipsTest extends TestCase
                     'type' => 'basicModels',
                     'attributes' => [
                         'title' => 'post-title-1',
+                        'content' => 'post-content-1',
                     ],
                     'relationships' => [
                         'author' => [
                             'data' => [
                                 'id' => 'author-id-1',
                                 'type' => 'basicModels',
-                            ]
-                        ]
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -385,16 +400,17 @@ class RelationshipsTest extends TestCase
                     'type' => 'basicModels',
                     'attributes' => [
                         'title' => 'post-title-2',
+                        'content' => 'post-content-2',
                     ],
                     'relationships' => [
                         'author' => [
                             'data' => [
                                 'id' => 'author-id-2',
                                 'type' => 'basicModels',
-                            ]
-                        ]
+                            ],
+                        ],
                     ],
-                ]
+                ],
             ],
             'included' => [
                 [
@@ -412,12 +428,12 @@ class RelationshipsTest extends TestCase
                         'name' => 'author-name-2',
                     ],
                     'relationships' => [],
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 
-    public function test_it_can_include_a_collection_of_resources_for_a_single_resource(): void
+    public function testItCanIncludeACollectionOfResourcesForASingleResource(): void
     {
         $author = BasicModel::make([
             'id' => 'author-id',
@@ -427,13 +443,15 @@ class RelationshipsTest extends TestCase
             BasicModel::make([
                 'id' => 'post-id-1',
                 'title' => 'post-title-1',
+                'content' => 'post-content-1',
             ]),
             BasicModel::make([
                 'id' => 'post-id-2',
                 'title' => 'post-title-2',
+                'content' => 'post-content-2',
             ]),
         ];
-        Route::get('test-route', fn () => UserResource::make($author));
+        Route::get('test-route', static fn () => UserResource::make($author));
 
         $response = $this->get('test-route?include=posts');
 
@@ -451,15 +469,15 @@ class RelationshipsTest extends TestCase
                             'data' => [
                                 'id' => 'post-id-1',
                                 'type' => 'basicModels',
-                            ]
+                            ],
                         ],
                         [
                             'data' => [
                                 'id' => 'post-id-2',
                                 'type' => 'basicModels',
-                            ]
-                        ]
-                    ]
+                            ],
+                        ],
+                    ],
                 ],
             ],
             'included' => [
@@ -467,7 +485,8 @@ class RelationshipsTest extends TestCase
                     'id' => 'post-id-1',
                     'type' => 'basicModels',
                     'attributes' => [
-                        'title' => 'post-title-1'
+                        'title' => 'post-title-1',
+                        'content' => 'post-content-1',
                     ],
                     'relationships' => [],
                 ],
@@ -475,20 +494,22 @@ class RelationshipsTest extends TestCase
                     'id' => 'post-id-2',
                     'type' => 'basicModels',
                     'attributes' => [
-                        'title' => 'post-title-2'
+                        'title' => 'post-title-2',
+                        'content' => 'post-content-2',
                     ],
                     'relationships' => [],
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 
-    public function test_it_can_include_a_many_many_many_relationship(): void
+    public function testItCanIncludeAManyManyManyRelationship(): void
     {
         $posts = [
             BasicModel::make([
                 'id' => 'post-id-1',
                 'title' => 'post-title-1',
+                'content' => 'post-content-1',
             ])->setRelation('comments', [
                 BasicModel::make([
                     'id' => 'comment-id-1',
@@ -516,6 +537,7 @@ class RelationshipsTest extends TestCase
             BasicModel::make([
                 'id' => 'post-id-2',
                 'title' => 'post-title-2',
+                'content' => 'post-content-2',
             ])->setRelation('comments', [
                 BasicModel::make([
                     'id' => 'comment-id-3',
@@ -538,10 +560,10 @@ class RelationshipsTest extends TestCase
                     BasicModel::make([
                         'id' => 'like-id-8',
                     ]),
-                ])
-            ])
+                ]),
+            ]),
         ];
-        Route::get('test-route', fn () => PostResource::collection($posts));
+        Route::get('test-route', static fn () => PostResource::collection($posts));
 
         $response = $this->get('test-route?include=comments.likes');
 
@@ -553,6 +575,7 @@ class RelationshipsTest extends TestCase
                     'type' => 'basicModels',
                     'attributes' => [
                         'title' => 'post-title-1',
+                        'content' => 'post-content-1',
                     ],
                     'relationships' => [
                         'comments' => [
@@ -560,15 +583,15 @@ class RelationshipsTest extends TestCase
                                 'data' => [
                                     'id' => 'comment-id-1',
                                     'type' => 'basicModels',
-                                ]
+                                ],
                             ],
                             [
                                 'data' => [
                                     'id' => 'comment-id-2',
                                     'type' => 'basicModels',
-                                ]
-                            ]
-                        ]
+                                ],
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -576,6 +599,7 @@ class RelationshipsTest extends TestCase
                     'type' => 'basicModels',
                     'attributes' => [
                         'title' => 'post-title-2',
+                        'content' => 'post-content-2',
                     ],
                     'relationships' => [
                         'comments' => [
@@ -583,17 +607,17 @@ class RelationshipsTest extends TestCase
                                 'data' => [
                                     'id' => 'comment-id-3',
                                     'type' => 'basicModels',
-                                ]
+                                ],
                             ],
                             [
                                 'data' => [
                                     'id' => 'comment-id-4',
                                     'type' => 'basicModels',
-                                ]
-                            ]
-                        ]
+                                ],
+                            ],
+                        ],
                     ],
-                ]
+                ],
             ],
             'included' => [
                 [
@@ -608,15 +632,15 @@ class RelationshipsTest extends TestCase
                                 'data' => [
                                     'id' => 'like-id-1',
                                     'type' => 'basicModels',
-                                ]
+                                ],
                             ],
                             [
                                 'data' => [
                                     'id' => 'like-id-2',
                                     'type' => 'basicModels',
-                                ]
-                            ]
-                        ]
+                                ],
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -631,18 +655,18 @@ class RelationshipsTest extends TestCase
                                 'data' => [
                                     'id' => 'like-id-3',
                                     'type' => 'basicModels',
-                                ]
+                                ],
                             ],
                             [
                                 'data' => [
                                     'id' => 'like-id-4',
                                     'type' => 'basicModels',
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                     ],
                 ],
-                                [
+                [
                     'id' => 'like-id-1',
                     'type' => 'basicModels',
                     'attributes' => [],
@@ -670,7 +694,7 @@ class RelationshipsTest extends TestCase
                     'id' => 'comment-id-3',
                     'type' => 'basicModels',
                     'attributes' => [
-                        'content' => 'comment-content-3'
+                        'content' => 'comment-content-3',
                     ],
                     'relationships' => [
                         'likes' => [
@@ -678,22 +702,22 @@ class RelationshipsTest extends TestCase
                                 'data' => [
                                     'id' => 'like-id-5',
                                     'type' => 'basicModels',
-                                ]
+                                ],
                             ],
                             [
                                 'data' => [
                                     'id' => 'like-id-6',
                                     'type' => 'basicModels',
-                                ]
-                            ]
-                        ]
+                                ],
+                            ],
+                        ],
                     ],
                 ],
                 [
                     'id' => 'comment-id-4',
                     'type' => 'basicModels',
                     'attributes' => [
-                        'content' => 'comment-content-4'
+                        'content' => 'comment-content-4',
                     ],
                     'relationships' => [
                         'likes' => [
@@ -701,15 +725,15 @@ class RelationshipsTest extends TestCase
                                 'data' => [
                                     'id' => 'like-id-7',
                                     'type' => 'basicModels',
-                                ]
+                                ],
                             ],
                             [
                                 'data' => [
                                     'id' => 'like-id-8',
                                     'type' => 'basicModels',
-                                ]
-                            ]
-                        ]
+                                ],
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -735,16 +759,17 @@ class RelationshipsTest extends TestCase
                     'type' => 'basicModels',
                     'attributes' => [],
                     'relationships' => [],
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 
-    public function test_relationships_closures_get_the_request_as_an_argument()
+    public function testRelationshipsClosuresGetTheRequestAsAnArgument(): void
     {
         $post = BasicModel::make([
             'id' => 'post-id',
             'title' => 'post-title',
+            'content' => 'post-content',
         ]);
         Route::get('test-route', fn () => new class($post) extends JsonApiResource {
             protected function toRelationships(Request $request): array
@@ -767,7 +792,7 @@ class RelationshipsTest extends TestCase
                                 'name' => $this->name,
                             ];
                         }
-                    }
+                    },
                 ];
             }
         });
@@ -785,9 +810,9 @@ class RelationshipsTest extends TestCase
                         'data' => [
                             'id' => 'relation-id',
                             'type' => 'relation-type',
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             'included' => [
                 [
@@ -796,13 +821,13 @@ class RelationshipsTest extends TestCase
                     'attributes' => [
                         'name' => 'expected name',
                     ],
-                    'relationships' => []
-                ]
-            ]
+                    'relationships' => [],
+                ],
+            ],
         ]);
     }
 
-    public function test_it_filters_out_duplicate_includes_for_a_collection_of_resources(): void
+    public function testItFiltersOutDuplicateIncludesForACollectionOfResources(): void
     {
         $users = [
             BasicModel::make([
@@ -820,58 +845,58 @@ class RelationshipsTest extends TestCase
                 'url' => 'https://example.com/avatar.png',
             ])),
         ];
-        Route::get('test-route', fn () => UserResource::collection($users));
+        Route::get('test-route', static fn () => UserResource::collection($users));
 
         $response = $this->get('test-route?include=avatar');
 
         $response->assertOk();
         $response->assertExactJson([
             'data' => [
-            [
-                'id' => 'user-id-1',
-                'type' => 'basicModels',
-                'attributes' => [
-                    'name' => 'user-name-1',
-                ],
-                'relationships' => [
-                    'avatar' => [
-                        'data' => [
-                            'id' => 'avatar-id',
-                            'type' => 'basicModels',
-                        ]
+                [
+                    'id' => 'user-id-1',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'name' => 'user-name-1',
+                    ],
+                    'relationships' => [
+                        'avatar' => [
+                            'data' => [
+                                'id' => 'avatar-id',
+                                'type' => 'basicModels',
+                            ],
+                        ],
                     ],
                 ],
-            ],
-            [
-                'id' => 'user-id-2',
-                'type' => 'basicModels',
-                'attributes' => [
-                    'name' => 'user-name-2'
-                ],
-                'relationships' => [
-                    'avatar' => [
-                        'data' => [
-                            'id' => 'avatar-id',
-                            'type' => 'basicModels',
-                        ]
+                [
+                    'id' => 'user-id-2',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'name' => 'user-name-2',
+                    ],
+                    'relationships' => [
+                        'avatar' => [
+                            'data' => [
+                                'id' => 'avatar-id',
+                                'type' => 'basicModels',
+                            ],
+                        ],
                     ],
                 ],
-            ]
             ],
             'included' => [
                 [
                     'id' => 'avatar-id',
                     'type' => 'basicModels',
                     'attributes' => [
-                        'url' => 'https://example.com/avatar.png'
+                        'url' => 'https://example.com/avatar.png',
                     ],
                     'relationships' => [],
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 
-    public function test_it_filters_out_duplicate_includes_for_a_single_resource(): void
+    public function testItFiltersOutDuplicateIncludesForASingleResource(): void
     {
         $user = BasicModel::make([
             'id' => 'user-id',
@@ -880,13 +905,15 @@ class RelationshipsTest extends TestCase
             BasicModel::make([
                 'id' => 'post-id',
                 'title' => 'post-title',
+                'content' => 'post-content',
             ]),
             BasicModel::make([
                 'id' => 'post-id',
                 'title' => 'post-title',
+                'content' => 'post-content',
             ]),
         ]);
-        Route::get('test-route', fn () => UserResource::make($user));
+        Route::get('test-route', static fn () => UserResource::make($user));
 
         $response = $this->get('test-route?include=posts');
 
@@ -904,8 +931,8 @@ class RelationshipsTest extends TestCase
                             'data' => [
                                 'id' => 'post-id',
                                 'type' => 'basicModels',
-                            ]
-                        ]
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -914,11 +941,12 @@ class RelationshipsTest extends TestCase
                     'id' => 'post-id',
                     'type' => 'basicModels',
                     'attributes' => [
-                        'title' => 'post-title'
+                        'title' => 'post-title',
+                        'content' => 'post-content',
                     ],
                     'relationships' => [],
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 }

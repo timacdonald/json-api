@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TiMacDonald\JsonApi;
 
 use Illuminate\Http\Request;
@@ -10,16 +12,17 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
 {
     /**
      * @param Request $request
+     *
      * @return array{included?: Collection<JsonApiResource>}
      */
     public function with($request): array
     {
         $includes = $this->collection
-            ->map(fn (JsonApiResource $resource) => $resource->with($request))
+            ->map(static fn (JsonApiResource $resource) => $resource->with($request))
             ->pluck('included')
             ->flatten()
-            ->reject(fn (?JsonApiResource $resource) => $resource === null)
-            ->unique(fn (JsonApiResource $resource) => $resource->toRelationshipIdentifier($request));
+            ->reject(static fn (?JsonApiResource $resource) => $resource === null)
+            ->unique(static fn (JsonApiResource $resource) => $resource->toRelationshipIdentifier($request));
 
         // TODO Pagination
         if ($includes->isEmpty()) {
@@ -34,7 +37,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
      */
     public function withIncludePrefix(string $prefix): self
     {
-        $this->collection->each(fn (JsonApiResource $resource) => $resource->withIncludePrefix($prefix));
+        $this->collection->each(static fn (JsonApiResource $resource) => $resource->withIncludePrefix($prefix));
 
         return $this;
     }
@@ -44,7 +47,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
      */
     public function includes(Request $request): Collection
     {
-        return $this->collection->map(fn (JsonApiResource $resource) => $resource->includes($request));
+        return $this->collection->map(static fn (JsonApiResource $resource) => $resource->includes($request));
     }
 
     /**
@@ -52,6 +55,6 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
      */
     public function toRelationshipIdentifier(Request $request): array
     {
-        return $this->collection->map(fn (JsonApiResource $resource) => $resource->toRelationshipIdentifier($request))->all();
+        return $this->collection->map(static fn (JsonApiResource $resource) => $resource->toRelationshipIdentifier($request))->all();
     }
 }

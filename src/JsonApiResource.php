@@ -4,28 +4,23 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi;
 
+use function array_merge;
 use Closure;
-use Exception;
-use Illuminate\Contracts\Container\BindingResolutionException;
+use function count;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use Illuminate\Support\Stringable;
-use RuntimeException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use TiMacDonald\JsonApi\Contracts\ResourceIdResolver;
-use TiMacDonald\JsonApi\Contracts\ResourceTypeable;
-use TiMacDonald\JsonApi\Contracts\ResourceTypeResolver;
+use function property_exists;
 use stdClass;
+use function tap;
 use TiMacDonald\JsonApi\Exceptions\ResourceIdentificationException;
 
 abstract class JsonApiResource extends JsonResource
 {
     use Concerns\Attributes;
+
     use Concerns\Relationships;
 
     public static function minimalAttributes(): void
@@ -92,13 +87,14 @@ abstract class JsonApiResource extends JsonResource
 
     /**
      * @param Request $request
+     *
      * @return array{
-     *      id: string,
-     *      type: string,
-     *      attributes: stdClass,
-     *      relationships: stdClass,
-     *      meta?: array{availableAttributes?: array<string>}
-     * }
+     *                id: string,
+     *                type: string,
+     *                attributes: stdClass,
+     *                relationships: stdClass,
+     *                meta?: array{availableAttributes?: array<string>}
+     *                }
      */
     public function toArray($request): array
     {
@@ -108,7 +104,6 @@ abstract class JsonApiResource extends JsonResource
             'attributes' => (object) $this->requestedAttributes($request)->all(),
             'relationships' => (object) $this->requestedRelationshipsAsIdentifiers($request)->all(),
         ];
-
 
         $meta = $this->toMeta($request);
 
@@ -122,6 +117,7 @@ abstract class JsonApiResource extends JsonResource
 
     /**
      * @param Request $request
+     *
      * @return array{included?: array<JsonApiResource>}
      */
     public function with($request): array
@@ -140,7 +136,7 @@ abstract class JsonApiResource extends JsonResource
      */
     public static function collection(mixed $resource): JsonApiResourceCollection
     {
-        return tap(new JsonApiResourceCollection($resource, static::class), function (JsonApiResourceCollection $collection): void {
+        return tap(new JsonApiResourceCollection($resource, static::class), static function (JsonApiResourceCollection $collection): void {
             if (property_exists(static::class, 'preserveKeys')) {
                 $collection->preserveKeys = (new static([]))->preserveKeys === true; // @phpstan-ignore-line
             }

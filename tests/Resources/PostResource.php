@@ -1,10 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Resources;
 
 use Illuminate\Http\Request;
-use Tests\Resources\CommentResource;
-use Tests\Resources\ImageResource;
 use TiMacDonald\JsonApi\JsonApiResource;
 
 class PostResource extends JsonApiResource
@@ -13,6 +13,7 @@ class PostResource extends JsonApiResource
     {
         return [
             'title' => $this->title,
+            'content' => $this->content,
         ];
     }
 

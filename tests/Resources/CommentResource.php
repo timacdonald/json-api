@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Resources;
 
 use Illuminate\Http\Request;
-use Tests\Resources\BasicJsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResource;
 
 class CommentResource extends JsonApiResource

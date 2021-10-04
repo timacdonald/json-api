@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TiMacDonald\JsonApi\Support;
 
+use function explode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Stringable;
+use function is_array;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Includes
@@ -22,9 +26,9 @@ class Includes
 
         return Collection::make(explode(',', $includes))
             ->mapInto(Stringable::class)
-            ->when($prefix !== '', function (Collection $includes) use ($prefix): Collection {
-                return $includes->filter(fn (Stringable $include) => $include->startsWith($prefix));
+            ->when($prefix !== '', static function (Collection $includes) use ($prefix): Collection {
+                return $includes->filter(static fn (Stringable $include) => $include->startsWith($prefix));
             })
-            ->map(fn (Stringable $include): string => $include->after($prefix)->before('.'));
+            ->map(static fn (Stringable $include): string => $include->after($prefix)->before('.'));
     }
 }

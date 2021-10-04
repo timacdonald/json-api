@@ -1,23 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Orchestra\Testbench\TestCase;
+use stdClass;
 use Tests\Models\BasicModel;
 use Tests\Resources\BasicJsonApiResource;
 use TiMacDonald\JsonApi\Exceptions\ResourceIdentificationException;
-use stdClass;
 
+/**
+ * @small
+ */
 class ResourceIdentificationTest extends TestCase
 {
-    public function test_it_resolves_the_id_and_type_of_a_model(): void
+    public function testItResolvesTheIdAndTypeOfAModel(): void
     {
         $user = BasicModel::make([
             'id' => 'user-id',
         ]);
-        Route::get('test-route', fn () => BasicJsonApiResource::make($user));
+        Route::get('test-route', static fn () => BasicJsonApiResource::make($user));
 
         $response = $this->getJson('test-route');
 
@@ -28,18 +33,18 @@ class ResourceIdentificationTest extends TestCase
                 'type' => 'basicModels',
                 'attributes' => [],
                 'relationships' => [],
-            ]
+            ],
         ]);
     }
 
-    public function test_it_casts_a_models_integer_id_to_a_string(): void
+    public function testItCastsAModelsIntegerIdToAString(): void
     {
         $user = BasicModel::make([
             'id' => 55,
         ])->setKeyType('int');
-        Route::get('test-route', fn () => BasicJsonApiResource::make($user));
+        Route::get('test-route', static fn () => BasicJsonApiResource::make($user));
 
-        self::assertSame(55, $user->getKey());
+        $this->assertSame(55, $user->getKey());
 
         $response = $this->getJson('test-route');
 
@@ -50,14 +55,14 @@ class ResourceIdentificationTest extends TestCase
                 'type' => 'basicModels',
                 'attributes' => [],
                 'relationships' => [],
-            ]
+            ],
         ]);
     }
 
-    public function test_it_throws_when_unable_to_automatically_resolve_the_id_of_a_non_object(): void
+    public function testItThrowsWhenUnableToAutomaticallyResolveTheIdOfANonObject(): void
     {
         $array = [];
-        Route::get('test-route', fn () => BasicJsonApiResource::make($array));
+        Route::get('test-route', static fn () => BasicJsonApiResource::make($array));
 
         $this->expectException(ResourceIdentificationException::class);
         $this->expectExceptionMessage('Unable to resolve resource object id for array.');
@@ -65,10 +70,10 @@ class ResourceIdentificationTest extends TestCase
         $this->withoutExceptionHandling()->getJson('test-route');
     }
 
-    public function test_it_throws_when_unable_to_automatically_resolve_the_id_of_an_object(): void
+    public function testItThrowsWhenUnableToAutomaticallyResolveTheIdOfAnObject(): void
     {
-        $array = new stdClass;
-        Route::get('test-route', fn () => BasicJsonApiResource::make($array));
+        $array = new stdClass();
+        Route::get('test-route', static fn () => BasicJsonApiResource::make($array));
 
         $this->expectException(ResourceIdentificationException::class);
         $this->expectExceptionMessage('Unable to resolve resource object id for stdClass.');
@@ -76,10 +81,10 @@ class ResourceIdentificationTest extends TestCase
         $this->withoutExceptionHandling()->getJson('test-route');
     }
 
-    public function test_it_throws_when_unable_to_automatically_resolve_the_type_of_a_non_object(): void
+    public function testItThrowsWhenUnableToAutomaticallyResolveTheTypeOfANonObject(): void
     {
         $array = [];
-        Route::get('test-route', fn () => new class($array) extends BasicJsonApiResource {
+        Route::get('test-route', static fn () => new class($array) extends BasicJsonApiResource {
             protected function toId(Request $request): string
             {
                 return 'id';
@@ -92,10 +97,10 @@ class ResourceIdentificationTest extends TestCase
         $this->withoutExceptionHandling()->getJson('test-route');
     }
 
-    public function test_it_throws_when_unable_to_automatically_resolve_type_of_an_object(): void
+    public function testItThrowsWhenUnableToAutomaticallyResolveTypeOfAnObject(): void
     {
-        $object = new stdClass;
-        Route::get('test-route', fn () => new class($object) extends BasicJsonApiResource {
+        $object = new stdClass();
+        Route::get('test-route', static fn () => new class($object) extends BasicJsonApiResource {
             protected function toId(Request $request): string
             {
                 return 'id';

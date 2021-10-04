@@ -8,6 +8,9 @@ use RuntimeException;
 use function is_object;
 use function gettype;
 
+/**
+ * @internal
+ */
 class ResourceIdentificationException extends RuntimeException
 {
     public static function attemptingToDetermineIdFor(mixed $model): self

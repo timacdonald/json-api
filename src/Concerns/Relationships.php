@@ -27,7 +27,7 @@ trait Relationships
     public function includes(Request $request): Collection
     {
         return $this->requestedRelationships($request)
-            ->map(static function (JsonApiResource | JsonApiResourceCollection $include): Collection | JsonApiResource {
+            ->map(function (JsonApiResource | JsonApiResourceCollection $include): Collection | JsonApiResource {
                 return $include instanceof JsonApiResource
                     ? $include
                     : $include->collection;
@@ -39,7 +39,7 @@ trait Relationships
     private function nestedIncludes(Request $request): Collection
     {
         return $this->requestedRelationships($request)
-            ->flatMap(static function (JsonApiResource | JsonApiResourceCollection $resource, string $key) use ($request): Collection {
+            ->flatMap(function (JsonApiResource | JsonApiResourceCollection $resource, string $key) use ($request): Collection {
                 return $resource->includes($request);
             });
     }
@@ -57,7 +57,7 @@ trait Relationships
     private function requestedRelationshipsAsIdentifiers(Request $request): Collection
     {
         return $this->requestedRelationships($request)
-            ->map(static fn (JsonApiResource | JsonApiResourceCollection $resource): array => $resource->toRelationshipIdentifier($request));
+            ->map(fn (JsonApiResource | JsonApiResourceCollection $resource): array => $resource->toRelationshipIdentifier($request));
     }
 
     private function requestedRelationships(Request $request): Collection
@@ -65,14 +65,14 @@ trait Relationships
         return Collection::make($this->toRelationships($request))
             ->only(Includes::parse($request, $this->includePrefix))
             ->map(
-                static fn (mixed $value, string $key): JsonApiResource | JsonApiResourceCollection => $value($request)->withIncludePrefix($key)
+                fn (mixed $value, string $key): JsonApiResource | JsonApiResourceCollection => $value($request)->withIncludePrefix($key)
             )
-            ->each(static function (JsonApiResource | JsonApiResourceCollection $resource) use ($request): void {
+            ->each(function (JsonApiResource | JsonApiResourceCollection $resource) use ($request): void {
                 if ($resource instanceof JsonApiResource) {
                     return;
                 }
 
-                $resource->collection = $resource->collection->unique(static fn (JsonApiResource $resource) => $resource->toRelationshipIdentifier($request));
+                $resource->collection = $resource->collection->unique(fn (JsonApiResource $resource) => $resource->toRelationshipIdentifier($request));
             });
     }
 }

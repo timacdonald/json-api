@@ -33,7 +33,7 @@ trait Attributes
     {
         return Collection::make($this->toAttributes($request))
             ->only($this->fields($request))
-            ->map(static fn (mixed $value): mixed => value($value, $request));
+            ->map(fn (mixed $value): mixed => value($value, $request));
     }
 
     private function fields(Request $request): ?array

@@ -19,7 +19,7 @@ class RelationshipsTest extends TestCase
     public function testItThrowsWhenTheIncludeQueryParameterIsAnArray(): void
     {
         $post = BasicModel::make([]);
-        Route::get('test-route', static fn () => PostResource::make($post));
+        Route::get('test-route', fn () => PostResource::make($post));
 
         $response = $this->getJson('test-route?include[]=name');
 
@@ -36,11 +36,11 @@ class RelationshipsTest extends TestCase
             'title' => 'post-title',
             'content' => 'post-content',
         ]);
-        Route::get('test-route', static fn () => new class($post) extends PostResource {
+        Route::get('test-route', fn () => new class($post) extends PostResource {
             protected function toRelationships(Request $request): array
             {
                 return [
-                    'author' => static fn () => throw new Exception('xxxx'),
+                    'author' => fn () => throw new Exception('xxxx'),
                 ];
             }
         });
@@ -72,7 +72,7 @@ class RelationshipsTest extends TestCase
             'id' => 'author-id',
             'name' => 'author-name',
         ]);
-        Route::get('test-route', static fn () => PostResource::make($post));
+        Route::get('test-route', fn () => PostResource::make($post));
 
         $response = $this->getJson('test-route?include=author');
 
@@ -130,7 +130,7 @@ class RelationshipsTest extends TestCase
             'id' => 'feature-image-id',
             'url' => 'https://example.com/doggo.png',
         ]);
-        Route::get('test-route', static fn () => PostResource::make($post));
+        Route::get('test-route', fn () => PostResource::make($post));
 
         $response = $this->getJson('test-route?include=author.avatar,author.license,featureImage');
 
@@ -373,7 +373,7 @@ class RelationshipsTest extends TestCase
                 'name' => 'author-name-2',
             ])),
         ];
-        Route::get('test-route', static fn () => PostResource::collection($posts));
+        Route::get('test-route', fn () => PostResource::collection($posts));
 
         $response = $this->get('test-route?include=author');
 
@@ -452,7 +452,7 @@ class RelationshipsTest extends TestCase
                 'content' => 'post-content-2',
             ]),
         ];
-        Route::get('test-route', static fn () => UserResource::make($author));
+        Route::get('test-route', fn () => UserResource::make($author));
 
         $response = $this->get('test-route?include=posts');
 
@@ -564,7 +564,7 @@ class RelationshipsTest extends TestCase
                 ]),
             ]),
         ];
-        Route::get('test-route', static fn () => PostResource::collection($posts));
+        Route::get('test-route', fn () => PostResource::collection($posts));
 
         $response = $this->get('test-route?include=comments.likes');
 
@@ -846,7 +846,7 @@ class RelationshipsTest extends TestCase
                 'url' => 'https://example.com/avatar.png',
             ])),
         ];
-        Route::get('test-route', static fn () => UserResource::collection($users));
+        Route::get('test-route', fn () => UserResource::collection($users));
 
         $response = $this->get('test-route?include=avatar');
 
@@ -914,7 +914,7 @@ class RelationshipsTest extends TestCase
                 'content' => 'post-content',
             ]),
         ]);
-        Route::get('test-route', static fn () => UserResource::make($user));
+        Route::get('test-route', fn () => UserResource::make($user));
 
         $response = $this->get('test-route?include=posts');
 

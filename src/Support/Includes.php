@@ -23,9 +23,9 @@ class Includes
 
         return Collection::make(explode(',', $includes))
             ->mapInto(Stringable::class)
-            ->when($prefix !== '', static function (Collection $includes) use ($prefix): Collection {
-                return $includes->filter(static fn (Stringable $include) => $include->startsWith($prefix));
+            ->when($prefix !== '', function (Collection $includes) use ($prefix): Collection {
+                return $includes->filter(fn (Stringable $include) => $include->startsWith($prefix));
             })
-            ->map(static fn (Stringable $include): string => (string) $include->after($prefix)->before('.'));
+            ->map(fn (Stringable $include): string => (string) $include->after($prefix)->before('.'));
     }
 }

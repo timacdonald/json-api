@@ -18,7 +18,7 @@ class JsonApiTest extends TestCase
             'id' => 'user-id',
             'name' => 'user-name',
         ]);
-        Route::get('test-route', static fn () => UserResource::make($user));
+        Route::get('test-route', fn () => UserResource::make($user));
 
         $response = $this->get('test-route');
 
@@ -47,7 +47,7 @@ class JsonApiTest extends TestCase
                 'name' => 'user-name-2',
             ]),
         ];
-        Route::get('test-route', static fn () => UserResource::collection($users));
+        Route::get('test-route', fn () => UserResource::collection($users));
 
         $response = $this->get('test-route');
 
@@ -76,7 +76,7 @@ class JsonApiTest extends TestCase
 
     public function testItCastsEmptyAttributesAndRelationshipsToAnObject(): void
     {
-        Route::get('test-route', static fn () => BasicJsonApiResource::make(BasicModel::make()));
+        Route::get('test-route', fn () => BasicJsonApiResource::make(BasicModel::make()));
 
         $response = $this->get('test-route');
 

@@ -150,11 +150,11 @@ class AttributesTest extends TestCase
         $model = BasicModel::make([
             'id' => 'expected-id',
         ]);
-        Route::get('test-route', static fn () => new class($model) extends JsonApiResource {
+        Route::get('test-route', fn () => new class($model) extends JsonApiResource {
             protected function toAttributes(Request $request): array
             {
                 return [
-                    'location' => static fn () => throw new Exception('xxxx'),
+                    'location' => fn () => throw new Exception('xxxx'),
                 ];
             }
         });
@@ -177,11 +177,11 @@ class AttributesTest extends TestCase
         $model = BasicModel::make([
             'id' => 'expected-id',
         ]);
-        Route::get('test-route', static fn () => new class($model) extends JsonApiResource {
+        Route::get('test-route', fn () => new class($model) extends JsonApiResource {
             protected function toAttributes(Request $request): array
             {
                 return [
-                    'request_is_the_same' => static fn ($attributeArgument) => $request === $attributeArgument,
+                    'request_is_the_same' => fn ($attributeArgument) => $request === $attributeArgument,
                 ];
             }
         });
@@ -204,7 +204,7 @@ class AttributesTest extends TestCase
     public function testItThrowsWhenFieldsParameterIsNotAnArray(): void
     {
         $model = BasicModel::make(['id' => 'expected-id']);
-        Route::get('test-route', static fn () => new BasicJsonApiResource($model));
+        Route::get('test-route', fn () => new BasicJsonApiResource($model));
 
         $response = $this->getJson('test-route?fields=name');
 
@@ -217,7 +217,7 @@ class AttributesTest extends TestCase
     public function testItThrowsWhenFieldsParameterIsNotAStringValue(): void
     {
         $model = BasicModel::make(['id' => 'expected-id']);
-        Route::get('test-route', static fn () => new BasicJsonApiResource($model));
+        Route::get('test-route', fn () => new BasicJsonApiResource($model));
 
         $response = $this->getJson('test-route?fields[basicModels][foo]=name');
 
@@ -234,7 +234,7 @@ class AttributesTest extends TestCase
             'id' => 'user-id',
             'name' => 'user-name',
         ]);
-        Route::get('test-route', static fn () => UserResource::make($user));
+        Route::get('test-route', fn () => UserResource::make($user));
 
         $response = $this->get('test-route');
 
@@ -258,7 +258,7 @@ class AttributesTest extends TestCase
             'id' => 'user-id',
             'name' => 'user-name',
         ]);
-        Route::get('test-route', static fn () => UserResource::make($user));
+        Route::get('test-route', fn () => UserResource::make($user));
 
         $response = $this->getJson('test-route');
 
@@ -298,7 +298,7 @@ class AttributesTest extends TestCase
                 'content' => 'post-content-2',
             ]),
         ]);
-        Route::get('test-route', static fn () => UserResource::make($user));
+        Route::get('test-route', fn () => UserResource::make($user));
 
         $response = $this->get('test-route?include=posts&fields[basicModels]=title');
 

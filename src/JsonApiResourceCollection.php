@@ -13,11 +13,11 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     public function with($request): array
     {
         $includes = $this->collection
-            ->map(static fn (JsonApiResource $resource) => $resource->with($request))
+            ->map(fn (JsonApiResource $resource) => $resource->with($request))
             ->pluck('included')
             ->flatten()
-            ->reject(static fn (?JsonApiResource $resource) => $resource === null)
-            ->unique(static fn (JsonApiResource $resource) => $resource->toRelationshipIdentifier($request));
+            ->reject(fn (?JsonApiResource $resource) => $resource === null)
+            ->unique(fn (JsonApiResource $resource) => $resource->toRelationshipIdentifier($request));
 
         // TODO Pagination
         if ($includes->isEmpty()) {
@@ -29,18 +29,18 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
 
     public function withIncludePrefix(string $prefix): self
     {
-        $this->collection->each(static fn (JsonApiResource $resource) => $resource->withIncludePrefix($prefix));
+        $this->collection->each(fn (JsonApiResource $resource) => $resource->withIncludePrefix($prefix));
 
         return $this;
     }
 
     public function includes(Request $request): Collection
     {
-        return $this->collection->map(static fn (JsonApiResource $resource) => $resource->includes($request));
+        return $this->collection->map(fn (JsonApiResource $resource) => $resource->includes($request));
     }
 
     public function toRelationshipIdentifier(Request $request): array
     {
-        return $this->collection->map(static fn (JsonApiResource $resource) => $resource->toRelationshipIdentifier($request))->all();
+        return $this->collection->map(fn (JsonApiResource $resource) => $resource->toRelationshipIdentifier($request))->all();
     }
 }

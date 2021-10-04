@@ -64,9 +64,7 @@ trait Relationships
     {
         return once(fn () => Collection::make($this->toRelationships($request))
             ->only(Includes::parse($request, $this->includePrefix))
-            ->map(
-                fn (mixed $value, string $key): JsonApiResource | JsonApiResourceCollection => $value($request)->withIncludePrefix($key)
-            )
+            ->map(fn (mixed $value, string $key): JsonApiResource | JsonApiResourceCollection => $value($request)->withIncludePrefix($key))
             ->each(function (JsonApiResource | JsonApiResourceCollection $resource) use ($request): void {
                 if ($resource instanceof JsonApiResource) {
                     return;

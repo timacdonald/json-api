@@ -31,7 +31,7 @@ trait Attributes
 
     private function requestedAttributes(Request $request): Collection
     {
-        return Collection::make($this->toAttributes($request))
+        return Collection::make($this->resolveAttributes($request))
             ->only($this->fields($request))
             ->map(fn (mixed $value): mixed => value($value, $request));
     }
@@ -51,6 +51,11 @@ trait Attributes
 
     private function availableAttributes(Request $request): array
     {
-        return array_keys($this->toAttributes($request));
+        return array_keys($this->resolveAttributes($request));
+    }
+
+    private function resolveAttributes(Request $request): array
+    {
+        return once(fn () => $this->toAttributes($request));
     }
 }

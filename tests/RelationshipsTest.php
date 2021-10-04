@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Orchestra\Testbench\TestCase;
+use Spatie\Once\Cache;
 use Tests\Models\BasicModel;
 use Tests\Resources\BasicJsonApiResource;
 use Tests\Resources\PostResource;
@@ -16,6 +17,13 @@ use TiMacDonald\JsonApi\JsonApiResource;
 
 class RelationshipsTest extends TestCase
 {
+    public function tearDown(): void
+    {
+        parent::tearDown();
+
+        Cache::getInstance()->flush();
+    }
+
     public function testItThrowsWhenTheIncludeQueryParameterIsAnArray(): void
     {
         $post = BasicModel::make([]);

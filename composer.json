@@ -18,5 +18,8 @@
         "phpstan/phpstan-strict-rules": "^0.12.10",
         "phpunit/phpunit": "^9.0",
         "friendsofphp/php-cs-fixer": "^3.1"
+    },
+    "require": {
+        "spatie/once": "^3.0"
     }
 }

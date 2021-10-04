@@ -6,12 +6,20 @@ namespace Tests;
 
 use Illuminate\Support\Facades\Route;
 use Orchestra\Testbench\TestCase;
+use Spatie\Once\Cache;
 use Tests\Models\BasicModel;
 use Tests\Resources\BasicJsonApiResource;
 use Tests\Resources\UserResource;
 
 class JsonApiTest extends TestCase
 {
+    public function tearDown(): void
+    {
+        parent::tearDown();
+
+        Cache::getInstance()->flush();
+    }
+
     public function testItCanReturnASingleResource(): void
     {
         $user = BasicModel::make([

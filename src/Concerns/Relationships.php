@@ -62,7 +62,7 @@ trait Relationships
 
     private function requestedRelationships(Request $request): Collection
     {
-        return Collection::make($this->toRelationships($request))
+        return once(fn () => Collection::make($this->toRelationships($request))
             ->only(Includes::parse($request, $this->includePrefix))
             ->map(
                 fn (mixed $value, string $key): JsonApiResource | JsonApiResourceCollection => $value($request)->withIncludePrefix($key)
@@ -73,6 +73,6 @@ trait Relationships
                 }
 
                 $resource->collection = $resource->collection->unique(fn (JsonApiResource $resource) => $resource->toRelationshipIdentifier($request));
-            });
+            }));
     }
 }

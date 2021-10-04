@@ -7,6 +7,7 @@ namespace Tests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Orchestra\Testbench\TestCase;
+use Spatie\Once\Cache;
 use stdClass;
 use Tests\Models\BasicModel;
 use Tests\Resources\BasicJsonApiResource;
@@ -14,6 +15,13 @@ use TiMacDonald\JsonApi\Exceptions\ResourceIdentificationException;
 
 class ResourceIdentificationTest extends TestCase
 {
+    public function tearDown(): void
+    {
+        parent::tearDown();
+
+        Cache::getInstance()->flush();
+    }
+
     public function testItResolvesTheIdAndTypeOfAModel(): void
     {
         $user = BasicModel::make([

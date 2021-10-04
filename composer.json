@@ -16,7 +16,6 @@
         "orchestra/testbench": "^6.19",
         "phpstan/phpstan": "^0.12.94",
         "phpstan/phpstan-strict-rules": "^0.12.10",
-        "phpunit/phpunit": "^9.0",
-        "timacdonald/php-style": "dev-master"
+        "phpunit/phpunit": "^9.0"
     }
 }

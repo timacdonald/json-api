@@ -10,6 +10,9 @@ use function explode;
 use function array_key_exists;
 use function is_string;
 
+/**
+ * @internal
+ */
 class Fields
 {
     public static function parse(Request $request, string $resourceType): ?array

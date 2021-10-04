@@ -11,6 +11,9 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use function explode;
 use function is_array;
 
+/**
+ * @internal
+ */
 class Includes
 {
     public static function parse(Request $request, string $prefix): Collection

@@ -56,20 +56,20 @@ abstract class JsonApiResource extends JsonResource
 
     protected function toId(Request $request): string
     {
-        if ($this->resource instanceof Model) {
-            return (string) $this->resource->getKey();
+        if (! $this->resource instanceof Model) {
+            throw ResourceIdentificationException::attemptingToDetermineIdFor($this->resource);
         }
 
-        throw ResourceIdentificationException::attemptingToDetermineIdFor($this->resource);
+        return (string) $this->resource->getKey();
     }
 
     protected function toType(Request $request): string
     {
-        if ($this->resource instanceof Model) {
-            return Str::camel($this->resource->getTable());
+        if (! $this->resource instanceof Model) {
+            throw ResourceIdentificationException::attemptingToDetermineTypeFor($this->resource);
         }
 
-        throw ResourceIdentificationException::attemptingToDetermineTypeFor($this->resource);
+        return Str::camel($this->resource->getTable());
     }
 
     public function toArray($request): array

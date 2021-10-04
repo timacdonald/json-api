@@ -70,7 +70,7 @@ trait Relationships
                     return;
                 }
 
-                $resource->collection = $resource->collection->unique(fn (JsonApiResource $resource) => $resource->toRelationshipIdentifier($request));
+                $resource->collection = $resource->collection->uniqueStrict(fn (JsonApiResource $resource) => $resource->toRelationshipIdentifier($request));
             }));
     }
 }

@@ -17,7 +17,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
             ->pluck('included')
             ->flatten()
             ->reject(fn (?JsonApiResource $resource) => $resource === null)
-            ->unique(fn (JsonApiResource $resource) => $resource->toRelationshipIdentifier($request));
+            ->uniqueStrict(fn (JsonApiResource $resource) => $resource->toRelationshipIdentifier($request));
 
         // TODO Pagination
         if ($includes->isEmpty()) {
@@ -27,6 +27,9 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
         return ['included' => $includes];
     }
 
+    /**
+     * @internal
+     */
     public function withIncludePrefix(string $prefix): self
     {
         $this->collection->each(fn (JsonApiResource $resource) => $resource->withIncludePrefix($prefix));
@@ -34,11 +37,17 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
         return $this;
     }
 
+    /**
+     * @internal
+     */
     public function includes(Request $request): Collection
     {
         return $this->collection->map(fn (JsonApiResource $resource) => $resource->includes($request));
     }
 
+    /**
+     * @internal
+     */
     public function toRelationshipIdentifier(Request $request): array
     {
         return $this->collection->map(fn (JsonApiResource $resource) => $resource->toRelationshipIdentifier($request))->all();

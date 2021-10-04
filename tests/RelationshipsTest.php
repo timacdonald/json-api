@@ -283,7 +283,7 @@ class RelationshipsTest extends TestCase
     public function testItCanIncludeANestedCollectionOfResourcesWhenTheirKeyIsTheSame(): void
     {
         $parent = BasicModel::make([
-            'id' => 'parent-id'
+            'id' => 'parent-id',
         ])->setRelation('child', BasicModel::make([
             'id' => 'child-id-1',
         ])->setRelation('child', [

@@ -11,7 +11,6 @@ use Illuminate\Support\Str;
 use TiMacDonald\JsonApi\Exceptions\ResourceIdentificationException;
 use function array_merge;
 use function property_exists;
-use function count;
 
 abstract class JsonApiResource extends JsonResource
 {
@@ -50,7 +49,9 @@ abstract class JsonApiResource extends JsonResource
             ];
         }
 
-        return [];
+        return [
+            //
+        ];
     }
 
     protected function toId(Request $request): string
@@ -94,11 +95,13 @@ abstract class JsonApiResource extends JsonResource
     {
         $includes = $this->includes($request);
 
-        if (count($includes) > 0) {
-            return ['included' => $includes->all()];
+        if ($includes->isEmpty()) {
+            return [
+                //
+            ];
         }
 
-        return [];
+        return ['included' => $includes];
     }
 
     public static function collection(mixed $resource): JsonApiResourceCollection

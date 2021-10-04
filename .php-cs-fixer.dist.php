@@ -17,6 +17,7 @@ return (new PhpCsFixer\Config())
         'strict_comparison' => true,
         'strict_param' => true,
         'explicit_string_variable' => true,
+        'trailing_comma_in_multiline' => true,
     ])
     ->setRiskyAllowed(true)
     ->setFinder($finder);

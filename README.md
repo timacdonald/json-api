@@ -5,7 +5,9 @@ A lightweight Laravel implementation of JSON:API.
 This is a WIP project currently being built out via livestream on [my YouTube channel](https://www.youtube.com/channel/UCXukwzJwxZG0NOtLhCBdEsQ). Come hang out next stream.
 
 #### TODO
-
+- [ ] review composer PHP version support
+- [ ] mention whatever isn't documented is considered internal
+- [ ] mention no hard promise to support named parameters 
 - [ ] update docs
 - [ ] Links, etc
 - [ ] Available relationships

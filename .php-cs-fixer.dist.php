@@ -16,6 +16,7 @@ return (new PhpCsFixer\Config())
         'declare_strict_types' => true,
         'strict_comparison' => true,
         'strict_param' => true,
+        'explicit_string_variable' => true,
     ])
     ->setRiskyAllowed(true)
     ->setFinder($finder);

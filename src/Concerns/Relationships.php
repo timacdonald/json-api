@@ -44,6 +44,12 @@ trait Relationships
             });
     }
 
+    private function requestedRelationshipsAsIdentifiers(Request $request): Collection
+    {
+        return $this->requestedRelationships($request)
+            ->map(fn (JsonApiResource | JsonApiResourceCollection $resource): array => $resource->toRelationshipIdentifier($request));
+    }
+
     public function toRelationshipIdentifier(Request $request): array
     {
         return [
@@ -52,12 +58,6 @@ trait Relationships
                 'type' => $this->toType($request),
             ],
         ];
-    }
-
-    private function requestedRelationshipsAsIdentifiers(Request $request): Collection
-    {
-        return $this->requestedRelationships($request)
-            ->map(fn (JsonApiResource | JsonApiResourceCollection $resource): array => $resource->toRelationshipIdentifier($request));
     }
 
     private function requestedRelationships(Request $request): Collection

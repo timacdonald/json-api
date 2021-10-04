@@ -43,14 +43,14 @@ abstract class JsonApiResource extends JsonResource
 
     protected function toMeta(Request $request): array
     {
-        if (self::$includeAvailableAttributesViaMeta) {
+        if (! self::$includeAvailableAttributesViaMeta) {
             return [
-                'availableAttributes' => $this->availableAttributes($request),
+                //
             ];
         }
 
         return [
-            //
+            'availableAttributes' => $this->availableAttributes($request),
         ];
     }
 

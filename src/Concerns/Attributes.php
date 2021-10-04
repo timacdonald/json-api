@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi\Concerns;
 
-use function array_keys;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use TiMacDonald\JsonApi\Support\Fields;
+use function array_keys;
 use function value;
 
 /**

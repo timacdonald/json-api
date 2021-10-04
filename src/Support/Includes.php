@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi\Support;
 
-use function explode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Stringable;
-use function is_array;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use function explode;
+use function is_array;
 
 class Includes
 {

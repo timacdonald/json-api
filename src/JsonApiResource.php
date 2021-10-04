@@ -4,18 +4,14 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi;
 
-use function array_merge;
-use Closure;
-use function count;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use function property_exists;
-use stdClass;
-use function tap;
 use TiMacDonald\JsonApi\Exceptions\ResourceIdentificationException;
+use function array_merge;
+use function property_exists;
+use function count;
 
 abstract class JsonApiResource extends JsonResource
 {

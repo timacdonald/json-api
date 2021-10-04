@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi\Support;
 
-use function array_key_exists;
-use function explode;
 use Illuminate\Http\Request;
-use function is_string;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use function explode;
+use function array_key_exists;
+use function is_string;
 
 class Fields
 {

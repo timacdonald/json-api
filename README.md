@@ -27,6 +27,8 @@ The `"id"` and `"type"` of a resource is automatically resolved for you under-th
 
 The default bindings resolve the `"id"` by calling `(string) $model->getKey()` and they resolves the `"type"` by using a camel case of the model's table name, e.g. `blog_posts` becomes `blogPosts`.
 
+You can customise how this works to support other types of objects and behaviours, but that will follow in the advanced usage section.
+
 Nice. Well that was easy, so let's move onto...
 
 ## Attributes
@@ -89,65 +91,38 @@ These relationships however, are not included in the response unless the calling
 /api/users/8?include=posts,comments
 ```
 
-_**Note**: In the advanced usage you can learn how to include relationships in the response without them being included by the client._
-
 # Advanced usage
 
 ## Identification
 
-### Customising the `"id"` resolver
+### Customising the resource `"id"`
 
-You can change the `"id"` resolver via a service provider by binding your own implementation of the `ResourceIdResolver`, which can be fulfilled by any `callable`. The `callable` receives the Resource Object as it's first parameter.
+You can customise the resolution of the `id` by implementing the `toId(Request $request)` method.
 
 ```php
 <?php
 
-class AppServiceProvider extends ServiceProvider
+class UserResource extends JsonApiResource
 {
-    public function register()
+    public function toId(Request $request): string
     {
-        $this->app->singleton(ResourceIdResolver::class, fn () => function (mixed $resourceObject): string {
-            if ($resourceObject instanceof Model) {
-                return (string) $resourceObject->getKey();
-            }
-
-            if ($resourceObject instanceof ValueObject) {
-                return (string) $resourceObject->getValue();
-            }
-
-            if (is_object($resourceObject)) {
-                throw new RuntimeException('Unable to resolve Resource Object id for class '.$resourceObject::class);
-            }
-
-            throw new RuntimeException('Unable to resolve Resource Object id for type '.gettype($resourceObject));
-        });
+        // your custom resolution logic...
     }
 }
 ```
 
-### Customising the `"type"` resolver
+### Customising the resource `"type"`
 
 You can change the `"type"` resolver via a service provider by binding your own implementation of the `ResourceTypeResolver`, which can be fulfilled by any `callable`. The `callable` receives the Resource Object as it's first parameter.
 
 ```php
 <?php
 
-class AppServiceProvider
+class UserResource extends JsonApiResource
 {
-    public function register()
+    public function toType(Request $request): string
     {
-        $this->app->singleton(ResourceTypeResolver::class, fn () => function (mixed $resourceObject): string {
-            if (! is_object($resourceObject)) {
-                throw new RuntimeException('Unable to resolve Resource Object type for type '.gettype($resourceObject));
-            }
-
-            return match($resourceObject::class) {
-                User::class => 'users',
-                Post::class => 'posts',
-                Comment::class => 'comments',
-                default => throw new RuntimeException('Unable to resolve Resource Object type for class '.$resourceObject::class),
-            };
-        });
+        // your custom resolution logic...
     }
 }
 ```

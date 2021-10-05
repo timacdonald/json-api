@@ -258,37 +258,6 @@ class AttributesTest extends TestCase
         JsonApiResource::maximalAttributes();
     }
 
-    public function testItCanAddAvailableAttributesToTheMetaObjectOfAResource(): void
-    {
-        JsonApiResource::minimalAttributes();
-        JsonApiResource::includeAvailableAttributesViaMeta();
-        $user = BasicModel::make([
-            'id' => 'user-id',
-            'name' => 'user-name',
-        ]);
-        Route::get('test-route', fn () => UserResource::make($user));
-
-        $response = $this->getJson('test-route');
-
-        $response->assertOk();
-        $response->assertExactJson([
-            'data' => [
-                'id' => 'user-id',
-                'type' => 'basicModels',
-                'attributes' => [],
-                'relationships' => [],
-                'meta' => [
-                    'availableAttributes' => [
-                        'name',
-                    ],
-                ],
-            ],
-        ]);
-
-        JsonApiResource::excludeAvailableAttributesViaMeta();
-        JsonApiResource::maximalAttributes();
-    }
-
     public function testItCanUseSparseFieldsetsWithIncludedCollections(): void
     {
         $user = BasicModel::make([

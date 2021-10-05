@@ -22,11 +22,6 @@ abstract class JsonApiResource extends JsonResource
         static::$minimalAttributes = true;
     }
 
-    public static function includeAvailableAttributesViaMeta(): void
-    {
-        static::$includeAvailableAttributesViaMeta = true;
-    }
-
     protected function toAttributes(Request $request): array
     {
         return [
@@ -43,14 +38,8 @@ abstract class JsonApiResource extends JsonResource
 
     protected function toMeta(Request $request): array
     {
-        if (! self::$includeAvailableAttributesViaMeta) {
-            return [
-                //
-            ];
-        }
-
         return [
-            'availableAttributes' => $this->availableAttributes($request),
+            //
         ];
     }
 

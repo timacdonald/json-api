@@ -10,10 +10,9 @@ This is a WIP project currently being built out via livestream on [my YouTube ch
 - [ ] mention no hard promise to support named parameters 
 - [ ] update docs
 - [ ] Links, etc
-- [ ] Available relationships
 - [ ] Pagination tests
 - [ ] collection counts
-- [ ] allow filtering of attributes and relationships via "when" helpers. This should be possible outside the relationship closure so that it is filtered from the "availableRelationsips" as well as internally
+- [ ] allow filtering of attributes and relationships via "when" helpers. 
 - [ ] Document that this is to be used in conjunction with Spatie Query Builder
 - [ ] document why whenLoaded isn't great
 - [ ] How to handle single resources loading / allow listing (can we PR Spatie Query Builder for this or does it already support it?).
@@ -205,42 +204,6 @@ class AppServiceProvider extends ServiceProvider
         JsonApiResource::minimalAttributes();
 
         // ...
-    }
-}
-```
-
-### Include available attributes via "meta"
-
-You are able to have the available attributes for a resource exposed via the objects meta key. This is an opt-in feature that you can turn on in your service provider. This will be mostly only useful in conjunction with 'minimal attributes' turned on.
-
-```php
-<?php
-
-class AppServiceProvider extends ServiceProvider
-{
-    public function boot()
-    {
-        JsonApiResource::includeAvailableAttributesViaMeta();
-
-        // ...
-    }
-}
-```
-
-A user resource with a `"name"`, `"email"`, and `"location"` attribute may have the following representation...
-
-```json
-{
-    "id": "5",
-    "type": "users",
-    "attributes": {},
-    "relationships": {},
-    "meta": {
-        "availableAttributes": [
-            "name",
-            "email",
-            "location"
-        ]
     }
 }
 ```

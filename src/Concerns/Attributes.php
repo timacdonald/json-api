@@ -17,16 +17,9 @@ trait Attributes
 {
     private static bool $minimalAttributes = false;
 
-    private static bool $includeAvailableAttributesViaMeta = false;
-
     public static function maximalAttributes(): void
     {
         static::$minimalAttributes = false;
-    }
-
-    public static function excludeAvailableAttributesViaMeta(): void
-    {
-        static::$includeAvailableAttributesViaMeta = false;
     }
 
     private function requestedAttributes(Request $request): Collection

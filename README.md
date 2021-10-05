@@ -17,8 +17,6 @@ This is a WIP project currently being built out via livestream on [my YouTube ch
 - [ ] Meta
 - [ ] Load things via Spatie Query Builder
 
-# Nice to hav
-
 # Basic usage
 
 ## Identification

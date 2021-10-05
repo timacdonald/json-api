@@ -137,7 +137,7 @@ class UserResource extends JsonApiResource
 
 [JSON:API docs: Sparse fieldsets](https://jsonapi.org/format/#fetching-sparse-fieldsets)
 
-Without any work, your response supports sparse fieldsets. If you are utilising sparse fieldsets and have some attributes that are expensive to create, it is a good idea to wrap them in a `Closure`. Under the hood, we only call the `Closure` if the attribute is to be included in the response.
+Without any work, your response supports sparse fieldsets. If you are utilising sparse fieldsets and have some attributes that are expensive to create, it is a good idea to wrap them in a `Closure`. Under the hood, we only resolve the `Closure` if the attribute is to be included in the response.
 
 ```php
 <?php
@@ -158,13 +158,13 @@ class UserResource extends JsonResource
 }
 ```
 
-The `Closure` is only called when the attribute is going to be included in the response, which improves performance of requests that don't require the returned value.
+The `Closure` is only resolved when the attribute is going to be included in the response, which improves performance of requests that don't require the returned value.
 
 ```sh
-# The Closure is not called...
+# The Closure is not resolved...
 /api/users/8?fields[users]=name,email
 
-# The Closure is called...
+# The Closure is resolved...
 /api/users/8?fields[users]=name,profile_image
 ```
 

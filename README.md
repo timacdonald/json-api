@@ -158,7 +158,7 @@ class UserResource extends JsonResource
 }
 ```
 
-The `Closure` is only resolved when the attribute is going to be included in the response, which can improves performance of requests that don't require the returned value.
+The `Closure` is only resolved when the attribute is going to be included in the response, which can improve performance of requests that don't require the returned value.
 
 ```sh
 # The Closure is not resolved...

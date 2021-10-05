@@ -82,7 +82,7 @@ Each `Closure` is only resolved when the relationship has been included by the c
 
 [JSON:API docs: Inclusion of Related Resources](https://jsonapi.org/format/#fetching-includes)
 
-These relationships however, are not included in the response unless the calling client requests them. To do this, the calling client needs to "include" them by utilising the `include` query parameter.
+As previously mentioned, relationships are not included in the response unless the calling client requests them. To do this, the calling client needs to "include" them by utilising the `include` query parameter.
 
 ```sh
 # Include the posts...

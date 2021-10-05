@@ -9,7 +9,6 @@ This is a WIP project currently being built out via livestream on [my YouTube ch
 - [ ] Pagination tests
 - [ ] collection counts
 - [ ] allow filtering of attributes and relationships via "when" helpers. 
-- [ ] How to handle single resources loading / allow listing (can we PR Spatie Query Builder for this or does it already support it?).
 - [ ] Filter `null` relationships
 
 # To document
@@ -211,3 +210,4 @@ Relationships can be resolved deeply and also multiple relationship paths can be
 - [ ] Top level links, jsonapi, etc.
 - [ ] Test assertions?
   - decide how to handle top level keys for single and collections (static? should collections have to be extended to specify the values? or can there be static methods on the single resource for the collection?)
+- [ ] Handle loading relations on a already in memory object with Spatie Query builder (PR)

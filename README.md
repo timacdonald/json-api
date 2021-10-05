@@ -6,17 +6,18 @@ This is a WIP project currently being built out via livestream on [my YouTube ch
 
 #### TODO
 - [ ] review composer PHP version support
-- [ ] mention whatever isn't documented is considered internal
-- [ ] mention no hard promise to support named parameters 
-- [ ] update docs
 - [ ] Pagination tests
 - [ ] collection counts
 - [ ] allow filtering of attributes and relationships via "when" helpers. 
-- [ ] Document that this is to be used in conjunction with Spatie Query Builder
 - [ ] How to handle single resources loading / allow listing (can we PR Spatie Query Builder for this or does it already support it?).
 - [ ] Filter `null` relationships
-- [ ] Test assertions?
-- [ ] decide how to handle top level keys for single and collections (static? should collections have to be extended to specify the values? or can there be static methods on the single resource for the collection?)
+
+# To document
+- [ ] Links
+- [ ] Meta
+- [ ] Load things via Spatie Query Builder
+
+# Nice to hav
 
 # Basic usage
 
@@ -202,5 +203,11 @@ Relationships can be resolved deeply and also multiple relationship paths can be
 
 # Support
 
-- We do not promise named parameter support
-- If a method is not documented in these docs, you should assume it is an internal API
+- We do not promise named parameter support.
+- If a method is not documented in these docs, you should assume it is an internal API that can change at any time.
+
+# Coming soon...
+
+- [ ] Top level links, jsonapi, etc.
+- [ ] Test assertions?
+  - decide how to handle top level keys for single and collections (static? should collections have to be extended to specify the values? or can there be static methods on the single resource for the collection?)

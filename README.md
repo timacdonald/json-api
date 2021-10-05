@@ -88,11 +88,11 @@ As previously mentioned, relationships are not included in the response unless t
 # Include the posts...
 /api/users/8?include=posts
 
-# Include the comments...
-/api/users/8?include=comments
+# Include the subscription...
+/api/users/8?include=subscription
 
 # Include both...
-/api/users/8?include=posts,comments
+/api/users/8?include=posts,subscription
 ```
 
 # Advanced usage

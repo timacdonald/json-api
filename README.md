@@ -14,6 +14,7 @@ This is a WIP project currently being built out via livestream on [my YouTube ch
 - [ ] allow filtering of attributes and relationships via "when" helpers. 
 - [ ] Document that this is to be used in conjunction with Spatie Query Builder
 - [ ] How to handle single resources loading / allow listing (can we PR Spatie Query Builder for this or does it already support it?).
+- [ ] Filter `null` relationships
 - [ ] Test assertions?
 - [ ] decide how to handle top level keys for single and collections (static? should collections have to be extended to specify the values? or can there be static methods on the single resource for the collection?)
 
@@ -74,6 +75,8 @@ class UserResource extends JsonApiResource
     }
 }
 ```
+
+Each `Closure` is only resolved when the relationships has been included by the client...
 
 ### Including relationships
 

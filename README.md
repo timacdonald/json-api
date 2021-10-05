@@ -117,7 +117,7 @@ class UserResource extends JsonApiResource
 
 ### Customising the resource `"type"`
 
-You can change the `"type"` resolver via a service provider by binding your own implementation of the `ResourceTypeResolver`, which can be fulfilled by any `callable`. The `callable` receives the Resource Object as it's first parameter.
+You can customise the resolution of the `type` by implementing the `toType(Request $request)` method.
 
 ```php
 <?php

@@ -10,6 +10,7 @@ This is a WIP project currently being built out via livestream on [my YouTube ch
 - [ ] collection counts
 - [ ] allow filtering of attributes and relationships via "when" helpers. 
 - [ ] Filter `null` relationships
+- [ ] Logo?
 
 # To document
 - [ ] Links

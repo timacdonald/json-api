@@ -27,7 +27,7 @@ The `"id"` and `"type"` of a resource is automatically resolved for you under-th
 
 The default behaviour when resolving the `"id"` is to call the `$model->getKey()` method and the `"type"` is resolved by using a camel case of the model's table name, e.g. `blog_posts` becomes `blogPosts`.
 
-You can customise how this works to support other types of objects and behaviours, but that will follow in the advanced usage section.
+You can customise how this works to support other types of objects and behaviours, but that will follow in the [advanced usage](#advanced-usage) section.
 
 Nice. Well that was easy, so let's move onto...
 

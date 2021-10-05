@@ -199,3 +199,8 @@ Relationships can be resolved deeply and also multiple relationship paths can be
 # Including multiple relationship paths
 /api/posts/8?include=comments,author.comments
 ```
+
+# Support
+
+- We do not promise named parameter support
+- If a method is not documented in these docs, you should assume it is an internal API

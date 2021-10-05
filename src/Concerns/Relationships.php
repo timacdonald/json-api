@@ -24,10 +24,22 @@ trait Relationships
         return $this;
     }
 
+    public function included(Request $request): Collection
+    {
+        return $this->requestedRelationships($request)
+            ->map(function (JsonApiResource | JsonApiResourceCollection $include): Collection | JsonApiResource {
+                return $include instanceof JsonApiResource
+                    ? $include
+                    : $include->collection;
+            })
+            ->merge($this->nestedIncluded($request))
+            ->flatten();
+    }
+
     private function nestedIncluded(Request $request): Collection
     {
         return $this->requestedRelationships($request)
-            ->flatMap(fn (JsonApiResource | JsonApiResourceCollection $resource, string $key): array => $resource->withIncluded($request));
+            ->flatMap(fn (JsonApiResource | JsonApiResourceCollection $resource, string $key): Collection => $resource->included($request));
     }
 
     private function requestedRelationshipsAsIdentifiers(Request $request): Collection
@@ -48,7 +60,7 @@ trait Relationships
 
     private function requestedRelationships(Request $request): Collection
     {
-        return once(fn () => Collection::make($this->toRelationships($request))
+        return once(fn (): Collection => Collection::make($this->toRelationships($request))
             ->only(Includes::parse($request, $this->includePrefix))
             ->map(fn (mixed $value, string $key): JsonApiResource | JsonApiResourceCollection => $value($request)->withIncludePrefix($key))
             ->each(function (JsonApiResource | JsonApiResourceCollection $resource) use ($request): void {
@@ -56,7 +68,7 @@ trait Relationships
                     return;
                 }
 
-                $resource->collection = $resource->collection->uniqueStrict(fn (JsonApiResource $resource) => $resource->toRelationshipIdentifier($request));
+                $resource->collection = $resource->collection->uniqueStrict(fn (JsonApiResource $resource): array => $resource->toRelationshipIdentifier($request));
             }));
     }
 }

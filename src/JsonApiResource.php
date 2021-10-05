@@ -7,7 +7,6 @@ namespace TiMacDonald\JsonApi;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use TiMacDonald\JsonApi\Exceptions\ResourceIdentificationException;
 use function array_merge;
@@ -93,24 +92,11 @@ abstract class JsonApiResource extends JsonResource
         return $payload;
     }
 
-    public function withIncluded(Request $request): array
-    {
-        return $this->requestedRelationships($request)
-            ->map(function (JsonApiResource | JsonApiResourceCollection $include): Collection | JsonApiResource {
-                return $include instanceof JsonApiResource
-                    ? $include
-                    : $include->collection;
-            })
-            ->merge($this->nestedIncluded($request))
-            ->flatten()
-            ->all();
-    }
-
     public function with($request): array
     {
-        $included = $this->withIncluded($request);
+        $included = $this->included($request);
 
-        if ($included !== []) {
+        if ($included->isNotEmpty()) {
             return ['included' => $included];
         }
 

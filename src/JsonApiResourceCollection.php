@@ -6,16 +6,17 @@ namespace TiMacDonald\JsonApi;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Collection;
 
 class JsonApiResourceCollection extends AnonymousResourceCollection
 {
     public function with($request): array
     {
         $included = $this->collection
-            ->map(fn (JsonApiResource $resource) => $resource->withIncluded($request))
+            ->map(fn (JsonApiResource $resource): Collection => $resource->included($request))
             ->flatten()
-            ->reject(fn (?JsonApiResource $resource) => $resource === null)
-            ->uniqueStrict(fn (JsonApiResource $resource) => $resource->toRelationshipIdentifier($request));
+            ->reject(fn (?JsonApiResource $resource): bool => $resource === null)
+            ->uniqueStrict(fn (JsonApiResource $resource): array => $resource->toRelationshipIdentifier($request));
 
         if ($included->isEmpty()) {
             return [];
@@ -29,7 +30,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
      */
     public function withIncludePrefix(string $prefix): self
     {
-        $this->collection->each(fn (JsonApiResource $resource) => $resource->withIncludePrefix($prefix));
+        $this->collection->each(fn (JsonApiResource $resource): JsonApiResource => $resource->withIncludePrefix($prefix));
 
         return $this;
     }
@@ -37,9 +38,9 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     /**
      * @internal
      */
-    public function withIncluded(Request $request): array
+    public function included(Request $request): Collection
     {
-        return $this->collection->map(fn (JsonApiResource $resource) => $resource->withIncluded($request))->all();
+        return $this->collection->map(fn (JsonApiResource $resource): Collection => $resource->included($request));
     }
 
     /**
@@ -47,6 +48,6 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
      */
     public function toRelationshipIdentifier(Request $request): array
     {
-        return $this->collection->map(fn (JsonApiResource $resource) => $resource->toRelationshipIdentifier($request))->all();
+        return $this->collection->map(fn (JsonApiResource $resource): array => $resource->toRelationshipIdentifier($request))->all();
     }
 }

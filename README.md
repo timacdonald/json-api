@@ -76,7 +76,7 @@ class UserResource extends JsonApiResource
 }
 ```
 
-Each `Closure` is only resolved when the relationships has been included by the client...
+Each `Closure` is only resolved when the relationship has been included by the client...
 
 ### Including relationships
 

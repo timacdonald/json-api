@@ -42,7 +42,7 @@ To provide a set of attributes for a resource, you can implement the `toAttribut
 
 class UserResource extends JsonApiResource
 {
-    public function toAttributes(Request $request): array
+    protected function toAttributes(Request $request): array
     {
         return [
             'name' => $this->name,
@@ -64,7 +64,7 @@ Just like we saw with attributes above, we can specify relationships that should
 
 class UserResource extends JsonApiResource
 {
-    public function toRelationships(Request $request): array
+    protected function toRelationships(Request $request): array
     {
         return [
             'posts' => fn () => PostResource::collection($this->posts),
@@ -104,7 +104,7 @@ You can customise the resolution of the `id` by implementing the `toId(Request $
 
 class UserResource extends JsonApiResource
 {
-    public function toId(Request $request): string
+    protected function toId(Request $request): string
     {
         // your custom resolution logic...
     }
@@ -120,7 +120,7 @@ You can change the `"type"` resolver via a service provider by binding your own 
 
 class UserResource extends JsonApiResource
 {
-    public function toType(Request $request): string
+    protected function toType(Request $request): string
     {
         // your custom resolution logic...
     }
@@ -140,7 +140,7 @@ Without any work, your response supports sparse fieldsets. If you are utilising 
 
 class UserResource extends JsonResource
 {
-    public function toAttributes(Request $request): array
+    protected function toAttributes(Request $request): array
     {
         return [
             'name' => $this->name,

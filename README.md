@@ -9,14 +9,13 @@ This is a WIP project currently being built out via livestream on [my YouTube ch
 - [ ] mention whatever isn't documented is considered internal
 - [ ] mention no hard promise to support named parameters 
 - [ ] update docs
-- [ ] Links, etc
 - [ ] Pagination tests
 - [ ] collection counts
 - [ ] allow filtering of attributes and relationships via "when" helpers. 
 - [ ] Document that this is to be used in conjunction with Spatie Query Builder
-- [ ] document why whenLoaded isn't great
 - [ ] How to handle single resources loading / allow listing (can we PR Spatie Query Builder for this or does it already support it?).
 - [ ] Test assertions?
+- [ ] decide how to handle top level keys for single and collections (static? should collections have to be extended to specify the values? or can there be static methods on the single resource for the collection?)
 
 # Basic usage
 

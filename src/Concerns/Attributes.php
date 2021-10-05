@@ -7,7 +7,6 @@ namespace TiMacDonald\JsonApi\Concerns;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use TiMacDonald\JsonApi\Support\Fields;
-use function array_keys;
 use function value;
 
 /**
@@ -24,7 +23,7 @@ trait Attributes
 
     private function requestedAttributes(Request $request): Collection
     {
-        return Collection::make($this->resolveAttributes($request))
+        return Collection::make($this->toAttributes($request))
             ->only($this->fields($request))
             ->map(fn (mixed $value): mixed => value($value, $request));
     }
@@ -40,15 +39,5 @@ trait Attributes
         return static::$minimalAttributes
             ? []
             : null;
-    }
-
-    private function availableAttributes(Request $request): array
-    {
-        return array_keys($this->resolveAttributes($request));
-    }
-
-    private function resolveAttributes(Request $request): array
-    {
-        return once(fn () => $this->toAttributes($request));
     }
 }

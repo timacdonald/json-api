@@ -7,6 +7,7 @@ namespace TiMacDonald\JsonApi;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use TiMacDonald\JsonApi\Exceptions\ResourceIdentificationException;
 use function array_merge;
@@ -30,6 +31,13 @@ abstract class JsonApiResource extends JsonResource
     }
 
     protected function toRelationships(Request $request): array
+    {
+        return [
+            //
+        ];
+    }
+
+    protected function toLinks(Request $request): array
     {
         return [
             //
@@ -63,7 +71,7 @@ abstract class JsonApiResource extends JsonResource
 
     public function toArray($request): array
     {
-        $toArray = [
+        $payload = [
             'id' => $this->toId($request),
             'type' => $this->toType($request),
             'attributes' => (object) $this->requestedAttributes($request)->all(),
@@ -72,24 +80,41 @@ abstract class JsonApiResource extends JsonResource
 
         $meta = $this->toMeta($request);
 
-        if ($meta === []) {
-            return $toArray;
+        if ($meta !== []) {
+            $payload = array_merge($payload, ['meta' => $meta]);
         }
 
-        return array_merge($toArray, ['meta' => $meta]);
+        $links = $this->toLinks($request);
+
+        if ($links !== []) {
+            $payload = array_merge($payload, ['links' => $links]);
+        }
+
+        return $payload;
+    }
+
+    public function withIncluded(Request $request): array
+    {
+        return $this->requestedRelationships($request)
+            ->map(function (JsonApiResource | JsonApiResourceCollection $include): Collection | JsonApiResource {
+                return $include instanceof JsonApiResource
+                    ? $include
+                    : $include->collection;
+            })
+            ->merge($this->nestedIncluded($request))
+            ->flatten()
+            ->all();
     }
 
     public function with($request): array
     {
-        $includes = $this->includes($request);
+        $included = $this->withIncluded($request);
 
-        if ($includes->isEmpty()) {
-            return [
-                //
-            ];
+        if ($included !== []) {
+            return ['included' => $included];
         }
 
-        return ['included' => $includes];
+        return [];
     }
 
     public static function collection(mixed $resource): JsonApiResourceCollection

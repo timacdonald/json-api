@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Orchestra\Testbench\TestCase;
 use Spatie\Once\Cache;
 use Tests\Models\BasicModel;
 use Tests\Resources\BasicJsonApiResource;
 use Tests\Resources\UserResource;
+use TiMacDonald\JsonApi\JsonApiResource;
 
 class JsonApiTest extends TestCase
 {
@@ -89,5 +91,59 @@ class JsonApiTest extends TestCase
         $response = $this->get('test-route');
 
         self::assertStringContainsString('"attributes":{},"relationships":{}', $response->content());
+    }
+
+    public function testItAddsMetaToIndividualResources(): void
+    {
+        Route::get('test-route', fn () => new class(BasicModel::make(['id' => 'expected-id'])) extends JsonApiResource {
+            protected function toMeta(Request $request): array
+            {
+                return [
+                    'meta-key' => 'meta-value',
+                ];
+            }
+        });
+
+        $response = $this->get('test-route');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                'id' => 'expected-id',
+                'type' => 'basicModels',
+                'attributes' => [],
+                'relationships' => [],
+                'meta' => [
+                    'meta-key' => 'meta-value',
+                ],
+            ],
+        ]);
+    }
+
+    public function testItAddsLinksToIndividualResources(): void
+    {
+        Route::get('test-route', fn () => new class(BasicModel::make(['id' => 'expected-id'])) extends JsonApiResource {
+            protected function toLinks(Request $request): array
+            {
+                return [
+                    'links-key' => 'links-value',
+                ];
+            }
+        });
+
+        $response = $this->get('test-route');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                'id' => 'expected-id',
+                'type' => 'basicModels',
+                'attributes' => [],
+                'relationships' => [],
+                'links' => [
+                    'links-key' => 'links-value',
+                ],
+            ],
+        ]);
     }
 }

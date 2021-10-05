@@ -6,24 +6,22 @@ namespace TiMacDonald\JsonApi;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Collection;
 
 class JsonApiResourceCollection extends AnonymousResourceCollection
 {
     public function with($request): array
     {
-        $includes = $this->collection
-            ->map(fn (JsonApiResource $resource) => $resource->with($request))
-            ->pluck('included')
+        $included = $this->collection
+            ->map(fn (JsonApiResource $resource) => $resource->withIncluded($request))
             ->flatten()
             ->reject(fn (?JsonApiResource $resource) => $resource === null)
             ->uniqueStrict(fn (JsonApiResource $resource) => $resource->toRelationshipIdentifier($request));
 
-        if ($includes->isEmpty()) {
+        if ($included->isEmpty()) {
             return [];
         }
 
-        return ['included' => $includes];
+        return ['included' => $included];
     }
 
     /**
@@ -39,9 +37,9 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     /**
      * @internal
      */
-    public function includes(Request $request): Collection
+    public function withIncluded(Request $request): array
     {
-        return $this->collection->map(fn (JsonApiResource $resource) => $resource->includes($request));
+        return $this->collection->map(fn (JsonApiResource $resource) => $resource->withIncluded($request))->all();
     }
 
     /**

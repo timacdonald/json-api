@@ -24,22 +24,10 @@ trait Relationships
         return $this;
     }
 
-    public function includes(Request $request): Collection
+    private function nestedIncluded(Request $request): Collection
     {
         return $this->requestedRelationships($request)
-            ->map(function (JsonApiResource | JsonApiResourceCollection $include): Collection | JsonApiResource {
-                return $include instanceof JsonApiResource
-                    ? $include
-                    : $include->collection;
-            })
-            ->merge($this->nestedIncludes($request))
-            ->flatten();
-    }
-
-    private function nestedIncludes(Request $request): Collection
-    {
-        return $this->requestedRelationships($request)
-            ->flatMap(fn (JsonApiResource | JsonApiResourceCollection $resource, string $key): Collection => $resource->includes($request));
+            ->flatMap(fn (JsonApiResource | JsonApiResourceCollection $resource, string $key): array => $resource->withIncluded($request));
     }
 
     private function requestedRelationshipsAsIdentifiers(Request $request): Collection

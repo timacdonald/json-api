@@ -211,3 +211,4 @@ Relationships can be resolved deeply and also multiple relationship paths can be
 - [ ] Test assertions?
   - decide how to handle top level keys for single and collections (static? should collections have to be extended to specify the values? or can there be static methods on the single resource for the collection?)
 - [ ] Handle loading relations on a already in memory object with Spatie Query builder (PR)
+- [ ] strict mode that throws when duplicates are found in includes

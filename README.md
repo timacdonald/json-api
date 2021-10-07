@@ -12,6 +12,9 @@ This is a WIP project currently being built out via livestream on [my YouTube ch
 - [ ] allow filtering of attributes and relationships via "when" helpers. 
 - [ ] Filter `null` relationships
 - [ ] Logo?
+- [ ] Add Accept and Content-type functionality to the readme
+- [ ] Add opt out methods for header stuff to the readme
+- [ ] Document the test helpers / opt out stuff for tests
 
 # To document
 - [ ] Links

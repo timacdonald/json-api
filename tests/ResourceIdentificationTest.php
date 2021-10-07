@@ -6,8 +6,6 @@ namespace Tests;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Orchestra\Testbench\TestCase;
-use Spatie\Once\Cache;
 use stdClass;
 use Tests\Models\BasicModel;
 use Tests\Resources\BasicJsonApiResource;
@@ -15,13 +13,6 @@ use TiMacDonald\JsonApi\Exceptions\ResourceIdentificationException;
 
 class ResourceIdentificationTest extends TestCase
 {
-    public function tearDown(): void
-    {
-        parent::tearDown();
-
-        Cache::getInstance()->flush();
-    }
-
     public function testItResolvesTheIdAndTypeOfAModel(): void
     {
         $user = BasicModel::make([
@@ -29,7 +20,7 @@ class ResourceIdentificationTest extends TestCase
         ]);
         Route::get('test-route', fn () => BasicJsonApiResource::make($user));
 
-        $response = $this->getJson('test-route');
+        $response = $this->getJsonApi('test-route');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -51,7 +42,7 @@ class ResourceIdentificationTest extends TestCase
 
         self::assertSame(55, $user->getKey());
 
-        $response = $this->getJson('test-route');
+        $response = $this->getJsonApi('test-route');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -72,7 +63,7 @@ class ResourceIdentificationTest extends TestCase
         $this->expectException(ResourceIdentificationException::class);
         $this->expectExceptionMessage('Unable to resolve resource object id for array.');
 
-        $this->withoutExceptionHandling()->getJson('test-route');
+        $this->withoutExceptionHandling()->getJsonApi('test-route');
     }
 
     public function testItThrowsWhenUnableToAutomaticallyResolveTheIdOfAnObject(): void
@@ -83,7 +74,7 @@ class ResourceIdentificationTest extends TestCase
         $this->expectException(ResourceIdentificationException::class);
         $this->expectExceptionMessage('Unable to resolve resource object id for stdClass.');
 
-        $this->withoutExceptionHandling()->getJson('test-route');
+        $this->withoutExceptionHandling()->getJsonApi('test-route');
     }
 
     public function testItThrowsWhenUnableToAutomaticallyResolveTheTypeOfANonObject(): void
@@ -99,7 +90,7 @@ class ResourceIdentificationTest extends TestCase
         $this->expectException(ResourceIdentificationException::class);
         $this->expectExceptionMessage('Unable to resolve resource object type for array.');
 
-        $this->withoutExceptionHandling()->getJson('test-route');
+        $this->withoutExceptionHandling()->getJsonApi('test-route');
     }
 
     public function testItThrowsWhenUnableToAutomaticallyResolveTypeOfAnObject(): void
@@ -115,6 +106,6 @@ class ResourceIdentificationTest extends TestCase
         $this->expectException(ResourceIdentificationException::class);
         $this->expectExceptionMessage('Unable to resolve resource object type for stdClass.');
 
-        $this->withoutExceptionHandling()->getJson('test-route');
+        $this->withoutExceptionHandling()->getJsonApi('test-route');
     }
 }

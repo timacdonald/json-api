@@ -7,8 +7,6 @@ namespace Tests;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Orchestra\Testbench\TestCase;
-use Spatie\Once\Cache;
 use Tests\Models\BasicModel;
 use Tests\Resources\BasicJsonApiResource;
 use Tests\Resources\UserResource;
@@ -16,13 +14,6 @@ use TiMacDonald\JsonApi\JsonApiResource;
 
 class AttributesTest extends TestCase
 {
-    public function tearDown(): void
-    {
-        parent::tearDown();
-
-        Cache::getInstance()->flush();
-    }
-
     public function testItIncludesAllAttributesByDefault(): void
     {
         $model = BasicModel::make([
@@ -40,7 +31,7 @@ class AttributesTest extends TestCase
             }
         });
 
-        $response = $this->getJson('test-route');
+        $response = $this->getJsonApi('test-route');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -75,7 +66,7 @@ class AttributesTest extends TestCase
             }
         });
 
-        $response = $this->getJson('test-route?fields[basicModels]=name,location');
+        $response = $this->getJsonApi('test-route?fields[basicModels]=name,location');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -110,7 +101,7 @@ class AttributesTest extends TestCase
             }
         });
 
-        $response = $this->getJson('test-route?fields[basicModels]=');
+        $response = $this->getJsonApi('test-route?fields[basicModels]=');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -138,7 +129,7 @@ class AttributesTest extends TestCase
             }
         });
 
-        $response = $this->getJson('test-route');
+        $response = $this->getJsonApi('test-route');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -167,7 +158,7 @@ class AttributesTest extends TestCase
             }
         });
 
-        $response = $this->getJson('test-route?fields[basicModels]=');
+        $response = $this->getJsonApi('test-route?fields[basicModels]=');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -194,7 +185,7 @@ class AttributesTest extends TestCase
             }
         });
 
-        $response = $this->getJson('test-route');
+        $response = $this->getJsonApi('test-route');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -214,7 +205,7 @@ class AttributesTest extends TestCase
         $model = BasicModel::make(['id' => 'expected-id']);
         Route::get('test-route', fn () => new BasicJsonApiResource($model));
 
-        $response = $this->getJson('test-route?fields=name');
+        $response = $this->getJsonApi('test-route?fields=name');
 
         $response->assertStatus(400);
         $response->assertExactJson([
@@ -227,7 +218,7 @@ class AttributesTest extends TestCase
         $model = BasicModel::make(['id' => 'expected-id']);
         Route::get('test-route', fn () => new BasicJsonApiResource($model));
 
-        $response = $this->getJson('test-route?fields[basicModels][foo]=name');
+        $response = $this->getJsonApi('test-route?fields[basicModels][foo]=name');
 
         $response->assertStatus(400);
         $response->assertExactJson([
@@ -244,7 +235,7 @@ class AttributesTest extends TestCase
         ]);
         Route::get('test-route', fn () => UserResource::make($user));
 
-        $response = $this->get('test-route');
+        $response = $this->getJsonApi('test-route');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -277,7 +268,7 @@ class AttributesTest extends TestCase
         ]);
         Route::get('test-route', fn () => UserResource::make($user));
 
-        $response = $this->get('test-route?include=posts&fields[basicModels]=title');
+        $response = $this->getJsonApi('test-route?include=posts&fields[basicModels]=title');
 
         $response->assertOk();
         $response->assertExactJson([

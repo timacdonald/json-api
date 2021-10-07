@@ -7,8 +7,6 @@ namespace Tests;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Orchestra\Testbench\TestCase;
-use Spatie\Once\Cache;
 use Tests\Models\BasicModel;
 use Tests\Resources\BasicJsonApiResource;
 use Tests\Resources\PostResource;
@@ -17,19 +15,12 @@ use TiMacDonald\JsonApi\JsonApiResource;
 
 class RelationshipsTest extends TestCase
 {
-    public function tearDown(): void
-    {
-        parent::tearDown();
-
-        Cache::getInstance()->flush();
-    }
-
     public function testItThrowsWhenTheIncludeQueryParameterIsAnArray(): void
     {
         $post = BasicModel::make([]);
         Route::get('test-route', fn () => PostResource::make($post));
 
-        $response = $this->getJson('test-route?include[]=name');
+        $response = $this->getJsonApi('test-route?include[]=name');
 
         $response->assertStatus(400);
         $response->assertExactJson([
@@ -53,7 +44,7 @@ class RelationshipsTest extends TestCase
             }
         });
 
-        $response = $this->getJson('test-route');
+        $response = $this->getJsonApi('test-route');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -82,7 +73,7 @@ class RelationshipsTest extends TestCase
         ]);
         Route::get('test-route', fn () => PostResource::make($post));
 
-        $response = $this->getJson('test-route?include=author');
+        $response = $this->getJsonApi('test-route?include=author');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -140,7 +131,7 @@ class RelationshipsTest extends TestCase
         ]);
         Route::get('test-route', fn () => PostResource::make($post));
 
-        $response = $this->getJson('test-route?include=author.avatar,author.license,featureImage');
+        $response = $this->getJsonApi('test-route?include=author.avatar,author.license,featureImage');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -239,7 +230,7 @@ class RelationshipsTest extends TestCase
             }
         });
 
-        $response = $this->getJson('test-route?include=child.child');
+        $response = $this->getJsonApi('test-route?include=child.child');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -306,7 +297,7 @@ class RelationshipsTest extends TestCase
             }
         });
 
-        $response = $this->getJson('test-route?include=child.child');
+        $response = $this->getJsonApi('test-route?include=child.child');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -383,7 +374,7 @@ class RelationshipsTest extends TestCase
         ];
         Route::get('test-route', fn () => PostResource::collection($posts));
 
-        $response = $this->get('test-route?include=author');
+        $response = $this->getJsonApi('test-route?include=author');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -462,7 +453,7 @@ class RelationshipsTest extends TestCase
         ];
         Route::get('test-route', fn () => UserResource::make($author));
 
-        $response = $this->get('test-route?include=posts');
+        $response = $this->getJsonApi('test-route?include=posts');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -574,7 +565,7 @@ class RelationshipsTest extends TestCase
         ];
         Route::get('test-route', fn () => PostResource::collection($posts));
 
-        $response = $this->get('test-route?include=comments.likes');
+        $response = $this->getJsonApi('test-route?include=comments.likes');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -806,7 +797,7 @@ class RelationshipsTest extends TestCase
             }
         });
 
-        $response = $this->get('test-route?include=relation&name=expected%20name');
+        $response = $this->getJsonApi('test-route?include=relation&name=expected%20name');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -856,7 +847,7 @@ class RelationshipsTest extends TestCase
         ];
         Route::get('test-route', fn () => UserResource::collection($users));
 
-        $response = $this->get('test-route?include=avatar');
+        $response = $this->getJsonApi('test-route?include=avatar');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -924,7 +915,7 @@ class RelationshipsTest extends TestCase
         ]);
         Route::get('test-route', fn () => UserResource::make($user));
 
-        $response = $this->get('test-route?include=posts');
+        $response = $this->getJsonApi('test-route?include=posts');
 
         $response->assertOk();
         $response->assertExactJson([

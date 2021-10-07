@@ -6,8 +6,6 @@ namespace Tests;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Orchestra\Testbench\TestCase;
-use Spatie\Once\Cache;
 use Tests\Models\BasicModel;
 use Tests\Resources\BasicJsonApiResource;
 use Tests\Resources\UserResource;
@@ -15,13 +13,6 @@ use TiMacDonald\JsonApi\JsonApiResource;
 
 class JsonApiTest extends TestCase
 {
-    public function tearDown(): void
-    {
-        parent::tearDown();
-
-        Cache::getInstance()->flush();
-    }
-
     public function testItCanReturnASingleResource(): void
     {
         $user = BasicModel::make([
@@ -30,7 +21,7 @@ class JsonApiTest extends TestCase
         ]);
         Route::get('test-route', fn () => UserResource::make($user));
 
-        $response = $this->get('test-route');
+        $response = $this->getJsonApi('test-route');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -59,7 +50,7 @@ class JsonApiTest extends TestCase
         ];
         Route::get('test-route', fn () => UserResource::collection($users));
 
-        $response = $this->get('test-route');
+        $response = $this->getJsonApi('test-route');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -88,7 +79,7 @@ class JsonApiTest extends TestCase
     {
         Route::get('test-route', fn () => BasicJsonApiResource::make(BasicModel::make()));
 
-        $response = $this->get('test-route');
+        $response = $this->getJsonApi('test-route');
 
         self::assertStringContainsString('"attributes":{},"relationships":{}', $response->content());
     }
@@ -104,7 +95,7 @@ class JsonApiTest extends TestCase
             }
         });
 
-        $response = $this->get('test-route');
+        $response = $this->getJsonApi('test-route');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -131,7 +122,7 @@ class JsonApiTest extends TestCase
             }
         });
 
-        $response = $this->get('test-route');
+        $response = $this->getJsonApi('test-route');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -145,5 +136,45 @@ class JsonApiTest extends TestCase
                 ],
             ],
         ]);
+    }
+
+    public function testItSetsTheContentTypeHeaderForASingleResource(): void
+    {
+        Route::get('test-route', fn () => BasicJsonApiResource::make(BasicModel::make(['id' => 'xxxx'])));
+
+        $response = $this->getJsonApi('test-route');
+
+        $response->assertHeader('Content-type', 'application/vnd.api+json');
+    }
+
+    public function testItSetsTheContentTypeHeaderForACollectionOfResources(): void
+    {
+        //
+    }
+
+    public function testItCanOptOutAddingTheContentTypeHeaderForASingleResource(): void
+    {
+    }
+
+    public function testItCanOptOutOfAddingTheContentTypeHeaderForACollectionOfResources(): void
+    {
+    }
+
+    public function testItChecksToAcceptHeaderForASingleResource(): void
+    {
+    }
+
+    public function testItChecksToAcceptHeaderForACollectionOfResources(): void
+    {
+    }
+
+    public function testItCanOptOutOfAcceptHeaderChecksForSingleResource(): void
+    {
+        //
+    }
+
+    public function testItCanOptOutOfAcceptHeaderChecksForACollectionOfResources(): void
+    {
+        //
     }
 }

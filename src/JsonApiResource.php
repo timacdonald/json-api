@@ -17,9 +17,21 @@ abstract class JsonApiResource extends JsonResource
     use Concerns\Attributes;
     use Concerns\Relationships;
 
+    private static $checkAcceptHeader = true;
+
     public static function minimalAttributes(): void
     {
         static::$minimalAttributes = true;
+    }
+
+    public static function checkAcceptHeader(): void
+    {
+        static::$checkAcceptHeader = true;
+    }
+
+    public static function dontCheckAcceptHeader(): void
+    {
+        static::$checkAcceptHeader = false;
     }
 
     protected function toAttributes(Request $request): array
@@ -110,5 +122,14 @@ abstract class JsonApiResource extends JsonResource
                 $collection->preserveKeys = (new static([]))->preserveKeys === true;
             }
         });
+    }
+
+    public function withResponse($request, $response): void
+    {
+        if (self::$checkAcceptHeader && $request->header('Accept', 'application/vnd.api+json') !== 'application/vnd.api+json') {
+            abort(406, "Expected application/vnd.api+json but instead found {$request->header('Accept')}");
+        }
+
+        $response->header('Content-type', 'application/vnd.api+json');
     }
 }

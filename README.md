@@ -20,6 +20,7 @@ This is a WIP project currently being built out via livestream on [my YouTube ch
 - [ ] Links
 - [ ] Meta
 - [ ] Load things via Spatie Query Builder
+- [ ] how you could handle type mapping in config file class > type
 
 # Basic usage
 

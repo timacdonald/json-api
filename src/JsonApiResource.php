@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\Response;
 use TiMacDonald\JsonApi\Exceptions\ResourceIdentificationException;
-use function array_merge;
 use function property_exists;
 
 abstract class JsonApiResource extends JsonResource
@@ -17,21 +17,9 @@ abstract class JsonApiResource extends JsonResource
     use Concerns\Attributes;
     use Concerns\Relationships;
 
-    private static $checkAcceptHeader = true;
-
     public static function minimalAttributes(): void
     {
         static::$minimalAttributes = true;
-    }
-
-    public static function checkAcceptHeader(): void
-    {
-        static::$checkAcceptHeader = true;
-    }
-
-    public static function dontCheckAcceptHeader(): void
-    {
-        static::$checkAcceptHeader = false;
     }
 
     protected function toAttributes(Request $request): array
@@ -80,39 +68,29 @@ abstract class JsonApiResource extends JsonResource
         return Str::camel($this->resource->getTable());
     }
 
+    /**
+     * @param Request $request
+     */
     public function toArray($request): array
     {
-        $payload = [
+        return [
             'id' => $this->toId($request),
             'type' => $this->toType($request),
             'attributes' => (object) $this->requestedAttributes($request)->all(),
             'relationships' => (object) $this->requestedRelationshipsAsIdentifiers($request)->all(),
+            'meta' => (object) $this->toMeta($request),
+            'links' => (object) $this->toLinks($request),
         ];
-
-        $meta = $this->toMeta($request);
-
-        if ($meta !== []) {
-            $payload = array_merge($payload, ['meta' => $meta]);
-        }
-
-        $links = $this->toLinks($request);
-
-        if ($links !== []) {
-            $payload = array_merge($payload, ['links' => $links]);
-        }
-
-        return $payload;
     }
 
+    /**
+     * @param Request $request
+     */
     public function with($request): array
     {
-        $included = $this->included($request);
-
-        if ($included->isNotEmpty()) {
-            return ['included' => $included];
-        }
-
-        return [];
+        return [
+            'included' => $this->included($request),
+        ];
     }
 
     public static function collection(mixed $resource): JsonApiResourceCollection
@@ -124,12 +102,11 @@ abstract class JsonApiResource extends JsonResource
         });
     }
 
-    public function withResponse($request, $response): void
+    /**
+     * @param Request $request
+     */
+    public function toResponse($request): Response
     {
-        if (self::$checkAcceptHeader && $request->header('Accept', 'application/vnd.api+json') !== 'application/vnd.api+json') {
-            abort(406, "Expected application/vnd.api+json but instead found {$request->header('Accept')}");
-        }
-
-        $response->header('Content-type', 'application/vnd.api+json');
+        return parent::toResponse($request)->header('Content-type', 'application/vnd.api+json');
     }
 }

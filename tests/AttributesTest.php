@@ -8,7 +8,6 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Tests\Models\BasicModel;
-use Tests\Resources\BasicJsonApiResource;
 use Tests\Resources\UserResource;
 use TiMacDonald\JsonApi\JsonApiResource;
 
@@ -31,7 +30,7 @@ class AttributesTest extends TestCase
             }
         });
 
-        $response = $this->getJsonApi('test-route');
+        $response = $this->getJson('test-route');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -43,7 +42,10 @@ class AttributesTest extends TestCase
                     'email' => 'tim@example.com',
                 ],
                 'relationships' => [],
+                'meta' => [],
+                'links' => [],
             ],
+            'included' => [],
         ]);
     }
 
@@ -66,7 +68,7 @@ class AttributesTest extends TestCase
             }
         });
 
-        $response = $this->getJsonApi('test-route?fields[basicModels]=name,location');
+        $response = $this->getJson('test-route?fields[basicModels]=name,location');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -78,7 +80,10 @@ class AttributesTest extends TestCase
                     'location' => 'Melbourne',
                 ],
                 'relationships' => [],
+                'links' => [],
+                'meta' => [],
             ],
+            'included' => [],
         ]);
     }
 
@@ -101,7 +106,7 @@ class AttributesTest extends TestCase
             }
         });
 
-        $response = $this->getJsonApi('test-route?fields[basicModels]=');
+        $response = $this->getJson('test-route?fields[basicModels]=');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -110,7 +115,10 @@ class AttributesTest extends TestCase
                 'type' => 'basicModels',
                 'attributes' => [],
                 'relationships' => [],
+                'meta' => [],
+                'links' => [],
             ],
+            'included' => [],
         ]);
     }
 
@@ -129,7 +137,7 @@ class AttributesTest extends TestCase
             }
         });
 
-        $response = $this->getJsonApi('test-route');
+        $response = $this->getJson('test-route');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -140,7 +148,10 @@ class AttributesTest extends TestCase
                     'location' => 'Melbourne',
                 ],
                 'relationships' => [],
+                'links' => [],
+                'meta' => [],
             ],
+            'included' => [],
         ]);
     }
 
@@ -158,7 +169,7 @@ class AttributesTest extends TestCase
             }
         });
 
-        $response = $this->getJsonApi('test-route?fields[basicModels]=');
+        $response = $this->getJson('test-route?fields[basicModels]=');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -167,7 +178,10 @@ class AttributesTest extends TestCase
                 'type' => 'basicModels',
                 'attributes' => [],
                 'relationships' => [],
+                'links' => [],
+                'meta' => [],
             ],
+            'included' => [],
         ]);
     }
 
@@ -185,7 +199,7 @@ class AttributesTest extends TestCase
             }
         });
 
-        $response = $this->getJsonApi('test-route');
+        $response = $this->getJson('test-route');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -196,16 +210,19 @@ class AttributesTest extends TestCase
                     'request_is_the_same' => true,
                 ],
                 'relationships' => [],
+                'links' => [],
+                'meta' => [],
             ],
+            'included' => [],
         ]);
     }
 
     public function testItThrowsWhenFieldsParameterIsNotAnArray(): void
     {
-        $model = BasicModel::make(['id' => 'expected-id']);
-        Route::get('test-route', fn () => new BasicJsonApiResource($model));
+        $user = BasicModel::make(['id' => 'expected-id']);
+        Route::get('test-route', fn () => UserResource::make($user));
 
-        $response = $this->getJsonApi('test-route?fields=name');
+        $response = $this->getJson('test-route?fields=name');
 
         $response->assertStatus(400);
         $response->assertExactJson([
@@ -215,10 +232,10 @@ class AttributesTest extends TestCase
 
     public function testItThrowsWhenFieldsParameterIsNotAStringValue(): void
     {
-        $model = BasicModel::make(['id' => 'expected-id']);
-        Route::get('test-route', fn () => new BasicJsonApiResource($model));
+        $user = BasicModel::make(['id' => 'expected-id']);
+        Route::get('test-route', fn () => UserResource::make($user));
 
-        $response = $this->getJsonApi('test-route?fields[basicModels][foo]=name');
+        $response = $this->getJson('test-route?fields[basicModels][foo]=name');
 
         $response->assertStatus(400);
         $response->assertExactJson([
@@ -235,7 +252,7 @@ class AttributesTest extends TestCase
         ]);
         Route::get('test-route', fn () => UserResource::make($user));
 
-        $response = $this->getJsonApi('test-route');
+        $response = $this->getJson('test-route');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -244,8 +261,12 @@ class AttributesTest extends TestCase
                 'id' => 'user-id',
                 'attributes' => [],
                 'relationships' => [],
+                'meta' => [],
+                'links' => [],
             ],
+            'included' => [],
         ]);
+
         JsonApiResource::maximalAttributes();
     }
 
@@ -268,7 +289,7 @@ class AttributesTest extends TestCase
         ]);
         Route::get('test-route', fn () => UserResource::make($user));
 
-        $response = $this->getJsonApi('test-route?include=posts&fields[basicModels]=title');
+        $response = $this->getJson('test-route?include=posts&fields[basicModels]=title');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -292,6 +313,8 @@ class AttributesTest extends TestCase
                         ],
                     ],
                 ],
+                'meta' => [],
+                'links' => [],
             ],
             'included' => [
                 [
@@ -301,6 +324,8 @@ class AttributesTest extends TestCase
                         'title' => 'post-title-1',
                     ],
                     'relationships' => [],
+                    'links' => [],
+                    'meta' => [],
                 ],
                 [
                     'id' => 'post-id-2',
@@ -309,6 +334,8 @@ class AttributesTest extends TestCase
                         'title' => 'post-title-2',
                     ],
                     'relationships' => [],
+                    'links' => [],
+                    'meta' => [],
                 ],
             ],
         ]);

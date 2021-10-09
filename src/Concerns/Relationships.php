@@ -45,10 +45,10 @@ trait Relationships
     private function requestedRelationshipsAsIdentifiers(Request $request): Collection
     {
         return $this->requestedRelationships($request)
-            ->map(fn (JsonApiResource | JsonApiResourceCollection $resource): array => $resource->toRelationshipIdentifier($request));
+            ->map(fn (JsonApiResource | JsonApiResourceCollection $resource): array => $resource->toResourceIdentifier($request));
     }
 
-    public function toRelationshipIdentifier(Request $request): array
+    public function toResourceIdentifier(Request $request): array
     {
         return [
             'data' => [
@@ -58,9 +58,14 @@ trait Relationships
         ];
     }
 
+    public function toUniqueResourceIdentifier(Request $request): string
+    {
+        return "type:{$this->toType($request)} id:{$this->toId($request)}";
+    }
+
     private function requestedRelationships(Request $request): Collection
     {
-        return once(fn (): Collection => Collection::make($this->toRelationships($request))
+        return once(fn (): Collection => Collection::make($this->resolveRelationships($request))
             ->only(Includes::parse($request, $this->includePrefix))
             ->map(fn (mixed $value, string $key): JsonApiResource | JsonApiResourceCollection => $value($request)->withIncludePrefix($key))
             ->each(function (JsonApiResource | JsonApiResourceCollection $resource) use ($request): void {
@@ -68,7 +73,12 @@ trait Relationships
                     return;
                 }
 
-                $resource->collection = $resource->collection->uniqueStrict(fn (JsonApiResource $resource): array => $resource->toRelationshipIdentifier($request));
+                $resource->collection = $resource->collection->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request));
             }));
+    }
+
+    private function resolveRelationships(Request $request): array
+    {
+        return once(fn () => $this->toRelationships($request));
     }
 }

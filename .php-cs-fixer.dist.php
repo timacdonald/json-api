@@ -18,6 +18,7 @@ return (new PhpCsFixer\Config())
         'strict_param' => true,
         'explicit_string_variable' => true,
         'trailing_comma_in_multiline' => true,
+        'array_indentation' => true,
     ])
     ->setRiskyAllowed(true)
     ->setFinder($finder);

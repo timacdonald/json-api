@@ -10,19 +10,18 @@ use Illuminate\Support\Collection;
 
 class JsonApiResourceCollection extends AnonymousResourceCollection
 {
+    /**
+     * @param Request $request
+     */
     public function with($request): array
     {
-        $included = $this->collection
-            ->map(fn (JsonApiResource $resource): Collection => $resource->included($request))
-            ->flatten()
-            ->reject(fn (?JsonApiResource $resource): bool => $resource === null)
-            ->uniqueStrict(fn (JsonApiResource $resource): array => $resource->toRelationshipIdentifier($request));
-
-        if ($included->isEmpty()) {
-            return [];
-        }
-
-        return ['included' => $included];
+        return [
+            'included' => $this->collection
+                ->map(fn (JsonApiResource $resource): Collection => $resource->included($request))
+                ->flatten()
+                ->reject(fn (?JsonApiResource $resource): bool => $resource === null)
+                ->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request)),
+        ];
     }
 
     /**
@@ -46,8 +45,16 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     /**
      * @internal
      */
-    public function toRelationshipIdentifier(Request $request): array
+    public function toResourceIdentifier(Request $request): array
     {
-        return $this->collection->map(fn (JsonApiResource $resource): array => $resource->toRelationshipIdentifier($request))->all();
+        return $this->collection->map(fn (JsonApiResource $resource): array => $resource->toResourceIdentifier($request))->all();
+    }
+
+    /**
+     * @param Request $request
+     */
+    public function toResponse($request)
+    {
+        return parent::toResponse($request)->header('Content-type', 'application/vnd.api+json');
     }
 }

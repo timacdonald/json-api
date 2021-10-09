@@ -5,7 +5,6 @@ A lightweight Laravel implementation of JSON:API.
 This is a WIP project currently being built out via livestream on [my YouTube channel](https://www.youtube.com/channel/UCXukwzJwxZG0NOtLhCBdEsQ). Come hang out next stream.
 
 #### TODO
-- [ ] move unique check to a string of "type:{type} id:{id}"
 - [ ] review composer PHP version support
 - [ ] Pagination tests
 - [ ] collection counts
@@ -98,6 +97,14 @@ As previously mentioned, relationships are not included in the response unless t
 # Include both...
 /api/users/8?include=posts,subscription
 ```
+
+## Rationale behind inclusion / exclusion of keys
+
+The JSON:API spec mentions that keys such as `"attributes"`, `"relationships"`, `"meta"`, and `"links"` may appear in a resource. In order to make the responses as light as possible these keys are only included when their corresponding methods return a non-empty array, but this also means that if the client has filtered all the values out for example, via Sparse Fieldsets, that the key will still be present, but empty.
+
+This approach allows you to have a deterministic resource structure per type, which in turn allows for a simpler shared type system across both the front-end and back-end of your system, i.e. you don't have optional field containing more optional fields.
+
+So although the keys returned for a resource may vary by type - within a type the keys returned will always be the same.
 
 # Advanced usage
 
@@ -216,3 +223,4 @@ Relationships can be resolved deeply and also multiple relationship paths can be
   - decide how to handle top level keys for single and collections (static? should collections have to be extended to specify the values? or can there be static methods on the single resource for the collection?)
 - [ ] Handle loading relations on a already in memory object with Spatie Query builder (PR)
 - [ ] strict mode that throws when duplicates are found in includes
+- [ ] make structure more deterministic by forcing included to always be available

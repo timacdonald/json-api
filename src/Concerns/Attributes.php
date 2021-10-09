@@ -23,7 +23,7 @@ trait Attributes
 
     private function requestedAttributes(Request $request): Collection
     {
-        return Collection::make($this->toAttributes($request))
+        return Collection::make($this->resolveAttributes($request))
             ->only($this->fields($request))
             ->map(fn (mixed $value): mixed => value($value, $request));
     }
@@ -39,5 +39,10 @@ trait Attributes
         return static::$minimalAttributes
             ? []
             : null;
+    }
+
+    private function resolveAttributes(Request $request): array
+    {
+        return once(fn () => $this->toAttributes($request));
     }
 }

@@ -20,7 +20,7 @@ class RelationshipsTest extends TestCase
         $post = BasicModel::make([]);
         Route::get('test-route', fn () => PostResource::make($post));
 
-        $response = $this->getJsonApi('test-route?include[]=name');
+        $response = $this->getJson('test-route?include[]=name');
 
         $response->assertStatus(400);
         $response->assertExactJson([
@@ -44,7 +44,7 @@ class RelationshipsTest extends TestCase
             }
         });
 
-        $response = $this->getJsonApi('test-route');
+        $response = $this->getJson('test-route');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -56,7 +56,10 @@ class RelationshipsTest extends TestCase
                     'content' => 'post-content',
                 ],
                 'relationships' => [],
+                'links' => [],
+                'meta' => [],
             ],
+            'included' => [],
         ]);
     }
 
@@ -73,7 +76,7 @@ class RelationshipsTest extends TestCase
         ]);
         Route::get('test-route', fn () => PostResource::make($post));
 
-        $response = $this->getJsonApi('test-route?include=author');
+        $response = $this->getJson('test-route?include=author');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -92,6 +95,8 @@ class RelationshipsTest extends TestCase
                         ],
                     ],
                 ],
+                'links' => [],
+                'meta' => [],
             ],
             'included' => [
                 [
@@ -101,6 +106,8 @@ class RelationshipsTest extends TestCase
                         'name' => 'author-name',
                     ],
                     'relationships' => [],
+                    'links' => [],
+                    'meta' => [],
                 ],
             ],
         ]);
@@ -131,7 +138,7 @@ class RelationshipsTest extends TestCase
         ]);
         Route::get('test-route', fn () => PostResource::make($post));
 
-        $response = $this->getJsonApi('test-route?include=author.avatar,author.license,featureImage');
+        $response = $this->getJson('test-route?include=author.avatar,author.license,featureImage');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -156,6 +163,8 @@ class RelationshipsTest extends TestCase
                         ],
                     ],
                 ],
+                'links' => [],
+                'meta' => [],
             ],
             'included' => [
                 [
@@ -178,6 +187,8 @@ class RelationshipsTest extends TestCase
                             ],
                         ],
                     ],
+                    'links' => [],
+                    'meta' => [],
                 ],
                 [
                     'id' => 'feature-image-id',
@@ -186,6 +197,8 @@ class RelationshipsTest extends TestCase
                         'url' => 'https://example.com/doggo.png',
                     ],
                     'relationships' => [],
+                    'links' => [],
+                    'meta' => [],
                 ],
                 [
                     'id' => 'license-id',
@@ -194,6 +207,8 @@ class RelationshipsTest extends TestCase
                         'key' => 'license-key',
                     ],
                     'relationships' => [],
+                    'links' => [],
+                    'meta' => [],
                 ],
                 [
                     'id' => 'avatar-id',
@@ -202,6 +217,8 @@ class RelationshipsTest extends TestCase
                         'url' => 'https://example.com/avatar.png',
                     ],
                     'relationships' => [],
+                    'links' => [],
+                    'meta' => [],
                 ],
             ],
         ]);
@@ -230,7 +247,7 @@ class RelationshipsTest extends TestCase
             }
         });
 
-        $response = $this->getJsonApi('test-route?include=child.child');
+        $response = $this->getJson('test-route?include=child.child');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -246,6 +263,8 @@ class RelationshipsTest extends TestCase
                         ],
                     ],
                 ],
+                'links' => [],
+                'meta' => [],
             ],
             'included' => [
                 [
@@ -260,12 +279,16 @@ class RelationshipsTest extends TestCase
                             ],
                         ],
                     ],
+                    'links' => [],
+                    'meta' => [],
                 ],
                 [
                     'id' => 'child-id-2',
                     'type' => 'basicModels',
                     'attributes' => [],
                     'relationships' => [],
+                    'links' => [],
+                    'meta' => [],
                 ],
             ],
         ]);
@@ -297,7 +320,7 @@ class RelationshipsTest extends TestCase
             }
         });
 
-        $response = $this->getJsonApi('test-route?include=child.child');
+        $response = $this->getJson('test-route?include=child.child');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -313,6 +336,8 @@ class RelationshipsTest extends TestCase
                         ],
                     ],
                 ],
+                'meta' => [],
+                'links' => [],
             ],
             'included' => [
                 [
@@ -335,18 +360,24 @@ class RelationshipsTest extends TestCase
                             ],
                         ],
                     ],
+                    'meta' => [],
+                    'links' => [],
                 ],
                 [
                     'id' => 'child-id-2',
                     'type' => 'basicModels',
                     'attributes' => [],
-                    'relationships' => [],
+                    'relationships'=> [],
+                    'links' => [],
+                    'meta' => [],
                 ],
                 [
                     'id' => 'child-id-3',
                     'type' => 'basicModels',
                     'attributes' => [],
-                    'relationships' => [],
+                    'relationships'=> [],
+                    'links' => [],
+                    'meta' => [],
                 ],
             ],
         ]);
@@ -374,7 +405,7 @@ class RelationshipsTest extends TestCase
         ];
         Route::get('test-route', fn () => PostResource::collection($posts));
 
-        $response = $this->getJsonApi('test-route?include=author');
+        $response = $this->getJson('test-route?include=author');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -394,6 +425,8 @@ class RelationshipsTest extends TestCase
                             ],
                         ],
                     ],
+                    'meta' => [],
+                    'links' => [],
                 ],
                 [
                     'id' => 'post-id-2',
@@ -410,6 +443,8 @@ class RelationshipsTest extends TestCase
                             ],
                         ],
                     ],
+                    'meta' => [],
+                    'links' => [],
                 ],
             ],
             'included' => [
@@ -420,6 +455,8 @@ class RelationshipsTest extends TestCase
                         'name' => 'author-name-1',
                     ],
                     'relationships' => [],
+                    'meta' => [],
+                    'links' => [],
                 ],
                 [
                     'id' => 'author-id-2',
@@ -428,6 +465,8 @@ class RelationshipsTest extends TestCase
                         'name' => 'author-name-2',
                     ],
                     'relationships' => [],
+                    'meta' => [],
+                    'links' => [],
                 ],
             ],
         ]);
@@ -453,7 +492,7 @@ class RelationshipsTest extends TestCase
         ];
         Route::get('test-route', fn () => UserResource::make($author));
 
-        $response = $this->getJsonApi('test-route?include=posts');
+        $response = $this->getJson('test-route?include=posts');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -479,6 +518,8 @@ class RelationshipsTest extends TestCase
                         ],
                     ],
                 ],
+                'meta' => [],
+                'links' => [],
             ],
             'included' => [
                 [
@@ -489,6 +530,8 @@ class RelationshipsTest extends TestCase
                         'content' => 'post-content-1',
                     ],
                     'relationships' => [],
+                    'meta' => [],
+                    'links' => [],
                 ],
                 [
                     'id' => 'post-id-2',
@@ -498,6 +541,8 @@ class RelationshipsTest extends TestCase
                         'content' => 'post-content-2',
                     ],
                     'relationships' => [],
+                    'meta' => [],
+                    'links' => [],
                 ],
             ],
         ]);
@@ -565,7 +610,7 @@ class RelationshipsTest extends TestCase
         ];
         Route::get('test-route', fn () => PostResource::collection($posts));
 
-        $response = $this->getJsonApi('test-route?include=comments.likes');
+        $response = $this->getJson('test-route?include=comments.likes');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -593,6 +638,8 @@ class RelationshipsTest extends TestCase
                             ],
                         ],
                     ],
+                    'meta' => [],
+                    'links' => [],
                 ],
                 [
                     'id' => 'post-id-2',
@@ -617,6 +664,8 @@ class RelationshipsTest extends TestCase
                             ],
                         ],
                     ],
+                    'meta' => [],
+                    'links' => [],
                 ],
             ],
             'included' => [
@@ -642,6 +691,8 @@ class RelationshipsTest extends TestCase
                             ],
                         ],
                     ],
+                    'meta' => [],
+                    'links' => [],
                 ],
                 [
                     'id' => 'comment-id-2',
@@ -665,30 +716,40 @@ class RelationshipsTest extends TestCase
                             ],
                         ],
                     ],
+                    'meta' => [],
+                    'links' => [],
                 ],
                 [
                     'id' => 'like-id-1',
                     'type' => 'basicModels',
                     'attributes' => [],
                     'relationships' => [],
+                    'links' => [],
+                    'meta' => [],
                 ],
                 [
                     'id' => 'like-id-2',
                     'type' => 'basicModels',
                     'attributes' => [],
                     'relationships' => [],
+                    'links' => [],
+                    'meta' => [],
                 ],
                 [
                     'id' => 'like-id-3',
                     'type' => 'basicModels',
                     'attributes' => [],
                     'relationships' => [],
+                    'links' => [],
+                    'meta' => [],
                 ],
                 [
                     'id' => 'like-id-4',
                     'type' => 'basicModels',
                     'attributes' => [],
                     'relationships' => [],
+                    'links' => [],
+                    'meta' => [],
                 ],
                 [
                     'id' => 'comment-id-3',
@@ -712,6 +773,8 @@ class RelationshipsTest extends TestCase
                             ],
                         ],
                     ],
+                    'links' => [],
+                    'meta' => [],
                 ],
                 [
                     'id' => 'comment-id-4',
@@ -735,30 +798,40 @@ class RelationshipsTest extends TestCase
                             ],
                         ],
                     ],
+                    'links' => [],
+                    'meta' => [],
                 ],
                 [
                     'id' => 'like-id-5',
                     'type' => 'basicModels',
                     'attributes' => [],
                     'relationships' => [],
+                    'links' => [],
+                    'meta' => [],
                 ],
                 [
                     'id' => 'like-id-6',
                     'type' => 'basicModels',
                     'attributes' => [],
                     'relationships' => [],
+                    'links' => [],
+                    'meta' => [],
                 ],
                 [
                     'id' => 'like-id-7',
                     'type' => 'basicModels',
                     'attributes' => [],
                     'relationships' => [],
+                    'links' => [],
+                    'meta' => [],
                 ],
                 [
                     'id' => 'like-id-8',
                     'type' => 'basicModels',
                     'attributes' => [],
                     'relationships' => [],
+                    'links' => [],
+                    'meta' => [],
                 ],
             ],
         ]);
@@ -797,7 +870,7 @@ class RelationshipsTest extends TestCase
             }
         });
 
-        $response = $this->getJsonApi('test-route?include=relation&name=expected%20name');
+        $response = $this->getJson('test-route?include=relation&name=expected%20name');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -813,6 +886,8 @@ class RelationshipsTest extends TestCase
                         ],
                     ],
                 ],
+                'meta' => [],
+                'links' => [],
             ],
             'included' => [
                 [
@@ -822,6 +897,8 @@ class RelationshipsTest extends TestCase
                         'name' => 'expected name',
                     ],
                     'relationships' => [],
+                    'links' => [],
+                    'meta' => [],
                 ],
             ],
         ]);
@@ -847,7 +924,7 @@ class RelationshipsTest extends TestCase
         ];
         Route::get('test-route', fn () => UserResource::collection($users));
 
-        $response = $this->getJsonApi('test-route?include=avatar');
+        $response = $this->getJson('test-route?include=avatar');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -866,6 +943,8 @@ class RelationshipsTest extends TestCase
                             ],
                         ],
                     ],
+                    'meta' => [],
+                    'links' => [],
                 ],
                 [
                     'id' => 'user-id-2',
@@ -881,6 +960,8 @@ class RelationshipsTest extends TestCase
                             ],
                         ],
                     ],
+                    'meta' => [],
+                    'links' => [],
                 ],
             ],
             'included' => [
@@ -891,6 +972,8 @@ class RelationshipsTest extends TestCase
                         'url' => 'https://example.com/avatar.png',
                     ],
                     'relationships' => [],
+                    'links' => [],
+                    'meta' => [],
                 ],
             ],
         ]);
@@ -915,7 +998,7 @@ class RelationshipsTest extends TestCase
         ]);
         Route::get('test-route', fn () => UserResource::make($user));
 
-        $response = $this->getJsonApi('test-route?include=posts');
+        $response = $this->getJson('test-route?include=posts');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -935,6 +1018,8 @@ class RelationshipsTest extends TestCase
                         ],
                     ],
                 ],
+                'meta' => [],
+                'links' =>[],
             ],
             'included' => [
                 [
@@ -945,8 +1030,64 @@ class RelationshipsTest extends TestCase
                         'content' => 'post-content',
                     ],
                     'relationships' => [],
+                    'meta' => [],
+                    'links' =>[],
                 ],
             ],
+        ]);
+    }
+
+    public function testItHasIncludedArrayWhenIncludeParameterIsPresentForASingleResource(): void
+    {
+        $user = BasicModel::make([
+            'id' => 'user-id',
+            'name' => 'user-name',
+        ]);
+        Route::get('test-route', fn () => UserResource::make($user));
+
+        $response = $this->getJson('test-route?include=');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                'id' => 'user-id',
+                'type' => 'basicModels',
+                'attributes' => [
+                    'name' => 'user-name',
+                ],
+                'relationships' => [],
+                'meta' => [],
+                'links' =>[],
+            ],
+            'included' => [],
+        ]);
+    }
+
+    public function testItHasIncludedArrayWhenIncludeParameterIsPresentForACollectionOfResources(): void
+    {
+        $user = BasicModel::make([
+            'id' => 'user-id',
+            'name' => 'user-name',
+        ]);
+        Route::get('test-route', fn () => UserResource::collection([$user]));
+
+        $response = $this->getJson('test-route?include=');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                [
+                    'id' => 'user-id',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'name' => 'user-name',
+                    ],
+                    'relationships' => [],
+                    'meta' => [],
+                    'links' => [],
+                ],
+            ],
+            'included' => [],
         ]);
     }
 }

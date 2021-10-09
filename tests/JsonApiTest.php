@@ -21,7 +21,7 @@ class JsonApiTest extends TestCase
         ]);
         Route::get('test-route', fn () => UserResource::make($user));
 
-        $response = $this->getJsonApi('test-route');
+        $response = $this->getJson('test-route');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -32,7 +32,10 @@ class JsonApiTest extends TestCase
                     'name' => 'user-name',
                 ],
                 'relationships' => [],
+                'meta' => [],
+                'links' => [],
             ],
+            'included' => [],
         ]);
     }
 
@@ -50,7 +53,7 @@ class JsonApiTest extends TestCase
         ];
         Route::get('test-route', fn () => UserResource::collection($users));
 
-        $response = $this->getJsonApi('test-route');
+        $response = $this->getJson('test-route');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -62,6 +65,8 @@ class JsonApiTest extends TestCase
                         'name' => 'user-name-1',
                     ],
                     'relationships' => [],
+                    'meta' => [],
+                    'links' => [],
                 ],
                 [
                     'id' => 'user-id-2',
@@ -70,18 +75,21 @@ class JsonApiTest extends TestCase
                         'name' => 'user-name-2',
                     ],
                     'relationships' => [],
+                    'meta' => [],
+                    'links' => [],
                 ],
             ],
+            'included' => [],
         ]);
     }
 
     public function testItCastsEmptyAttributesAndRelationshipsToAnObject(): void
     {
-        Route::get('test-route', fn () => BasicJsonApiResource::make(BasicModel::make()));
+        Route::get('test-route', fn () => UserResource::make(BasicModel::make(['id' => 'user-id'])));
 
-        $response = $this->getJsonApi('test-route');
+        $response = $this->getJson('test-route?fields[basicModels]=');
 
-        self::assertStringContainsString('"attributes":{},"relationships":{}', $response->content());
+        self::assertStringContainsString('"attributes":{},"relationships":{},"meta":{},"links":{}', $response->content());
     }
 
     public function testItAddsMetaToIndividualResources(): void
@@ -95,7 +103,7 @@ class JsonApiTest extends TestCase
             }
         });
 
-        $response = $this->getJsonApi('test-route');
+        $response = $this->getJson('test-route');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -107,7 +115,9 @@ class JsonApiTest extends TestCase
                 'meta' => [
                     'meta-key' => 'meta-value',
                 ],
+                'links' => [],
             ],
+            'included' => [],
         ]);
     }
 
@@ -122,7 +132,7 @@ class JsonApiTest extends TestCase
             }
         });
 
-        $response = $this->getJsonApi('test-route');
+        $response = $this->getJson('test-route');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -131,10 +141,12 @@ class JsonApiTest extends TestCase
                 'type' => 'basicModels',
                 'attributes' => [],
                 'relationships' => [],
+                'meta' => [],
                 'links' => [
                     'links-key' => 'links-value',
                 ],
             ],
+            'included' => [],
         ]);
     }
 
@@ -142,39 +154,17 @@ class JsonApiTest extends TestCase
     {
         Route::get('test-route', fn () => BasicJsonApiResource::make(BasicModel::make(['id' => 'xxxx'])));
 
-        $response = $this->getJsonApi('test-route');
+        $response = $this->getJson('test-route');
 
         $response->assertHeader('Content-type', 'application/vnd.api+json');
     }
 
     public function testItSetsTheContentTypeHeaderForACollectionOfResources(): void
     {
-        //
-    }
+        Route::get('test-route', fn () => BasicJsonApiResource::collection([BasicModel::make(['id' => 'xxxx'])]));
 
-    public function testItCanOptOutAddingTheContentTypeHeaderForASingleResource(): void
-    {
-    }
+        $response = $this->getJson('test-route');
 
-    public function testItCanOptOutOfAddingTheContentTypeHeaderForACollectionOfResources(): void
-    {
-    }
-
-    public function testItChecksToAcceptHeaderForASingleResource(): void
-    {
-    }
-
-    public function testItChecksToAcceptHeaderForACollectionOfResources(): void
-    {
-    }
-
-    public function testItCanOptOutOfAcceptHeaderChecksForSingleResource(): void
-    {
-        //
-    }
-
-    public function testItCanOptOutOfAcceptHeaderChecksForACollectionOfResources(): void
-    {
-        //
+        $response->assertHeader('Content-type', 'application/vnd.api+json');
     }
 }

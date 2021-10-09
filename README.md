@@ -20,7 +20,7 @@ This is a WIP project currently being built out via livestream on [my YouTube ch
 
 # Basic usage
 
-## Identification
+## Resource Identification
 
 [JSON:API docs: Identification](https://jsonapi.org/format/#document-resource-object-identification)
 
@@ -32,7 +32,7 @@ You can customise how this works to support other types of objects and behaviour
 
 Nice. Well that was easy, so let's move onto...
 
-## Attributes
+## Resource Attributes
 
 [JSON:API docs: Attributes](https://jsonapi.org/format/#document-resource-object-attributes)
 
@@ -55,7 +55,7 @@ class UserResource extends JsonApiResource
 
 The [advanced usage](#advanded-usage) section covers [sparse fieldsets and handling expensive attribute calculation](#sparse-fieldsets) and [minimal attribute](#minimal-attributes) payloads.
 
-## Relationships
+## Resource Relationships
 
 [JSON:API docs: Relationships](https://jsonapi.org/format/#document-resource-object-relationships)
 
@@ -95,17 +95,53 @@ As previously mentioned, relationships are not included in the response unless t
 /api/users/8?include=posts,subscription
 ```
 
-## Rationale behind inclusion / exclusion of keys
+## Resource Links
 
-The JSON:API spec mentions that keys such as `"attributes"`, `"relationships"`, `"meta"`, and `"links"` may appear in a resource. In order to make the responses as light as possible these keys are only included when their corresponding methods return a non-empty array, but this also means that if the client has filtered all the values out for example, via Sparse Fieldsets, that the key will still be present, but empty.
+[JSON:API docs: Links](https://jsonapi.org/format/#document-resource-object-links)
 
-This approach allows you to have a deterministic resource structure per type, which in turn allows for a simpler shared type system across both the front-end and back-end of your system, i.e. you don't have optional field containing more optional fields.
+To provide a meta details for a resource, you can implement the `toLinks(Request $request)` method...
 
-So although the keys returned for a resource may vary by type - within a type the keys returned will always be the same.
+```php
+<?php
+
+class UserResource extends JsonApiResource
+{
+    protected function toLinks(Request $request): array
+    {
+        return [
+            'self' => route('users.show', $this->resource),
+        ];
+    }
+}
+```
+
+## Resource Meta
+
+[JSON:API docs: Meta](https://jsonapi.org/format/#document-meta)
+
+To provide a meta details for a resource, you can implement the `toMeta(Request $request)` method...
+
+```php
+<?php
+
+class UserResource extends JsonApiResource
+{
+    protected function toMeta(Request $request): array
+    {
+        return [
+            'resourceDeprecated' => true,
+        ];
+    }
+}
+```
+
+## Rationale behind inclusion of all top level object keys
+
+`// TODO`
 
 # Advanced usage
 
-## Identification
+## Resource Identification
 
 ### Customising the resource `"id"`
 
@@ -139,7 +175,7 @@ class UserResource extends JsonApiResource
 }
 ```
 
-## Attributes
+## Resource Attributes
 
 ### Sparse fieldsets
 
@@ -176,7 +212,7 @@ The `Closure` is only resolved when the attribute is going to be included in the
 /api/users/8?fields[users]=name,profile_image
 ```
 
-### Minimal attributes
+### Minimal Resource Attributes
 
 Out of the box the resource provides a maximal attribute payload when sparse fieldsets are not used i.e. all declared attributes in the resource are returned. If you prefer to instead make it that spare fieldsets are required in order to retrieve any attributes, you can specify the use of minimal attributes in your applications service provider.
 
@@ -194,7 +230,7 @@ class AppServiceProvider extends ServiceProvider
 }
 ```
 
-## Relationships
+## Resource Relationships
 
 [JSON:API docs: Inclusion of Related Resources](https://jsonapi.org/format/#fetching-includes)
 

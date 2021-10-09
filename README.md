@@ -11,9 +11,6 @@ This is a WIP project currently being built out via livestream on [my YouTube ch
 - [ ] allow filtering of attributes and relationships via "when" helpers. 
 - [ ] Filter `null` relationships
 - [ ] Logo?
-- [ ] Add Accept and Content-type functionality to the readme (maybe the Accept header stuff should actually be a middleware instead?)
-- [ ] Add opt out methods for header stuff to the readme
-- [ ] Document the test helpers / opt out stuff for tests
 
 # To document
 - [ ] Links
@@ -224,3 +221,4 @@ Relationships can be resolved deeply and also multiple relationship paths can be
 - [ ] Handle loading relations on a already in memory object with Spatie Query builder (PR)
 - [ ] strict mode that throws when duplicates are found in includes
 - [ ] make structure more deterministic by forcing included to always be available
+- [ ] Resource identifier links and meta as a new concept different to normal resource links and relationships.

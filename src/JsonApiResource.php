@@ -93,7 +93,10 @@ abstract class JsonApiResource extends JsonResource
         ];
     }
 
-    public static function collection(mixed $resource): JsonApiResourceCollection
+    /**
+     * @param mixed $resource
+     */
+    public static function collection($resource): JsonApiResourceCollection
     {
         return tap(new JsonApiResourceCollection($resource, static::class), function (JsonApiResourceCollection $collection): void {
             if (property_exists(static::class, 'preserveKeys')) {

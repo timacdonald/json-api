@@ -25,6 +25,14 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     }
 
     /**
+     * @param Request $request
+     */
+    public function toResponse($request)
+    {
+        return parent::toResponse($request)->header('Content-type', 'application/vnd.api+json');
+    }
+
+    /**
      * @internal
      */
     public function withIncludePrefix(string $prefix): self
@@ -48,13 +56,5 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     public function toResourceIdentifier(Request $request): array
     {
         return $this->collection->map(fn (JsonApiResource $resource): array => $resource->toResourceIdentifier($request))->all();
-    }
-
-    /**
-     * @param Request $request
-     */
-    public function toResponse($request)
-    {
-        return parent::toResponse($request)->header('Content-type', 'application/vnd.api+json');
     }
 }

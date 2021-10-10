@@ -10,12 +10,24 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 use TiMacDonald\JsonApi\Exceptions\ResourceIdentificationException;
+use Closure;
 use function property_exists;
 
 abstract class JsonApiResource extends JsonResource
 {
     use Concerns\Attributes;
     use Concerns\Relationships;
+    use Concerns\Identification;
+
+    public static function resolveIdUsing(Closure $resolver): void
+    {
+        self::$idResolver = $resolver;
+    }
+
+    public static function resolveTypeUsing(Closure $resolver): void
+    {
+        self::$typeResolver = $resolver;
+    }
 
     public static function minimalAttributes(): void
     {
@@ -52,20 +64,24 @@ abstract class JsonApiResource extends JsonResource
 
     protected function toId(Request $request): string
     {
-        if (! $this->resource instanceof Model) {
-            throw ResourceIdentificationException::attemptingToDetermineIdFor($this->resource);
-        }
+        return (self::$idResolver ?? static function (mixed $resource): string {
+            if (! $resource instanceof Model) {
+                throw ResourceIdentificationException::attemptingToDetermineIdFor($resource);
+            }
 
-        return (string) $this->resource->getKey();
+            return (string) $resource->getKey();
+        })($this->resource);
     }
 
     protected function toType(Request $request): string
     {
-        if (! $this->resource instanceof Model) {
-            throw ResourceIdentificationException::attemptingToDetermineTypeFor($this->resource);
-        }
+        return (self::$typeResolver ?? static function (mixed $resource): string {
+            if (! $resource instanceof Model) {
+                throw ResourceIdentificationException::attemptingToDetermineTypeFor($resource);
+            }
 
-        return Str::camel($this->resource->getTable());
+            return Str::camel($resource->getTable());
+        })($this->resource);
     }
 
     /**

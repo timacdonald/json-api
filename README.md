@@ -259,3 +259,4 @@ Relationships can be resolved deeply and also multiple relationship paths can be
 - [ ] make structure more deterministic by forcing included to always be available
 - [ ] Resource identifier links and meta as a new concept different to normal resource links and relationships.
 - [ ] Ability to send the resource identifier "id" and "type" for a belongsTo relationship, even if not included?
+- [ ] Helper to define links

@@ -26,9 +26,7 @@ These docs are not designed to introduce you to the JSON:API spec and the associ
 
 The `"id"` and `"type"` of a resource is automatically resolved for you under-the-hood if you are using resources solely with Eloquent models.
 
-The default behaviour when resolving the `"id"` is to call the `$model->getKey()` method and the `"type"` is resolved by using a camel case of the model's table name, e.g. `blog_posts` becomes `blogPosts`.
-
-You can customise how this works to support other types of objects and behaviours, but that will follow in the [advanced usage](#advanced-usage) section.
+We have defined a sensible default for you so you can hit the ground running without having to fiddle with the small stuff. The default behaviour when resolving the `"id"` is to call the `$model->getKey()` method and the `"type"` is resolved by using a camel case of the model's table name, e.g. `blog_posts` becomes `blogPosts`. You can customise how this works to support other types of objects and behaviours, but that will follow in the [advanced usage](#advanced-usage) section.
 
 Nice. Well that was easy, so let's move onto...
 

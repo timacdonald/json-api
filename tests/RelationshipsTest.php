@@ -1090,4 +1090,14 @@ class RelationshipsTest extends TestCase
             'included' => [],
         ]);
     }
+
+    public function testItCanReturnNullForEmptyToOneRelationships(): void
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function tsetItCanReturnAnEmptyArrayForEmptyToManyRelationships(): void
+    {
+        $this->markTestIncomplete();
+    }
 }

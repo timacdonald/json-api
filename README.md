@@ -1,6 +1,6 @@
 # JSON:API Resource for Laravel
 
-A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API standards and also implements features such as sparse fieldsets and compound documents.
+A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API standards and also implements features such as sparse fieldsets and compound documents, whilst also allowing you to extend the spec as needed for your project.
 
 These docs are not designed to introduce you to the JSON:API spec and the associated concepts, instead you should [head over and read the spec](https:/jsonapi.org) to better learn more about the specification.
 
@@ -73,6 +73,8 @@ class UserResource extends JsonApiResource
     }
 }
 ```
+
+> Note: "links" and "meta" are not yet supported for relationships, but they are WIP. Resource linkage "meta" is not yet implemented. Let me know if you have a use-case you'd like to use it for!
 
 Each `Closure` is only resolved when the relationship has been included by the client...
 

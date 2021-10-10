@@ -99,7 +99,7 @@ As previously mentioned, relationships are not included in the response unless t
 
 [JSON:API docs: Links](https://jsonapi.org/format/#document-resource-object-links)
 
-To provide a meta details for a resource, you can implement the `toLinks(Request $request)` method...
+To provide links for a resource, you can implement the `toLinks(Request $request)` method...
 
 ```php
 <?php
@@ -119,7 +119,7 @@ class UserResource extends JsonApiResource
 
 [JSON:API docs: Meta](https://jsonapi.org/format/#document-meta)
 
-To provide a meta details for a resource, you can implement the `toMeta(Request $request)` method...
+To provide meta information for a resource, you can implement the `toMeta(Request $request)` method...
 
 ```php
 <?php

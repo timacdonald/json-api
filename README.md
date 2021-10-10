@@ -51,7 +51,7 @@ class UserResource extends JsonApiResource
 }
 ```
 
-The [advanced usage](#advanded-usage) section covers [sparse fieldsets and handling expensive attribute calculation](#sparse-fieldsets) and [minimal attribute](#minimal-attributes) payloads.
+The [advanced usage](#advanded-usage) section covers [sparse fieldsets and handling expensive attribute calculation](#sparse-fieldsets) and [minimal attribute](#minimal-attributes) payloads, but you can ignore those advanced features for now and continue on with...
 
 ## Resource Relationships
 

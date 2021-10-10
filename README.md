@@ -1,8 +1,10 @@
 # JSON:API Resource for Laravel
 
-A lightweight Laravel implementation of JSON:API.
+A lightweight JSON Resource for Laravel that helps you implement JSON:API standards including sparse fieldsets and compound documents.
 
-This is a WIP project currently being built out via livestream on [my YouTube channel](https://www.youtube.com/channel/UCXukwzJwxZG0NOtLhCBdEsQ). Come hang out next stream.
+These docs are not designed to introduce you to the JSON:API spec and the associated concepts, instead you should [head over and read the spec](https:/jsonapi.org) to better learn more about the specification.
+
+**Note:** This is a WIP project currently being built out via livestream on [my YouTube channel](https://www.youtube.com/channel/UCXukwzJwxZG0NOtLhCBdEsQ). Come hang out next stream.
 
 #### TODO
 - [ ] review composer PHP version support
@@ -256,3 +258,4 @@ Relationships can be resolved deeply and also multiple relationship paths can be
 - [ ] strict mode that throws when duplicates are found in includes
 - [ ] make structure more deterministic by forcing included to always be available
 - [ ] Resource identifier links and meta as a new concept different to normal resource links and relationships.
+- [ ] Ability to send the resource identifier "id" and "type" for a belongsTo relationship, even if not included?

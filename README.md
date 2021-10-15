@@ -1,3 +1,5 @@
+<p align="center"><img src="/art/header.png" alt="JSON:API Resource: a Laravel package by Tim MacDonald"></p>
+
 # JSON:API Resource for Laravel
 
 A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API standards and also implements features such as sparse fieldsets and compound documents, whilst also allowing you to extend the spec as needed for your project.
@@ -10,7 +12,7 @@ These docs are not designed to introduce you to the JSON:API spec and the associ
 - [ ] review composer PHP version support
 - [ ] Pagination tests
 - [ ] collection counts
-- [ ] allow filtering of attributes and relationships via "when" helpers. 
+- [ ] allow filtering of attributes and relationships via "when" helpers.
 - [ ] Filter `null` relationships
 - [ ] Logo?
 
@@ -248,6 +250,13 @@ Relationships can be resolved deeply and also multiple relationship paths can be
 
 - We do not promise named parameter support.
 - If a method is not documented in these docs, you should assume it is an internal API that can change at any time.
+
+## Credits
+
+- [Tim MacDonald](https://github.com/timacdonald)
+- [All Contributors](../../contributors)
+
+And a special (vegi) thanks to [Caneco](https://twitter.com/caneco) for the logo ✨
 
 # Coming soon...
 

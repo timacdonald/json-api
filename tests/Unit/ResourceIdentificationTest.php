@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Tests;
+namespace Tests\Unit;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Tests\TestCase;
 use stdClass;
 use Tests\Models\BasicModel;
 use Tests\Resources\BasicJsonApiResource;

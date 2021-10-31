@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Tests;
+namespace Tests\Unit;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Tests\Models\BasicModel;
 use Tests\Resources\BasicJsonApiResource;
 use Tests\Resources\UserResource;
+use Tests\TestCase;
 use TiMacDonald\JsonApi\JsonApiResource;
 
 class JsonApiTest extends TestCase

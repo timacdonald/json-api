@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests;
+namespace Tests\Unit;
 
 use Exception;
 use Illuminate\Http\Request;
@@ -11,6 +11,7 @@ use Tests\Models\BasicModel;
 use Tests\Resources\BasicJsonApiResource;
 use Tests\Resources\PostResource;
 use Tests\Resources\UserResource;
+use Tests\TestCase;
 use TiMacDonald\JsonApi\JsonApiResource;
 
 class RelationshipsTest extends TestCase

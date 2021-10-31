@@ -10,7 +10,6 @@ These docs are not designed to introduce you to the JSON:API spec and the associ
 
 #### TODO
 - [ ] review composer PHP version support
-- [ ] Pagination tests
 - [ ] collection counts
 - [ ] allow filtering of attributes and relationships via "when" helpers.
 

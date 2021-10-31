@@ -10,12 +10,8 @@ These docs are not designed to introduce you to the JSON:API spec and the associ
 
 #### TODO
 - [ ] review composer PHP version support
-- [ ] collection counts
-- [ ] allow filtering of attributes and relationships via "when" helpers.
-
-# To document
-- [ ] Load things via Spatie Query Builder
-- [ ] how you could handle type mapping in config file class > type
+- [ ] Document loading things via Spatie Query Builder
+- [ ] document how you could handle type mapping in config file class > type
 
 # Basic usage
 
@@ -267,3 +263,5 @@ And a special (vegi) thanks to [Caneco](https://twitter.com/caneco) for the logo
 - [ ] Resource identifier links and meta as a new concept different to normal resource links and relationships.
 - [ ] Ability to send the resource identifier "id" and "type" for a belongsTo relationship, even if not included?
 - [ ] Helper to define links
+- [ ] Allow filtering via the `when` methods for attributes and relationships.
+- [ ] Investigate collection count support

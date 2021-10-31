@@ -13,7 +13,6 @@ These docs are not designed to introduce you to the JSON:API spec and the associ
 - [ ] Pagination tests
 - [ ] collection counts
 - [ ] allow filtering of attributes and relationships via "when" helpers.
-- [ ] Logo?
 
 # To document
 - [ ] Load things via Spatie Query Builder

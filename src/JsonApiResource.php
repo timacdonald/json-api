@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 use TiMacDonald\JsonApi\Exceptions\ResourceIdentificationException;
 use Closure;
+
 use function property_exists;
 
 abstract class JsonApiResource extends JsonResource

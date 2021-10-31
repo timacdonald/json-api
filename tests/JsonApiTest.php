@@ -94,7 +94,7 @@ class JsonApiTest extends TestCase
 
     public function testItAddsMetaToIndividualResources(): void
     {
-        Route::get('test-route', fn () => new class(BasicModel::make(['id' => 'expected-id'])) extends JsonApiResource {
+        Route::get('test-route', fn () => new class (BasicModel::make(['id' => 'expected-id'])) extends JsonApiResource {
             protected function toMeta(Request $request): array
             {
                 return [
@@ -123,7 +123,7 @@ class JsonApiTest extends TestCase
 
     public function testItAddsLinksToIndividualResources(): void
     {
-        Route::get('test-route', fn () => new class(BasicModel::make(['id' => 'expected-id'])) extends JsonApiResource {
+        Route::get('test-route', fn () => new class (BasicModel::make(['id' => 'expected-id'])) extends JsonApiResource {
             protected function toLinks(Request $request): array
             {
                 return [
@@ -166,5 +166,49 @@ class JsonApiTest extends TestCase
         $response = $this->getJson('test-route');
 
         $response->assertHeader('Content-type', 'application/vnd.api+json');
+    }
+
+    public function testItCanCustomiseTheTypeResolution(): void
+    {
+        JsonApiResource::resolveTypeUsing(fn (BasicModel $model): string => $model::class);
+        Route::get('test-route', fn () => BasicJsonApiResource::make(BasicModel::make(['id' => 'expected-id'])));
+
+        $response = $this->get("test-route");
+
+        $response->assertExactJson([
+            'data' => [
+                'id' => 'expected-id',
+                'type' => 'Tests\\Models\\BasicModel',
+                'relationships' => [],
+                'attributes' => [],
+                'meta' => [],
+                'links' => [],
+            ],
+            'included' => [],
+        ]);
+
+        JsonApiResource::resolveTypeNormally();
+    }
+
+    public function testItCanCustomiseTheIdResolution(): void
+    {
+        JsonApiResource::resolveIdUsing(fn (BasicModel $model): string => 'expected-id');
+        Route::get('test-route', fn () => BasicJsonApiResource::make(BasicModel::make(['id' => 'missing-id'])));
+
+        $response = $this->get("test-route");
+
+        $response->assertExactJson([
+            'data' => [
+                'id' => 'expected-id',
+                'type' => 'basicModels',
+                'relationships' => [],
+                'attributes' => [],
+                'meta' => [],
+                'links' => [],
+            ],
+            'included' => [],
+        ]);
+
+        JsonApiResource::resolveIdNormally();
     }
 }

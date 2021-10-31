@@ -13,7 +13,6 @@ These docs are not designed to introduce you to the JSON:API spec and the associ
 - [ ] Pagination tests
 - [ ] collection counts
 - [ ] allow filtering of attributes and relationships via "when" helpers.
-- [ ] Filter `null` relationships
 - [ ] Logo?
 
 # To document
@@ -71,6 +70,7 @@ class UserResource extends JsonApiResource
         return [
             'posts' => fn () => PostResource::collection($this->posts),
             'subscription' => fn () => SubscriptionResource::make($this->subscription),
+            'profileImage' => fn () => optional($this->profileImage, fn (ProfileImage $profileImage) => ProfileImageResource::make($profileImage)),
         ];
     }
 }

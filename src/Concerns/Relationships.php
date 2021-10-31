@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
+use TiMacDonald\JsonApi\NullJsonApiResource;
 use TiMacDonald\JsonApi\Support\Includes;
 
 /**
@@ -27,25 +28,26 @@ trait Relationships
     public function included(Request $request): Collection
     {
         return $this->requestedRelationships($request)
-            ->map(function (JsonApiResource | JsonApiResourceCollection $include): Collection | JsonApiResource {
-                return $include instanceof JsonApiResource
-                    ? $include
-                    : $include->collection;
+            ->map(function (JsonApiResource | JsonApiResourceCollection | NullJsonApiResource $include): Collection | JsonApiResource | NullJsonApiResource {
+                return $include instanceof JsonApiResourceCollection
+                    ? $include->collection
+                    : $include;
             })
             ->merge($this->nestedIncluded($request))
-            ->flatten();
+            ->flatten()
+            ->reject(fn (JsonApiResource | NullJsonApiResource $resource) => $resource instanceof NullJsonApiResource) ;
     }
 
     private function nestedIncluded(Request $request): Collection
     {
         return $this->requestedRelationships($request)
-            ->flatMap(fn (JsonApiResource | JsonApiResourceCollection $resource, string $key): Collection => $resource->included($request));
+            ->flatMap(fn (JsonApiResource | JsonApiResourceCollection | NullJsonApiResource $resource, string $key): Collection => $resource->included($request));
     }
 
     private function requestedRelationshipsAsIdentifiers(Request $request): Collection
     {
         return $this->requestedRelationships($request)
-            ->map(fn (JsonApiResource | JsonApiResourceCollection $resource): array => $resource->toResourceIdentifier($request));
+            ->map(fn (JsonApiResource | JsonApiResourceCollection | NullJsonApiResource $resource): ?array => $resource->toResourceIdentifier($request));
     }
 
     public function toResourceIdentifier(Request $request): array
@@ -67,9 +69,11 @@ trait Relationships
     {
         return once(fn (): Collection => Collection::make($this->resolveRelationships($request))
             ->only(Includes::parse($request, $this->includePrefix))
-            ->map(fn (mixed $value, string $key): JsonApiResource | JsonApiResourceCollection => $value($request)->withIncludePrefix($key))
-            ->each(function (JsonApiResource | JsonApiResourceCollection $resource) use ($request): void {
-                if ($resource instanceof JsonApiResource) {
+            ->map(function (mixed $value, string $key) use ($request): JsonApiResource | JsonApiResourceCollection | NullJsonApiResource {
+                return ($value($request) ?? new NullJsonApiResource())->withIncludePrefix($key);
+            })
+            ->each(function (JsonApiResource | JsonApiResourceCollection | NullJsonApiResource $resource) use ($request): void {
+                if (! $resource instanceof JsonApiResourceCollection) {
                     return;
                 }
 

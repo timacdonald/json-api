@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi\Concerns;
 
+use Closure;
+
 /**
  * @internal
  */

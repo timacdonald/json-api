@@ -86,7 +86,7 @@ class ResourceIdentificationTest extends TestCase
     public function testItThrowsWhenUnableToAutomaticallyResolveTheTypeOfANonObject(): void
     {
         $array = [];
-        Route::get('test-route', fn () => new class($array) extends BasicJsonApiResource {
+        Route::get('test-route', fn () => new class ($array) extends BasicJsonApiResource {
             protected function toId(Request $request): string
             {
                 return 'id';
@@ -102,7 +102,7 @@ class ResourceIdentificationTest extends TestCase
     public function testItThrowsWhenUnableToAutomaticallyResolveTypeOfAnObject(): void
     {
         $object = new stdClass();
-        Route::get('test-route', fn () => new class($object) extends BasicJsonApiResource {
+        Route::get('test-route', fn () => new class ($object) extends BasicJsonApiResource {
             protected function toId(Request $request): string
             {
                 return 'id';

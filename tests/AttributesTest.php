@@ -20,7 +20,7 @@ class AttributesTest extends TestCase
             'name' => 'Tim',
             'email' => 'tim@example.com',
         ]);
-        Route::get('test-route', fn () => new class($model) extends JsonApiResource {
+        Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
             protected function toAttributes(Request $request): array
             {
                 return [
@@ -57,7 +57,7 @@ class AttributesTest extends TestCase
             'email' => 'tim@example.com',
             'location' => 'Melbourne',
         ]);
-        Route::get('test-route', fn () => new class($model) extends JsonApiResource {
+        Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
             protected function toAttributes(Request $request): array
             {
                 return [
@@ -95,7 +95,7 @@ class AttributesTest extends TestCase
             'email' => 'tim@example.com',
             'location' => 'Melbourne',
         ]);
-        Route::get('test-route', fn () => new class($model) extends JsonApiResource {
+        Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
             protected function toAttributes(Request $request): array
             {
                 return [
@@ -128,7 +128,7 @@ class AttributesTest extends TestCase
             'id' => 'expected-id',
             'location' => 'Melbourne',
         ]);
-        Route::get('test-route', fn () => new class($model) extends JsonApiResource {
+        Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
             protected function toAttributes(Request $request): array
             {
                 return [
@@ -160,7 +160,7 @@ class AttributesTest extends TestCase
         $model = BasicModel::make([
             'id' => 'expected-id',
         ]);
-        Route::get('test-route', fn () => new class($model) extends JsonApiResource {
+        Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
             protected function toAttributes(Request $request): array
             {
                 return [
@@ -190,7 +190,7 @@ class AttributesTest extends TestCase
         $model = BasicModel::make([
             'id' => 'expected-id',
         ]);
-        Route::get('test-route', fn () => new class($model) extends JsonApiResource {
+        Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
             protected function toAttributes(Request $request): array
             {
                 return [

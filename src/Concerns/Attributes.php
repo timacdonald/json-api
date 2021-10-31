@@ -14,13 +14,22 @@ use function value;
  */
 trait Attributes
 {
+    /**
+     * @internal
+     */
     private static bool $minimalAttributes = false;
 
+    /**
+     * @internal
+     */
     public static function maximalAttributes(): void
     {
         static::$minimalAttributes = false;
     }
 
+    /**
+     * @internal
+     */
     private function requestedAttributes(Request $request): Collection
     {
         return Collection::make($this->resolveAttributes($request))
@@ -28,6 +37,9 @@ trait Attributes
             ->map(fn (mixed $value): mixed => value($value, $request));
     }
 
+    /**
+     * @internal
+     */
     private function fields(Request $request): ?array
     {
         $fields = Fields::parse($request, $this->toType($request));
@@ -41,6 +53,9 @@ trait Attributes
             : null;
     }
 
+    /**
+     * @internal
+     */
     private function resolveAttributes(Request $request): array
     {
         return once(fn () => $this->toAttributes($request));

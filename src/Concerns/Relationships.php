@@ -16,8 +16,14 @@ use TiMacDonald\JsonApi\Support\Includes;
  */
 trait Relationships
 {
+    /**
+     * @internal
+     */
     private string $includePrefix = '';
 
+    /**
+     * @internal
+     */
     public function withIncludePrefix(string $prefix): self
     {
         $this->includePrefix = "{$this->includePrefix}{$prefix}.";
@@ -25,6 +31,9 @@ trait Relationships
         return $this;
     }
 
+    /**
+     * @internal
+     */
     public function included(Request $request): Collection
     {
         return $this->requestedRelationships($request)
@@ -38,18 +47,27 @@ trait Relationships
             ->reject(fn (JsonApiResource | NullJsonApiResource $resource) => $resource instanceof NullJsonApiResource) ;
     }
 
+    /**
+     * @internal
+     */
     private function nestedIncluded(Request $request): Collection
     {
         return $this->requestedRelationships($request)
             ->flatMap(fn (JsonApiResource | JsonApiResourceCollection | NullJsonApiResource $resource, string $key): Collection => $resource->included($request));
     }
 
+    /**
+     * @internal
+     */
     private function requestedRelationshipsAsIdentifiers(Request $request): Collection
     {
         return $this->requestedRelationships($request)
             ->map(fn (JsonApiResource | JsonApiResourceCollection | NullJsonApiResource $resource): ?array => $resource->toResourceIdentifier($request));
     }
 
+    /**
+     * @internal
+     */
     public function toResourceIdentifier(Request $request): array
     {
         return [
@@ -60,11 +78,17 @@ trait Relationships
         ];
     }
 
+    /**
+     * @internal
+     */
     public function toUniqueResourceIdentifier(Request $request): string
     {
         return "type:{$this->toType($request)} id:{$this->toId($request)}";
     }
 
+    /**
+     * @internal
+     */
     private function requestedRelationships(Request $request): Collection
     {
         return once(fn (): Collection => Collection::make($this->resolveRelationships($request))
@@ -81,6 +105,9 @@ trait Relationships
             }));
     }
 
+    /**
+     * @internal
+     */
     private function resolveRelationships(Request $request): array
     {
         return once(fn () => $this->toRelationships($request));

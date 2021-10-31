@@ -35,8 +35,8 @@ jobs:
             - name: PHP-CS-Fixer
               run: ./vendor/bin/php-cs-fixer fix --dry-run --no-interaction --verbose
 
-            - name: composer normalize
-              run: composer normalize --dry-run --no-interaction --verbose
+            # - name: composer normalize
+            #   run: composer normalize --dry-run --no-interaction --verbose
 
             # - name: test coverage
             #   run: |

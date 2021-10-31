@@ -1,0 +1,131 @@
+name: CI
+
+on:
+    schedule:
+        # once a month
+        - cron: '0 0 1 * *'
+    push:
+        branches: [ master ]
+    pull_request:
+        branches: [ master ]
+
+jobs:
+    lint:
+        runs-on: ubuntu-latest
+        name: 'Lint'
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.0'
+                  coverage: pcov
+
+            - name: Cache dependencies
+              uses: actions/cache@v1
+              with:
+                  path: ~/.composer/cache/files
+                  key: dependencies-composer-${{ hashFiles('composer.json') }}-v3
+
+            - name: Install dependencies
+              run: composer install --no-suggest --no-interaction --verbose
+
+            - name: Check platform requirements
+              run: composer check-platform-reqs --verbose
+
+            - name: PHP-CS-Fixer
+              run: ./vendor/bin/php-cs-fixer fix --dry-run --no-interaction --verbose
+
+            - name: composer normalize
+              run: composer normalize --dry-run --no-interaction --verbose
+
+            # - name: test coverage
+            #   run: |
+            #       ./vendor/bin/phpunit --coverage-clover=coverage.xml --debug --verbose
+            #       bash <(curl -s https://codecov.io/bash)
+            #   env:
+            #       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+            - name: Infection
+              run: ./vendor/bin/infection --show-mutations --min-msi=100 --no-progress --no-interaction --verbose
+              # env:
+              #     INFECTION_BADGE_API_KEY: ${{ secrets.INFECTION_BADGE_API_KEY }}
+
+            # - name: Psalm
+            #   run: ./vendor/bin/psalm --shepherd --no-progress
+
+            # - name: PHPStan
+            #   run: ./vendor/bin/phpstan --no-interaction --verbose
+
+    # tests:
+    #     runs-on: ubuntu-latest
+    #     name: 'Test suite on PHP: ${{ matrix.php }}; Laravel: ${{ matrix.laravel }}; Dependecies: ${{ matrix.dependency-version }}'
+    #     strategy:
+    #         matrix:
+    #             php: ['7.1', '7.2', '7.3', '7.4', '8.0']
+    #             laravel: ['~5.5.0', '~5.6.0', '~5.7.0', '~5.8.0', '^6.0', '^7.0', '^8.0']
+    #             dependency-version: ['prefer-lowest', 'prefer-stable']
+    #             include:
+    #                 - laravel: '~5.5.0'
+    #                   testbench: '~3.5.0'
+    #                 - laravel: '~5.6.0'
+    #                   testbench: '~3.6.0'
+    #                 - laravel: '~5.7.0'
+    #                   testbench: '~3.7.0'
+    #                 - laravel: '~5.8.0'
+    #                   testbench: '~3.8.0'
+    #                 - laravel: '^6.0'
+    #                   testbench: '^4.0'
+    #                 - laravel: '^7.0'
+    #                   testbench: '^5.0'
+    #                 - laravel: '^8.0'
+    #                   testbench: '^6.0'
+    #             exclude:
+    #                 - laravel: '~5.3.0'
+    #                   php: '7.2'
+    #                 - laravel: '~5.5.0'
+    #                   php: '8.0'
+    #                 - laravel: '~5.6.0'
+    #                   php: '8.0'
+    #                 - laravel: '~5.7.0'
+    #                   php: '8.0'
+    #                 - laravel: '~5.8.0'
+    #                   php: '8.0'
+    #                 - laravel: '^6.0'
+    #                   php: '7.1'
+    #                 - laravel: '^7.0'
+    #                   php: '7.1'
+    #                 - laravel: '^8.0'
+    #                   php: '7.1'
+    #                 - laravel: '^8.0'
+    #                   php: '7.2'
+
+    #     steps:
+    #         - name: checkout code
+    #           uses: actions/checkout@v2
+
+    #         - name: Setup PHP
+    #           uses: shivammathur/setup-php@v2
+    #           with:
+    #               php-version: ${{ matrix.php }}
+    #               coverage: none
+
+    #         - name: Cache dependencies
+    #           uses: actions/cache@v1
+    #           with:
+    #               path: ~/.composer/cache/files
+    #               key: dependencies-${{ matrix.dependency-version }}-laravel-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}-v3
+
+    #         - name: Install dependencies
+    #           run: |
+    #               composer remove 'infection/infection' 'phpunit/phpunit' 'ergebnis/composer-normalize' 'orchestra/testbench' 'phpstan/phpstan' --dev --no-update --no-interaction --verbose
+    #               composer require 'illuminate/support:${{ matrix.laravel }}' 'orchestra/testbench:${{ matrix.testbench }}' --no-update --no-interaction --verbose
+    #               composer update --${{ matrix.dependency-version }} --no-suggest --no-interaction --verbose
+
+    #         - name: Check platform requirements
+    #           run: composer check-platform-reqs --verbose
+
+    #         - name: Run tests
+    #           run: ./vendor/bin/phpunit --debug --verbose

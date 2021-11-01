@@ -223,7 +223,7 @@ class AttributesTest extends TestCase
         $user = BasicModel::make(['id' => 'expected-id']);
         Route::get('test-route', fn () => UserResource::make($user));
 
-        $response = $this->getJson('test-route?fields=name');
+        $response = $this->withExceptionHandling()->getJson('test-route?fields=name');
 
         $response->assertStatus(400);
         $response->assertExactJson([
@@ -236,7 +236,7 @@ class AttributesTest extends TestCase
         $user = BasicModel::make(['id' => 'expected-id']);
         Route::get('test-route', fn () => UserResource::make($user));
 
-        $response = $this->getJson('test-route?fields[basicModels][foo]=name');
+        $response = $this->withExceptionHandling()->getJson('test-route?fields[basicModels][foo]=name');
 
         $response->assertStatus(400);
         $response->assertExactJson([

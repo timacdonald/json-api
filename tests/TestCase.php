@@ -9,6 +9,13 @@ use Spatie\Once\Cache;
 
 class TestCase extends BaseTestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->withoutExceptionHandling();
+    }
+
     public function tearDown(): void
     {
         parent::tearDown();

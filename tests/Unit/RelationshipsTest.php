@@ -21,7 +21,7 @@ class RelationshipsTest extends TestCase
         $post = BasicModel::make([]);
         Route::get('test-route', fn () => PostResource::make($post));
 
-        $response = $this->getJson('test-route?include[]=name');
+        $response = $this->withExceptionHandling()->getJson('test-route?include[]=name');
 
         $response->assertStatus(400);
         $response->assertExactJson([

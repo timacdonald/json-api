@@ -14,8 +14,10 @@ class FeatureTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function defineDatabaseMigrations()
+    public function setUp(): void
     {
+        parent::setUp();
+
         $this->loadMigrationsFrom(__DIR__ . '/../database');
     }
 

@@ -71,7 +71,6 @@ class FeatureTest extends TestCase
                 'last_page' => 3,
                 'total' => 5,
                 'path' => 'http://localhost/test-route',
-                'links' => [],
             ],
         ]);
     }

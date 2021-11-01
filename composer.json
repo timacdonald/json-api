@@ -17,9 +17,9 @@
     ],
     "require": {
         "php": "^8.0",
-        "illuminate/support": "^8.0",
-        "illuminate/http": "^8.0",
-        "illuminate/database": "^8.0",
+        "illuminate/support": "^7.0 || ^8.0",
+        "illuminate/http": "^7.0 || ^8.0",
+        "illuminate/database": "^7.0 || ^8.0",
         "spatie/once": "^3.0",
         "symfony/http-kernel": "^5.0"
     },

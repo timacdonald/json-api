@@ -1,5 +1,40 @@
 {
     "name": "timacdonald/json-api",
+    "description": "A Lightweight JSON:API Resource for Laravel",
+    "keywords": [
+        "laravel",
+        "json:api",
+        "jsonapi",
+        "Json API"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tim MacDonald",
+            "email": "hello@timacdonald.me",
+            "homepage": "https://timacdonald.me"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "illuminate/support": "^8.0",
+        "illuminate/http": "^8.0",
+        "illuminate/database": "^8.0",
+        "spatie/once": "^3.0",
+        "symfony/http-kernel": "^5.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "infection/infection": "^0.24.0",
+        "nunomaduro/larastan": "^0.7.12",
+        "orchestra/testbench": "^6.0",
+        "phpstan/phpstan": "^0.12.94",
+        "phpunit/phpunit": "^9.0"
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
     "autoload": {
         "psr-4": {
             "TiMacDonald\\JsonApi\\": "src"
@@ -10,19 +45,30 @@
             "Tests\\": "tests/"
         }
     },
-    "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.0",
-        "infection/infection": "^0.24.0",
-        "nunomaduro/larastan": "^0.7.12",
-        "orchestra/testbench": "^6.0",
-        "phpstan/phpstan": "^0.12.94",
-        "phpstan/phpstan-strict-rules": "^0.12.10",
-        "phpunit/phpunit": "^9.0"
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "scripts": {
+        "fix": [
+            "clear",
+            "@composer normalize",
+            "./vendor/bin/php-cs-fixer fix"
+        ],
+        "lint": [
+            "clear",
+            "@composer normalize --dry-run",
+            "./vendor/bin/php-cs-fixer fix --dry-run",
+            "./vendor/bin/psalm --threads=8",
+            "./vendor/bin/phpstan analyse"
+        ],
+        "test": [
+            "clear",
+            "./vendor/bin/phpunit",
+            "./vendor/bin/infection --threads=8"
+        ]
     },
-    "require": {
-        "php": "^8.0",
-        "laravel/framework": "^8.0",
-        "spatie/once": "^3.0",
-        "symfony/http-kernel": "^5.0"
+    "support": {
+        "issues": "https://github.com/timacdonald/json-api/issues",
+        "source": "https://github.com/timacdonald/json-api/releases/latest",
+        "docs": "https://github.com/timacdonald/json-api/blob/master/readme.md"
     }
 }

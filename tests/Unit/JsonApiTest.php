@@ -95,7 +95,7 @@ class JsonApiTest extends TestCase
 
     public function testItAddsMetaToIndividualResources(): void
     {
-        Route::get('test-route', fn () => new class (BasicModel::make(['id' => 'expected-id'])) extends JsonApiResource {
+        Route::get('test-route', fn () => new class(BasicModel::make(['id' => 'expected-id'])) extends JsonApiResource {
             protected function toMeta(Request $request): array
             {
                 return [
@@ -124,7 +124,7 @@ class JsonApiTest extends TestCase
 
     public function testItAddsLinksToIndividualResources(): void
     {
-        Route::get('test-route', fn () => new class (BasicModel::make(['id' => 'expected-id'])) extends JsonApiResource {
+        Route::get('test-route', fn () => new class(BasicModel::make(['id' => 'expected-id'])) extends JsonApiResource {
             protected function toLinks(Request $request): array
             {
                 return [

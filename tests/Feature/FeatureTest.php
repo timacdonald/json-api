@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Route;
 use Tests\Models\BasicModel;
 use Tests\Resources\UserResource;
@@ -12,7 +12,7 @@ use Tests\TestCase;
 
 class FeatureTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseMigrations;
 
     protected function defineDatabaseMigrations()
     {

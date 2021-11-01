@@ -36,7 +36,7 @@ class RelationshipsTest extends TestCase
             'title' => 'post-title',
             'content' => 'post-content',
         ]);
-        Route::get('test-route', fn () => new class ($post) extends PostResource {
+        Route::get('test-route', fn () => new class($post) extends PostResource {
             protected function toRelationships(Request $request): array
             {
                 return [
@@ -232,11 +232,11 @@ class RelationshipsTest extends TestCase
         ])->setRelation('child', BasicModel::make([
             'id' => 'child-id-1',
         ])->setRelation('child', BasicModel::make(['id' => 'child-id-2'])));
-        Route::get('test-route', fn () => new class ($parent) extends JsonApiResource {
+        Route::get('test-route', fn () => new class($parent) extends JsonApiResource {
             protected function toRelationships(Request $request): array
             {
                 return [
-                    'child' => fn () => new class ($this->child) extends JsonApiResource {
+                    'child' => fn () => new class($this->child) extends JsonApiResource {
                         public function toRelationships(Request $request): array
                         {
                             return [
@@ -305,11 +305,11 @@ class RelationshipsTest extends TestCase
             BasicModel::make(['id' => 'child-id-2']),
             BasicModel::make(['id' => 'child-id-3']),
         ]));
-        Route::get('test-route', fn () => new class ($parent) extends JsonApiResource {
+        Route::get('test-route', fn () => new class($parent) extends JsonApiResource {
             protected function toRelationships(Request $request): array
             {
                 return [
-                    'child' => fn () => new class ($this->child) extends JsonApiResource {
+                    'child' => fn () => new class($this->child) extends JsonApiResource {
                         public function toRelationships(Request $request): array
                         {
                             return [
@@ -845,11 +845,11 @@ class RelationshipsTest extends TestCase
             'title' => 'post-title',
             'content' => 'post-content',
         ]);
-        Route::get('test-route', fn () => new class ($post) extends JsonApiResource {
+        Route::get('test-route', fn () => new class($post) extends JsonApiResource {
             protected function toRelationships(Request $request): array
             {
                 return [
-                    'relation' => fn (Request $request) => new class ($request) extends JsonApiResource {
+                    'relation' => fn (Request $request) => new class($request) extends JsonApiResource {
                         protected function toId(Request $request): string
                         {
                             return 'relation-id';
@@ -1046,7 +1046,9 @@ class RelationshipsTest extends TestCase
         ]);
         Route::get('test-route', fn () => UserResource::make($user));
 
-        $response = $this->getJson('test-route?include=');
+        $response = $this
+            ->withoutMiddleware()
+            ->getJson('test-route?include=');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -1072,7 +1074,9 @@ class RelationshipsTest extends TestCase
         ]);
         Route::get('test-route', fn () => UserResource::collection([$user]));
 
-        $response = $this->getJson('test-route?include=');
+        $response = $this
+            ->withoutMiddleware()
+            ->getJson('test-route?include=');
 
         $response->assertOk();
         $response->assertExactJson([

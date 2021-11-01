@@ -14,9 +14,9 @@ class NullJsonApiResource
         return $this;
     }
 
-    public function toResourceIdentifier(Request $request): void
+    public function toResourceIdentifier(Request $request): ?array
     {
-        return;
+        return null;
     }
 
     public function included(Request $request): Collection

@@ -7,7 +7,8 @@ namespace TiMacDonald\JsonApi\Concerns;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use TiMacDonald\JsonApi\Support\Fields;
-use function value;
+
+use Closure;
 
 /**
  * @internal
@@ -35,7 +36,7 @@ trait Attributes
     {
         return Collection::make($this->resolveAttributes($request))
             ->only($this->fields($request))
-            ->map(fn (mixed $value): mixed => value($value, $request));
+            ->map(fn (mixed $value): mixed => $value instanceof Closure ? $value($request) : $value);
     }
 
     /**

@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;
-use Symfony\Component\HttpFoundation\Response;
 use TiMacDonald\JsonApi\Exceptions\ResourceIdentificationException;
 use Closure;
+use Illuminate\Http\JsonResponse;
 
 use function property_exists;
 
@@ -115,17 +115,19 @@ abstract class JsonApiResource extends JsonResource
      */
     public static function collection($resource): JsonApiResourceCollection
     {
-        return tap(new JsonApiResourceCollection($resource, static::class), function (JsonApiResourceCollection $collection): void {
-            if (property_exists(static::class, 'preserveKeys')) {
-                $collection->preserveKeys = (new static([]))->preserveKeys === true;
-            }
-        });
+        $collection = new JsonApiResourceCollection($resource, static::class);
+
+        if (property_exists(static::class, 'preserveKeys')) {
+            $collection->preserveKeys = (new static([]))->preserveKeys === true;
+        }
+
+        return $collection;
     }
 
     /**
      * @param Request $request
      */
-    public function toResponse($request): Response
+    public function toResponse($request): JsonResponse
     {
         return parent::toResponse($request)->header('Content-type', 'application/vnd.api+json');
     }

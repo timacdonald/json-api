@@ -106,7 +106,7 @@ jobs:
             - name: Install dependencies
               run: |
                   composer remove 'infection/infection' 'phpunit/phpunit' 'ergebnis/composer-normalize' 'orchestra/testbench' 'phpstan/phpstan' --dev --no-update --no-interaction --verbose
-                  composer require 'illuminate/support:${{ matrix.laravel }}' 'orchestra/testbench:${{ matrix.testbench }}' --no-update --no-interaction --verbose
+                  composer require 'illuminate/http:${{ matrix.laravel }}' 'illuminate/support:${{ matrix.laravel }}' 'illuminate/database:${{ matrix.laravel }}'    'orchestra/testbench:${{ matrix.testbench }}' --no-update --no-interaction --verbose
                   composer update --${{ matrix.dependency-version }} --no-suggest --no-interaction --verbose
 
             - name: Check platform requirements

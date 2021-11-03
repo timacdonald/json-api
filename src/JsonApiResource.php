@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use TiMacDonald\JsonApi\Exceptions\ResourceIdentificationException;
 use Closure;
 use Illuminate\Http\JsonResponse;
+use TiMacDonald\JsonApi\Support\Fields;
 use TiMacDonald\JsonApi\Support\Includes;
 
 use function property_exists;
@@ -133,6 +134,8 @@ abstract class JsonApiResource extends JsonResource
         $response = parent::toResponse($request)->header('Content-type', 'application/vnd.api+json');
 
         Includes::getInstance()->flush();
+
+        Fields::getInstance()->flush();
 
         return $response;
     }

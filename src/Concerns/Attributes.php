@@ -44,7 +44,7 @@ trait Attributes
      */
     private function fields(Request $request): ?array
     {
-        $fields = Fields::parse($request, $this->toType($request));
+        $fields = Fields::getInstance()->parse($request, $this->toType($request));
 
         if ($fields !== null) {
             return $fields;

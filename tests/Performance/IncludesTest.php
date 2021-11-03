@@ -10,40 +10,33 @@ use Illuminate\Http\Request;
 use TiMacDonald\JsonApi\Support\Includes;
 use function count;
 
-/**
- * This performance test is in place to determine if caching withing the
- * includes helper class is worthwhile.
- */
-
 $numberOfResourcesReturned = 1_000;
 
 $includes = [
     'a',
+    'a.a',
     'a.b',
+    'a.c',
+    'a.b.a',
+    'a.b.b',
     'a.b.c',
+    'a.b.c.a',
+    'a.b.c.b',
+    'a.b.c.c',
     'a.b.c.d',
-    'a.b.c.d.e',
-    'a.b.c.d.e.f',
 ];
 
-$availablePrefixes = array_merge($includes, ['']);
+$query = implode(',', $includes);
+$request = Request::create("https://example.com/users?include={$query}", 'GET');
+
 $prefixes = [];
 for ($i = 0; $i < $numberOfResourcesReturned; $i++) {
-    $prefixes[] = $availablePrefixes[$i % count($availablePrefixes)].'.';
+    $prefixes[] = $includes[$i % count($includes)].'.';
 }
 
-$includeCarry = 'z';
-$requests = array_map(function (string $include) use (&$includeCarry): Request {
-    $includeCarry = implode(',', [$includeCarry, $include]);
-
-    return Request::create("https://example.com/users?include={$includeCarry}", 'GET');
-}, $includes);
-
 $start = microtime(true);
-foreach ($requests as $request) {
-    foreach ($prefixes as $prefix) {
-        Includes::getInstance()->parse($request, $prefix);
-    }
+foreach ($prefixes as $prefix) {
+    Includes::getInstance()->parse($request, $prefix);
 }
 $end = microtime(true);
 

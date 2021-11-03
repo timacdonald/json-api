@@ -7,6 +7,7 @@ namespace TiMacDonald\JsonApi;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
+use TiMacDonald\JsonApi\Support\Fields;
 use TiMacDonald\JsonApi\Support\Includes;
 
 class JsonApiResourceCollection extends AnonymousResourceCollection
@@ -33,6 +34,8 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
         $response = parent::toResponse($request)->header('Content-type', 'application/vnd.api+json');
 
         Includes::getInstance()->flush();
+
+        Fields::getInstance()->flush();
 
         return $response;
     }

@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace TiMacDonald\JsonApi\Support;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use WeakReference;
 use function explode;
 use function array_key_exists;
 use function is_string;
@@ -15,30 +17,74 @@ use function is_string;
  */
 class Fields
 {
-    public static function parse(Request $request, string $resourceType): ?array
+    private static ?Fields $instance;
+
+    private Collection $cache;
+
+    private function __construct()
     {
-        return once(function () use ($request, $resourceType): ?array {
-            $typeFields = $request->query('fields') ?? [];
+        $this->cache = new Collection([]);
+    }
 
-            if (is_string($typeFields)) {
-                throw new HttpException(400, 'The fields parameter must be an array of resource types.');
-            }
+    public static function getInstance(): self
+    {
+        return self::$instance ??= new self();
+    }
 
-            if (! array_key_exists($resourceType, $typeFields)) {
-                return null;
-            }
+    public function parse(Request $request, string $resourceType): ?array
+    {
+        $result = $this->cache->first(fn (array $item): bool => $item['resourceType'] === $resourceType && $item['request']->get() === $request);
 
-            $fields = $typeFields[$resourceType];
+        if ($result !== null) {
+            return $result['fields'];
+        }
 
-            if ($fields === null) {
-                return [];
-            }
+        $typeFields = $request->query('fields') ?? [];
 
-            if (! is_string($fields)) {
-                throw new HttpException(400, 'The fields parameter value must be a comma seperated list of attributes.');
-            }
+        if (is_string($typeFields)) {
+            throw new HttpException(400, 'The fields parameter must be an array of resource types.');
+        }
 
-            return explode(',', $fields);
-        });
+        if (! array_key_exists($resourceType, $typeFields)) {
+            $this->cache[] = [
+                'fields' => null,
+                'request' => WeakReference::create($request),
+                'resourceType' => $resourceType,
+            ];
+
+            return null;
+        }
+
+        $fields = $typeFields[$resourceType];
+
+        if ($fields === null) {
+            $this->cache[] = [
+                'fields' => [],
+                'request' => WeakReference::create($request),
+                'resourceType' => $resourceType,
+            ];
+
+            return [];
+        }
+
+        if (! is_string($fields)) {
+            throw new HttpException(400, 'The fields parameter value must be a comma seperated list of attributes.');
+        }
+
+        $fields = explode(',', $fields);
+
+        $this->cache[] = [
+            'fields' => $fields,
+            'request' => WeakReference::create($request),
+            'resourceType' => $resourceType,
+        ];
+
+
+        return $fields;
+    }
+
+    public function flush(): void
+    {
+        $this->cache = new Collection([]);
     }
 }

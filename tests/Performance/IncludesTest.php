@@ -29,17 +29,22 @@ $includes = [
 $availablePrefixes = array_merge($includes, ['']);
 $prefixes = [];
 for ($i = 0; $i < $numberOfResourcesReturned; $i++) {
-    $prefixes[] = $availablePrefixes[$i % count($availablePrefixes)];
+    $prefixes[] = $availablePrefixes[$i % count($availablePrefixes)].'.';
 }
 
-$request = Request::create('https://example.com/users?include='.join(',', $includes), 'GET');
+$includeCarry = 'z';
+$requests = array_map(function (string $include) use (&$includeCarry): Request {
+    $includeCarry = implode(',', [$includeCarry, $include]);
+
+    return Request::create("https://example.com/users?include={$includeCarry}", 'GET');
+}, $includes);
 
 $start = microtime(true);
-
-foreach ($prefixes as $prefix) {
-    Includes::getInstance()->parse($request, $prefix);
+foreach ($requests as $request) {
+    foreach ($prefixes as $prefix) {
+        Includes::getInstance()->parse($request, $prefix);
+    }
 }
-
 $end = microtime(true);
 
 echo "Duration (milliseconds):".PHP_EOL;

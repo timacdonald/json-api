@@ -50,7 +50,9 @@ class Includes
             ->when($prefix !== '', function (Collection $includes) use ($prefix): Collection {
                 return $includes->filter(fn (string $include): bool => Str::startsWith($include, $prefix));
             })
-            ->map(fn (string $include): string => Str::before(Str::after($include, $prefix), '.'));
+            ->map(fn (string $include): string => Str::before(Str::after($include, $prefix), '.'))
+            ->uniqueStrict()
+            ->filter(fn (string $include): bool => $include !== '');
 
         $this->cache[] = [
             'includes' => $includes,

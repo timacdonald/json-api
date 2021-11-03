@@ -34,7 +34,7 @@ trait Attributes
      */
     private function requestedAttributes(Request $request): Collection
     {
-        return Collection::make($this->resolveAttributes($request))
+        return Collection::make($this->toAttributes($request))
             ->only($this->fields($request))
             ->map(fn (mixed $value): mixed => $value instanceof Closure ? $value($request) : $value);
     }
@@ -53,13 +53,5 @@ trait Attributes
         return static::$minimalAttributes
             ? []
             : null;
-    }
-
-    /**
-     * @internal
-     */
-    private function resolveAttributes(Request $request): array
-    {
-        return once(fn () => $this->toAttributes($request));
     }
 }

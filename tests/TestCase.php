@@ -6,6 +6,7 @@ namespace Tests;
 
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use Spatie\Once\Cache;
+use TiMacDonald\JsonApi\Support\Includes;
 
 class TestCase extends BaseTestCase
 {
@@ -21,5 +22,7 @@ class TestCase extends BaseTestCase
         parent::tearDown();
 
         Cache::getInstance()->flush();
+
+        Includes::getInstance()->flush();
     }
 }

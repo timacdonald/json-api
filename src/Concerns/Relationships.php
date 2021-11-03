@@ -92,7 +92,7 @@ trait Relationships
     private function requestedRelationships(Request $request): Collection
     {
         return once(fn (): Collection => Collection::make($this->resolveRelationships($request))
-            ->only(Includes::parse($request, $this->includePrefix))
+            ->only(Includes::getInstance()->parse($request, $this->includePrefix))
             ->map(function (mixed $value, string $key) use ($request): JsonApiResource | JsonApiResourceCollection | NullJsonApiResource {
                 return ($value($request) ?? new NullJsonApiResource())->withIncludePrefix($key);
             })

@@ -6,8 +6,10 @@ namespace TiMacDonald\JsonApi\Support;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Stringable;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use WeakReference;
+
 use function explode;
 use function is_array;
 
@@ -16,21 +18,51 @@ use function is_array;
  */
 class Includes
 {
-    public static function parse(Request $request, string $prefix): Collection
+    private static ?Includes $instance;
+
+    private Collection $cache;
+
+    private function __construct()
     {
-        return once(function () use ($request, $prefix): Collection {
-            $includes = $request->query('include') ?? '';
+        $this->cache = new Collection([]);
+    }
 
-            if (is_array($includes)) {
-                throw new HttpException(400, 'The include parameter must be a comma seperated list of relationship paths.');
-            }
+    public static function getInstance(): self
+    {
+        return self::$instance ??= new self();
+    }
 
-            return Collection::make(explode(',', $includes))
-                ->mapInto(Stringable::class)
-                ->when($prefix !== '', function (Collection $includes) use ($prefix): Collection {
-                    return $includes->filter(fn (Stringable $include): bool => $include->startsWith($prefix));
-                })
-                ->map(fn (Stringable $include): string => (string) $include->after($prefix)->before('.'));
-        });
+    public function parse(Request $request, string $prefix): Collection
+    {
+        $result = $this->cache->first(fn (array $item): bool => $item['prefix'] === $prefix && $item['request']->get() === $request);
+
+        if ($result !== null) {
+            return $result['includes'];
+        }
+
+        $includes = $request->query('include') ?? '';
+
+        if (is_array($includes)) {
+            throw new HttpException(400, 'The include parameter must be a comma seperated list of relationship paths.');
+        }
+
+        $includes = Collection::make(explode(',', $includes))
+            ->when($prefix !== '', function (Collection $includes) use ($prefix): Collection {
+                return $includes->filter(fn (string $include): bool => Str::startsWith($include, $prefix));
+            })
+            ->map(fn (string $include): string => Str::before(Str::after($include, $prefix), '.'));
+
+        $this->cache[] = [
+            'includes' => $includes,
+            'request' => WeakReference::create($request),
+            'prefix' => $prefix,
+        ];
+
+        return $includes;
+    }
+
+    public function flush(): void
+    {
+        $this->cache = new Collection([]);
     }
 }

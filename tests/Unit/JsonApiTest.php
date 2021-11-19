@@ -11,6 +11,8 @@ use Tests\Resources\BasicJsonApiResource;
 use Tests\Resources\UserResource;
 use Tests\TestCase;
 use TiMacDonald\JsonApi\JsonApiResource;
+use TiMacDonald\JsonApi\Support\Fields;
+use TiMacDonald\JsonApi\Support\Includes;
 
 class JsonApiTest extends TestCase
 {
@@ -211,5 +213,49 @@ class JsonApiTest extends TestCase
         ]);
 
         JsonApiResource::resolveIdNormally();
+    }
+
+    public function testItClearsTheHelperCachesAfterPreparingResponseForASingleResource(): void
+    {
+        Route::get('test-route', fn () => BasicJsonApiResource::make(BasicModel::make(['id' => 'missing-id'])));
+
+        $response = $this->get("test-route?includes=test&fields[basicModels]=a");
+
+        $response->assertExactJson([
+            'data' => [
+                'id' => 'missing-id',
+                'type' => 'basicModels',
+                'relationships' => [],
+                'attributes' => [],
+                'meta' => [],
+                'links' => [],
+            ],
+            'included' => [],
+        ]);
+        $this->assertCount(0, Fields::getInstance()->cache());
+        $this->assertCount(0, Includes::getInstance()->cache());
+    }
+
+    public function testItClearsTheHelperCachesAfterPreparingResponseForACollectionOfResources(): void
+    {
+        Route::get('test-route', fn () => BasicJsonApiResource::collection([ BasicModel::make(['id' => 'missing-id']) ]));
+
+        $response = $this->get("test-route?includes=test&fields[basicModels]=a");
+
+        $response->assertExactJson([
+            'data' => [
+                [
+                    'id' => 'missing-id',
+                    'type' => 'basicModels',
+                    'relationships' => [],
+                    'attributes' => [],
+                    'meta' => [],
+                    'links' => [],
+                ],
+            ],
+            'included' => [],
+        ]);
+        $this->assertCount(0, Fields::getInstance()->cache());
+        $this->assertCount(0, Includes::getInstance()->cache());
     }
 }

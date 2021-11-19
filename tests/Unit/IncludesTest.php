@@ -27,4 +27,35 @@ class IncludesTest extends TestCase
 
         $this->assertCount(1, $includes);
     }
+
+    public function testItHandlesMultipleRequests(): void
+    {
+        $requests = [
+            Request::create('https://example.com?include=a'),
+            Request::create('https://example.com?include=b'),
+        ];
+
+        $includes = [
+            Includes::getInstance()->parse($requests[0], ''),
+            Includes::getInstance()->parse($requests[1], ''),
+        ];
+
+        $this->assertSame($includes[0]->all(), ['a']);
+        $this->assertSame($includes[1]->all(), ['b']);
+    }
+
+    public function testItCachesMultipleRequests(): void
+    {
+        $requests = [
+            Request::create('https://example.com?include=a'),
+            Request::create('https://example.com?include=b'),
+        ];
+
+        Includes::getInstance()->parse($requests[0], '');
+        Includes::getInstance()->parse($requests[1], '');
+        Includes::getInstance()->parse($requests[0], '');
+        Includes::getInstance()->parse($requests[1], '');
+
+        $this->assertSame(Includes::getInstance()->cache()->pluck('request')->map->get()->all(), $requests);
+    }
 }

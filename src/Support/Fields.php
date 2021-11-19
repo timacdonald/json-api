@@ -71,7 +71,7 @@ class Fields
             throw new HttpException(400, 'The fields parameter value must be a comma seperated list of attributes.');
         }
 
-        $fields = explode(',', $fields);
+        $fields = array_filter(explode(',', $fields), fn (string $value) => $value !== '');
 
         $this->cache[] = [
             'fields' => $fields,
@@ -79,12 +79,16 @@ class Fields
             'resourceType' => $resourceType,
         ];
 
-
         return $fields;
     }
 
     public function flush(): void
     {
         $this->cache = new Collection([]);
+    }
+
+    public function cache(): Collection
+    {
+        return $this->cache;
     }
 }

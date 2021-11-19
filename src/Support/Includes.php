@@ -67,4 +67,9 @@ class Includes
     {
         $this->cache = new Collection([]);
     }
+
+    public function cache(): Collection
+    {
+        return $this->cache;
+    }
 }

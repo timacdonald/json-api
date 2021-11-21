@@ -14,7 +14,7 @@ These docs are not designed to introduce you to the JSON:API spec and the associ
 
 This package is an specialisation of Laravel's `JsonResource` class. All the underlying API's are still there, thus in your controller you can still interact with `JsonApiResource` classes as you would with the base `JsonResource` class, e.g.
 
-```
+```php
 <?php
 
 class UserController

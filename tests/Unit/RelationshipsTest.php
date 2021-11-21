@@ -849,7 +849,7 @@ class RelationshipsTest extends TestCase
             protected function toRelationships(Request $request): array
             {
                 return [
-                    'relation' => fn (Request $request) => new class ($request) extends JsonApiResource {
+                    'relation' => fn () => new class ($request) extends JsonApiResource {
                         protected function toId(Request $request): string
                         {
                             return 'relation-id';

@@ -186,37 +186,6 @@ class AttributesTest extends TestCase
         ]);
     }
 
-    public function testClosureWrappedAttributesGetTheRequestAtAnArgument(): void
-    {
-        $model = BasicModel::make([
-            'id' => 'expected-id',
-        ]);
-        Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
-            protected function toAttributes(Request $request): array
-            {
-                return [
-                    'request_is_the_same' => fn ($attributeArgument) => $request === $attributeArgument,
-                ];
-            }
-        });
-
-        $response = $this->getJson('test-route');
-
-        $response->assertOk();
-        $response->assertExactJson([
-            'data' => [
-                'id' => 'expected-id',
-                'type' => 'basicModels',
-                'attributes' => [
-                    'request_is_the_same' => true,
-                ],
-                'relationships' => [],
-                'links' => [],
-                'meta' => [],
-            ],
-            'included' => [],
-        ]);
-    }
 
     public function testItThrowsWhenFieldsParameterIsNotAnArray(): void
     {

@@ -21,9 +21,9 @@ class UserResource extends JsonApiResource
     protected function toRelationships(Request $request): array
     {
         return [
-            'posts' => fn (Request $request): JsonApiResourceCollection => PostResource::collection($this->posts),
-            'license' => fn (Request $request): LicenseResource => LicenseResource::make($this->license),
-            'avatar' => fn (Request $request): ?ImageResource => optional($this->avatar, fn (Model $model) => ImageResource::make($model)),
+            'posts' => fn (): JsonApiResourceCollection => PostResource::collection($this->posts),
+            'license' => fn (): LicenseResource => LicenseResource::make($this->license),
+            'avatar' => fn (): ?ImageResource => optional($this->avatar, fn (Model $model) => ImageResource::make($model)),
         ];
     }
 }

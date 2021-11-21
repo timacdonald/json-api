@@ -3,7 +3,7 @@
     "description": "A Lightweight JSON:API Resource for Laravel",
     "keywords": [
         "laravel",
-        "json:api",
+        "json-api",
         "jsonapi",
         "Json API"
     ],

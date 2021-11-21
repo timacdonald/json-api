@@ -58,10 +58,10 @@ jobs:
 
     tests:
         runs-on: ubuntu-latest
-        name: 'Test suite on PHP: ${{ matrix.php }}; Laravel: ${{ matrix.laravel }}; Dependecies: ${{ matrix.dependency-version }}'
+        name: 'Test suite on PHP: ${{ matrix.php }}; Dependecies: ${{ matrix.dependency-version }}'
         strategy:
             matrix:
-                php: ['7.3', '7.4', '8.0']
+                php: ['8.0']
                 dependency-version: ['prefer-lowest', 'prefer-stable']
 
         steps:

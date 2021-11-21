@@ -7,6 +7,7 @@ A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API st
 These docs are not designed to introduce you to the JSON:API spec and the associated concepts, instead you should [head over and read the spec](https:/jsonapi.org) if you are not familiar with it.
 
 #### TODO
+- [ ] Add installation instructions.
 - [ ] Document loading things via Spatie Query Builder
 - [ ] document how you could handle type mapping in config file class > type
 

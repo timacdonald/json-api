@@ -1123,8 +1123,20 @@ class RelationshipsTest extends TestCase
         ]);
     }
 
-    public function tsetItCanReturnAnEmptyArrayForEmptyToManyRelationships(): void
+    public function testItCanReturnAnEmptyArrayForEmptyToManyRelationships(): void
     {
         $this->markTestIncomplete();
+    }
+
+    public function testItFlushesTheRelationshipCache(): void
+    {
+        $user = BasicModel::make(['id' => '1'])->setRelation('posts', [BasicModel::make(['id' => '2'])]);
+        $resource = UserResource::make($user);
+        Route::get('test-route', fn () => $resource);
+
+        $response = $this->get("test-route?include=posts");
+
+        $response->assertOk();
+        $this->assertNull($resource->requestedRelationshipsCache());
     }
 }

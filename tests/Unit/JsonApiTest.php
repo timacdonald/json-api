@@ -219,7 +219,7 @@ class JsonApiTest extends TestCase
     {
         Route::get('test-route', fn () => BasicJsonApiResource::make(BasicModel::make(['id' => 'missing-id'])));
 
-        $response = $this->get("test-route?includes=test&fields[basicModels]=a");
+        $response = $this->get("test-route?include=test&fields[basicModels]=a");
 
         $response->assertExactJson([
             'data' => [
@@ -240,7 +240,7 @@ class JsonApiTest extends TestCase
     {
         Route::get('test-route', fn () => BasicJsonApiResource::collection([ BasicModel::make(['id' => 'missing-id']) ]));
 
-        $response = $this->get("test-route?includes=test&fields[basicModels]=a");
+        $response = $this->get("test-route?include=test&fields[basicModels]=a");
 
         $response->assertExactJson([
             'data' => [

@@ -7,6 +7,9 @@ namespace TiMacDonald\JsonApi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
+/**
+ * @internal
+ */
 class NullJsonApiResource
 {
     public function withIncludePrefix(string $prefix): self
@@ -22,5 +25,10 @@ class NullJsonApiResource
     public function included(Request $request): Collection
     {
         return new Collection([]);
+    }
+
+    public function flush(): void
+    {
+        //
     }
 }

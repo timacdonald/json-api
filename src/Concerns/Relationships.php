@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi\Concerns;
 
+use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use TiMacDonald\JsonApi\JsonApiResource;
@@ -21,6 +22,10 @@ trait Relationships
      */
     private string $includePrefix = '';
 
+    private ?Collection $requestedRelationshipsCache = null;
+
+    private int $requestedRelationshipsResolvingCount = 0;
+
     /**
      * @internal
      */
@@ -36,15 +41,17 @@ trait Relationships
      */
     public function included(Request $request): Collection
     {
-        return $this->requestedRelationships($request)
+        $included = $this->requestedRelationships($request)
             ->map(function (JsonApiResource | JsonApiResourceCollection | NullJsonApiResource $include): Collection | JsonApiResource | NullJsonApiResource {
                 return $include instanceof JsonApiResourceCollection
                     ? $include->collection
                     : $include;
             })
-            ->merge($this->nestedIncluded($request))
-            ->flatten()
-            ->reject(fn (JsonApiResource | NullJsonApiResource $resource) => $resource instanceof NullJsonApiResource) ;
+                ->merge($this->nestedIncluded($request))
+                ->flatten()
+                ->reject(fn (JsonApiResource | NullJsonApiResource $resource) => $resource instanceof NullJsonApiResource);
+
+        return $included;
     }
 
     /**
@@ -91,7 +98,7 @@ trait Relationships
      */
     private function requestedRelationships(Request $request): Collection
     {
-        return once(fn (): Collection => Collection::make($this->resolveRelationships($request))
+        return $this->rememberRequestRelationships(fn () => Collection::make($this->toRelationships($request))
             ->only(Includes::getInstance()->parse($request, $this->includePrefix))
             ->map(function (mixed $value, string $key) use ($request): JsonApiResource | JsonApiResourceCollection | NullJsonApiResource {
                 return ($value($request) ?? new NullJsonApiResource())->withIncludePrefix($key);
@@ -107,9 +114,31 @@ trait Relationships
 
     /**
      * @internal
+     * @infection-ignore-all
      */
-    private function resolveRelationships(Request $request): array
+    public function flush(): void
     {
-        return once(fn () => $this->toRelationships($request));
+        $this->requestedRelationshipsCache?->each(function (JsonApiResource | JsonApiResourceCollection | NullJsonApiResource $resource): void {
+            $resource->flush();
+        });
+
+        $this->requestedRelationshipsCache = null;
+    }
+
+    /**
+     * @internal
+     * @infection-ignore-all
+     */
+    private function rememberRequestRelationships(Closure $closure): Collection
+    {
+        return $this->requestedRelationshipsCache ??= $closure();
+    }
+
+    /**
+     * @internal
+     */
+    public function requestedRelationshipsCache(): ?Collection
+    {
+        return $this->requestedRelationshipsCache;
     }
 }

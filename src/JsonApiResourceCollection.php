@@ -7,8 +7,7 @@ namespace TiMacDonald\JsonApi;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
-use TiMacDonald\JsonApi\Support\Fields;
-use TiMacDonald\JsonApi\Support\Includes;
+use TiMacDonald\JsonApi\Support\Cache;
 
 class JsonApiResourceCollection extends AnonymousResourceCollection
 {
@@ -33,9 +32,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     {
         $response = parent::toResponse($request)->header('Content-type', 'application/vnd.api+json');
 
-        Includes::getInstance()->flush();
-
-        Fields::getInstance()->flush();
+        Cache::flush($this);
 
         return $response;
     }
@@ -64,5 +61,14 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     public function toResourceIdentifier(Request $request): array
     {
         return $this->collection->map(fn (JsonApiResource $resource): array => $resource->toResourceIdentifier($request))->all();
+    }
+
+    /**
+     * @internal
+     * @infection-ignore-all
+     */
+    public function flush(): void
+    {
+        $this->collection->each->flush();
     }
 }

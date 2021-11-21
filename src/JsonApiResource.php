@@ -127,10 +127,6 @@ abstract class JsonApiResource extends JsonResource
      */
     public function toResponse($request): JsonResponse
     {
-        $response = parent::toResponse($request)->header('Content-type', 'application/vnd.api+json');
-
-        Cache::flush($this);
-
-        return $response;
+        return tap(parent::toResponse($request)->header('Content-type', 'application/vnd.api+json'), fn () => Cache::flush($this));
     }
 }

@@ -31,6 +31,8 @@ class UserController
 }
 ```
 
+The internal developer facing API however has changed in that you no longer interact with the `toArray($request)` method, instead this package exposes some new methods to interact with. More on those shortly.
+
 ## Resource Identification
 
 [JSON:API docs: Identification](https://jsonapi.org/format/#document-resource-object-identification)

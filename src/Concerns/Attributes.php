@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi\Concerns;
 
+use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use TiMacDonald\JsonApi\Support\Fields;
 
-use Closure;
+use TiMacDonald\JsonApi\Support\Fields;
 
 /**
  * @internal

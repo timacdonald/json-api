@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi;
 
+use Closure;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;
 use TiMacDonald\JsonApi\Exceptions\ResourceIdentificationException;
-use Closure;
-use Illuminate\Http\JsonResponse;
 
 use TiMacDonald\JsonApi\Support\Cache;
 use function property_exists;

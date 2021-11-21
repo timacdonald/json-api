@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace TiMacDonald\JsonApi\Exceptions;
 
 use RuntimeException;
-use function is_object;
 use function gettype;
+use function is_object;
 
 /**
  * @internal

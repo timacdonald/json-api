@@ -8,8 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use WeakReference;
-use function explode;
 use function array_key_exists;
+use function explode;
 use function is_string;
 
 /**

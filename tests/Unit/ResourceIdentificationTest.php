@@ -6,10 +6,10 @@ namespace Tests\Unit;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Tests\TestCase;
 use stdClass;
 use Tests\Models\BasicModel;
 use Tests\Resources\BasicJsonApiResource;
+use Tests\TestCase;
 use TiMacDonald\JsonApi\Exceptions\ResourceIdentificationException;
 
 class ResourceIdentificationTest extends TestCase

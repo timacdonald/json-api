@@ -11,7 +11,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;
 use TiMacDonald\JsonApi\Exceptions\ResourceIdentificationException;
-
 use TiMacDonald\JsonApi\Support\Cache;
 use function property_exists;
 

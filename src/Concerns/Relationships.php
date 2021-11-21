@@ -74,27 +74,6 @@ trait Relationships
     /**
      * @internal
      */
-    public function toResourceIdentifier(Request $request): array
-    {
-        return [
-            'data' => [
-                'id' => $this->toId($request),
-                'type' => $this->toType($request),
-            ],
-        ];
-    }
-
-    /**
-     * @internal
-     */
-    public function toUniqueResourceIdentifier(Request $request): string
-    {
-        return "type:{$this->toType($request)} id:{$this->toId($request)}";
-    }
-
-    /**
-     * @internal
-     */
     private function requestedRelationships(Request $request): Collection
     {
         return $this->rememberRequestRelationships(fn (): Collection => Collection::make($this->toRelationships($request))

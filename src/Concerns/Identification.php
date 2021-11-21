@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TiMacDonald\JsonApi\Concerns;
 
 use Closure;
+use Illuminate\Http\Request;
 
 /**
  * @internal
@@ -35,5 +36,26 @@ trait Identification
     public static function resolveTypeNormally(): void
     {
         self::$typeResolver = null;
+    }
+
+    /**
+     * @internal
+     */
+    public function toResourceIdentifier(Request $request): array
+    {
+        return [
+            'data' => [
+                'id' => $this->toId($request),
+                'type' => $this->toType($request),
+            ],
+        ];
+    }
+
+    /**
+     * @internal
+     */
+    public function toUniqueResourceIdentifier(Request $request): string
+    {
+        return "type:{$this->toType($request)} id:{$this->toId($request)}";
     }
 }

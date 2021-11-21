@@ -42,7 +42,7 @@ trait Relationships
      */
     public function included(Request $request): Collection
     {
-        $included = $this->requestedRelationships($request)
+        return $this->requestedRelationships($request)
             ->map(function (JsonApiResource | JsonApiResourceCollection | NullJsonApiResource $include): Collection | JsonApiResource | NullJsonApiResource {
                 return $include instanceof JsonApiResourceCollection
                     ? $include->collection
@@ -50,9 +50,7 @@ trait Relationships
             })
             ->merge($this->nestedIncluded($request))
             ->flatten()
-            ->reject(fn (JsonApiResource | NullJsonApiResource $resource) => $resource instanceof NullJsonApiResource);
-
-        return $included;
+            ->reject(fn (JsonApiResource | NullJsonApiResource $resource): bool => $resource instanceof NullJsonApiResource);
     }
 
     /**
@@ -99,7 +97,7 @@ trait Relationships
      */
     private function requestedRelationships(Request $request): Collection
     {
-        return $this->rememberRequestRelationships(fn () => Collection::make($this->toRelationships($request))
+        return $this->rememberRequestRelationships(fn (): Collection => Collection::make($this->toRelationships($request))
             ->only(Includes::getInstance()->parse($request, $this->includePrefix))
             ->map(function (mixed $value, string $key) use ($request): JsonApiResource | JsonApiResourceCollection | NullJsonApiResource {
                 return ($value($request) ?? new NullJsonApiResource())->withIncludePrefix($key);

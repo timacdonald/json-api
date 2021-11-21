@@ -9,7 +9,6 @@ These docs are not designed to introduce you to the JSON:API spec and the associ
 **Note:** This is a WIP project currently being built out via livestream on [my YouTube channel](https://www.youtube.com/channel/UCXukwzJwxZG0NOtLhCBdEsQ). Come hang out next stream.
 
 #### TODO
-- [ ] review composer PHP version support
 - [ ] Document loading things via Spatie Query Builder
 - [ ] document how you could handle type mapping in config file class > type
 

@@ -66,6 +66,6 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
      */
     public function flush(): void
     {
-        $this->collection->each->flush();
+        $this->collection->each(fn (JsonApiResource $resource) => $resource->flush());
     }
 }

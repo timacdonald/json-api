@@ -8,5 +8,4 @@ parameters:
     checkUninitializedProperties: true
     checkMissingIterableValueType: false
 includes:
-    - vendor/phpstan/phpstan-strict-rules/rules.neon
     - vendor/nunomaduro/larastan/extension.neon

@@ -156,7 +156,7 @@ class AppServiceProvider extends ServiceProvider
 
 ### Customising the resource `"type"`
 
-You can customise the resolution of the `type` by specifying an type resolver in your service provider.
+You can customise the resolution of the `type` by specifying a type resolver in your service provider.
 
 ```php
 <?php

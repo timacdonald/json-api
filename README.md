@@ -2,11 +2,9 @@
 
 # JSON:API Resource for Laravel
 
-A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API standards and also implements features such as sparse fieldsets and compound documents, whilst also allowing you to extend the spec as needed for your project.
+A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API standards and also implements features such as sparse fieldsets and compound documents, whilst allowing you to extend the spec as needed for your project.
 
-These docs are not designed to introduce you to the JSON:API spec and the associated concepts, instead you should [head over and read the spec](https:/jsonapi.org) to better learn more about the specification.
-
-**Note:** This is a WIP project currently being built out via livestream on [my YouTube channel](https://www.youtube.com/channel/UCXukwzJwxZG0NOtLhCBdEsQ). Come hang out next stream.
+These docs are not designed to introduce you to the JSON:API spec and the associated concepts, instead you should [head over and read the spec](https:/jsonapi.org) if you are not familiar with it.
 
 #### TODO
 - [ ] Document loading things via Spatie Query Builder
@@ -45,7 +43,7 @@ class UserResource extends JsonApiResource
 }
 ```
 
-The [advanced usage](#advanded-usage) section covers [sparse fieldsets and handling expensive attribute calculation](#sparse-fieldsets) and [minimal attribute](#minimal-attributes) payloads, but you can ignore those advanced features for now and continue on with...
+The [advanced usage](#advanced-usage) section covers [sparse fieldsets and handling expensive attribute calculation](#sparse-fieldsets) and [minimal attribute](#minimal-attributes) payloads, but you can ignore those advanced features for now and continue on with...
 
 ## Resource Relationships
 
@@ -140,32 +138,36 @@ class UserResource extends JsonApiResource
 
 ### Customising the resource `"id"`
 
-You can customise the resolution of the `id` by implementing the `toId(Request $request)` method.
+You can customise the resolution of the `id` by specifying an id resolver in your service provider.
 
 ```php
 <?php
 
-class UserResource extends JsonApiResource
+class AppServiceProvider extends ServiceProvider
 {
-    protected function toId(Request $request): string
+    public function boot()
     {
-        // your custom resolution logic...
+        JsonApiResource::resolveIdUsing(function (mixed $resource): string {
+            // your custom resolution logic...
+        });
     }
 }
 ```
 
 ### Customising the resource `"type"`
 
-You can customise the resolution of the `type` by implementing the `toType(Request $request)` method.
+You can customise the resolution of the `type` by specifying an type resolver in your service provider.
 
 ```php
 <?php
 
-class UserResource extends JsonApiResource
+class AppServiceProvider extends ServiceProvider
 {
-    protected function toType(Request $request): string
+    public function boot()
     {
-        // your custom resolution logic...
+        JsonApiResource::resolveTypeUsing(function (mixed $resource): string {
+            // your custom resolution logic...
+        });
     }
 }
 ```

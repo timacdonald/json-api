@@ -79,7 +79,7 @@ trait Relationships
         return $this->rememberRequestRelationships(fn (): Collection => Collection::make($this->toRelationships($request))
             ->only(Includes::getInstance()->parse($request, $this->includePrefix))
             ->map(function (mixed $value, string $key) use ($request): JsonApiResource | JsonApiResourceCollection | NullJsonApiResource {
-                return ($value($request) ?? new NullJsonApiResource())->withIncludePrefix($key);
+                return ($value() ?? new NullJsonApiResource())->withIncludePrefix($key);
             })
             ->each(function (JsonApiResource | JsonApiResourceCollection | NullJsonApiResource $resource) use ($request): void {
                 if (! $resource instanceof JsonApiResourceCollection) {

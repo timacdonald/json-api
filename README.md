@@ -12,6 +12,25 @@ These docs are not designed to introduce you to the JSON:API spec and the associ
 
 # Basic usage
 
+This package is an specialisation of Laravel's `JsonResource` class. All the underlying API's are still there, thus in your controller you can still interact with `JsonApiResource` classes as you would with the base `JsonResource` class, e.g.
+
+```
+<?php
+
+class UserController
+{
+    public function index()
+    {
+        return UserResource::collection(User::paginate());
+    }
+
+    public function show(User $user)
+    {
+        return UserResource::make($user);
+    }
+}
+```
+
 ## Resource Identification
 
 [JSON:API docs: Identification](https://jsonapi.org/format/#document-resource-object-identification)

@@ -62,32 +62,7 @@ jobs:
         strategy:
             matrix:
                 php: ['7.3', '7.4', '8.0']
-                laravel: ['^7.0', '^8.0']
                 dependency-version: ['prefer-lowest', 'prefer-stable']
-                include:
-                    - laravel: '^7.0'
-                      testbench: '^5.0'
-                    - laravel: '^8.0'
-                      testbench: '^6.0'
-                exclude:
-                    - laravel: '~5.3.0'
-                      php: '7.2'
-                    - laravel: '~5.5.0'
-                      php: '8.0'
-                    - laravel: '~5.6.0'
-                      php: '8.0'
-                    - laravel: '~5.7.0'
-                      php: '8.0'
-                    - laravel: '~5.8.0'
-                      php: '8.0'
-                    - laravel: '^6.0'
-                      php: '7.1'
-                    - laravel: '^7.0'
-                      php: '7.1'
-                    - laravel: '^8.0'
-                      php: '7.1'
-                    - laravel: '^8.0'
-                      php: '7.2'
 
         steps:
             - name: checkout code
@@ -103,12 +78,11 @@ jobs:
               uses: actions/cache@v1
               with:
                   path: ~/.composer/cache/files
-                  key: dependencies-${{ matrix.dependency-version }}-laravel-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}-v3
+                  key: dependencies-${{ matrix.dependency-version }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}-v3
 
             - name: Install dependencies
               run: |
-                composer remove 'friendsofphp/php-cs-fixer' 'infection/infection' 'nunomaduro/larastan' 'phpstan/phpstan' 'phpunit/phpunit' 'ergebnis/composer-normalize' 'orchestra/testbench' --dev --no-update --no-interaction --verbose
-                  composer require 'illuminate/http:${{ matrix.laravel }}' 'illuminate/support:${{ matrix.laravel }}' 'illuminate/database:${{ matrix.laravel }}'    'orchestra/testbench:${{ matrix.testbench }}' --no-update --no-interaction --verbose
+                composer remove 'friendsofphp/php-cs-fixer' 'infection/infection' 'nunomaduro/larastan' 'phpstan/phpstan' 'phpunit/phpunit' 'ergebnis/composer-normalize' --dev --no-update --no-interaction --verbose
                   composer update --${{ matrix.dependency-version }} --no-suggest --no-interaction --verbose
 
             - name: Check platform requirements

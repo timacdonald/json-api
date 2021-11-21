@@ -22,9 +22,10 @@ trait Relationships
      */
     private string $includePrefix = '';
 
+    /**
+     * @internal
+     */
     private ?Collection $requestedRelationshipsCache = null;
-
-    private int $requestedRelationshipsResolvingCount = 0;
 
     /**
      * @internal
@@ -47,9 +48,9 @@ trait Relationships
                     ? $include->collection
                     : $include;
             })
-                ->merge($this->nestedIncluded($request))
-                ->flatten()
-                ->reject(fn (JsonApiResource | NullJsonApiResource $resource) => $resource instanceof NullJsonApiResource);
+            ->merge($this->nestedIncluded($request))
+            ->flatten()
+            ->reject(fn (JsonApiResource | NullJsonApiResource $resource) => $resource instanceof NullJsonApiResource);
 
         return $included;
     }

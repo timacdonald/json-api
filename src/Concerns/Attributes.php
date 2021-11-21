@@ -7,7 +7,6 @@ namespace TiMacDonald\JsonApi\Concerns;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-
 use TiMacDonald\JsonApi\Support\Fields;
 
 /**

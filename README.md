@@ -6,6 +6,15 @@ A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API st
 
 These docs are not designed to introduce you to the JSON:API spec and the associated concepts, instead you should [head over and read the spec](https:/jsonapi.org) if you are not familiar with it.
 
+
+# Installation
+
+You can install using [composer](https://getcomposer.org/) from [Packagist](https://packagist.org/packages/timacdonald/json-api).
+
+```
+$ composer require timacdonald/json-api
+```
+
 # Basic usage
 
 This package is an specialisation of Laravel's `JsonResource` class. All the underlying API's are still there, thus in your controller you can still interact with `JsonApiResource` classes as you would with the base `JsonResource` class, e.g.
@@ -336,4 +345,3 @@ And a special (vegi) thanks to [Caneco](https://twitter.com/caneco) for the logo
 - [ ] Investigate collection count support
 - [ ] document how you could handle type mapping in config file class > type
 - [ ] Document loading things via Spatie Query Builder
-- [ ] Add installation instructions.

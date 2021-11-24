@@ -1139,4 +1139,42 @@ class RelationshipsTest extends TestCase
         $response->assertOk();
         $this->assertNull($resource->requestedRelationshipsCache());
     }
+
+    public function testItCanHaveANonJsonApiRelationship(): void
+    {
+        $user = BasicModel::make([
+            'id' => '1',
+            'name' => 'user-name',
+        ]);
+        $resource = new class ($user) extends UserResource {
+            public function toRelationships(Request $request): array
+            {
+                return [
+                    'relation' => fn () => ['hello' => 'world'],
+                ];
+            }
+        };
+        Route::get('test-route', fn () => $resource);
+
+        $response = $this->get('test-route?include=relation');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                'id' => '1',
+                'type' => 'basicModels',
+                'attributes' => [
+                    'name' => 'user-name',
+                ],
+                'relationships' => [
+                    'relation' => [
+                        'hello' => 'world',
+                    ],
+                ],
+                'meta' => [],
+                'links' => [],
+            ],
+            'included' => [],
+        ]);
+    }
 }

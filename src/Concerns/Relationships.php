@@ -9,8 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
-use TiMacDonald\JsonApi\NullJsonApiResource;
 use TiMacDonald\JsonApi\Support\Includes;
+use TiMacDonald\JsonApi\UnknownRelationship;
 
 /**
  * @internal
@@ -43,14 +43,12 @@ trait Relationships
     public function included(Request $request): Collection
     {
         return $this->requestedRelationships($request)
-            ->map(function (JsonApiResource | JsonApiResourceCollection | NullJsonApiResource $include): Collection | JsonApiResource | NullJsonApiResource {
-                return $include instanceof JsonApiResourceCollection
-                    ? $include->collection
-                    : $include;
+            ->map(function (JsonApiResource | JsonApiResourceCollection | UnknownRelationship $include): Collection | JsonApiResource | UnknownRelationship {
+                return $include->includable();
             })
             ->merge($this->nestedIncluded($request))
             ->flatten()
-            ->reject(fn (JsonApiResource | NullJsonApiResource $resource): bool => $resource instanceof NullJsonApiResource);
+            ->filter(fn (JsonApiResource | UnknownRelationship $resource): bool => $resource->shouldBePresentInIncludes());
     }
 
     /**
@@ -59,7 +57,7 @@ trait Relationships
     private function nestedIncluded(Request $request): Collection
     {
         return $this->requestedRelationships($request)
-            ->flatMap(fn (JsonApiResource | JsonApiResourceCollection | NullJsonApiResource $resource, string $key): Collection => $resource->included($request));
+            ->flatMap(fn (JsonApiResource | JsonApiResourceCollection | UnknownRelationship $resource, string $key): Collection => $resource->included($request));
     }
 
     /**
@@ -68,7 +66,7 @@ trait Relationships
     private function requestedRelationshipsAsIdentifiers(Request $request): Collection
     {
         return $this->requestedRelationships($request)
-            ->map(fn (JsonApiResource | JsonApiResourceCollection | NullJsonApiResource $resource): ?array => $resource->toResourceIdentifier($request));
+            ->map(fn (JsonApiResource | JsonApiResourceCollection | UnknownRelationship $resource): mixed => $resource->toResourceIdentifier($request));
     }
 
     /**
@@ -78,15 +76,18 @@ trait Relationships
     {
         return $this->rememberRequestRelationships(fn (): Collection => Collection::make($this->toRelationships($request))
             ->only(Includes::getInstance()->parse($request, $this->includePrefix))
-            ->map(function (mixed $value, string $key) use ($request): JsonApiResource | JsonApiResourceCollection | NullJsonApiResource {
-                return ($value() ?? new NullJsonApiResource())->withIncludePrefix($key);
-            })
-            ->each(function (JsonApiResource | JsonApiResourceCollection | NullJsonApiResource $resource) use ($request): void {
-                if (! $resource instanceof JsonApiResourceCollection) {
-                    return;
+            ->map(function (Closure $value, string $key) use ($request): JsonApiResource | JsonApiResourceCollection | UnknownRelationship {
+                $resource = $value();
+
+                if ($resource instanceof JsonApiResource) {
+                    return $resource->withIncludePrefix($key);
                 }
 
-                $resource->collection = $resource->collection->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request));
+                if ($resource instanceof JsonApiResourceCollection) {
+                    return $resource->filterDuplicates($request)->withIncludePrefix($key);
+                }
+
+                return new UnknownRelationship($resource);
             }));
     }
 
@@ -96,7 +97,7 @@ trait Relationships
      */
     public function flush(): void
     {
-        $this->requestedRelationshipsCache?->each(function (JsonApiResource | JsonApiResourceCollection | NullJsonApiResource $resource): void {
+        $this->requestedRelationshipsCache?->each(function (JsonApiResource | JsonApiResourceCollection | UnknownRelationship $resource): void {
             $resource->flush();
         });
 
@@ -118,5 +119,21 @@ trait Relationships
     public function requestedRelationshipsCache(): ?Collection
     {
         return $this->requestedRelationshipsCache;
+    }
+
+    /**
+     * @internal
+     */
+    private function includable(): static
+    {
+        return $this;
+    }
+
+    /**
+     * @internal
+     */
+    private function shouldBePresentInIncludes(): bool
+    {
+        return true;
     }
 }

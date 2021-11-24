@@ -12,12 +12,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Tests\Models\BasicModel;
 use Tests\Resources\UserResource;
-use TiMacDonald\JsonApi\JsonApiResource;
 
 $numberOfResourcesReturned = 500;
 $modelFactory = fn () => new BasicModel(['id' => Str::random()]);
 Container::getInstance()->bind(ResponseFactory::class, fn () => new class () {
-    public function json(JsonApiResource $data): object
+    public function json(array $data): object
     {
         $data = json_encode($data);
 

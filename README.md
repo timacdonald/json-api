@@ -10,6 +10,7 @@ These docs are not designed to introduce you to the JSON:API spec and the associ
 - [ ] Add installation instructions.
 - [ ] Document loading things via Spatie Query Builder
 - [ ] document how you could handle type mapping in config file class > type
+- [ ] document why you specify type and id resolvers globally and not a per instance basis.
 
 # Basic usage
 

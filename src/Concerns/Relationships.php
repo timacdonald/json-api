@@ -129,7 +129,7 @@ trait Relationships
     /**
      * @internal
      */
-    private function includable(): static
+    private function includable(): self
     {
         return $this;
     }

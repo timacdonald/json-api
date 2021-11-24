@@ -1151,12 +1151,20 @@ class RelationshipsTest extends TestCase
             {
                 return [
                     'relation' => fn () => ['hello' => 'world'],
+                    'nested_relation' => fn () => new class (BasicModel::make(['id' => '2', 'name' => 'nested-user'])) extends UserResource {
+                        public function toRelationships(Request $request): array
+                        {
+                            return [
+                                'relation' => fn () => 123,
+                            ];
+                        }
+                    },
                 ];
             }
         };
         Route::get('test-route', fn () => $resource);
 
-        $response = $this->get('test-route?include=relation');
+        $response = $this->get('test-route?include=relation,nested_relation.relation');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -1170,11 +1178,30 @@ class RelationshipsTest extends TestCase
                     'relation' => [
                         'hello' => 'world',
                     ],
+                    'nested_relation' => [
+                        'data' => [
+                            'id' => '2',
+                            'type' => 'basicModels',
+                        ],
+                    ],
                 ],
                 'meta' => [],
                 'links' => [],
             ],
-            'included' => [],
+            'included' => [
+                [
+                    'id' => '2',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'name' => 'nested-user',
+                    ],
+                    'relationships' => [
+                        'relation' => 123,
+                    ],
+                    'meta' => [],
+                    'links' => [],
+                ],
+            ],
         ]);
     }
 }

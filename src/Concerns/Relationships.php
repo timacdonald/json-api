@@ -48,7 +48,8 @@ trait Relationships
             })
             ->merge($this->nestedIncluded($request))
             ->flatten()
-            ->filter(fn (JsonApiResource | UnknownRelationship $resource): bool => $resource->shouldBePresentInIncludes());
+            ->filter(fn (JsonApiResource | UnknownRelationship $resource): bool => $resource->shouldBePresentInIncludes())
+            ->values();
     }
 
     /**

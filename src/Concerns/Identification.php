@@ -25,6 +25,16 @@ trait Identification
     /**
      * @internal
      */
+    private ?string $idCache = null;
+
+    /**
+     * @internal
+     */
+    private ?string $typeCache = null;
+
+    /**
+     * @internal
+     */
     public static function resolveIdNormally(): void
     {
         self::$idResolver = null;
@@ -57,5 +67,23 @@ trait Identification
     public function toUniqueResourceIdentifier(Request $request): string
     {
         return "type:{$this->toType($request)} id:{$this->toId($request)}";
+    }
+
+    /**
+     * @internal
+     * @infection-ignore-all
+     */
+    private function rememberType(Closure $closure): string
+    {
+        return $this->typeCache ??= $closure();
+    }
+
+    /**
+     * @internal
+     * @infection-ignore-all
+     */
+    private function rememberId(Closure $closure): string
+    {
+        return $this->idCache ??= $closure();
     }
 }

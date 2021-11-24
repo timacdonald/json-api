@@ -65,24 +65,24 @@ abstract class JsonApiResource extends JsonResource
 
     protected function toId(Request $request): string
     {
-        return (self::$idResolver ??= static function (mixed $resource): string {
+        return $this->rememberId(fn () => (self::$idResolver ??= static function (mixed $resource): string {
             if (! $resource instanceof Model) {
                 throw ResourceIdentificationException::attemptingToDetermineIdFor($resource);
             }
 
             return (string) $resource->getKey();
-        })($this->resource);
+        })($this->resource));
     }
 
     protected function toType(Request $request): string
     {
-        return (self::$typeResolver ??= static function (mixed $resource): string {
+        return $this->rememberType(fn () => (self::$typeResolver ??= static function (mixed $resource): string {
             if (! $resource instanceof Model) {
                 throw ResourceIdentificationException::attemptingToDetermineTypeFor($resource);
             }
 
             return Str::camel($resource->getTable());
-        })($this->resource);
+        })($this->resource));
     }
 
     /**

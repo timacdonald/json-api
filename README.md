@@ -6,12 +6,6 @@ A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API st
 
 These docs are not designed to introduce you to the JSON:API spec and the associated concepts, instead you should [head over and read the spec](https:/jsonapi.org) if you are not familiar with it.
 
-#### TODO
-- [ ] Add installation instructions.
-- [ ] Document loading things via Spatie Query Builder
-- [ ] document how you could handle type mapping in config file class > type
-- [ ] document why you specify type and id resolvers globally and not a per instance basis.
-
 # Basic usage
 
 This package is an specialisation of Laravel's `JsonResource` class. All the underlying API's are still there, thus in your controller you can still interact with `JsonApiResource` classes as you would with the base `JsonResource` class, e.g.
@@ -39,9 +33,13 @@ The internal developer facing API however has changed in that you no longer inte
 
 [JSON:API docs: Identification](https://jsonapi.org/format/#document-resource-object-identification)
 
+We have defined a sensible default for you so you can hit the ground running without having to fiddle with the small stuff.
+
 The `"id"` and `"type"` of a resource is automatically resolved for you under-the-hood if you are using resources solely with Eloquent models.
 
-We have defined a sensible default for you so you can hit the ground running without having to fiddle with the small stuff. The default behaviour when resolving the `"id"` is to call the `$model->getKey()` method and the `"type"` is resolved by using a camel case of the model's table name, e.g. `blog_posts` becomes `blogPosts`. You can customise how this works to support other types of objects and behaviours, but that will follow in the [advanced usage](#advanced-usage) section.
+`"id"` is resolved by calling the `$model->getKey()` method and the `"type"` is resolved by using a camel case of the model's table name, e.g. `blog_posts` becomes `blogPosts`. 
+
+You can customise how this works to support other types of objects and behaviours, but that will follow in the [advanced usage](#advanced-usage) section.
 
 Nice. Well that was easy, so let's move onto...
 
@@ -177,6 +175,8 @@ class AppServiceProvider extends ServiceProvider
 }
 ```
 
+Although it is not recommended, you can also override the `toId(Request $request): string` method on a resource by resource basis.
+
 ### Customising the resource `"type"`
 
 You can customise the resolution of the `type` by specifying a type resolver in your service provider.
@@ -194,6 +194,8 @@ class AppServiceProvider extends ServiceProvider
     }
 }
 ```
+
+Although it is not recommended, you can also override the `toType(Request $request): string` method on a resource by resource basis.
 
 ## Resource Attributes
 
@@ -289,3 +291,6 @@ And a special (vegi) thanks to [Caneco](https://twitter.com/caneco) for the logo
 - [ ] Helper to define links
 - [ ] Allow filtering via the `when` methods for attributes and relationships.
 - [ ] Investigate collection count support
+- [ ] document how you could handle type mapping in config file class > type
+- [ ] Document loading things via Spatie Query Builder
+- [ ] Add installation instructions.

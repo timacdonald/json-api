@@ -103,6 +103,10 @@ trait Relationships
         });
 
         $this->requestedRelationshipsCache = null;
+
+        $this->idCache = null;
+
+        $this->typeCache = null;
     }
 
     /**

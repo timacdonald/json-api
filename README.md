@@ -149,6 +149,49 @@ class UserResource extends JsonApiResource
 }
 ```
 
+## Refactoring to the JSON:API standard
+
+If you have an existing API that utilises Laravel's `JsonApiResource` that you would like to migrate over to the JSON:API standard via this package, it might be a big job. For this reason, we've enabled you to migrate piece by piece so you can slowly refactor your API.
+
+From a relationship `Closure` you can return anything. If what you return is not a `JsonApiResource` or `JsonApiResourceCollection`, then the value will be "inlined" in the relationships object.
+
+```php
+<?php
+
+class UserResource extends JsonApiResource
+{
+    protected function toRelationships(Request $request): array
+    {
+        return [
+            'nonJsonApiResource' => fn (): JsonResource => LicenseResource::make($this->license),
+        ];
+    }
+}
+
+```
+
+Here is what that response might look like. Notice that the resource is "inlined" and is not moved out to the "included" section of the payload.
+
+```json
+{
+    "data": {
+        "id": "1",
+        "type": "users",
+        "attributes": {},
+        "relationships": {
+            "nonJsonApiResource": {
+                "id": "5", 
+                "key": "4h29kaKlWja)99ja72kafj&&jalkfh",
+                "created_at": "2020-01-04 12:44:12"
+            }
+        },
+        "meta": {},
+        "links": {}
+    },
+    "included": []
+}
+```
+
 ## Rationale behind inclusion of all top level object keys
 
 `// TODO`

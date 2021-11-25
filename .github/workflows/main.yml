@@ -53,8 +53,8 @@ jobs:
             # - name: Psalm
             #   run: ./vendor/bin/psalm --shepherd --no-progress
 
-            # - name: PHPStan
-            #   run: ./vendor/bin/phpstan --no-interaction --verbose
+            - name: PHPStan
+              run: ./vendor/bin/phpstan --no-interaction --verbose
 
     tests:
         runs-on: ubuntu-latest

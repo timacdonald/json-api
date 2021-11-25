@@ -6,7 +6,6 @@ namespace TiMacDonald\JsonApi\Support;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use WeakReference;
 use function array_key_exists;
 use function explode;
@@ -42,7 +41,7 @@ class Fields
         $typeFields = $request->query('fields') ?? [];
 
         if (is_string($typeFields)) {
-            throw new HttpException(400, 'The fields parameter must be an array of resource types.');
+            abort(400, 'The fields parameter must be an array of resource types.');
         }
 
         if (! array_key_exists($resourceType, $typeFields)) {
@@ -68,7 +67,7 @@ class Fields
         }
 
         if (! is_string($fields)) {
-            throw new HttpException(400, 'The fields parameter value must be a comma seperated list of attributes.');
+            abort(400, 'The fields parameter value must be a comma seperated list of attributes.');
         }
 
         $fields = array_filter(explode(',', $fields), fn (string $value): bool => $value !== '');

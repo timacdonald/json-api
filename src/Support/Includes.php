@@ -7,7 +7,6 @@ namespace TiMacDonald\JsonApi\Support;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use WeakReference;
 
 use function explode;
@@ -43,7 +42,7 @@ class Includes
         $includes = $request->query('include') ?? '';
 
         if (is_array($includes)) {
-            throw new HttpException(400, 'The include parameter must be a comma seperated list of relationship paths.');
+            abort(400, 'The include parameter must be a comma seperated list of relationship paths.');
         }
 
         $includes = Collection::make(explode(',', $includes))

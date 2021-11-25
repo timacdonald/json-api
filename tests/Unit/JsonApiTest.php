@@ -18,10 +18,10 @@ class JsonApiTest extends TestCase
 {
     public function testItCanReturnASingleResource(): void
     {
-        $user = BasicModel::make([
+        $user = (new BasicModel([
             'id' => 'user-id',
             'name' => 'user-name',
-        ]);
+        ]));
         Route::get('test-route', fn () => UserResource::make($user));
 
         $response = $this->getJson('test-route');
@@ -45,14 +45,14 @@ class JsonApiTest extends TestCase
     public function testItCanReturnACollection(): void
     {
         $users = [
-            BasicModel::make([
+            (new BasicModel([
                 'id' => 'user-id-1',
                 'name' => 'user-name-1',
-            ]),
-            BasicModel::make([
+            ])),
+            (new BasicModel([
                 'id' => 'user-id-2',
                 'name' => 'user-name-2',
-            ]),
+            ])),
         ];
         Route::get('test-route', fn () => UserResource::collection($users));
 
@@ -88,7 +88,7 @@ class JsonApiTest extends TestCase
 
     public function testItCastsEmptyAttributesAndRelationshipsToAnObject(): void
     {
-        Route::get('test-route', fn () => UserResource::make(BasicModel::make(['id' => 'user-id'])));
+        Route::get('test-route', fn () => UserResource::make((new BasicModel(['id' => 'user-id']))));
 
         $response = $this->getJson('test-route?fields[basicModels]=');
 
@@ -97,7 +97,7 @@ class JsonApiTest extends TestCase
 
     public function testItAddsMetaToIndividualResources(): void
     {
-        Route::get('test-route', fn () => new class (BasicModel::make(['id' => 'expected-id'])) extends JsonApiResource {
+        Route::get('test-route', fn () => new class ((new BasicModel(['id' => 'expected-id']))) extends JsonApiResource {
             protected function toMeta(Request $request): array
             {
                 return [
@@ -126,7 +126,7 @@ class JsonApiTest extends TestCase
 
     public function testItAddsLinksToIndividualResources(): void
     {
-        Route::get('test-route', fn () => new class (BasicModel::make(['id' => 'expected-id'])) extends JsonApiResource {
+        Route::get('test-route', fn () => new class ((new BasicModel(['id' => 'expected-id']))) extends JsonApiResource {
             protected function toLinks(Request $request): array
             {
                 return [
@@ -155,7 +155,7 @@ class JsonApiTest extends TestCase
 
     public function testItSetsTheContentTypeHeaderForASingleResource(): void
     {
-        Route::get('test-route', fn () => BasicJsonApiResource::make(BasicModel::make(['id' => 'xxxx'])));
+        Route::get('test-route', fn () => BasicJsonApiResource::make((new BasicModel(['id' => 'xxxx']))));
 
         $response = $this->getJson('test-route');
 
@@ -164,7 +164,7 @@ class JsonApiTest extends TestCase
 
     public function testItSetsTheContentTypeHeaderForACollectionOfResources(): void
     {
-        Route::get('test-route', fn () => BasicJsonApiResource::collection([BasicModel::make(['id' => 'xxxx'])]));
+        Route::get('test-route', fn () => BasicJsonApiResource::collection([(new BasicModel(['id' => 'xxxx']))]));
 
         $response = $this->getJson('test-route');
 
@@ -174,7 +174,7 @@ class JsonApiTest extends TestCase
     public function testItCanCustomiseTheTypeResolution(): void
     {
         JsonApiResource::resolveTypeUsing(fn (BasicModel $model): string => $model::class);
-        Route::get('test-route', fn () => BasicJsonApiResource::make(BasicModel::make(['id' => 'expected-id'])));
+        Route::get('test-route', fn () => BasicJsonApiResource::make((new BasicModel(['id' => 'expected-id']))));
 
         $response = $this->get("test-route");
 
@@ -196,7 +196,7 @@ class JsonApiTest extends TestCase
     public function testItCanCustomiseTheIdResolution(): void
     {
         JsonApiResource::resolveIdUsing(fn (BasicModel $model): string => 'expected-id');
-        Route::get('test-route', fn () => BasicJsonApiResource::make(BasicModel::make(['id' => 'missing-id'])));
+        Route::get('test-route', fn () => BasicJsonApiResource::make((new BasicModel(['id' => 'missing-id']))));
 
         $response = $this->get("test-route");
 
@@ -217,7 +217,7 @@ class JsonApiTest extends TestCase
 
     public function testItClearsTheHelperCachesAfterPreparingResponseForASingleResource(): void
     {
-        Route::get('test-route', fn () => BasicJsonApiResource::make(BasicModel::make(['id' => 'missing-id'])));
+        Route::get('test-route', fn () => BasicJsonApiResource::make((new BasicModel(['id' => 'missing-id']))));
 
         $response = $this->get("test-route?include=test&fields[basicModels]=a");
 
@@ -238,7 +238,7 @@ class JsonApiTest extends TestCase
 
     public function testItClearsTheHelperCachesAfterPreparingResponseForACollectionOfResources(): void
     {
-        Route::get('test-route', fn () => BasicJsonApiResource::collection([ BasicModel::make(['id' => 'missing-id']) ]));
+        Route::get('test-route', fn () => BasicJsonApiResource::collection([ (new BasicModel(['id' => 'missing-id'])) ]));
 
         $response = $this->get("test-route?include=test&fields[basicModels]=a");
 

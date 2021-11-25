@@ -16,10 +16,10 @@ class ResourceIdentificationTest extends TestCase
 {
     public function testItResolvesTheIdAndTypeOfAModel(): void
     {
-        $user = BasicModel::make([
+        $user = (new BasicModel([
             'id' => 'user-id',
-        ]);
-        Route::get('test-route', fn () => BasicJsonApiResource::make($user));
+        ]));
+        Route::get('test-route', fn () => (new BasicJsonApiResource($user)));
 
         $response = $this->getJson('test-route');
 
@@ -39,10 +39,10 @@ class ResourceIdentificationTest extends TestCase
 
     public function testItCastsAModelsIntegerIdToAString(): void
     {
-        $user = BasicModel::make([
+        $user = (new BasicModel([
             'id' => 55,
-        ])->setKeyType('int');
-        Route::get('test-route', fn () => BasicJsonApiResource::make($user));
+        ]))->setKeyType('int');
+        Route::get('test-route', fn () => (new BasicJsonApiResource($user)));
 
         self::assertSame(55, $user->getKey());
 
@@ -65,7 +65,7 @@ class ResourceIdentificationTest extends TestCase
     public function testItThrowsWhenUnableToAutomaticallyResolveTheIdOfANonObject(): void
     {
         $array = [];
-        Route::get('test-route', fn () => BasicJsonApiResource::make($array));
+        Route::get('test-route', fn () => (new BasicJsonApiResource($array)));
 
         $this->expectException(ResourceIdentificationException::class);
         $this->expectExceptionMessage('Unable to resolve resource object id for array.');
@@ -76,7 +76,7 @@ class ResourceIdentificationTest extends TestCase
     public function testItThrowsWhenUnableToAutomaticallyResolveTheIdOfAnObject(): void
     {
         $array = new stdClass();
-        Route::get('test-route', fn () => BasicJsonApiResource::make($array));
+        Route::get('test-route', fn () => (new BasicJsonApiResource($array)));
 
         $this->expectException(ResourceIdentificationException::class);
         $this->expectExceptionMessage('Unable to resolve resource object id for stdClass.');

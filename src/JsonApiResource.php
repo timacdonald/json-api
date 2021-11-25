@@ -117,6 +117,7 @@ abstract class JsonApiResource extends JsonResource
     {
         return tap(new JsonApiResourceCollection($resource, static::class), function (JsonApiResourceCollection $collection): void {
             if (property_exists(static::class, 'preserveKeys')) {
+                /** @phpstan-ignore-next-line */
                 $collection->preserveKeys = (new static([]))->preserveKeys === true;
             }
         });

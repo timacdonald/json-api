@@ -16,11 +16,11 @@ class AttributesTest extends TestCase
 {
     public function testItIncludesAllAttributesByDefault(): void
     {
-        $model = BasicModel::make([
+        $model = (new BasicModel([
             'id' => 'expected-id',
             'name' => 'Tim',
             'email' => 'tim@example.com',
-        ]);
+        ]));
         Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
             protected function toAttributes(Request $request): array
             {
@@ -52,12 +52,12 @@ class AttributesTest extends TestCase
 
     public function testItExcludesAttributesWhenUsingSparseFieldsets(): void
     {
-        $model = BasicModel::make([
+        $model = (new BasicModel([
             'id' => 'expected-id',
             'name' => 'Tim',
             'email' => 'tim@example.com',
             'location' => 'Melbourne',
-        ]);
+        ]));
         Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
             protected function toAttributes(Request $request): array
             {
@@ -90,12 +90,12 @@ class AttributesTest extends TestCase
 
     public function testItExcludesAllAttributesWhenNoneExplicitlyRequested(): void
     {
-        $model = BasicModel::make([
+        $model = (new BasicModel([
             'id' => 'expected-id',
             'name' => 'Tim',
             'email' => 'tim@example.com',
             'location' => 'Melbourne',
-        ]);
+        ]));
         Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
             protected function toAttributes(Request $request): array
             {
@@ -125,10 +125,10 @@ class AttributesTest extends TestCase
 
     public function testItResolvesClosureWrappedAttributes(): void
     {
-        $model = BasicModel::make([
+        $model = (new BasicModel([
             'id' => 'expected-id',
             'location' => 'Melbourne',
-        ]);
+        ]));
         Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
             protected function toAttributes(Request $request): array
             {
@@ -158,9 +158,9 @@ class AttributesTest extends TestCase
 
     public function testItDoesntResolveClosureWrappedAttributesWhenNotRequested(): void
     {
-        $model = BasicModel::make([
+        $model = (new BasicModel([
             'id' => 'expected-id',
-        ]);
+        ]));
         Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
             protected function toAttributes(Request $request): array
             {
@@ -189,7 +189,7 @@ class AttributesTest extends TestCase
 
     public function testItThrowsWhenFieldsParameterIsNotAnArray(): void
     {
-        $user = BasicModel::make(['id' => 'expected-id']);
+        $user = (new BasicModel(['id' => 'expected-id']));
         Route::get('test-route', fn () => UserResource::make($user));
 
         $response = $this->withExceptionHandling()->getJson('test-route?fields=name');
@@ -202,7 +202,7 @@ class AttributesTest extends TestCase
 
     public function testItThrowsWhenFieldsParameterIsNotAStringValue(): void
     {
-        $user = BasicModel::make(['id' => 'expected-id']);
+        $user = (new BasicModel(['id' => 'expected-id']));
         Route::get('test-route', fn () => UserResource::make($user));
 
         $response = $this->withExceptionHandling()->getJson('test-route?fields[basicModels][foo]=name');
@@ -216,10 +216,10 @@ class AttributesTest extends TestCase
     public function testItCanSpecifyMinimalAttributes(): void
     {
         JsonApiResource::minimalAttributes();
-        $user = BasicModel::make([
+        $user = (new BasicModel([
             'id' => 'user-id',
             'name' => 'user-name',
-        ]);
+        ]));
         Route::get('test-route', fn () => UserResource::make($user));
 
         $response = $this->getJson('test-route');
@@ -242,20 +242,20 @@ class AttributesTest extends TestCase
 
     public function testItCanUseSparseFieldsetsWithIncludedCollections(): void
     {
-        $user = BasicModel::make([
+        $user = (new BasicModel([
             'id' => 'user-id',
             'name' => 'user-name',
-        ])->setRelation('posts', [
-            BasicModel::make([
+        ]))->setRelation('posts', [
+            (new BasicModel([
                 'id' => 'post-id-1',
                 'title' => 'post-title-1',
                 'content' => 'post-content-1',
-            ]),
-            BasicModel::make([
+            ])),
+            (new BasicModel([
                 'id' => 'post-id-2',
                 'title' => 'post-title-2',
                 'content' => 'post-content-2',
-            ]),
+            ])),
         ]);
         Route::get('test-route', fn () => UserResource::make($user));
 

@@ -71,14 +71,6 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     /**
      * @internal
      */
-    public function shouldBePresentInIncludes(): bool
-    {
-        return true;
-    }
-
-    /**
-     * @internal
-     */
     public function filterDuplicates(Request $request): static
     {
         $this->collection = $this->collection->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request));

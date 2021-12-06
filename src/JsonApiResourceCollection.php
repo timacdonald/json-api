@@ -35,8 +35,9 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
 
     /**
      * @internal
+     * @return static
      */
-    public function withIncludePrefix(string $prefix): static
+    public function withIncludePrefix(string $prefix)
     {
         /** @phpstan-ignore-next-line */
         $this->collection->each(fn (JsonApiResource $resource): JsonApiResource => $resource->withIncludePrefix($prefix));
@@ -70,8 +71,9 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
 
     /**
      * @internal
+     * @return static
      */
-    public function filterDuplicates(Request $request): static
+    public function filterDuplicates(Request $request)
     {
         $this->collection = $this->collection->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request));
 

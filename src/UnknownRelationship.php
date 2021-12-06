@@ -11,12 +11,23 @@ use Illuminate\Support\Collection;
  */
 class UnknownRelationship
 {
-    public function __construct(private mixed $resource)
+    /**
+     * @var mixed
+     */
+    private $resource;
+
+    /**
+     * @param mixed $resource
+     */
+    public function __construct($resource)
     {
-        //
+        $this->resource = $resource;
     }
 
-    public function toResourceIdentifier(): mixed
+    /**
+     * @return mixed
+     */
+    public function toResourceIdentifier()
     {
         return $this->resource;
     }

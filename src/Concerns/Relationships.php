@@ -43,12 +43,21 @@ trait Relationships
     public function included(Request $request): Collection
     {
         return $this->requestedRelationships($request)
-            ->map(function (JsonApiResource | JsonApiResourceCollection | UnknownRelationship $include): Collection | JsonApiResource | UnknownRelationship {
-                return $include->includable();
-            })
+            ->map(
+                /**
+                 * @param JsonApiResource|JsonApiResourceCollection|UnknownRelationship $include
+                 * @return Collection|JsonApiResource|UnknownRelationship
+                 */
+                fn ($include) => $include->includable()
+            )
             ->merge($this->nestedIncluded($request))
             ->flatten()
-            ->filter(fn (JsonApiResource | UnknownRelationship $resource): bool => $resource->shouldBePresentInIncludes())
+            ->filter(
+                /**
+                 * @param JsonApiResource|UnknownRelationship $resource
+                 */
+                fn ($resource): bool => $resource->shouldBePresentInIncludes()
+            )
             ->values();
     }
 
@@ -58,7 +67,12 @@ trait Relationships
     private function nestedIncluded(Request $request): Collection
     {
         return $this->requestedRelationships($request)
-            ->flatMap(fn (JsonApiResource | JsonApiResourceCollection | UnknownRelationship $resource, string $key): Collection => $resource->included($request));
+            ->flatMap(
+                /**
+                 * @param JsonApiResource|JsonApiResourceCollection|UnknownRelationship $resource
+                 */
+                fn ($resource, string $key): Collection => $resource->included($request)
+            );
     }
 
     /**
@@ -67,7 +81,12 @@ trait Relationships
     private function requestedRelationshipsAsIdentifiers(Request $request): Collection
     {
         return $this->requestedRelationships($request)
-            ->map(fn (JsonApiResource | JsonApiResourceCollection | UnknownRelationship $resource): mixed => $resource->toResourceIdentifier($request));
+            ->map(
+                /**
+                 * @param JsonApiResource|JsonApiResourceCollection|UnknownRelationship $resource
+                 */
+                fn ($resource) => $resource->toResourceIdentifier($request)
+            );
     }
 
     /**
@@ -77,19 +96,24 @@ trait Relationships
     {
         return $this->rememberRequestRelationships(fn (): Collection => Collection::make($this->toRelationships($request))
             ->only(Includes::getInstance()->parse($request, $this->includePrefix))
-            ->map(function (Closure $value, string $key) use ($request): JsonApiResource | JsonApiResourceCollection | UnknownRelationship {
-                $resource = $value();
+            ->map(
+                /**
+                 * @return JsonApiResource|JsonApiResourceCollection|UnknownRelationship
+                 */
+                function (Closure $value, string $key) use ($request) {
+                    $resource = $value();
 
-                if ($resource instanceof JsonApiResource) {
-                    return $resource->withIncludePrefix($key);
+                    if ($resource instanceof JsonApiResource) {
+                        return $resource->withIncludePrefix($key);
+                    }
+
+                    if ($resource instanceof JsonApiResourceCollection) {
+                        return $resource->filterDuplicates($request)->withIncludePrefix($key);
+                    }
+
+                    return new UnknownRelationship($resource);
                 }
-
-                if ($resource instanceof JsonApiResourceCollection) {
-                    return $resource->filterDuplicates($request)->withIncludePrefix($key);
-                }
-
-                return new UnknownRelationship($resource);
-            }));
+            ));
     }
 
     /**
@@ -98,9 +122,16 @@ trait Relationships
      */
     public function flush(): void
     {
-        $this->requestedRelationshipsCache?->each(function (JsonApiResource | JsonApiResourceCollection | UnknownRelationship $resource): void {
-            $resource->flush();
-        });
+        if ($this->requestedRelationshipsCache !== null) {
+            $this->requestedRelationshipsCache->each(
+                /**
+                 * @param JsonApiResource|JsonApiResourceCollection|UnknownRelationship $resource
+                 */
+                function ($resource): void {
+                    $resource->flush();
+                }
+            );
+        }
 
         $this->requestedRelationshipsCache = null;
 

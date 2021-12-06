@@ -61,7 +61,7 @@ jobs:
         name: 'Test suite on PHP: ${{ matrix.php }}; Dependecies: ${{ matrix.dependency-version }}'
         strategy:
             matrix:
-                php: ['8.0']
+                php: ['7.4', '8.0']
                 dependency-version: ['prefer-lowest', 'prefer-stable']
 
         steps:

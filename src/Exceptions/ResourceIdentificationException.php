@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TiMacDonald\JsonApi\Exceptions;
 
 use RuntimeException;
+use function get_class;
 use function gettype;
 use function is_object;
 
@@ -13,20 +14,29 @@ use function is_object;
  */
 class ResourceIdentificationException extends RuntimeException
 {
-    public static function attemptingToDetermineIdFor(mixed $model): self
+    /**
+     * @param mixed $model
+     */
+    public static function attemptingToDetermineIdFor($model): self
     {
         return new self('Unable to resolve resource object id for '.self::resolveType($model).'.');
     }
 
-    public static function attemptingToDetermineTypeFor(mixed $model): self
+    /**
+     * @param mixed $model
+     */
+    public static function attemptingToDetermineTypeFor($model): self
     {
         return new self('Unable to resolve resource object type for '.self::resolveType($model).'.');
     }
 
-    private static function resolveType(mixed $model): string
+    /**
+     * @param mixed $model
+     */
+    private static function resolveType($model): string
     {
         return is_object($model)
-            ? $model::class
+            ? get_class($model)
             : gettype($model);
     }
 }

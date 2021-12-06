@@ -12,7 +12,10 @@ use TiMacDonald\JsonApi\JsonApiResourceCollection;
  */
 class Cache
 {
-    public static function flush(JsonApiResource | JsonApiResourceCollection $resource): void
+    /**
+     * @param JsonApiResource|JsonApiResourceCollection $resource
+     */
+    public static function flush($resource): void
     {
         $resource->flush();
 

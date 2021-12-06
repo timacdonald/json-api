@@ -13,6 +13,7 @@ use Tests\TestCase;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\Support\Fields;
 use TiMacDonald\JsonApi\Support\Includes;
+use function get_class;
 
 class JsonApiTest extends TestCase
 {
@@ -173,7 +174,7 @@ class JsonApiTest extends TestCase
 
     public function testItCanCustomiseTheTypeResolution(): void
     {
-        JsonApiResource::resolveTypeUsing(fn (BasicModel $model): string => $model::class);
+        JsonApiResource::resolveTypeUsing(fn (BasicModel $model): string => get_class($model));
         Route::get('test-route', fn () => BasicJsonApiResource::make((new BasicModel(['id' => 'expected-id']))));
 
         $response = $this->get("test-route");

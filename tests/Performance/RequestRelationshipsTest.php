@@ -21,9 +21,17 @@ Container::getInstance()->bind(ResponseFactory::class, fn () => new class () {
         $data = json_encode($data);
 
         return new class ($data) {
-            public function __construct(public string|bool $data)
+            /**
+             * @var string|bool
+             */
+            public $data;
+
+            /**
+             * @param string|bool $data
+             */
+            public function __construct($data)
             {
-                //
+                $this->data = $data;
             }
 
             public function header(): void

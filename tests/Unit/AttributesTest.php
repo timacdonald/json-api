@@ -165,7 +165,9 @@ class AttributesTest extends TestCase
             protected function toAttributes(Request $request): array
             {
                 return [
-                    'location' => fn () => throw new Exception('xxxx'),
+                    'location' => function () {
+                        throw new Exception('xxxx');
+                    },
                 ];
             }
         });

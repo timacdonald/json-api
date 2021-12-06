@@ -40,7 +40,9 @@ class RelationshipsTest extends TestCase
             protected function toRelationships(Request $request): array
             {
                 return [
-                    'author' => fn () => throw new Exception('xxxx'),
+                    'author' => function () {
+                        throw new Exception('xxxx');
+                    },
                 ];
             }
         });

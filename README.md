@@ -220,7 +220,7 @@ class AppServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        JsonApiResource::resolveIdUsing(function (mixed $resource): string {
+        JsonApiResource::resolveIdUsing(function (mixed $resource, Request $request): string {
             // your custom resolution logic...
         });
     }
@@ -240,7 +240,7 @@ class AppServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        JsonApiResource::resolveTypeUsing(function (mixed $resource): string {
+        JsonApiResource::resolveTypeUsing(function (mixed $resource, Request $request): string {
             // your custom resolution logic...
         });
     }

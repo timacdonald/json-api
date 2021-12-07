@@ -71,7 +71,7 @@ abstract class JsonApiResource extends JsonResource
             }
 
             return (string) $resource->getKey();
-        })($this->resource);
+        })($this->resource, $request);
     }
 
     protected function toType(Request $request): string
@@ -82,7 +82,7 @@ abstract class JsonApiResource extends JsonResource
             }
 
             return Str::camel($resource->getTable());
-        })($this->resource);
+        })($this->resource, $request);
     }
 
     /**

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Tests\Models\BasicModel;
@@ -1129,7 +1130,29 @@ class RelationshipsTest extends TestCase
 
     public function testItCanReturnAnEmptyArrayForEmptyToManyRelationships(): void
     {
-        $this->markTestIncomplete();
+        $user = (new BasicModel([
+            'id' => 'user-id',
+            'name' => 'user-name',
+        ]))->setRelation('posts', new Collection([]));
+        Route::get('test-route', fn () => UserResource::make($user));
+
+        $response = $this->get('test-route?include=posts');
+
+        $response->assertExactJson([
+            'data' => [
+                'id' => 'user-id',
+                'type' => 'basicModels',
+                'attributes' => [
+                    'name' => 'user-name',
+                ],
+                'relationships' => [
+                    'posts' => [],
+                ],
+                'meta' => [],
+                'links' => [],
+            ],
+            'included' => [],
+        ]);
     }
 
     public function testItFlushesTheRelationshipCache(): void

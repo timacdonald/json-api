@@ -55,8 +55,8 @@ trait Identification
     {
         return [
             'data' => [
-                'id' => $this->toId($request),
-                'type' => $this->toType($request),
+                'id' => $this->resolveId($request),
+                'type' => $this->resolveType($request),
             ],
         ];
     }
@@ -66,7 +66,23 @@ trait Identification
      */
     public function toUniqueResourceIdentifier(Request $request): string
     {
-        return "type:{$this->toType($request)} id:{$this->toId($request)}";
+        return "type:{$this->resolveType($request)} id:{$this->resolveId($request)}";
+    }
+
+    /**
+     * @internal
+     */
+    private function resolveId(Request $request): string
+    {
+        return $this->rememberId(fn (): string => $this->toId($request));
+    }
+
+    /**
+     * @internal
+     */
+    private function resolveType(Request $request): string
+    {
+        return $this->rememberType(fn (): string => $this->toType($request));
     }
 
     /**

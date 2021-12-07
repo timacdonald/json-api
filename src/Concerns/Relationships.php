@@ -84,6 +84,7 @@ trait Relationships
             ->map(
                 /**
                  * @param JsonApiResource|JsonApiResourceCollection|UnknownRelationship $resource
+                 * @return mixed
                  */
                 fn ($resource) => $resource->toResourceIdentifier($request)
             );

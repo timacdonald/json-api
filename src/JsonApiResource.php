@@ -65,24 +65,24 @@ abstract class JsonApiResource extends JsonResource
 
     protected function toId(Request $request): string
     {
-        return $this->rememberId(fn () => (self::$idResolver ??= static function ($resource): string {
+        return (self::$idResolver ??= static function ($resource): string {
             if (! $resource instanceof Model) {
                 throw ResourceIdentificationException::attemptingToDetermineIdFor($resource);
             }
 
             return (string) $resource->getKey();
-        })($this->resource));
+        })($this->resource);
     }
 
     protected function toType(Request $request): string
     {
-        return $this->rememberType(fn () => (self::$typeResolver ??= static function ($resource): string {
+        return (self::$typeResolver ??= static function ($resource): string {
             if (! $resource instanceof Model) {
                 throw ResourceIdentificationException::attemptingToDetermineTypeFor($resource);
             }
 
             return Str::camel($resource->getTable());
-        })($this->resource));
+        })($this->resource);
     }
 
     /**
@@ -91,8 +91,8 @@ abstract class JsonApiResource extends JsonResource
     public function toArray($request): array
     {
         return [
-            'id' => $this->toId($request),
-            'type' => $this->toType($request),
+            'id' => $this->resolveId($request),
+            'type' => $this->resolveType($request),
             'attributes' => (object) $this->requestedAttributes($request)->all(),
             'relationships' => (object) $this->requestedRelationshipsAsIdentifiers($request)->all(),
             'meta' => (object) $this->toMeta($request),

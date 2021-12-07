@@ -34,7 +34,13 @@ trait Attributes
     {
         return Collection::make($this->toAttributes($request))
             ->only($this->fields($request))
-            ->map(fn ($value) => value($value));
+            ->map(
+                /**
+                 * @param mixed $value
+                 * @return mixed
+                 */
+                fn ($value) => value($value)
+            );
     }
 
     /**

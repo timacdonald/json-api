@@ -19,7 +19,7 @@ class ResourceIdentificationException extends RuntimeException
      */
     public static function attemptingToDetermineIdFor($model): self
     {
-        return new self('Unable to resolve resource object id for '.self::resolveType($model).'.');
+        return new self('Unable to resolve resource object id for '.self::determineType($model).'.');
     }
 
     /**
@@ -27,13 +27,13 @@ class ResourceIdentificationException extends RuntimeException
      */
     public static function attemptingToDetermineTypeFor($model): self
     {
-        return new self('Unable to resolve resource object type for '.self::resolveType($model).'.');
+        return new self('Unable to resolve resource object type for '.self::determineType($model).'.');
     }
 
     /**
      * @param mixed $model
      */
-    private static function resolveType($model): string
+    private static function determineType($model): string
     {
         return is_object($model)
             ? get_class($model)

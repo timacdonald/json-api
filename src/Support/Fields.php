@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi\Support;
 
+use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
-use WeakReference;
 use function array_key_exists;
 use function explode;
 use function is_string;
@@ -18,11 +17,11 @@ class Fields
 {
     private static ?Fields $instance;
 
-    private Collection $cache;
+    private array $cache = [];
 
     private function __construct()
     {
-        $this->cache = new Collection([]);
+        //
     }
 
     public static function getInstance(): self
@@ -32,61 +31,45 @@ class Fields
 
     public function parse(Request $request, string $resourceType): ?array
     {
-        $result = $this->cache->first(fn (array $item): bool => $item['resourceType'] === $resourceType && $item['request']->get() === $request);
+        return $this->rememberResourceType($resourceType, function () use ($request, $resourceType): ?array {
+            $typeFields = $request->query('fields') ?? [];
 
-        if ($result !== null) {
-            return $result['fields'];
-        }
+            if (is_string($typeFields)) {
+                abort(400, 'The fields parameter must be an array of resource types.');
+            }
 
-        $typeFields = $request->query('fields') ?? [];
+            if (! array_key_exists($resourceType, $typeFields)) {
+                return null;
+            }
 
-        if (is_string($typeFields)) {
-            abort(400, 'The fields parameter must be an array of resource types.');
-        }
+            $fields = $typeFields[$resourceType];
 
-        if (! array_key_exists($resourceType, $typeFields)) {
-            $this->cache[] = [
-                'fields' => null,
-                'request' => WeakReference::create($request),
-                'resourceType' => $resourceType,
-            ];
+            if ($fields === null) {
+                return [];
+            }
 
-            return null;
-        }
+            if (! is_string($fields)) {
+                abort(400, 'The fields parameter value must be a comma seperated list of attributes.');
+            }
 
-        $fields = $typeFields[$resourceType];
+            return array_filter(explode(',', $fields), fn (string $value): bool => $value !== '');
+        });
+    }
 
-        if ($fields === null) {
-            $this->cache[] = [
-                'fields' => [],
-                'request' => WeakReference::create($request),
-                'resourceType' => $resourceType,
-            ];
-
-            return [];
-        }
-
-        if (! is_string($fields)) {
-            abort(400, 'The fields parameter value must be a comma seperated list of attributes.');
-        }
-
-        $fields = array_filter(explode(',', $fields), fn (string $value): bool => $value !== '');
-
-        $this->cache[] = [
-            'fields' => $fields,
-            'request' => WeakReference::create($request),
-            'resourceType' => $resourceType,
-        ];
-
-        return $fields;
+    /**
+     * @infection-ignore-all
+     */
+    private function rememberResourceType(string $resourceType, Closure $callback): ?array
+    {
+        return $this->cache[$resourceType] ??= $callback();
     }
 
     public function flush(): void
     {
-        $this->cache = new Collection([]);
+        $this->cache = [];
     }
 
-    public function cache(): Collection
+    public function cache(): array
     {
         return $this->cache;
     }

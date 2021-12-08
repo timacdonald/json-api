@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi\Support;
 
+use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use WeakReference;
 
 use function explode;
 use function is_array;
@@ -19,11 +19,11 @@ class Includes
 {
     private static ?Includes $instance;
 
-    private Collection $cache;
+    private array $cache = [];
 
     private function __construct()
     {
-        $this->cache = new Collection([]);
+        //
     }
 
     public static function getInstance(): self
@@ -33,41 +33,37 @@ class Includes
 
     public function parse(Request $request, string $prefix): Collection
     {
-        $result = $this->cache->first(fn (array $item): bool => $item['prefix'] === $prefix && $item['request']->get() === $request);
+        return $this->rememberIncludes($prefix, function () use ($request, $prefix): Collection {
+            $includes = $request->query('include') ?? '';
 
-        if ($result !== null) {
-            return $result['includes'];
-        }
+            if (is_array($includes)) {
+                abort(400, 'The include parameter must be a comma seperated list of relationship paths.');
+            }
 
-        $includes = $request->query('include') ?? '';
+            return  Collection::make(explode(',', $includes))
+                ->when($prefix !== '', function (Collection $includes) use ($prefix): Collection {
+                    return $includes->filter(fn (string $include): bool => Str::startsWith($include, $prefix));
+                })
+                ->map(fn (string $include): string => Str::before(Str::after($include, $prefix), '.'))
+                ->uniqueStrict()
+                ->filter(fn (string $include): bool => $include !== '');
+        });
+    }
 
-        if (is_array($includes)) {
-            abort(400, 'The include parameter must be a comma seperated list of relationship paths.');
-        }
-
-        $includes = Collection::make(explode(',', $includes))
-            ->when($prefix !== '', function (Collection $includes) use ($prefix): Collection {
-                return $includes->filter(fn (string $include): bool => Str::startsWith($include, $prefix));
-            })
-            ->map(fn (string $include): string => Str::before(Str::after($include, $prefix), '.'))
-            ->uniqueStrict()
-            ->filter(fn (string $include): bool => $include !== '');
-
-        $this->cache[] = [
-            'includes' => $includes,
-            'request' => WeakReference::create($request),
-            'prefix' => $prefix,
-        ];
-
-        return $includes;
+    /**
+     * @infection-ignore-all
+     */
+    private function rememberIncludes(string $prefix, Closure $callback): Collection
+    {
+        return $this->cache[$prefix] ??= $callback();
     }
 
     public function flush(): void
     {
-        $this->cache = new Collection([]);
+        $this->cache = [];
     }
 
-    public function cache(): Collection
+    public function cache(): array
     {
         return $this->cache;
     }

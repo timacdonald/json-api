@@ -40,7 +40,7 @@ class Includes
                 abort(400, 'The include parameter must be a comma seperated list of relationship paths.');
             }
 
-            return  Collection::make(explode(',', $includes))
+            return Collection::make(explode(',', $includes))
                 ->when($prefix !== '', function (Collection $includes) use ($prefix): Collection {
                     return $includes->filter(fn (string $include): bool => Str::startsWith($include, $prefix));
                 })

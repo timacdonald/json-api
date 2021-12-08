@@ -1231,4 +1231,74 @@ class RelationshipsTest extends TestCase
             ],
         ]);
     }
+
+    public function testItRemovesPotentiallyMissingRelationships(): void
+    {
+        $user = new BasicModel([
+            'id' => '1',
+            'name' => 'user-name',
+        ]);
+        $resource = new class ($user) extends UserResource {
+            public function toRelationships(Request $request): array
+            {
+                return [
+                    'relation' => fn () => $this->when(false, fn () => ['hello' => 'world']),
+                ];
+            }
+        };
+        Route::get('test-route', fn () => $resource);
+
+        $response = $this->get('test-route?include=relation,relation_2');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                'id' => '1',
+                'type' => 'basicModels',
+                'attributes' => [
+                    'name' => 'user-name',
+                ],
+                'relationships' => [],
+                'meta' => [],
+                'links' => [],
+            ],
+            'included' => [],
+        ]);
+    }
+
+    public function testItShowsPotentiallyMissingRelationships(): void
+    {
+        $user = new BasicModel([
+            'id' => '1',
+            'name' => 'user-name',
+        ]);
+        $resource = new class ($user) extends UserResource {
+            public function toRelationships(Request $request): array
+            {
+                return [
+                    'relation' => fn () => $this->when(true, fn () => ['hello' => 'world']),
+                ];
+            }
+        };
+        Route::get('test-route', fn () => $resource);
+
+        $response = $this->get('test-route?include=relation');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                'id' => '1',
+                'type' => 'basicModels',
+                'attributes' => [
+                    'name' => 'user-name',
+                ],
+                'relationships' => [
+                    'relation' => ['hello' => 'world'],
+                ],
+                'meta' => [],
+                'links' => [],
+            ],
+            'included' => [],
+        ]);
+    }
 }

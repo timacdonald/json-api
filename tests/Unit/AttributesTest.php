@@ -312,4 +312,80 @@ class AttributesTest extends TestCase
             ],
         ]);
     }
+
+    public function testItRemovesPotentiallyMissingAttributes(): void
+    {
+        $model = new BasicModel([
+            'id' => 'expected-id',
+            'name' => 'Tim',
+            'email' => 'tim@example.com',
+            'address' => '123 fake street',
+        ]);
+        Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
+            protected function toAttributes(Request $request): array
+            {
+                return [
+                    'name' => $this->when(false, fn () =>$this->name),
+                    'address' => fn () => $this->when(false, fn () => $this->address),
+                    'email' => $this->email,
+                ];
+            }
+        });
+
+        $response = $this->getJson('test-route');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                'id' => 'expected-id',
+                'type' => 'basicModels',
+                'attributes' => [
+                    'email' => 'tim@example.com',
+                ],
+                'relationships' => [],
+                'meta' => [],
+                'links' => [],
+            ],
+            'included' => [],
+        ]);
+    }
+
+    public function testItCanIncludePotentiallyMissingValues(): void
+    {
+        $model = new BasicModel([
+            'id' => 'expected-id',
+            'name' => 'Tim',
+            'email' => 'tim@example.com',
+            'address' => '123 fake street',
+        ]);
+        Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
+            protected function toAttributes(Request $request): array
+            {
+                return [
+                    'name' => $this->when(true, fn () => $this->name),
+                    'address' => fn () => $this->when(true, $this->address),
+                    'email' => $this->email,
+                ];
+            }
+        });
+
+        $response = $this->getJson('test-route');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                'id' => 'expected-id',
+                'type' => 'basicModels',
+                'attributes' => [
+                    'name' => 'Tim',
+                    'email' => 'tim@example.com',
+                    'address' => '123 fake street',
+                ],
+                'relationships' => [],
+                'meta' => [],
+                'links' => [],
+            ],
+            'included' => [],
+        ]);
+    }
 }

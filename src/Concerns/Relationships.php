@@ -6,6 +6,7 @@ namespace TiMacDonald\JsonApi\Concerns;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
@@ -114,6 +115,11 @@ trait Relationships
 
                     return new UnknownRelationship($resource);
                 }
+            )->reject(
+                /**
+                 * @param JsonApiResource|JsonApiResourceCollection|UnknownRelationship $resource
+                 */
+                fn ($resource) => $resource instanceof PotentiallyMissing && $resource->isMissing()
             ));
     }
 

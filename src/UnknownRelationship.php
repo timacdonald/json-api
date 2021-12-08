@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi;
 
+use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;
 
 /**
  * @internal
  */
-class UnknownRelationship
+class UnknownRelationship implements PotentiallyMissing
 {
     /**
      * @var mixed
@@ -50,5 +51,10 @@ class UnknownRelationship
     public function flush(): void
     {
         //
+    }
+
+    public function isMissing(): bool
+    {
+        return $this->resource instanceof PotentiallyMissing && $this->resource->isMissing();
     }
 }

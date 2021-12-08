@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TiMacDonald\JsonApi\Concerns;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;
 use TiMacDonald\JsonApi\Support\Fields;
 
@@ -40,6 +41,12 @@ trait Attributes
                  * @return mixed
                  */
                 fn ($value) => value($value)
+            )
+            ->reject(
+                /**
+                 * @param mixed $value
+                 */
+                fn ($value): bool => $value instanceof PotentiallyMissing && $value->isMissing()
             );
     }
 

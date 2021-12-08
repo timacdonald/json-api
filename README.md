@@ -6,7 +6,6 @@ A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API st
 
 These docs are not designed to introduce you to the JSON:API spec and the associated concepts, instead you should [head over and read the spec](https:/jsonapi.org) if you are not familiar with it.
 
-
 # Installation
 
 You can install using [composer](https://getcomposer.org/) from [Packagist](https://packagist.org/packages/timacdonald/json-api).
@@ -334,14 +333,20 @@ And a special (vegi) thanks to [Caneco](https://twitter.com/caneco) for the logo
 
 - [ ] Top level links, jsonapi, etc.
 - [ ] Test assertions?
-  - decide how to handle top level keys for single and collections (static? should collections have to be extended to specify the values? or can there be static methods on the single resource for the collection?)
+- [ ] decide how to handle top level keys for single and collections (static? should collections have to be extended to specify the values? or can there be static methods on the single resource for the collection?)
 - [ ] Handle loading relations on a already in memory object with Spatie Query builder (PR)
-- [ ] strict mode that throws when duplicates are found in includes
-- [ ] make structure more deterministic by forcing included to always be available
 - [ ] Resource identifier links and meta as a new concept different to normal resource links and relationships.
 - [ ] Ability to send the resource identifier "id" and "type" for a belongsTo relationship, even if not included?
 - [ ] Helper to define links
-- [ ] Allow filtering via the `when` methods for attributes and relationships.
 - [ ] Investigate collection count support
-- [ ] document how you could handle type mapping in config file class > type
+
+# To document
+
 - [ ] Document loading things via Spatie Query Builder
+- [ ] `->when()` stuff for attributes and relationships
+- [ ] document how you could handle type mapping in config file class > type
+- [ ] caching
+ - [ ] flushing the cache
+ - [ ] caching id and type
+ - [ ] caching includes and fields
+ - [ ] how it clears itself on toResponse

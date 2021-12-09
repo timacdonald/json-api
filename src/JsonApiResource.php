@@ -32,7 +32,7 @@ abstract class JsonApiResource extends JsonResource
 
     public static function minimalAttributes(): void
     {
-        static::$minimalAttributes = true;
+        self::$minimalAttributes = true;
     }
 
     protected function toAttributes(Request $request): array

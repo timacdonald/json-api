@@ -10,8 +10,8 @@ These docs are not designed to introduce you to the JSON:API spec and the associ
 
 You can install using [composer](https://getcomposer.org/) from [Packagist](https://packagist.org/packages/timacdonald/json-api).
 
-```
-$ composer require timacdonald/json-api
+```sh
+composer require timacdonald/json-api
 ```
 
 # Basic usage

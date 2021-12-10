@@ -27,7 +27,8 @@ jobs:
                   key: dependencies-composer-${{ hashFiles('composer.json') }}-v3
 
             - name: Install dependencies
-              run: composer install --no-suggest --no-interaction --verbose
+              run: |
+                composer update --no-suggest --no-interaction --verbose
 
             - name: Check platform requirements
               run: composer check-platform-reqs --verbose
@@ -61,7 +62,7 @@ jobs:
         name: 'Test suite on PHP: ${{ matrix.php }}; Dependecies: ${{ matrix.dependency-version }}'
         strategy:
             matrix:
-                php: ['7.4', '8.0']
+                php: ['7.4', '8.0', '8.1']
                 dependency-version: ['prefer-lowest', 'prefer-stable']
 
         steps:
@@ -82,8 +83,11 @@ jobs:
 
             - name: Install dependencies
               run: |
-                composer remove 'friendsofphp/php-cs-fixer' 'infection/infection' 'nunomaduro/larastan' 'phpstan/phpstan' 'phpunit/phpunit' 'ergebnis/composer-normalize' --dev --no-update --no-interaction --verbose
                   composer update --${{ matrix.dependency-version }} --no-suggest --no-interaction --verbose
+
+            - name: Support prefer-lowest in PHP 8.1
+              if: ${{ matrix.php == 8.1 && matrix.dependency-version == 'prefer-lowest' }}
+              run: composer require symfony/console:">=5.3.7" symfony/http-foundation:">=5.3.7" laravel/framework:">=8.62.0" nesbot/carbon:">=2.51.0" ramsey/collection:">=1.2.0" --prefer-lowest --with-all-dependencies
 
             - name: Check platform requirements
               run: composer check-platform-reqs --verbose

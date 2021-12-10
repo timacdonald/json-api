@@ -7,6 +7,9 @@ namespace Tests\Resources;
 use Illuminate\Http\Request;
 use TiMacDonald\JsonApi\JsonApiResource;
 
+/**
+ * @mixin \Tests\Models\BasicModel
+ */
 class PostResource extends JsonApiResource
 {
     protected function toAttributes(Request $request): array

@@ -7,6 +7,9 @@ namespace Tests\Resources;
 use Illuminate\Http\Request;
 use TiMacDonald\JsonApi\JsonApiResource;
 
+/**
+ * @mixin \Tests\Models\BasicModel
+ */
 class LicenseResource extends JsonApiResource
 {
     protected function toAttributes(Request $request): array
@@ -19,7 +22,7 @@ class LicenseResource extends JsonApiResource
     protected function toRelationships(Request $request): array
     {
         return [
-            'user' => UserResource::make($this->user),
+            'user' => fn () => UserResource::make($this->user),
         ];
     }
 }

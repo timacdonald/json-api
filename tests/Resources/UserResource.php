@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
 
+/**
+ * @mixin \Tests\Models\BasicModel
+ */
 class UserResource extends JsonApiResource
 {
     protected function toAttributes(Request $request): array

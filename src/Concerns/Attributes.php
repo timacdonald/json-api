@@ -25,7 +25,7 @@ trait Attributes
      */
     public static function maximalAttributes(): void
     {
-        static::$minimalAttributes = false;
+        self::$minimalAttributes = false;
     }
 
     /**
@@ -61,7 +61,7 @@ trait Attributes
             return $fields;
         }
 
-        return static::$minimalAttributes
+        return self::$minimalAttributes
             ? []
             : null;
     }

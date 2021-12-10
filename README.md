@@ -6,12 +6,17 @@ A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API st
 
 These docs are not designed to introduce you to the JSON:API spec and the associated concepts, instead you should [head over and read the spec](https:/jsonapi.org) if you are not familiar with it.
 
+# Version support
+
+- **PHP**: 7.4, 8.0, 8.1
+- **Laravel**: 8.0
+
 # Installation
 
 You can install using [composer](https://getcomposer.org/) from [Packagist](https://packagist.org/packages/timacdonald/json-api).
 
-```
-$ composer require timacdonald/json-api
+```sh
+composer require timacdonald/json-api
 ```
 
 # Basic usage

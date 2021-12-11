@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace TiMacDonald\JsonApi\Concerns;
 
 use Closure;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use TiMacDonald\JsonApi\Exceptions\ResourceIdentificationException;
 
 /**
  * @internal
@@ -101,5 +104,33 @@ trait Identification
     private function rememberId(Closure $closure): string
     {
         return $this->idCache ??= $closure();
+    }
+
+    /**
+     * @internal
+     */
+    private static function idResolver(): Closure
+    {
+        return self::$idResolver ??= static function ($resource): string {
+            if (! $resource instanceof Model) {
+                throw ResourceIdentificationException::attemptingToDetermineIdFor($resource);
+            }
+
+            return (string) $resource->getKey();
+        };
+    }
+
+    /**
+     * @internal
+     */
+    private static function typeResolver(): Closure
+    {
+        return self::$typeResolver ??= static function ($resource): string {
+            if (! $resource instanceof Model) {
+                throw ResourceIdentificationException::attemptingToDetermineTypeFor($resource);
+            }
+
+            return Str::camel($resource->getTable());
+        };
     }
 }

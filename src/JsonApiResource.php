@@ -5,12 +5,9 @@ declare(strict_types=1);
 namespace TiMacDonald\JsonApi;
 
 use Closure;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Str;
-use TiMacDonald\JsonApi\Exceptions\ResourceIdentificationException;
 use TiMacDonald\JsonApi\Support\Cache;
 use function property_exists;
 
@@ -65,24 +62,12 @@ abstract class JsonApiResource extends JsonResource
 
     protected function toId(Request $request): string
     {
-        return (self::$idResolver ??= static function ($resource): string {
-            if (! $resource instanceof Model) {
-                throw ResourceIdentificationException::attemptingToDetermineIdFor($resource);
-            }
-
-            return (string) $resource->getKey();
-        })($this->resource, $request);
+        return self::idResolver()($this->resource, $request);
     }
 
     protected function toType(Request $request): string
     {
-        return (self::$typeResolver ??= static function ($resource): string {
-            if (! $resource instanceof Model) {
-                throw ResourceIdentificationException::attemptingToDetermineTypeFor($resource);
-            }
-
-            return Str::camel($resource->getTable());
-        })($this->resource, $request);
+        return self::typeResolver()($this->resource, $request);
     }
 
     /**

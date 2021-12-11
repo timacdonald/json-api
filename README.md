@@ -330,6 +330,7 @@ Relationships can be resolved deeply and also multiple relationship paths can be
 ## Credits
 
 - [Tim MacDonald](https://github.com/timacdonald)
+- [Jess Archer](https://github.com/jessarcher) for co-creating our initial in-house version
 - [All Contributors](../../contributors)
 
 And a special (vegi) thanks to [Caneco](https://twitter.com/caneco) for the logo ✨

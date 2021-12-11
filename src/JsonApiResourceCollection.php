@@ -22,6 +22,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
                 ->flatten()
                 ->reject(fn (?JsonApiResource $resource): bool => $resource === null)
                 ->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request)),
+            'jsonapi' => JsonApiResource::serverImplementationResolver()($request),
         ];
     }
 
@@ -35,9 +36,8 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
 
     /**
      * @internal
-     * @return static
      */
-    public function withIncludePrefix(string $prefix)
+    public function withIncludePrefix(string $prefix): self
     {
         /** @phpstan-ignore-next-line */
         $this->collection->each(fn (JsonApiResource $resource): JsonApiResource => $resource->withIncludePrefix($prefix));
@@ -56,9 +56,9 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     /**
      * @internal
      */
-    public function toResourceIdentifier(Request $request): array
+    public function asRelationship(Request $request): Collection
     {
-        return $this->collection->map(fn (JsonApiResource $resource): array => $resource->toResourceIdentifier($request))->all();
+        return $this->collection->map(fn (JsonApiResource $resource): Relationship => $resource->asRelationship($request));
     }
 
     /**
@@ -71,9 +71,8 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
 
     /**
      * @internal
-     * @return static
      */
-    public function filterDuplicates(Request $request)
+    public function filterDuplicates(Request $request): self
     {
         $this->collection = $this->collection->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request));
 
@@ -87,5 +86,13 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     public function flush(): void
     {
         $this->collection->each(fn (JsonApiResource $resource) => $resource->flush());
+    }
+
+    /**
+     * @internal
+     */
+    public function initialiseAsRelationship(Request $request, string $prefix): self
+    {
+        return $this->withIncludePrefix($prefix)->filterDuplicates($request);
     }
 }

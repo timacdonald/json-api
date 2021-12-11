@@ -36,9 +36,7 @@ class Includes
         return $this->rememberIncludes($prefix, function () use ($request, $prefix): Collection {
             $includes = $request->query('include') ?? '';
 
-            if (is_array($includes)) {
-                abort(400, 'The include parameter must be a comma seperated list of relationship paths.');
-            }
+            abort_if(is_array($includes), 400, 'The include parameter must be a comma seperated list of relationship paths.');
 
             return Collection::make(explode(',', $includes))
                 ->when($prefix !== '', function (Collection $includes) use ($prefix): Collection {

@@ -131,12 +131,14 @@ To provide links for a resource, you can implement the `toLinks(Request $request
 ```php
 <?php
 
+use TiMacDonald\JsonApi\Link;
+
 class UserResource extends JsonApiResource
 {
     protected function toLinks(Request $request): array
     {
         return [
-            'self' => route('users.show', $this->resource),
+            'self' => new Link(route('users.show', $this->resource)),
         ];
     }
 }
@@ -330,22 +332,21 @@ Relationships can be resolved deeply and also multiple relationship paths can be
 ## Credits
 
 - [Tim MacDonald](https://github.com/timacdonald)
-- [Jess Archer](https://github.com/jessarcher) for co-creating our initial in-house version
+- [Jess Archer](https://github.com/jessarcher) for co-creating our initial in-house version and the brainstorming
 - [All Contributors](../../contributors)
 
 And a special (vegi) thanks to [Caneco](https://twitter.com/caneco) for the logo ✨
 
 # Coming soon...
 
-- [ ] Top level links, jsonapi, etc.
+- [ ] Top level links - how would you modify this for a collection?
+  - [ ] decide how to handle top level keys for single and collections (static? should collections have to be extended to specify the values? or can there be static methods on the single resource for the collection?)
 - [ ] Test assertions?
-- [ ] decide how to handle top level keys for single and collections (static? should collections have to be extended to specify the values? or can there be static methods on the single resource for the collection?)
 - [ ] Handle loading relations on a already in memory object with Spatie Query builder (PR)
 - [ ] Resource identifier links and meta as a new concept different to normal resource links and relationships.
-- [ ] Ability to send the resource identifier "id" and "type" for a belongsTo relationship, even if not included?
-- [ ] Helper to define links
 - [ ] Investigate collection count support
 - [ ] Transducers for all the looping?
+- [ ] a contract that other classes can implement to support the JSON:API spec as relationships? Can we have it work at a top level as well? Would that even make sense? Maybe be providing a toResponse implementation?
 
 # To document
 
@@ -357,3 +358,6 @@ And a special (vegi) thanks to [Caneco](https://twitter.com/caneco) for the logo
  - [ ] caching id and type
  - [ ] caching includes and fields
  - [ ] how it clears itself on toResponse
+ - [ ] asRelationship()
+ - [ ] that the goal is to have a consistent output at all levels, hence the maximal dataset for empty values
+ - [ ] Link object and meta

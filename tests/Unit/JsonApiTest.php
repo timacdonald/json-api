@@ -10,7 +10,11 @@ use Tests\Models\BasicModel;
 use Tests\Resources\BasicJsonApiResource;
 use Tests\Resources\UserResource;
 use Tests\TestCase;
+use TiMacDonald\JsonApi\JsonApiServerImplementation;
 use TiMacDonald\JsonApi\JsonApiResource;
+use TiMacDonald\JsonApi\Link;
+use TiMacDonald\JsonApi\Relationship;
+use TiMacDonald\JsonApi\ResourceIdentifier;
 use TiMacDonald\JsonApi\Support\Fields;
 use TiMacDonald\JsonApi\Support\Includes;
 use function get_class;
@@ -40,6 +44,10 @@ class JsonApiTest extends TestCase
                 'links' => [],
             ],
             'included' => [],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
+            ],
         ]);
     }
 
@@ -84,6 +92,10 @@ class JsonApiTest extends TestCase
                 ],
             ],
             'included' => [],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
+            ],
         ]);
     }
 
@@ -122,6 +134,10 @@ class JsonApiTest extends TestCase
                 'links' => [],
             ],
             'included' => [],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
+            ],
         ]);
     }
 
@@ -151,6 +167,10 @@ class JsonApiTest extends TestCase
                 ],
             ],
             'included' => [],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
+            ],
         ]);
     }
 
@@ -189,6 +209,10 @@ class JsonApiTest extends TestCase
                 'links' => [],
             ],
             'included' => [],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
+            ],
         ]);
 
         JsonApiResource::resolveTypeNormally();
@@ -211,6 +235,10 @@ class JsonApiTest extends TestCase
                 'links' => [],
             ],
             'included' => [],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
+            ],
         ]);
 
         JsonApiResource::resolveIdNormally();
@@ -232,6 +260,10 @@ class JsonApiTest extends TestCase
                 'links' => [],
             ],
             'included' => [],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
+            ],
         ]);
         $this->assertCount(0, Fields::getInstance()->cache());
         $this->assertCount(0, Includes::getInstance()->cache());
@@ -255,8 +287,85 @@ class JsonApiTest extends TestCase
                 ],
             ],
             'included' => [],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
+            ],
         ]);
         $this->assertCount(0, Fields::getInstance()->cache());
         $this->assertCount(0, Includes::getInstance()->cache());
+    }
+
+    public function testItCastsEmptyRelationshipsAttributesToObjects(): void
+    {
+        $relationship = new Relationship(null, [], []);
+
+        $json = json_encode($relationship);
+
+        self::assertSame('{"data":{},"meta":{},"links":{}}', $json);
+    }
+
+    public function testItCastsEmptyResourceIdentifierMetaToObject(): void
+    {
+        $relationship = new ResourceIdentifier('5', 'users');
+
+        $json = json_encode($relationship);
+
+        self::assertSame('{"id":"5","type":"users","meta":{}}', $json);
+    }
+
+    public function testItCastsEmptyLinksMetaToObject(): void
+    {
+        $link = new Link('https://timacdonald.me', []);
+
+        $json = json_encode($link);
+
+        self::assertSame('{"href":"https:\/\/timacdonald.me","meta":{}}', $json);
+    }
+
+    public function testItCastsEmptyImplementationMetaToObject(): void
+    {
+        $implementation = new JsonApiServerImplementation('1.5', []);
+
+        $json = json_encode($implementation);
+
+        self::assertSame('{"version":"1.5","meta":{}}', $json);
+    }
+
+    public function testItCanSpecifyAnImplementation(): void
+    {
+        BasicJsonApiResource::resolveServerImplementationUsing(fn () => new JsonApiServerImplementation('1.4.3', [
+            'secure' => true,
+        ]));
+        $user = new BasicModel([
+            'id' => 'user-id',
+            'name' => 'user-name',
+        ]);
+        Route::get('test-route', fn () => UserResource::make($user));
+
+        $response = $this->getJson('test-route');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                'id' => 'user-id',
+                'type' => 'basicModels',
+                'attributes' => [
+                    'name' => 'user-name',
+                ],
+                'relationships' => [],
+                'meta' => [],
+                'links' => [],
+            ],
+            'included' => [],
+            'jsonapi' => [
+                'version' => '1.4.3',
+                'meta' => [
+                    'secure' => true,
+                ],
+            ],
+        ]);
+
+        BasicJsonApiResource::resolveServerImplementationNormally();
     }
 }

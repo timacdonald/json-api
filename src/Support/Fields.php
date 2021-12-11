@@ -34,9 +34,7 @@ class Fields
         return $this->rememberResourceType($resourceType, function () use ($request, $resourceType): ?array {
             $typeFields = $request->query('fields') ?? [];
 
-            if (is_string($typeFields)) {
-                abort(400, 'The fields parameter must be an array of resource types.');
-            }
+            abort_if(is_string($typeFields), 400, 'The fields parameter must be an array of resource types.');
 
             if (! array_key_exists($resourceType, $typeFields)) {
                 return null;
@@ -48,9 +46,7 @@ class Fields
                 return [];
             }
 
-            if (! is_string($fields)) {
-                abort(400, 'The fields parameter value must be a comma seperated list of attributes.');
-            }
+            abort_if(! is_string($fields), 400, 'The fields parameter value must be a comma seperated list of attributes.');
 
             return array_filter(explode(',', $fields), fn (string $value): bool => $value !== '');
         });

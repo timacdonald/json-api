@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace TiMacDonald\JsonApi;
+namespace TiMacDonald\JsonApi\Support;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;
 
@@ -28,7 +29,7 @@ class UnknownRelationship implements PotentiallyMissing
     /**
      * @return mixed
      */
-    public function toResourceIdentifier()
+    public function asRelationship(Request $request)
     {
         return $this->resource;
     }

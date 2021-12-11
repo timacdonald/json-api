@@ -33,6 +33,10 @@ class ResourceIdentificationTest extends TestCase
                 'links' => [],
                 'meta' => [],
             ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
+            ],
             'included' => [],
         ]);
     }
@@ -56,6 +60,10 @@ class ResourceIdentificationTest extends TestCase
                 'attributes' => [],
                 'relationships' => [],
                 'links' => [],
+                'meta' => [],
+            ],
+            'jsonapi' => [
+                'version' => '1.0',
                 'meta' => [],
             ],
             'included' => [],

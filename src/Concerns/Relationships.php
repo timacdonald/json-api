@@ -11,7 +11,7 @@ use Illuminate\Support\Collection;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
 use TiMacDonald\JsonApi\Support\Includes;
-use TiMacDonald\JsonApi\UnknownRelationship;
+use TiMacDonald\JsonApi\Support\UnknownRelationship;
 
 /**
  * @internal
@@ -87,7 +87,7 @@ trait Relationships
                  * @param JsonApiResource|JsonApiResourceCollection|UnknownRelationship $resource
                  * @return mixed
                  */
-                fn ($resource) => $resource->toResourceIdentifier($request)
+                fn ($resource) => $resource->asRelationship($request)
             );
     }
 
@@ -102,15 +102,11 @@ trait Relationships
                 /**
                  * @return JsonApiResource|JsonApiResourceCollection|UnknownRelationship
                  */
-                function (Closure $value, string $key) use ($request) {
+                function (Closure $value, string $prefix) use ($request) {
                     $resource = $value();
 
-                    if ($resource instanceof JsonApiResource) {
-                        return $resource->withIncludePrefix($key);
-                    }
-
-                    if ($resource instanceof JsonApiResourceCollection) {
-                        return $resource->filterDuplicates($request)->withIncludePrefix($key);
+                    if ($resource instanceof JsonApiResource || $resource instanceof JsonApiResourceCollection) {
+                        return $resource->initialiseAsRelationship($request, $prefix);
                     }
 
                     return new UnknownRelationship($resource);

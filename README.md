@@ -344,6 +344,7 @@ And a special (vegi) thanks to [Caneco](https://twitter.com/caneco) for the logo
 - [ ] Ability to send the resource identifier "id" and "type" for a belongsTo relationship, even if not included?
 - [ ] Helper to define links
 - [ ] Investigate collection count support
+- [ ] Transducers for all the looping?
 
 # To document
 

@@ -2,9 +2,9 @@
 
 # JSON:API Resource for Laravel
 
-A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API standards and also implements features such as sparse fieldsets and compound documents, whilst allowing you to extend the spec as needed for your project.
+A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API standard and also implements features such as sparse fieldsets and compound documents.
 
-These docs are not designed to introduce you to the JSON:API spec and the associated concepts, instead you should [head over and read the spec](https:/jsonapi.org) if you are not familiar with it.
+These docs are not designed to introduce you to the JSON:API spec and the associated concepts, instead you should [head over and read the spec](https:/jsonapi.org) if you are not familiar with it. The documentation that follows only contains information on _how_ to implement the specification via the package.
 
 # Version support
 
@@ -139,6 +139,7 @@ class UserResource extends JsonApiResource
     {
         return [
             Link::self(route('users.show', $this->resource)),
+            'related' => 'https://example.com/related'
         ];
     }
 }
@@ -339,13 +340,8 @@ And a special (vegi) thanks to [Caneco](https://twitter.com/caneco) for the logo
 
 # Coming soon...
 
-- [ ] Top level links - how would you modify this for a collection?
-  - [ ] decide how to handle top level keys for single and collections (static? should collections have to be extended to specify the values? or can there be static methods on the single resource for the collection?)
-- [ ] Test assertions?
 - [ ] Handle loading relations on a already in memory object with Spatie Query builder (PR)
-- [ ] Resource identifier links and meta as a new concept different to normal resource links and relationships.
 - [ ] Investigate collection count support
-- [ ] Transducers for all the looping?
 - [ ] a contract that other classes can implement to support the JSON:API spec as relationships? Can we have it work at a top level as well? Would that even make sense? Maybe be providing a toResponse implementation?
 
 # To document
@@ -358,6 +354,12 @@ And a special (vegi) thanks to [Caneco](https://twitter.com/caneco) for the logo
  - [ ] caching id and type
  - [ ] caching includes and fields
  - [ ] how it clears itself on toResponse
- - [ ] asRelationship()
  - [ ] that the goal is to have a consistent output at all levels, hence the maximal dataset for empty values
  - [ ] Link object and meta
+
+# Not yet supported
+- [ ] Top level links & meta - how would you modify this for a collection? Top level links need to merge with pagination links
+  - [ ] decide how to handle top level keys for single and collections (static? should collections have to be extended to specify the values? or can there be static methods on the single resource for the collection?)
+- [ ] returning a resource as `null` as the Laravel resource does not support this. Is possible to support locally, but it might be unexpected. Perhaps a PR to Laravel is best?
+- [ ] Responses that contain only resource identifiers (related)
+- [ ] `400` when requesting relationships that are not present.

@@ -6,10 +6,7 @@ namespace TiMacDonald\JsonApi;
 
 use JsonSerializable;
 
-/**
- * @see https://jsonapi.org/format/#document-resource-identifier-objects
- */
-class ResourceIdentifier implements JsonSerializable
+final class ResourceIdentifier implements JsonSerializable
 {
     private string $id;
 
@@ -26,9 +23,6 @@ class ResourceIdentifier implements JsonSerializable
         $this->meta = $meta;
     }
 
-    /**
-     * @internal
-     */
     public function jsonSerialize(): array
     {
         return [

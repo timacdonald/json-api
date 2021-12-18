@@ -90,6 +90,8 @@ abstract class JsonApiResource extends JsonResource
         return [
             // Link::self(route('users.show'), $this->resource),
             // Link::related(/** ... */),
+            // 'whatever' => 'Something'
+            // 'whateverElse' => new Link('whatever')
         ];
     }
 
@@ -126,19 +128,27 @@ abstract class JsonApiResource extends JsonResource
      * TODO: @see docs-link
      * @see https://jsonapi.org/format/#document-resource-object-linkage
      */
-    public function asRelationship(Request $request): Relationship
+    public function toResourceLink(Request $request): RelationshipLink
     {
-        return new Relationship(
+        return new RelationshipLink(
             new ResourceIdentifier($this->resolveId($request), $this->resolveType($request))
         );
     }
 
     /**
+     * @return mixed
+     */
+    public function whenNull(Request $request, Closure $toArray)
+    {
+        return null;
+    }
+
+    /**
      * @param Request $request
      */
-    public function toArray($request): array
+    public function toArray($request): ?array
     {
-        return [
+        $toArray = fn () => [
             'id' => $this->resolveId($request),
             'type' => $this->resolveType($request),
             'attributes' => (object) $this->requestedAttributes($request)->all(),
@@ -146,6 +156,10 @@ abstract class JsonApiResource extends JsonResource
             'meta' => (object) $this->toMeta($request),
             'links' => (object) $this->resolveLinks($request),
         ];
+
+        return $this->resource === null
+            ? $this->whenNull($request, $toArray)
+            : $toArray();
     }
 
     /**

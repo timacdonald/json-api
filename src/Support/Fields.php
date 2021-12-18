@@ -13,7 +13,7 @@ use function is_string;
 /**
  * @internal
  */
-class Fields
+final class Fields
 {
     private static ?Fields $instance;
 

@@ -15,7 +15,7 @@ use function is_array;
 /**
  * @internal
  */
-class Includes
+final class Includes
 {
     private static ?Includes $instance;
 

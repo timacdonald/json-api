@@ -9,7 +9,7 @@ use JsonSerializable;
 /**
  * @see https://jsonapi.org/format/#document-resource-object-links
  */
-class Link implements JsonSerializable
+final class Link implements JsonSerializable
 {
     private string $href;
 
@@ -34,9 +34,6 @@ class Link implements JsonSerializable
         $this->meta = $meta;
     }
 
-    /**
-     * @internal
-     */
     public function jsonSerialize(): array
     {
         return [

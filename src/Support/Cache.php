@@ -10,7 +10,7 @@ use TiMacDonald\JsonApi\JsonApiResourceCollection;
 /**
  * @internal
  */
-class Cache
+final class Cache
 {
     /**
      * @param JsonApiResource|JsonApiResourceCollection $resource

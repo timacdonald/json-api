@@ -5,20 +5,16 @@ declare(strict_types=1);
 namespace TiMacDonald\JsonApi;
 
 use JsonSerializable;
-use stdClass;
 
-/**
- * @see https://jsonapi.org/format/#document-resource-object-relationships
- */
-class Relationship implements JsonSerializable
+final class RelationshipLink implements JsonSerializable
 {
-    private ?ResourceIdentifier $data;
+    private ResourceIdentifier $data;
 
     private array $links;
 
     private array $meta;
 
-    public function __construct(?ResourceIdentifier $data = null, array $links = [], array $meta = [])
+    public function __construct(ResourceIdentifier $data, array $links = [], array $meta = [])
     {
         $this->data = $data;
 
@@ -33,7 +29,7 @@ class Relationship implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            'data' => $this->data ?? new stdClass(),
+            'data' => $this->data,
             'meta' => (object) $this->meta,
             'links' => (object) $this->links,
         ];

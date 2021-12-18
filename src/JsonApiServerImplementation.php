@@ -6,7 +6,7 @@ namespace TiMacDonald\JsonApi;
 
 use JsonSerializable;
 
-class JsonApiServerImplementation implements JsonSerializable
+final class JsonApiServerImplementation implements JsonSerializable
 {
     private string $version;
 
@@ -19,9 +19,6 @@ class JsonApiServerImplementation implements JsonSerializable
         $this->meta = $meta;
     }
 
-    /**
-     * @internal
-     */
     public function jsonSerialize(): array
     {
         return [

@@ -11,7 +11,7 @@ use Illuminate\Support\Collection;
 /**
  * @internal
  */
-class UnknownRelationship implements PotentiallyMissing
+final class UnknownRelationship implements PotentiallyMissing
 {
     /**
      * @var mixed
@@ -29,7 +29,7 @@ class UnknownRelationship implements PotentiallyMissing
     /**
      * @return mixed
      */
-    public function asRelationship(Request $request)
+    public function toResourceLink(Request $request)
     {
         return $this->resource;
     }

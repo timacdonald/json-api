@@ -13,7 +13,6 @@ use Tests\TestCase;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiServerImplementation;
 use TiMacDonald\JsonApi\Link;
-use TiMacDonald\JsonApi\Relationship;
 use TiMacDonald\JsonApi\ResourceIdentifier;
 use TiMacDonald\JsonApi\Support\Fields;
 use TiMacDonald\JsonApi\Support\Includes;
@@ -337,15 +336,6 @@ class JsonApiTest extends TestCase
         ]);
         $this->assertCount(0, Fields::getInstance()->cache());
         $this->assertCount(0, Includes::getInstance()->cache());
-    }
-
-    public function testItCastsEmptyRelationshipsAttributesToObjects(): void
-    {
-        $relationship = new Relationship(null, [], []);
-
-        $json = json_encode($relationship);
-
-        self::assertSame('{"data":{},"meta":{},"links":{}}', $json);
     }
 
     public function testItCastsEmptyResourceIdentifierMetaToObject(): void

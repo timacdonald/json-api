@@ -85,7 +85,7 @@ trait Relationships
                  * @param JsonApiResource|JsonApiResourceCollection|UnknownRelationship $resource
                  * @return mixed
                  */
-                fn ($resource) => $resource->asRelationship($request)
+                fn ($resource) => $resource->toResourceLink($request)
             );
     }
 

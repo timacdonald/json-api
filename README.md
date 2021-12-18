@@ -138,7 +138,7 @@ class UserResource extends JsonApiResource
     protected function toLinks(Request $request): array
     {
         return [
-            'self' => new Link(route('users.show', $this->resource)),
+            Link::self(route('users.show', $this->resource)),
         ];
     }
 }

@@ -20,7 +20,6 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
             'included' => $this->collection
                 ->map(fn (JsonApiResource $resource): Collection => $resource->included($request))
                 ->flatten()
-                ->reject(fn (?JsonApiResource $resource): bool => $resource === null)
                 ->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request)),
             'jsonapi' => JsonApiResource::serverImplementationResolver()($request),
         ];
@@ -71,28 +70,10 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
 
     /**
      * @internal
-     */
-    public function filterDuplicates(Request $request): self
-    {
-        $this->collection = $this->collection->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request));
-
-        return $this;
-    }
-
-    /**
-     * @internal
      * @infection-ignore-all
      */
     public function flush(): void
     {
         $this->collection->each(fn (JsonApiResource $resource) => $resource->flush());
-    }
-
-    /**
-     * @internal
-     */
-    public function initialiseAsRelationship(Request $request, string $prefix): self
-    {
-        return $this->withIncludePrefix($prefix)->filterDuplicates($request);
     }
 }

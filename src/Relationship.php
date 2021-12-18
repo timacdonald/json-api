@@ -27,6 +27,9 @@ class Relationship implements JsonSerializable
         $this->meta = $meta;
     }
 
+    /**
+     * @internal
+     */
     public function jsonSerialize(): array
     {
         return [

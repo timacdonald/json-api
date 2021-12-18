@@ -29,15 +29,17 @@ class Fields
         return self::$instance ??= new self();
     }
 
-    public function parse(Request $request, string $resourceType): ?array
+    public function parse(Request $request, string $resourceType, bool $minimalAttributes = false): ?array
     {
-        return $this->rememberResourceType($resourceType, function () use ($request, $resourceType): ?array {
+        return $this->rememberResourceType("type:{$resourceType};minimal:{$minimalAttributes};", function () use ($request, $resourceType, $minimalAttributes): ?array {
             $typeFields = $request->query('fields') ?? [];
 
             abort_if(is_string($typeFields), 400, 'The fields parameter must be an array of resource types.');
 
             if (! array_key_exists($resourceType, $typeFields)) {
-                return null;
+                return $minimalAttributes
+                    ? []
+                    : null;
             }
 
             $fields = $typeFields[$resourceType];

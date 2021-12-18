@@ -106,7 +106,7 @@ trait Relationships
                     $resource = $value();
 
                     if ($resource instanceof JsonApiResource || $resource instanceof JsonApiResourceCollection) {
-                        return $resource->initialiseAsRelationship($request, $prefix);
+                        return $resource->withIncludePrefix($prefix);
                     }
 
                     return new UnknownRelationship($resource);

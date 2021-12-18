@@ -141,7 +141,7 @@ class JsonApiTest extends TestCase
         ]);
     }
 
-    public function testItAddsLinksToIndividualResources(): void
+    public function testItAddsArbitraryLinksToIndividualResources(): void
     {
         Route::get('test-route', fn () => new class ((new BasicModel(['id' => 'expected-id']))) extends JsonApiResource {
             protected function toLinks(Request $request): array
@@ -172,6 +172,50 @@ class JsonApiTest extends TestCase
                 'meta' => [],
             ],
         ]);
+    }
+
+    public function testItHandlesSelfAndRelatedLinks(): void
+    {
+        Route::get('test-route', fn () => new class ((new BasicModel(['id' => 'expected-id']))) extends JsonApiResource {
+            protected function toLinks(Request $request): array
+            {
+                return [
+                    Link::self('https://example.test/self'),
+                    Link::related('https://example.test/related'),
+                    'home' => 'https://example.test',
+                ];
+            }
+        });
+
+        $response = $this->getJson('test-route');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                'id' => 'expected-id',
+                'type' => 'basicModels',
+                'attributes' => [],
+                'relationships' => [],
+                'meta' => [],
+                'links' => [
+                    'self' => [
+                        'href' => 'https://example.test/self',
+                        'meta' => [],
+                    ],
+                    'related' => [
+                        'href' => 'https://example.test/related',
+                        'meta' => [],
+                    ],
+                    'home' => 'https://example.test'
+                ],
+            ],
+            'included' => [],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
+            ],
+        ]);
+
     }
 
     public function testItSetsTheContentTypeHeaderForASingleResource(): void
@@ -316,7 +360,7 @@ class JsonApiTest extends TestCase
 
     public function testItCastsEmptyLinksMetaToObject(): void
     {
-        $link = new Link('https://timacdonald.me', []);
+        $link = Link::self('https://timacdonald.me', []);
 
         $json = json_encode($link);
 

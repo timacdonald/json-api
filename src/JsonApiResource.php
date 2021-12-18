@@ -16,6 +16,7 @@ abstract class JsonApiResource extends JsonResource
     use Concerns\Attributes;
     use Concerns\Identification;
     use Concerns\Implementation;
+    use Concerns\Links;
     use Concerns\Relationships;
 
     /**
@@ -61,6 +62,9 @@ abstract class JsonApiResource extends JsonResource
     {
         return [
             // 'name' => $this->name,
+            //
+            // or with lazy evaluation...
+            //
             // 'address' => fn () => new Address($this->address),
         ];
     }
@@ -84,7 +88,8 @@ abstract class JsonApiResource extends JsonResource
     protected function toLinks(Request $request): array
     {
         return [
-            // 'repo' => new Link('https://github.com/timacdonald/json-api'),
+            // Link::self(route('users.show'), $this->resource),
+            // Link::related(/** ... */),
         ];
     }
 
@@ -123,7 +128,6 @@ abstract class JsonApiResource extends JsonResource
      */
     public function asRelationship(Request $request): Relationship
     {
-        // ???
         return new Relationship(
             new ResourceIdentifier($this->resolveId($request), $this->resolveType($request))
         );
@@ -140,7 +144,7 @@ abstract class JsonApiResource extends JsonResource
             'attributes' => (object) $this->requestedAttributes($request)->all(),
             'relationships' => (object) $this->requestedRelationshipsAsIdentifiers($request)->all(),
             'meta' => (object) $this->toMeta($request),
-            'links' => (object) $this->toLinks($request),
+            'links' => (object) $this->resolveLinks($request),
         ];
     }
 
@@ -150,7 +154,8 @@ abstract class JsonApiResource extends JsonResource
     public function with($request): array
     {
         return [
-            'included' => $this->included($request),
+            'included' => $this->included($request)
+                ->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request)),
             'jsonapi' => self::serverImplementationResolver()($request),
         ];
     }
@@ -174,13 +179,5 @@ abstract class JsonApiResource extends JsonResource
     public function toResponse($request): JsonResponse
     {
         return tap(parent::toResponse($request)->header('Content-type', 'application/vnd.api+json'), fn () => Cache::flush($this));
-    }
-
-    /**
-     * @internal
-     */
-    public function initialiseAsRelationship(Request $request, string $prefix): self
-    {
-        return $this->withIncludePrefix($prefix);
     }
 }

@@ -102,7 +102,7 @@ trait Relationships
                 /**
                  * @return JsonApiResource|JsonApiResourceCollection|UnknownRelationship
                  */
-                function (Closure $value, string $prefix) use ($request) {
+                function (Closure $value, string $prefix) {
                     $resource = $value();
 
                     if ($resource instanceof JsonApiResource || $resource instanceof JsonApiResourceCollection) {

@@ -206,7 +206,7 @@ class JsonApiTest extends TestCase
                         'href' => 'https://example.test/related',
                         'meta' => [],
                     ],
-                    'home' => 'https://example.test'
+                    'home' => 'https://example.test',
                 ],
             ],
             'included' => [],
@@ -215,7 +215,6 @@ class JsonApiTest extends TestCase
                 'meta' => [],
             ],
         ]);
-
     }
 
     public function testItSetsTheContentTypeHeaderForASingleResource(): void

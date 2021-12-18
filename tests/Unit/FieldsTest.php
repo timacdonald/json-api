@@ -23,8 +23,8 @@ class FieldsTest extends TestCase
         ];
 
         $fields = [
-            Fields::getInstance()->parse($requests[0], 'a'),
-            Fields::getInstance()->parse($requests[1], 'b'),
+            Fields::getInstance()->parse($requests[0], 'a', true),
+            Fields::getInstance()->parse($requests[1], 'b', true),
         ];
 
         $this->assertSame(['a'], $fields[0]);
@@ -35,10 +35,10 @@ class FieldsTest extends TestCase
     {
         $request = Request::create('https://example.com?fields[a]=');
 
-        $this->assertSame([], Fields::getInstance()->parse($request, 'a'));
+        $this->assertSame([], Fields::getInstance()->parse($request, 'a', true));
     }
 
-    public function testMinimalAttributes(): void
+    public function testItProvidesMinimalAttributesWhenNoFieldsAreSpecified(): void
     {
         $request = Request::create('https://example.com');
 

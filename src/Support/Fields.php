@@ -29,7 +29,7 @@ class Fields
         return self::$instance ??= new self();
     }
 
-    public function parse(Request $request, string $resourceType, bool $minimalAttributes = false): ?array
+    public function parse(Request $request, string $resourceType, bool $minimalAttributes): ?array
     {
         return $this->rememberResourceType("type:{$resourceType};minimal:{$minimalAttributes};", function () use ($request, $resourceType, $minimalAttributes): ?array {
             $typeFields = $request->query('fields') ?? [];

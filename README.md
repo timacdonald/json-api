@@ -96,6 +96,9 @@ class UserResource extends JsonApiResource
             'posts' => fn () => PostResource::collection($this->posts),
             'subscription' => fn () => SubscriptionResource::make($this->subscription),
             'profileImage' => fn () => optional($this->profileImage, fn (ProfileImage $profileImage) => ProfileImageResource::make($profileImage)),
+            // if the relationship has been loaded and is null, can we not just return the resource still and have a nice default? That way you never have to handle any of this 
+            // optional noise?
+            // also is there a usecase for returning a resource linkage right from here and not a full resource?
         ];
     }
 }

@@ -33,9 +33,7 @@ trait Relationships
      */
     public function withIncludePrefix(string $prefix): self
     {
-        $this->includePrefix = "{$this->includePrefix}{$prefix}.";
-
-        return $this;
+        return tap($this, fn (JsonApiResource $resource): string => $resource->includePrefix = "{$this->includePrefix}{$prefix}.");
     }
 
     /**
@@ -115,7 +113,7 @@ trait Relationships
                 /**
                  * @param JsonApiResource|JsonApiResourceCollection|UnknownRelationship $resource
                  */
-                fn ($resource) => $resource instanceof PotentiallyMissing && $resource->isMissing()
+                fn ($resource): bool => $resource instanceof PotentiallyMissing && $resource->isMissing()
             ));
     }
 
@@ -130,9 +128,7 @@ trait Relationships
                 /**
                  * @param JsonApiResource|JsonApiResourceCollection|UnknownRelationship $resource
                  */
-                function ($resource): void {
-                    $resource->flush();
-                }
+                fn ($resource) => $resource->flush()
             );
         }
 

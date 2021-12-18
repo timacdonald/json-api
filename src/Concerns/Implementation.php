@@ -30,6 +30,6 @@ trait Implementation
      */
     public static function serverImplementationResolver(): Closure
     {
-        return self::$serverImplementationResolver ?? fn () => new ServerImplementation('1.0');
+        return self::$serverImplementationResolver ?? fn (): ServerImplementation => new ServerImplementation('1.0');
     }
 }

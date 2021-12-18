@@ -19,12 +19,12 @@ class Link implements JsonSerializable
 
     public static function self(string $href, array $meta = []): self
     {
-        return tap(new self($href, $meta), fn (self $instance) => $instance->key = 'self');
+        return tap(new self($href, $meta), fn (self $instance): string => $instance->key = 'self');
     }
 
     public static function related(string $href, array $meta = []): self
     {
-        return tap(new self($href, $meta), fn (self $instance) => $instance->key = 'related');
+        return tap(new self($href, $meta), fn (self $instance): string => $instance->key = 'related');
     }
 
     private function __construct(string $href, array $meta = [])
@@ -50,9 +50,6 @@ class Link implements JsonSerializable
      */
     public function key(): string
     {
-        return [
-            'self' => 'self',
-            'related' => 'related',
-        ][$this->key];
+        return $this->key;
     }
 }

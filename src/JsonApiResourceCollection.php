@@ -38,10 +38,10 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
      */
     public function withIncludePrefix(string $prefix): self
     {
-        /** @phpstan-ignore-next-line */
-        $this->collection->each(fn (JsonApiResource $resource): JsonApiResource => $resource->withIncludePrefix($prefix));
-
-        return $this;
+        return tap($this, function (JsonApiResourceCollection $resource) use ($prefix): void {
+            /** @phpstan-ignore-next-line */
+            $resource->collection->each(fn (JsonApiResource $resource): JsonApiResource => $resource->withIncludePrefix($prefix));
+        });
     }
 
     /**

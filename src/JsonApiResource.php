@@ -77,7 +77,7 @@ abstract class JsonApiResource extends JsonResource implements Flushable
     /**
      * @see https://github.com/timacdonald/json-api#resource-relationships
      * @see https://jsonapi.org/format/#document-resource-object-relationships
-     * @return array<string, \Closure>
+     * @return array<string, Closure>
      */
     protected function toRelationships(Request $request): array
     {

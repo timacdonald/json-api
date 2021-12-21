@@ -165,7 +165,7 @@ class JsonApiTest extends TestCase
                     'links-key' => [
                         'href' => 'links-value',
                         'meta' => [],
-                    ]
+                    ],
                 ],
             ],
             'included' => [],
@@ -210,7 +210,7 @@ class JsonApiTest extends TestCase
                     ],
                     'home' => [
                         'href' => 'https://example.test',
-                        'meta' => []
+                        'meta' => [],
                     ],
                 ],
             ],

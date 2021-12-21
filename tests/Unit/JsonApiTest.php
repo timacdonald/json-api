@@ -13,6 +13,7 @@ use Tests\TestCase;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiServerImplementation;
 use TiMacDonald\JsonApi\Link;
+use TiMacDonald\JsonApi\RelationshipLink;
 use TiMacDonald\JsonApi\ResourceIdentifier;
 use TiMacDonald\JsonApi\Support\Fields;
 use TiMacDonald\JsonApi\Support\Includes;
@@ -406,5 +407,16 @@ class JsonApiTest extends TestCase
         ]);
 
         BasicJsonApiResource::resolveServerImplementationNormally();
+    }
+
+    public function testItCastsEmptyRelationshipLinkMetaToJsonObject()
+    {
+        $resourceLink = new RelationshipLink(
+            new ResourceIdentifier('expected-id', 'expected-type')
+        );
+
+        $json = json_encode($resourceLink);
+
+        self::assertSame('{"data":{"id":"expected-id","type":"expected-type","meta":{}},"meta":{},"links":{}}', $json);
     }
 }

@@ -42,11 +42,13 @@ final class Includes implements Flushable
 
             abort_if(is_array($includes), 400, 'The include parameter must be a comma seperated list of relationship paths.');
 
-            return Collection::make(explode(',', $includes))
+            /** @var Collection */
+            $includes = Collection::make(explode(',', $includes))
                 ->when($prefix !== '', function (Collection $includes) use ($prefix): Collection {
                     return $includes->filter(fn (string $include): bool => Str::startsWith($include, $prefix));
-                })
-                ->map(fn ($include): string => Str::before(Str::after($include, $prefix), '.'))
+                });
+
+            return $includes->map(fn ($include): string => Str::before(Str::after($include, $prefix), '.'))
                 ->uniqueStrict()
                 ->filter(fn (string $include): bool => $include !== '');
         });

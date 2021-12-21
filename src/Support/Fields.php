@@ -6,6 +6,8 @@ namespace TiMacDonald\JsonApi\Support;
 
 use Closure;
 use Illuminate\Http\Request;
+use TiMacDonald\JsonApi\Contracts\Flushable;
+
 use function array_key_exists;
 use function explode;
 use function is_string;
@@ -13,10 +15,13 @@ use function is_string;
 /**
  * @internal
  */
-final class Fields
+final class Fields implements Flushable
 {
     private static ?Fields $instance;
 
+    /**
+     * @var array<string, array<string>|null>
+     */
     private array $cache = [];
 
     private function __construct()
@@ -29,6 +34,9 @@ final class Fields
         return self::$instance ??= new self();
     }
 
+    /**
+     * @return array<string>
+     */
     public function parse(Request $request, string $resourceType, bool $minimalAttributes): ?array
     {
         return $this->rememberResourceType("type:{$resourceType};minimal:{$minimalAttributes};", function () use ($request, $resourceType, $minimalAttributes): ?array {
@@ -56,6 +64,7 @@ final class Fields
 
     /**
      * @infection-ignore-all
+     * @return array<string>
      */
     private function rememberResourceType(string $resourceType, Closure $callback): ?array
     {
@@ -67,6 +76,9 @@ final class Fields
         $this->cache = [];
     }
 
+    /**
+     * @return array<string, array<string>|null>
+     */
     public function cache(): array
     {
         return $this->cache;

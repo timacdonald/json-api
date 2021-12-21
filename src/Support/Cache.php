@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi\Support;
 
+use TiMacDonald\JsonApi\Contracts\Flushable;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
 
@@ -13,7 +14,7 @@ use TiMacDonald\JsonApi\JsonApiResourceCollection;
 final class Cache
 {
     /**
-     * @param JsonApiResource|JsonApiResourceCollection $resource
+     * @param Flushable $resource
      */
     public static function flush($resource): void
     {

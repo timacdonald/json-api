@@ -8,12 +8,16 @@ use Closure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Collection;
+use stdClass;
+use TiMacDonald\JsonApi\Contracts\Flushable;
 use TiMacDonald\JsonApi\Support\Cache;
 use function property_exists;
 
-abstract class JsonApiResource extends JsonResource
+abstract class JsonApiResource extends JsonResource implements Flushable
 {
     use Concerns\Attributes;
+    use Concerns\Caching;
     use Concerns\Identification;
     use Concerns\Implementation;
     use Concerns\Links;
@@ -57,6 +61,7 @@ abstract class JsonApiResource extends JsonResource
     /**
      * @see https://github.com/timacdonald/json-api#resource-attributes
      * @see https://jsonapi.org/format/#document-resource-object-attributes
+     * @return array<string, mixed>
      */
     protected function toAttributes(Request $request): array
     {
@@ -72,6 +77,7 @@ abstract class JsonApiResource extends JsonResource
     /**
      * @see https://github.com/timacdonald/json-api#resource-relationships
      * @see https://jsonapi.org/format/#document-resource-object-relationships
+     * @return array<string, \Closure>
      */
     protected function toRelationships(Request $request): array
     {
@@ -84,6 +90,7 @@ abstract class JsonApiResource extends JsonResource
     /**
      * @see https://github.com/timacdonald/json-api#resource-links
      * @see https://jsonapi.org/format/#document-resource-object-links
+     * @return array<int|string, Link|string>
      */
     protected function toLinks(Request $request): array
     {
@@ -98,6 +105,7 @@ abstract class JsonApiResource extends JsonResource
     /**
      * @see https://github.com/timacdonald/json-api#resource-meta
      * @see https://jsonapi.org/format/#document-meta
+     * @return array<string, mixed>
      */
     protected function toMeta(Request $request): array
     {
@@ -136,19 +144,12 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
-     * @return mixed
-     */
-    public function whenNull(Request $request, Closure $toArray)
-    {
-        return null;
-    }
-
-    /**
      * @param Request $request
+     * @return array{id: string, type: string, attributes: stdClass, relationships: stdClass, meta: stdClass, links: stdClass}
      */
-    public function toArray($request): ?array
+    public function toArray($request): array
     {
-        $toArray = fn () => [
+        return [
             'id' => $this->resolveId($request),
             'type' => $this->resolveType($request),
             'attributes' => (object) $this->requestedAttributes($request)->all(),
@@ -156,14 +157,11 @@ abstract class JsonApiResource extends JsonResource
             'meta' => (object) $this->toMeta($request),
             'links' => (object) $this->resolveLinks($request),
         ];
-
-        return $this->resource === null
-            ? $this->whenNull($request, $toArray)
-            : $toArray();
     }
 
     /**
      * @param Request $request
+     * @return array{included: Collection, jsonapi: JsonApiServerImplementation}
      */
     public function with($request): array
     {
@@ -176,6 +174,7 @@ abstract class JsonApiResource extends JsonResource
 
     /**
      * @param mixed $resource
+     * @return JsonApiResourceCollection<mixed>
      */
     public static function collection($resource): JsonApiResourceCollection
     {

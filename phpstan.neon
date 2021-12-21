@@ -1,10 +1,10 @@
 parameters:
-    level: 8
+    level: max
     paths:
         - src
     checkInternalClassCaseSensitivity: true
     checkTooWideReturnTypesInProtectedAndPublicMethods: true
     checkUninitializedProperties: true
-    checkMissingIterableValueType: false
+    checkMissingIterableValueType: true
 includes:
     - vendor-bin/linting/vendor/nunomaduro/larastan/extension.neon

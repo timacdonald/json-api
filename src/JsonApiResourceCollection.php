@@ -7,12 +7,14 @@ namespace TiMacDonald\JsonApi;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
+use TiMacDonald\JsonApi\Contracts\Flushable;
 use TiMacDonald\JsonApi\Support\Cache;
 
-class JsonApiResourceCollection extends AnonymousResourceCollection
+class JsonApiResourceCollection extends AnonymousResourceCollection implements Flushable
 {
     /**
      * @param Request $request
+     * @return array{included: Collection, jsonapi: JsonApiResource}
      */
     public function with($request): array
     {
@@ -35,6 +37,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
 
     /**
      * @internal
+     * @return JsonApiResourceCollection<JsonApiResource>
      */
     public function withIncludePrefix(string $prefix): self
     {

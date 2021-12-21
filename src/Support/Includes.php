@@ -8,6 +8,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use TiMacDonald\JsonApi\Contracts\Flushable;
 
 use function explode;
 use function is_array;
@@ -15,10 +16,13 @@ use function is_array;
 /**
  * @internal
  */
-final class Includes
+final class Includes implements Flushable
 {
     private static ?Includes $instance;
 
+    /**
+     * @var array<string, Collection>
+     */
     private array $cache = [];
 
     private function __construct()
@@ -42,7 +46,7 @@ final class Includes
                 ->when($prefix !== '', function (Collection $includes) use ($prefix): Collection {
                     return $includes->filter(fn (string $include): bool => Str::startsWith($include, $prefix));
                 })
-                ->map(fn (string $include): string => Str::before(Str::after($include, $prefix), '.'))
+                ->map(fn ($include): string => Str::before(Str::after($include, $prefix), '.'))
                 ->uniqueStrict()
                 ->filter(fn (string $include): bool => $include !== '');
         });
@@ -61,6 +65,9 @@ final class Includes
         $this->cache = [];
     }
 
+    /**
+     * @return array<string, Collection>
+     */
     public function cache(): array
     {
         return $this->cache;

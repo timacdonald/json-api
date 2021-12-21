@@ -26,11 +26,6 @@ trait Relationships
     /**
      * @internal
      */
-    private ?Collection $requestedRelationshipsCache = null;
-
-    /**
-     * @internal
-     */
     public function withIncludePrefix(string $prefix): self
     {
         return tap($this, fn (JsonApiResource $resource): string => $resource->includePrefix = "{$this->includePrefix}{$prefix}.");
@@ -115,45 +110,6 @@ trait Relationships
                  */
                 fn ($resource): bool => $resource instanceof PotentiallyMissing && $resource->isMissing()
             ));
-    }
-
-    /**
-     * @internal
-     * @infection-ignore-all
-     */
-    public function flush(): void
-    {
-        if ($this->requestedRelationshipsCache !== null) {
-            $this->requestedRelationshipsCache->each(
-                /**
-                 * @param JsonApiResource|JsonApiResourceCollection|UnknownRelationship $resource
-                 */
-                fn ($resource) => $resource->flush()
-            );
-        }
-
-        $this->requestedRelationshipsCache = null;
-
-        $this->idCache = null;
-
-        $this->typeCache = null;
-    }
-
-    /**
-     * @internal
-     * @infection-ignore-all
-     */
-    private function rememberRequestRelationships(Closure $closure): Collection
-    {
-        return $this->requestedRelationshipsCache ??= $closure();
-    }
-
-    /**
-     * @internal
-     */
-    public function requestedRelationshipsCache(): ?Collection
-    {
-        return $this->requestedRelationshipsCache;
     }
 
     /**

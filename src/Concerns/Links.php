@@ -15,18 +15,19 @@ trait Links
 {
     /**
      * @internal
+     * @return array<string, Link>
      */
     private function resolveLinks(Request $request): array
     {
         return Collection::make($this->toLinks($request))
             ->mapWithKeys(
                 /**
-                 * @param mixed $value
-                 * @param int|string $key
+                 * @param string|Link $value
+                 * @param string|int $key
                  */
                 fn ($value, $key): array => $value instanceof Link
                     ? [$value->key() => $value]
-                    : [$key => $value]
+                    : [$key => new Link($value)]
             )
             ->all();
     }

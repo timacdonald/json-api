@@ -7,11 +7,12 @@ namespace TiMacDonald\JsonApi\Support;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;
+use TiMacDonald\JsonApi\Contracts\Flushable;
 
 /**
  * @internal
  */
-final class UnknownRelationship implements PotentiallyMissing
+final class UnknownRelationship implements PotentiallyMissing, Flushable
 {
     /**
      * @var mixed

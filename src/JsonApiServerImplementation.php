@@ -5,13 +5,20 @@ declare(strict_types=1);
 namespace TiMacDonald\JsonApi;
 
 use JsonSerializable;
+use stdClass;
 
 final class JsonApiServerImplementation implements JsonSerializable
 {
     private string $version;
 
+    /**
+     * @var array<string, mixed>
+     */
     private array $meta;
 
+    /**
+     * @param array<string, mixed> $meta
+     */
     public function __construct(string $version, array $meta = [])
     {
         $this->version = $version;
@@ -19,6 +26,9 @@ final class JsonApiServerImplementation implements JsonSerializable
         $this->meta = $meta;
     }
 
+    /**
+     * @return array{version: string, meta: stdClass}
+     */
     public function jsonSerialize(): array
     {
         return [

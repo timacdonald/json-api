@@ -46,6 +46,10 @@ class AttributesTest extends TestCase
                 'meta' => [],
                 'links' => [],
             ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
+            ],
             'included' => [],
         ]);
     }
@@ -84,6 +88,10 @@ class AttributesTest extends TestCase
                 'links' => [],
                 'meta' => [],
             ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
+            ],
             'included' => [],
         ]);
     }
@@ -119,6 +127,10 @@ class AttributesTest extends TestCase
                 'meta' => [],
                 'links' => [],
             ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
+            ],
             'included' => [],
         ]);
     }
@@ -152,6 +164,10 @@ class AttributesTest extends TestCase
                 'links' => [],
                 'meta' => [],
             ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
+            ],
             'included' => [],
         ]);
     }
@@ -182,6 +198,10 @@ class AttributesTest extends TestCase
                 'attributes' => [],
                 'relationships' => [],
                 'links' => [],
+                'meta' => [],
+            ],
+            'jsonapi' => [
+                'version' => '1.0',
                 'meta' => [],
             ],
             'included' => [],
@@ -236,6 +256,10 @@ class AttributesTest extends TestCase
                 'meta' => [],
                 'links' => [],
             ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
+            ],
             'included' => [],
         ]);
 
@@ -275,18 +299,28 @@ class AttributesTest extends TestCase
                             'data' => [
                                 'id' => 'post-id-1',
                                 'type' => 'basicModels',
+                                'meta' => [],
                             ],
+                            'links' => [],
+                            'meta' => [],
                         ],
                         [
                             'data' => [
                                 'id' => 'post-id-2',
                                 'type' => 'basicModels',
+                                'meta' => [],
                             ],
+                            'links' => [],
+                            'meta' => [],
                         ],
                     ],
                 ],
                 'meta' => [],
                 'links' => [],
+            ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
             ],
             'included' => [
                 [
@@ -346,6 +380,10 @@ class AttributesTest extends TestCase
                 'meta' => [],
                 'links' => [],
             ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
+            ],
             'included' => [],
         ]);
     }
@@ -384,6 +422,10 @@ class AttributesTest extends TestCase
                 'relationships' => [],
                 'meta' => [],
                 'links' => [],
+            ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
             ],
             'included' => [],
         ]);

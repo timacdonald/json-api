@@ -2,15 +2,17 @@
 
 declare(strict_types=1);
 
-namespace TiMacDonald\JsonApi;
+namespace TiMacDonald\JsonApi\Support;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;
+use TiMacDonald\JsonApi\Contracts\Flushable;
 
 /**
  * @internal
  */
-class UnknownRelationship implements PotentiallyMissing
+final class UnknownRelationship implements PotentiallyMissing, Flushable
 {
     /**
      * @var mixed
@@ -28,7 +30,7 @@ class UnknownRelationship implements PotentiallyMissing
     /**
      * @return mixed
      */
-    public function toResourceIdentifier()
+    public function toResourceLink(Request $request)
     {
         return $this->resource;
     }

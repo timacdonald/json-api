@@ -7,12 +7,14 @@ namespace TiMacDonald\JsonApi;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
+use TiMacDonald\JsonApi\Contracts\Flushable;
 use TiMacDonald\JsonApi\Support\Cache;
 
-class JsonApiResourceCollection extends AnonymousResourceCollection
+class JsonApiResourceCollection extends AnonymousResourceCollection implements Flushable
 {
     /**
      * @param Request $request
+     * @return array{included: Collection, jsonapi: JsonApiResource}
      */
     public function with($request): array
     {
@@ -20,8 +22,8 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
             'included' => $this->collection
                 ->map(fn (JsonApiResource $resource): Collection => $resource->included($request))
                 ->flatten()
-                ->reject(fn (?JsonApiResource $resource): bool => $resource === null)
                 ->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request)),
+            'jsonapi' => JsonApiResource::serverImplementationResolver()($request),
         ];
     }
 
@@ -35,14 +37,14 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
 
     /**
      * @internal
-     * @return static
+     * @return JsonApiResourceCollection<JsonApiResource>
      */
-    public function withIncludePrefix(string $prefix)
+    public function withIncludePrefix(string $prefix): self
     {
-        /** @phpstan-ignore-next-line */
-        $this->collection->each(fn (JsonApiResource $resource): JsonApiResource => $resource->withIncludePrefix($prefix));
-
-        return $this;
+        return tap($this, function (JsonApiResourceCollection $resource) use ($prefix): void {
+            /** @phpstan-ignore-next-line */
+            $resource->collection->each(fn (JsonApiResource $resource): JsonApiResource => $resource->withIncludePrefix($prefix));
+        });
     }
 
     /**
@@ -56,9 +58,9 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     /**
      * @internal
      */
-    public function toResourceIdentifier(Request $request): array
+    public function toResourceLink(Request $request): Collection
     {
-        return $this->collection->map(fn (JsonApiResource $resource): array => $resource->toResourceIdentifier($request))->all();
+        return $this->collection->map(fn (JsonApiResource $resource): RelationshipLink => $resource->toResourceLink($request));
     }
 
     /**
@@ -67,17 +69,6 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     public function includable(): Collection
     {
         return $this->collection;
-    }
-
-    /**
-     * @internal
-     * @return static
-     */
-    public function filterDuplicates(Request $request)
-    {
-        $this->collection = $this->collection->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request));
-
-        return $this;
     }
 
     /**

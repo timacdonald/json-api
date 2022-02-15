@@ -34,7 +34,7 @@ trait Attributes
     private function requestedAttributes(Request $request): Collection
     {
         return Collection::make($this->toAttributes($request))
-            ->only($this->fields($request))
+            ->only(Fields::getInstance()->parse($request, $this->toType($request), self::$minimalAttributes))
             ->map(
                 /**
                  * @param mixed $value
@@ -48,21 +48,5 @@ trait Attributes
                  */
                 fn ($value): bool => $value instanceof PotentiallyMissing && $value->isMissing()
             );
-    }
-
-    /**
-     * @internal
-     */
-    private function fields(Request $request): ?array
-    {
-        $fields = Fields::getInstance()->parse($request, $this->toType($request));
-
-        if ($fields !== null) {
-            return $fields;
-        }
-
-        return self::$minimalAttributes
-            ? []
-            : null;
     }
 }

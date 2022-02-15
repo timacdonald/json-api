@@ -11,7 +11,7 @@ use Illuminate\Support\Collection;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
 use TiMacDonald\JsonApi\Support\Includes;
-use TiMacDonald\JsonApi\UnknownRelationship;
+use TiMacDonald\JsonApi\Support\UnknownRelationship;
 
 /**
  * @internal
@@ -26,16 +26,9 @@ trait Relationships
     /**
      * @internal
      */
-    private ?Collection $requestedRelationshipsCache = null;
-
-    /**
-     * @internal
-     */
     public function withIncludePrefix(string $prefix): self
     {
-        $this->includePrefix = "{$this->includePrefix}{$prefix}.";
-
-        return $this;
+        return tap($this, fn (JsonApiResource $resource): string => $resource->includePrefix = "{$this->includePrefix}{$prefix}.");
     }
 
     /**
@@ -87,7 +80,7 @@ trait Relationships
                  * @param JsonApiResource|JsonApiResourceCollection|UnknownRelationship $resource
                  * @return mixed
                  */
-                fn ($resource) => $resource->toResourceIdentifier($request)
+                fn ($resource) => $resource->toResourceLink($request)
             );
     }
 
@@ -102,15 +95,11 @@ trait Relationships
                 /**
                  * @return JsonApiResource|JsonApiResourceCollection|UnknownRelationship
                  */
-                function (Closure $value, string $key) use ($request) {
+                function (Closure $value, string $prefix) {
                     $resource = $value();
 
-                    if ($resource instanceof JsonApiResource) {
-                        return $resource->withIncludePrefix($key);
-                    }
-
-                    if ($resource instanceof JsonApiResourceCollection) {
-                        return $resource->filterDuplicates($request)->withIncludePrefix($key);
+                    if ($resource instanceof JsonApiResource || $resource instanceof JsonApiResourceCollection) {
+                        return $resource->withIncludePrefix($prefix);
                     }
 
                     return new UnknownRelationship($resource);
@@ -119,49 +108,8 @@ trait Relationships
                 /**
                  * @param JsonApiResource|JsonApiResourceCollection|UnknownRelationship $resource
                  */
-                fn ($resource) => $resource instanceof PotentiallyMissing && $resource->isMissing()
+                fn ($resource): bool => $resource instanceof PotentiallyMissing && $resource->isMissing()
             ));
-    }
-
-    /**
-     * @internal
-     * @infection-ignore-all
-     */
-    public function flush(): void
-    {
-        if ($this->requestedRelationshipsCache !== null) {
-            $this->requestedRelationshipsCache->each(
-                /**
-                 * @param JsonApiResource|JsonApiResourceCollection|UnknownRelationship $resource
-                 */
-                function ($resource): void {
-                    $resource->flush();
-                }
-            );
-        }
-
-        $this->requestedRelationshipsCache = null;
-
-        $this->idCache = null;
-
-        $this->typeCache = null;
-    }
-
-    /**
-     * @internal
-     * @infection-ignore-all
-     */
-    private function rememberRequestRelationships(Closure $closure): Collection
-    {
-        return $this->requestedRelationshipsCache ??= $closure();
-    }
-
-    /**
-     * @internal
-     */
-    public function requestedRelationshipsCache(): ?Collection
-    {
-        return $this->requestedRelationshipsCache;
     }
 
     /**

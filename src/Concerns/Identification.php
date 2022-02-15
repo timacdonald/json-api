@@ -28,16 +28,6 @@ trait Identification
     /**
      * @internal
      */
-    private ?string $idCache = null;
-
-    /**
-     * @internal
-     */
-    private ?string $typeCache = null;
-
-    /**
-     * @internal
-     */
     public static function resolveIdNormally(): void
     {
         self::$idResolver = null;
@@ -54,22 +44,9 @@ trait Identification
     /**
      * @internal
      */
-    public function toResourceIdentifier(Request $request): array
-    {
-        return [
-            'data' => [
-                'id' => $this->resolveId($request),
-                'type' => $this->resolveType($request),
-            ],
-        ];
-    }
-
-    /**
-     * @internal
-     */
     public function toUniqueResourceIdentifier(Request $request): string
     {
-        return "type:{$this->resolveType($request)} id:{$this->resolveId($request)}";
+        return "type:{$this->resolveType($request)};id:{$this->resolveId($request)};";
     }
 
     /**
@@ -90,24 +67,6 @@ trait Identification
 
     /**
      * @internal
-     * @infection-ignore-all
-     */
-    private function rememberType(Closure $closure): string
-    {
-        return $this->typeCache ??= $closure();
-    }
-
-    /**
-     * @internal
-     * @infection-ignore-all
-     */
-    private function rememberId(Closure $closure): string
-    {
-        return $this->idCache ??= $closure();
-    }
-
-    /**
-     * @internal
      */
     private static function idResolver(): Closure
     {
@@ -116,6 +75,10 @@ trait Identification
                 throw ResourceIdentificationException::attemptingToDetermineIdFor($resource);
             }
 
+            /**
+             * @see https://github.com/timacdonald/json-api#customising-the-resource-id
+             * @phpstan-ignore-next-line
+             */
             return (string) $resource->getKey();
         };
     }

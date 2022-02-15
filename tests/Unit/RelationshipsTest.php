@@ -64,6 +64,10 @@ class RelationshipsTest extends TestCase
                 'meta' => [],
             ],
             'included' => [],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
+            ],
         ]);
     }
 
@@ -96,10 +100,17 @@ class RelationshipsTest extends TestCase
                         'data' => [
                             'id' => 'author-id',
                             'type' => 'basicModels',
+                            'meta' => [],
                         ],
+                        'links' => [],
+                        'meta' => [],
                     ],
                 ],
                 'links' => [],
+                'meta' => [],
+            ],
+            'jsonapi' => [
+                'version' => '1.0',
                 'meta' => [],
             ],
             'included' => [
@@ -158,16 +169,26 @@ class RelationshipsTest extends TestCase
                         'data' => [
                             'id' => 'author-id',
                             'type' => 'basicModels',
+                            'meta' => [],
                         ],
+                        'links' => [],
+                        'meta' => [],
                     ],
                     'featureImage' => [
                         'data' => [
                             'id' => 'feature-image-id',
                             'type' => 'basicModels',
+                            'meta' => [],
                         ],
+                        'links' => [],
+                        'meta' => [],
                     ],
                 ],
                 'links' => [],
+                'meta' => [],
+            ],
+            'jsonapi' => [
+                'version' => '1.0',
                 'meta' => [],
             ],
             'included' => [
@@ -182,13 +203,19 @@ class RelationshipsTest extends TestCase
                             'data' => [
                                 'id' => 'avatar-id',
                                 'type' => 'basicModels',
+                                'meta' => [],
                             ],
+                            'links' => [],
+                            'meta' => [],
                         ],
                         'license' => [
                             'data' => [
                                 'id' => 'license-id',
                                 'type' => 'basicModels',
+                                'meta' => [],
                             ],
+                            'links' => [],
+                            'meta' => [],
                         ],
                     ],
                     'links' => [],
@@ -266,10 +293,17 @@ class RelationshipsTest extends TestCase
                         'data' => [
                             'id' => 'child-id-1',
                             'type' => 'basicModels',
+                            'meta' => [],
                         ],
+                        'links' => [],
+                        'meta' => [],
                     ],
                 ],
                 'links' => [],
+                'meta' => [],
+            ],
+            'jsonapi' => [
+                'version' => '1.0',
                 'meta' => [],
             ],
             'included' => [
@@ -282,7 +316,10 @@ class RelationshipsTest extends TestCase
                             'data' => [
                                 'id' => 'child-id-2',
                                 'type' => 'basicModels',
+                                'meta' => [],
                             ],
+                            'links' => [],
+                            'meta' => [],
                         ],
                     ],
                     'links' => [],
@@ -339,11 +376,18 @@ class RelationshipsTest extends TestCase
                         'data' => [
                             'id' => 'child-id-1',
                             'type' => 'basicModels',
+                            'meta' => [],
                         ],
+                        'links' => [],
+                        'meta' => [],
                     ],
                 ],
                 'meta' => [],
                 'links' => [],
+            ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
             ],
             'included' => [
                 [
@@ -356,13 +400,19 @@ class RelationshipsTest extends TestCase
                                 'data' => [
                                     'id' => 'child-id-2',
                                     'type' => 'basicModels',
+                                    'meta' => [],
                                 ],
+                                'links' => [],
+                                'meta' => [],
                             ],
                             [
                                 'data' => [
                                     'id' => 'child-id-3',
                                     'type' => 'basicModels',
+                                    'meta' => [],
                                 ],
+                                'links' => [],
+                                'meta' => [],
                             ],
                         ],
                     ],
@@ -428,7 +478,10 @@ class RelationshipsTest extends TestCase
                             'data' => [
                                 'id' => 'author-id-1',
                                 'type' => 'basicModels',
+                                'meta' => [],
                             ],
+                            'links' => [],
+                            'meta' => [],
                         ],
                     ],
                     'meta' => [],
@@ -446,12 +499,19 @@ class RelationshipsTest extends TestCase
                             'data' => [
                                 'id' => 'author-id-2',
                                 'type' => 'basicModels',
+                                'meta' => [],
                             ],
+                            'links' => [],
+                            'meta' => [],
                         ],
                     ],
                     'meta' => [],
                     'links' => [],
                 ],
+            ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
             ],
             'included' => [
                 [
@@ -514,18 +574,28 @@ class RelationshipsTest extends TestCase
                             'data' => [
                                 'id' => 'post-id-1',
                                 'type' => 'basicModels',
+                                'meta' => [],
                             ],
+                            'links' => [],
+                            'meta' => [],
                         ],
                         [
                             'data' => [
                                 'id' => 'post-id-2',
                                 'type' => 'basicModels',
+                                'meta' => [],
                             ],
+                            'links' => [],
+                            'meta' => [],
                         ],
                     ],
                 ],
                 'meta' => [],
                 'links' => [],
+            ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
             ],
             'included' => [
                 [
@@ -634,13 +704,19 @@ class RelationshipsTest extends TestCase
                                 'data' => [
                                     'id' => 'comment-id-1',
                                     'type' => 'basicModels',
+                                    'meta' => [],
                                 ],
+                                'links' => [],
+                                'meta' => [],
                             ],
                             [
                                 'data' => [
                                     'id' => 'comment-id-2',
                                     'type' => 'basicModels',
+                                    'meta' => [],
                                 ],
+                                'links' => [],
+                                'meta' => [],
                             ],
                         ],
                     ],
@@ -660,19 +736,29 @@ class RelationshipsTest extends TestCase
                                 'data' => [
                                     'id' => 'comment-id-3',
                                     'type' => 'basicModels',
+                                    'meta' => [],
                                 ],
+                                'links' => [],
+                                'meta' => [],
                             ],
                             [
                                 'data' => [
                                     'id' => 'comment-id-4',
                                     'type' => 'basicModels',
+                                    'meta' => [],
                                 ],
+                                'links' => [],
+                                'meta' => [],
                             ],
                         ],
                     ],
                     'meta' => [],
                     'links' => [],
                 ],
+            ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
             ],
             'included' => [
                 [
@@ -687,13 +773,19 @@ class RelationshipsTest extends TestCase
                                 'data' => [
                                     'id' => 'like-id-1',
                                     'type' => 'basicModels',
+                                    'meta' => [],
                                 ],
+                                'links' => [],
+                                'meta' => [],
                             ],
                             [
                                 'data' => [
                                     'id' => 'like-id-2',
                                     'type' => 'basicModels',
+                                    'meta' => [],
                                 ],
+                                'links' => [],
+                                'meta' => [],
                             ],
                         ],
                     ],
@@ -712,13 +804,19 @@ class RelationshipsTest extends TestCase
                                 'data' => [
                                     'id' => 'like-id-3',
                                     'type' => 'basicModels',
+                                    'meta' => [],
                                 ],
+                                'links' => [],
+                                'meta' => [],
                             ],
                             [
                                 'data' => [
                                     'id' => 'like-id-4',
                                     'type' => 'basicModels',
+                                    'meta' => [],
                                 ],
+                                'links' => [],
+                                'meta' => [],
                             ],
                         ],
                     ],
@@ -769,13 +867,19 @@ class RelationshipsTest extends TestCase
                                 'data' => [
                                     'id' => 'like-id-5',
                                     'type' => 'basicModels',
+                                    'meta' => [],
                                 ],
+                                'links' => [],
+                                'meta' => [],
                             ],
                             [
                                 'data' => [
                                     'id' => 'like-id-6',
                                     'type' => 'basicModels',
+                                    'meta' => [],
                                 ],
+                                'links' => [],
+                                'meta' => [],
                             ],
                         ],
                     ],
@@ -794,13 +898,19 @@ class RelationshipsTest extends TestCase
                                 'data' => [
                                     'id' => 'like-id-7',
                                     'type' => 'basicModels',
+                                    'meta' => [],
                                 ],
+                                'links' => [],
+                                'meta' => [],
                             ],
                             [
                                 'data' => [
                                     'id' => 'like-id-8',
                                     'type' => 'basicModels',
+                                    'meta' => [],
                                 ],
+                                'links' => [],
+                                'meta' => [],
                             ],
                         ],
                     ],
@@ -889,11 +999,18 @@ class RelationshipsTest extends TestCase
                         'data' => [
                             'id' => 'relation-id',
                             'type' => 'relation-type',
+                            'meta' => [],
                         ],
+                        'links' => [],
+                        'meta' => [],
                     ],
                 ],
                 'meta' => [],
                 'links' => [],
+            ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
             ],
             'included' => [
                 [
@@ -946,7 +1063,10 @@ class RelationshipsTest extends TestCase
                             'data' => [
                                 'id' => 'avatar-id',
                                 'type' => 'basicModels',
+                                'meta' => [],
                             ],
+                            'links' => [],
+                            'meta' => [],
                         ],
                     ],
                     'meta' => [],
@@ -963,12 +1083,19 @@ class RelationshipsTest extends TestCase
                             'data' => [
                                 'id' => 'avatar-id',
                                 'type' => 'basicModels',
+                                'meta' => [],
                             ],
+                            'links' => [],
+                            'meta' => [],
                         ],
                     ],
                     'meta' => [],
                     'links' => [],
                 ],
+            ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
             ],
             'included' => [
                 [
@@ -985,7 +1112,7 @@ class RelationshipsTest extends TestCase
         ]);
     }
 
-    public function testItFiltersOutDuplicateIncludesForASingleResource(): void
+    public function testItFiltersOutDuplicateResourceObjectsIncludesForASingleResource(): void
     {
         $user = (new BasicModel([
             'id' => 'user-id',
@@ -1020,12 +1147,28 @@ class RelationshipsTest extends TestCase
                             'data' => [
                                 'id' => 'post-id',
                                 'type' => 'basicModels',
+                                'meta' => [],
                             ],
+                            'links' => [],
+                            'meta' => [],
+                        ],
+                        [
+                            'data' => [
+                                'id' => 'post-id',
+                                'type' => 'basicModels',
+                                'meta' => [],
+                            ],
+                            'links' => [],
+                            'meta' => [],
                         ],
                     ],
                 ],
                 'meta' => [],
                 'links' =>[],
+            ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
             ],
             'included' => [
                 [
@@ -1067,6 +1210,10 @@ class RelationshipsTest extends TestCase
                 'meta' => [],
                 'links' =>[],
             ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
+            ],
             'included' => [],
         ]);
     }
@@ -1097,6 +1244,10 @@ class RelationshipsTest extends TestCase
                     'links' => [],
                 ],
             ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
+            ],
             'included' => [],
         ]);
     }
@@ -1124,6 +1275,10 @@ class RelationshipsTest extends TestCase
                 'meta' => [],
                 'links' => [],
             ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
+            ],
             'included' => [],
         ]);
     }
@@ -1150,6 +1305,10 @@ class RelationshipsTest extends TestCase
                 ],
                 'meta' => [],
                 'links' => [],
+            ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
             ],
             'included' => [],
         ]);
@@ -1209,11 +1368,18 @@ class RelationshipsTest extends TestCase
                         'data' => [
                             'id' => '2',
                             'type' => 'basicModels',
+                            'meta' => [],
                         ],
+                        'links' => [],
+                        'meta' => [],
                     ],
                 ],
                 'meta' => [],
                 'links' => [],
+            ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
             ],
             'included' => [
                 [
@@ -1262,6 +1428,10 @@ class RelationshipsTest extends TestCase
                 'meta' => [],
                 'links' => [],
             ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
+            ],
             'included' => [],
         ]);
     }
@@ -1297,6 +1467,10 @@ class RelationshipsTest extends TestCase
                 ],
                 'meta' => [],
                 'links' => [],
+            ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
             ],
             'included' => [],
         ]);

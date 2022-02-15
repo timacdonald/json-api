@@ -8,6 +8,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use TiMacDonald\JsonApi\Contracts\Flushable;
 
 use function explode;
 use function is_array;
@@ -15,10 +16,13 @@ use function is_array;
 /**
  * @internal
  */
-class Includes
+final class Includes implements Flushable
 {
     private static ?Includes $instance;
 
+    /**
+     * @var array<string, Collection>
+     */
     private array $cache = [];
 
     private function __construct()
@@ -36,15 +40,15 @@ class Includes
         return $this->rememberIncludes($prefix, function () use ($request, $prefix): Collection {
             $includes = $request->query('include') ?? '';
 
-            if (is_array($includes)) {
-                abort(400, 'The include parameter must be a comma seperated list of relationship paths.');
-            }
+            abort_if(is_array($includes), 400, 'The include parameter must be a comma seperated list of relationship paths.');
 
-            return Collection::make(explode(',', $includes))
+            /** @var Collection */
+            $includes = Collection::make(explode(',', $includes))
                 ->when($prefix !== '', function (Collection $includes) use ($prefix): Collection {
                     return $includes->filter(fn (string $include): bool => Str::startsWith($include, $prefix));
-                })
-                ->map(fn (string $include): string => Str::before(Str::after($include, $prefix), '.'))
+                });
+
+            return $includes->map(fn ($include): string => Str::before(Str::after($include, $prefix), '.'))
                 ->uniqueStrict()
                 ->filter(fn (string $include): bool => $include !== '');
         });
@@ -63,6 +67,9 @@ class Includes
         $this->cache = [];
     }
 
+    /**
+     * @return array<string, Collection>
+     */
     public function cache(): array
     {
         return $this->cache;

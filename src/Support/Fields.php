@@ -6,6 +6,8 @@ namespace TiMacDonald\JsonApi\Support;
 
 use Closure;
 use Illuminate\Http\Request;
+use TiMacDonald\JsonApi\Contracts\Flushable;
+
 use function array_key_exists;
 use function explode;
 use function is_string;
@@ -13,10 +15,13 @@ use function is_string;
 /**
  * @internal
  */
-class Fields
+final class Fields implements Flushable
 {
     private static ?Fields $instance;
 
+    /**
+     * @var array<string, array<string>|null>
+     */
     private array $cache = [];
 
     private function __construct()
@@ -29,17 +34,20 @@ class Fields
         return self::$instance ??= new self();
     }
 
-    public function parse(Request $request, string $resourceType): ?array
+    /**
+     * @return array<string>
+     */
+    public function parse(Request $request, string $resourceType, bool $minimalAttributes): ?array
     {
-        return $this->rememberResourceType($resourceType, function () use ($request, $resourceType): ?array {
+        return $this->rememberResourceType("type:{$resourceType};minimal:{$minimalAttributes};", function () use ($request, $resourceType, $minimalAttributes): ?array {
             $typeFields = $request->query('fields') ?? [];
 
-            if (is_string($typeFields)) {
-                abort(400, 'The fields parameter must be an array of resource types.');
-            }
+            abort_if(is_string($typeFields), 400, 'The fields parameter must be an array of resource types.');
 
             if (! array_key_exists($resourceType, $typeFields)) {
-                return null;
+                return $minimalAttributes
+                    ? []
+                    : null;
             }
 
             $fields = $typeFields[$resourceType];
@@ -48,9 +56,7 @@ class Fields
                 return [];
             }
 
-            if (! is_string($fields)) {
-                abort(400, 'The fields parameter value must be a comma seperated list of attributes.');
-            }
+            abort_if(! is_string($fields), 400, 'The fields parameter value must be a comma seperated list of attributes.');
 
             return array_filter(explode(',', $fields), fn (string $value): bool => $value !== '');
         });
@@ -58,6 +64,7 @@ class Fields
 
     /**
      * @infection-ignore-all
+     * @return array<string>
      */
     private function rememberResourceType(string $resourceType, Closure $callback): ?array
     {
@@ -69,6 +76,9 @@ class Fields
         $this->cache = [];
     }
 
+    /**
+     * @return array<string, array<string>|null>
+     */
     public function cache(): array
     {
         return $this->cache;

@@ -34,7 +34,7 @@ for ($i = 0; $i < $numberOfResourcesReturned; $i++) {
 
 $start = microtime(true);
 foreach ($resources as $resource) {
-    Fields::getInstance()->parse($request, $resource);
+    Fields::getInstance()->parse($request, $resource, true);
 }
 $end = microtime(true);
 

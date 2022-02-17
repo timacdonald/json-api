@@ -16,15 +16,18 @@
         }
     ],
     "require": {
-        "php": "^7.4 | ^8.0",
-        "laravel/framework": "^8.0 | ^9.0"
+        "php": "^7.4 || ^8.0",
+        "laravel/framework": "^8.0 || ^9.0"
     },
     "require-dev": {
         "bamarni/composer-bin-plugin": "^1.4"
     },
     "config": {
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "bamarni/composer-bin-plugin": true
+        }
     },
     "autoload": {
         "psr-4": {

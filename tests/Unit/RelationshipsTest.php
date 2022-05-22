@@ -570,24 +570,18 @@ class RelationshipsTest extends TestCase
                 ],
                 'relationships' => [
                     'posts' => [
-                        [
-                            'data' => [
+                        'data' => [
+                            [
                                 'id' => 'post-id-1',
                                 'type' => 'basicModels',
                                 'meta' => [],
                             ],
-                            'links' => [],
-                            'meta' => [],
-                        ],
-                        [
-                            'data' => [
+                            [
                                 'id' => 'post-id-2',
                                 'type' => 'basicModels',
                                 'meta' => [],
-                            ],
-                            'links' => [],
-                            'meta' => [],
-                        ],
+                            ]
+                        ]
                     ],
                 ],
                 'meta' => [],

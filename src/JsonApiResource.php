@@ -167,7 +167,8 @@ abstract class JsonApiResource extends JsonResource implements Flushable
     {
         return [
             'included' => $this->included($request)
-                ->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request)),
+                ->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request))
+                ->values(),
             'jsonapi' => self::serverImplementationResolver()($request),
         ];
     }

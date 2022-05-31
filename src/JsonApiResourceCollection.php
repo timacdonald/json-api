@@ -35,6 +35,13 @@ class JsonApiResourceCollection extends AnonymousResourceCollection implements F
         return tap(parent::toResponse($request)->header('Content-type', 'application/vnd.api+json'), fn () => Cache::flush($this));
     }
 
+    public function paginationInformation($request, $paginated, $default): array
+    {
+        $default['links'] = array_filter($default['links'], fn (?string $link) => $link !== null);
+
+        return $default;
+    }
+
     /**
      * @internal
      * @return JsonApiResourceCollection<JsonApiResource>

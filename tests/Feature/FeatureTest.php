@@ -33,6 +33,7 @@ class FeatureTest extends TestCase
 
         $response = $this->withoutExceptionHandling()->getJson('test-route');
 
+        $response->assertOk();
         $response->assertJson([
             'data' => [
                 [
@@ -61,7 +62,10 @@ class FeatureTest extends TestCase
                 'first' => 'http://localhost/test-route?page=1',
                 'last' => 'http://localhost/test-route?page=3',
                 'next' => 'http://localhost/test-route?page=2',
-                'prev' => null,
+                // This is invalid in JSON:API, so we exlcude any links that
+                // are `null`. These are still available in the "meta" key
+                // links.
+                // 'prev' => null,
             ],
             'meta' => [
                 'current_page' => 1,
@@ -73,5 +77,6 @@ class FeatureTest extends TestCase
                 'path' => 'http://localhost/test-route',
             ],
         ]);
+        $this->assertValidJsonApi($response);
     }
 }

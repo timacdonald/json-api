@@ -4,3 +4,4 @@ composer.lock
 vendor
 coverage
 .php_cs.cache
+schema.json

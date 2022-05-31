@@ -34,7 +34,7 @@ class FeatureTest extends TestCase
         $response = $this->withoutExceptionHandling()->getJson('test-route');
 
         $response->assertOk();
-        $response->assertJson([
+        $response->assertExactJson([
             'data' => [
                 [
                     'id' => '1',
@@ -76,6 +76,10 @@ class FeatureTest extends TestCase
                 'total' => 5,
                 'path' => 'http://localhost/test-route',
             ],
+            'jsonapi' => [
+                'meta' => [],
+                'version' => '1.0',
+            ]
         ]);
         $this->assertValidJsonApi($response);
     }

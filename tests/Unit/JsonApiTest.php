@@ -49,6 +49,7 @@ class JsonApiTest extends TestCase
                 'meta' => [],
             ],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItCanReturnACollection(): void
@@ -97,6 +98,7 @@ class JsonApiTest extends TestCase
                 'meta' => [],
             ],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItCastsEmptyAttributesAndRelationshipsToAnObject(): void
@@ -106,6 +108,7 @@ class JsonApiTest extends TestCase
         $response = $this->getJson('test-route?fields[basicModels]=');
 
         self::assertStringContainsString('"attributes":{},"relationships":{},"meta":{},"links":{}', $response->content());
+        $this->assertValidJsonApi($response);
     }
 
     public function testItAddsMetaToIndividualResources(): void
@@ -139,6 +142,7 @@ class JsonApiTest extends TestCase
                 'meta' => [],
             ],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItAddsArbitraryLinksToIndividualResources(): void
@@ -175,6 +179,7 @@ class JsonApiTest extends TestCase
                 'meta' => [],
             ],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItHandlesSelfAndRelatedLinks(): void
@@ -221,6 +226,7 @@ class JsonApiTest extends TestCase
                 'meta' => [],
             ],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItSetsTheContentTypeHeaderForASingleResource(): void
@@ -230,6 +236,7 @@ class JsonApiTest extends TestCase
         $response = $this->getJson('test-route');
 
         $response->assertHeader('Content-type', 'application/vnd.api+json');
+        $this->assertValidJsonApi($response);
     }
 
     public function testItSetsTheContentTypeHeaderForACollectionOfResources(): void
@@ -239,6 +246,7 @@ class JsonApiTest extends TestCase
         $response = $this->getJson('test-route');
 
         $response->assertHeader('Content-type', 'application/vnd.api+json');
+        $this->assertValidJsonApi($response);
     }
 
     public function testItCanCustomiseTheTypeResolution(): void
@@ -263,6 +271,7 @@ class JsonApiTest extends TestCase
                 'meta' => [],
             ],
         ]);
+        $this->assertValidJsonApi($response);
 
         JsonApiResource::resolveTypeNormally();
     }
@@ -289,6 +298,7 @@ class JsonApiTest extends TestCase
                 'meta' => [],
             ],
         ]);
+        $this->assertValidJsonApi($response);
 
         JsonApiResource::resolveIdNormally();
     }
@@ -314,6 +324,7 @@ class JsonApiTest extends TestCase
                 'meta' => [],
             ],
         ]);
+        $this->assertValidJsonApi($response);
         $this->assertCount(0, Fields::getInstance()->cache());
         $this->assertCount(0, Includes::getInstance()->cache());
     }
@@ -341,6 +352,7 @@ class JsonApiTest extends TestCase
                 'meta' => [],
             ],
         ]);
+        $this->assertValidJsonApi($response);
         $this->assertCount(0, Fields::getInstance()->cache());
         $this->assertCount(0, Includes::getInstance()->cache());
     }
@@ -405,6 +417,7 @@ class JsonApiTest extends TestCase
                 ],
             ],
         ]);
+        $this->assertValidJsonApi($response);
 
         BasicJsonApiResource::resolveServerImplementationNormally();
     }

@@ -52,6 +52,7 @@ class AttributesTest extends TestCase
             ],
             'included' => [],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItExcludesAttributesWhenUsingSparseFieldsets(): void
@@ -94,6 +95,7 @@ class AttributesTest extends TestCase
             ],
             'included' => [],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItExcludesAllAttributesWhenNoneExplicitlyRequested(): void
@@ -133,6 +135,7 @@ class AttributesTest extends TestCase
             ],
             'included' => [],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItResolvesClosureWrappedAttributes(): void
@@ -170,6 +173,7 @@ class AttributesTest extends TestCase
             ],
             'included' => [],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItDoesntResolveClosureWrappedAttributesWhenNotRequested(): void
@@ -206,6 +210,7 @@ class AttributesTest extends TestCase
             ],
             'included' => [],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
 
@@ -262,6 +267,7 @@ class AttributesTest extends TestCase
             ],
             'included' => [],
         ]);
+        $this->assertValidJsonApi($response);
 
         JsonApiResource::maximalAttributes();
     }
@@ -345,6 +351,7 @@ class AttributesTest extends TestCase
                 ],
             ],
         ]);
+        // $this->assertValidJsonApi($response);
     }
 
     public function testItRemovesPotentiallyMissingAttributes(): void
@@ -386,6 +393,7 @@ class AttributesTest extends TestCase
             ],
             'included' => [],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItCanIncludePotentiallyMissingValues(): void
@@ -429,5 +437,6 @@ class AttributesTest extends TestCase
             ],
             'included' => [],
         ]);
+        $this->assertValidJsonApi($response);
     }
 }

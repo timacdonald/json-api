@@ -69,6 +69,7 @@ class RelationshipsTest extends TestCase
                 'meta' => [],
             ],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItCanIncludeASingleToOneResourceForASingleResource(): void
@@ -126,6 +127,7 @@ class RelationshipsTest extends TestCase
                 ],
             ],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItCanIncludeNestedToOneResourcesForASingleResource(): void
@@ -253,6 +255,7 @@ class RelationshipsTest extends TestCase
                 ],
             ],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItCanIncludeNestedResourcesWhenTheirKeyIsTheSame(): void
@@ -335,6 +338,7 @@ class RelationshipsTest extends TestCase
                 ],
             ],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItCanIncludeANestedCollectionOfResourcesWhenTheirKeyIsTheSame(): void
@@ -437,6 +441,7 @@ class RelationshipsTest extends TestCase
                 ],
             ],
         ]);
+        // $this->assertValidJsonApi($response);
     }
 
     public function testItCanIncludeToOneResourcesForACollectionOfResources(): void
@@ -536,6 +541,7 @@ class RelationshipsTest extends TestCase
                 ],
             ],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItCanIncludeACollectionOfResourcesForASingleResource(): void
@@ -622,6 +628,7 @@ class RelationshipsTest extends TestCase
                 ],
             ],
         ]);
+        // $this->assertValidJsonApi($response);
     }
 
     public function testItCanIncludeAManyManyManyRelationship(): void
@@ -951,6 +958,7 @@ class RelationshipsTest extends TestCase
                 ],
             ],
         ]);
+        // $this->assertValidJsonApi($response);
     }
 
     public function testRelationshipsClosuresGetTheRequestAsAnArgument(): void
@@ -1025,6 +1033,7 @@ class RelationshipsTest extends TestCase
                 ],
             ],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItFiltersOutDuplicateIncludesForACollectionOfResources(): void
@@ -1110,6 +1119,7 @@ class RelationshipsTest extends TestCase
                 ],
             ],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItFiltersOutDuplicateResourceObjectsIncludesForASingleResource(): void
@@ -1184,6 +1194,7 @@ class RelationshipsTest extends TestCase
                 ],
             ],
         ]);
+        // $this->assertValidJsonApi($response);
     }
 
     public function testItHasIncludedArrayWhenIncludeParameterIsPresentForASingleResource(): void
@@ -1216,6 +1227,7 @@ class RelationshipsTest extends TestCase
             ],
             'included' => [],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItHasIncludedArrayWhenIncludeParameterIsPresentForACollectionOfResources(): void
@@ -1250,6 +1262,7 @@ class RelationshipsTest extends TestCase
             ],
             'included' => [],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItCanReturnNullForEmptyToOneRelationships(): void
@@ -1281,6 +1294,7 @@ class RelationshipsTest extends TestCase
             ],
             'included' => [],
         ]);
+        // $this->assertValidJsonApi($response);
     }
 
     public function testItCanReturnAnEmptyArrayForEmptyToManyRelationships(): void
@@ -1312,6 +1326,7 @@ class RelationshipsTest extends TestCase
             ],
             'included' => [],
         ]);
+        // $this->assertValidJsonApi($response);
     }
 
     public function testItFlushesTheRelationshipCache(): void
@@ -1323,6 +1338,7 @@ class RelationshipsTest extends TestCase
         $response = $this->get("test-route?include=posts");
 
         $response->assertOk();
+        // $this->assertValidJsonApi($response);
         $this->assertNull($resource->requestedRelationshipsCache());
     }
 
@@ -1396,6 +1412,7 @@ class RelationshipsTest extends TestCase
                 ],
             ],
         ]);
+        // $this->assertValidJsonApi($response);
     }
 
     public function testItRemovesPotentiallyMissingRelationships(): void
@@ -1434,6 +1451,7 @@ class RelationshipsTest extends TestCase
             ],
             'included' => [],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItShowsPotentiallyMissingRelationships(): void
@@ -1474,5 +1492,6 @@ class RelationshipsTest extends TestCase
             ],
             'included' => [],
         ]);
+        // $this->assertValidJsonApi($response);
     }
 }

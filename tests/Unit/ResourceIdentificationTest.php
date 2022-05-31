@@ -39,6 +39,7 @@ class ResourceIdentificationTest extends TestCase
             ],
             'included' => [],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItCastsAModelsIntegerIdToAString(): void
@@ -68,6 +69,7 @@ class ResourceIdentificationTest extends TestCase
             ],
             'included' => [],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItThrowsWhenUnableToAutomaticallyResolveTheIdOfANonObject(): void

@@ -213,7 +213,6 @@ class AttributesTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-
     public function testItThrowsWhenFieldsParameterIsNotAnArray(): void
     {
         $user = (new BasicModel(['id' => 'expected-id']));

@@ -31,13 +31,18 @@ class TestCase extends BaseTestCase
         Fields::getInstance()->flush();
     }
 
-    protected function assertValidJsonApi(TestResponse $response)
+    protected function assertValidJsonApiString(string $string)
     {
-        $data = json_decode(json: $response->content(), flags: JSON_THROW_ON_ERROR);
+        $data = json_decode(json: $string, flags: JSON_THROW_ON_ERROR);
 
         $result = $this->jsonApiValidator()->validate($data, self::JSON_API_SCHEMA_URL);
 
         $this->assertTrue($result->isValid());
+    }
+
+    protected function assertValidJsonApi(TestResponse $response)
+    {
+        $this->assertValidJsonApiString($response->content());
     }
 
     private function jsonApiValidator(): Validator

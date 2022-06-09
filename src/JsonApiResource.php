@@ -138,9 +138,12 @@ abstract class JsonApiResource extends JsonResource implements Flushable
      */
     public function toResourceLink(Request $request): RelationshipLink
     {
-        return new RelationshipLink(
-            new ResourceIdentifier($this->resolveId($request), $this->resolveType($request))
-        );
+        return new RelationshipLink($this->toResourceIdentifier($request));
+    }
+
+    public function toResourceIdentifier(Request $request): ResourceIdentifier
+    {
+        return new ResourceIdentifier($this->resolveId($request), $this->resolveType($request));
     }
 
     /**

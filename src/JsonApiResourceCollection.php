@@ -65,9 +65,11 @@ class JsonApiResourceCollection extends AnonymousResourceCollection implements F
     /**
      * @internal
      */
-    public function toResourceLink(Request $request): Collection
+    public function toResourceLink(Request $request): RelationshipCollectionLink
     {
-        return $this->collection->map(fn (JsonApiResource $resource): RelationshipLink => $resource->toResourceLink($request));
+        $resourceLinks = $this->collection->map(fn (JsonApiResource $resource): ResourceIdentifier => $resource->toResourceIdentifier($request));
+
+        return new RelationshipCollectionLink($resourceLinks->all());
     }
 
     /**

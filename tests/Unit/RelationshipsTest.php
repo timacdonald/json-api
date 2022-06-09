@@ -400,24 +400,20 @@ class RelationshipsTest extends TestCase
                     'attributes' => [],
                     'relationships' => [
                         'child' => [
-                            [
-                                'data' => [
+                            'data' => [
+                                [
                                     'id' => 'child-id-2',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
-                            ],
-                            [
-                                'data' => [
+                                [
                                     'id' => 'child-id-3',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
                             ],
+                            'links' => [],
+                            'meta' => [],
                         ],
                     ],
                     'meta' => [],
@@ -441,7 +437,7 @@ class RelationshipsTest extends TestCase
                 ],
             ],
         ]);
-        // $this->assertValidJsonApi($response);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItCanIncludeToOneResourcesForACollectionOfResources(): void
@@ -587,7 +583,9 @@ class RelationshipsTest extends TestCase
                                 'type' => 'basicModels',
                                 'meta' => [],
                             ]
-                        ]
+                        ],
+                        'links' => [],
+                        'meta' => []
                     ],
                 ],
                 'meta' => [],
@@ -622,7 +620,7 @@ class RelationshipsTest extends TestCase
                 ],
             ],
         ]);
-        // $this->assertValidJsonApi($response);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItCanIncludeAManyManyManyRelationship(): void
@@ -701,24 +699,20 @@ class RelationshipsTest extends TestCase
                     ],
                     'relationships' => [
                         'comments' => [
-                            [
-                                'data' => [
+                            'data' => [
+                                [
                                     'id' => 'comment-id-1',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
-                            ],
-                            [
-                                'data' => [
+                                [
                                     'id' => 'comment-id-2',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
                             ],
+                            'links' => [],
+                            'meta' => [],
                         ],
                     ],
                     'meta' => [],
@@ -733,24 +727,20 @@ class RelationshipsTest extends TestCase
                     ],
                     'relationships' => [
                         'comments' => [
-                            [
-                                'data' => [
+                            'data' => [
+                                [
                                     'id' => 'comment-id-3',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
-                            ],
-                            [
-                                'data' => [
+                                [
                                     'id' => 'comment-id-4',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
                             ],
+                            'links' => [],
+                            'meta' => [],
                         ],
                     ],
                     'meta' => [],
@@ -770,24 +760,20 @@ class RelationshipsTest extends TestCase
                     ],
                     'relationships' => [
                         'likes' => [
-                            [
-                                'data' => [
+                            'data' => [
+                                [
                                     'id' => 'like-id-1',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
-                            ],
-                            [
-                                'data' => [
+                                [
                                     'id' => 'like-id-2',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
                             ],
+                            'links' => [],
+                            'meta' => [],
                         ],
                     ],
                     'meta' => [],
@@ -801,24 +787,20 @@ class RelationshipsTest extends TestCase
                     ],
                     'relationships' => [
                         'likes' => [
-                            [
-                                'data' => [
+                            'data' => [
+                                [
                                     'id' => 'like-id-3',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
-                            ],
-                            [
-                                'data' => [
+                                [
                                     'id' => 'like-id-4',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
                             ],
+                            'links' => [],
+                            'meta' => [],
                         ],
                     ],
                     'meta' => [],
@@ -864,24 +846,20 @@ class RelationshipsTest extends TestCase
                     ],
                     'relationships' => [
                         'likes' => [
-                            [
-                                'data' => [
+                            'data' => [
+                                [
                                     'id' => 'like-id-5',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
-                            ],
-                            [
-                                'data' => [
+                                [
                                     'id' => 'like-id-6',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
                             ],
+                            'links' => [],
+                            'meta' => [],
                         ],
                     ],
                     'links' => [],
@@ -895,24 +873,20 @@ class RelationshipsTest extends TestCase
                     ],
                     'relationships' => [
                         'likes' => [
-                            [
-                                'data' => [
+                            'data' => [
+                                [
                                     'id' => 'like-id-7',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
-                            ],
-                            [
-                                'data' => [
+                                [
                                     'id' => 'like-id-8',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
                             ],
+                            'links' => [],
+                            'meta' => [],
                         ],
                     ],
                     'links' => [],
@@ -952,7 +926,7 @@ class RelationshipsTest extends TestCase
                 ],
             ],
         ]);
-        // $this->assertValidJsonApi($response);
+        $this->assertValidJsonApi($response);
     }
 
     public function testRelationshipsClosuresGetTheRequestAsAnArgument(): void
@@ -1147,24 +1121,15 @@ class RelationshipsTest extends TestCase
                 ],
                 'relationships' => [
                     'posts' => [
-                        [
-                            'data' => [
+                        'data' => [
+                            [
                                 'id' => 'post-id',
                                 'type' => 'basicModels',
                                 'meta' => [],
                             ],
-                            'links' => [],
-                            'meta' => [],
                         ],
-                        [
-                            'data' => [
-                                'id' => 'post-id',
-                                'type' => 'basicModels',
-                                'meta' => [],
-                            ],
-                            'links' => [],
-                            'meta' => [],
-                        ],
+                        'links' => [],
+                        'meta' => [],
                     ],
                 ],
                 'meta' => [],
@@ -1188,7 +1153,7 @@ class RelationshipsTest extends TestCase
                 ],
             ],
         ]);
-        // $this->assertValidJsonApi($response);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItHasIncludedArrayWhenIncludeParameterIsPresentForASingleResource(): void
@@ -1277,7 +1242,11 @@ class RelationshipsTest extends TestCase
                     'name' => 'user-name',
                 ],
                 'relationships' => [
-                    'avatar' => null,
+                    'avatar' => [
+                        'data' => null,
+                        'links' => [],
+                        'meta' => [],
+                    ],
                 ],
                 'meta' => [],
                 'links' => [],
@@ -1288,7 +1257,7 @@ class RelationshipsTest extends TestCase
             ],
             'included' => [],
         ]);
-        // $this->assertValidJsonApi($response);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItCanReturnAnEmptyArrayForEmptyToManyRelationships(): void
@@ -1309,7 +1278,11 @@ class RelationshipsTest extends TestCase
                     'name' => 'user-name',
                 ],
                 'relationships' => [
-                    'posts' => [],
+                    'posts' => [
+                        "data" => [],
+                        "links" => [],
+                        "meta" => [],
+                    ],
                 ],
                 'meta' => [],
                 'links' => [],
@@ -1320,7 +1293,7 @@ class RelationshipsTest extends TestCase
             ],
             'included' => [],
         ]);
-        // $this->assertValidJsonApi($response);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItFlushesTheRelationshipCache(): void
@@ -1332,7 +1305,7 @@ class RelationshipsTest extends TestCase
         $response = $this->get("test-route?include=posts");
 
         $response->assertOk();
-        // $this->assertValidJsonApi($response);
+        $this->assertValidJsonApi($response);
         $this->assertNull($resource->requestedRelationshipsCache());
     }
 
@@ -1406,7 +1379,7 @@ class RelationshipsTest extends TestCase
                 ],
             ],
         ]);
-        // $this->assertValidJsonApi($response);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItRemovesPotentiallyMissingRelationships(): void
@@ -1486,6 +1459,6 @@ class RelationshipsTest extends TestCase
             ],
             'included' => [],
         ]);
-        // $this->assertValidJsonApi($response);
+        $this->assertValidJsonApi($response);
     }
 }

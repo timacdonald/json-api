@@ -297,27 +297,23 @@ class AttributesTest extends TestCase
             'data' => [
                 'id' => 'user-id',
                 'type' => 'basicModels',
-                'attributes' => [],
+                'attributes' =>  [],
                 'relationships' => [
                     'posts' => [
-                        [
-                            'data' => [
+                        'data' => [
+                            [
                                 'id' => 'post-id-1',
                                 'type' => 'basicModels',
                                 'meta' => [],
                             ],
-                            'links' => [],
-                            'meta' => [],
-                        ],
-                        [
-                            'data' => [
+                            [
                                 'id' => 'post-id-2',
                                 'type' => 'basicModels',
                                 'meta' => [],
                             ],
-                            'links' => [],
-                            'meta' => [],
                         ],
+                        'links' => [],
+                        'meta' => [],
                     ],
                 ],
                 'meta' => [],
@@ -350,7 +346,7 @@ class AttributesTest extends TestCase
                 ],
             ],
         ]);
-        // $this->assertValidJsonApi($response);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItRemovesPotentiallyMissingAttributes(): void

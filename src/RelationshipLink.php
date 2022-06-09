@@ -9,7 +9,7 @@ use stdClass;
 
 final class RelationshipLink implements JsonSerializable
 {
-    private ResourceIdentifier $data;
+    private ?ResourceIdentifier $data;
 
     /**
      * @var array<string|int, string|Link>
@@ -25,7 +25,7 @@ final class RelationshipLink implements JsonSerializable
      * @param array<string|int, string|Link> $links
      * @param array<string, mixed> $meta
      */
-    public function __construct(ResourceIdentifier $data, array $links = [], array $meta = [])
+    public function __construct(?ResourceIdentifier $data, array $links = [], array $meta = [])
     {
         $this->data = $data;
 
@@ -35,7 +35,7 @@ final class RelationshipLink implements JsonSerializable
     }
 
     /**
-     * @return array{data: ResourceIdentifier, meta: stdClass, links: stdClass}
+     * @return array{data: ?ResourceIdentifier, meta: stdClass, links: stdClass}
      */
     public function jsonSerialize(): array
     {

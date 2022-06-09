@@ -11,6 +11,7 @@ use Illuminate\Support\Collection;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
 use TiMacDonald\JsonApi\Support\Includes;
+use TiMacDonald\JsonApi\Support\NullRelationship;
 use TiMacDonald\JsonApi\Support\UnknownRelationship;
 
 /**
@@ -100,6 +101,10 @@ trait Relationships
 
                     if ($resource instanceof JsonApiResource || $resource instanceof JsonApiResourceCollection) {
                         return $resource->withIncludePrefix($prefix);
+                    }
+
+                    if ($resource === null) {
+                        return new NullRelationship();
                     }
 
                     return new UnknownRelationship($resource);

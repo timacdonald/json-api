@@ -8,11 +8,12 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;
+use RuntimeException;
+use TiMacDonald\JsonApi\Contracts\AdHocJsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
 use TiMacDonald\JsonApi\Support\Includes;
 use TiMacDonald\JsonApi\Support\NullRelationship;
-use TiMacDonald\JsonApi\Support\UnknownRelationship;
 
 /**
  * @internal
@@ -40,8 +41,8 @@ trait Relationships
         return $this->requestedRelationships($request)
             ->map(
                 /**
-                 * @param JsonApiResource|JsonApiResourceCollection|UnknownRelationship $include
-                 * @return Collection|JsonApiResource|UnknownRelationship
+                 * @param JsonApiResource|JsonApiResourceCollection $include
+                 * @return Collection|JsonApiResource
                  */
                 fn ($include) => $include->includable()
             )
@@ -49,7 +50,7 @@ trait Relationships
             ->flatten()
             ->filter(
                 /**
-                 * @param JsonApiResource|UnknownRelationship $resource
+                 * @param JsonApiResource $resource
                  */
                 fn ($resource): bool => $resource->shouldBePresentInIncludes()
             )
@@ -64,7 +65,7 @@ trait Relationships
         return $this->requestedRelationships($request)
             ->flatMap(
                 /**
-                 * @param JsonApiResource|JsonApiResourceCollection|UnknownRelationship $resource
+                 * @param JsonApiResource|JsonApiResourceCollection $resource
                  */
                 fn ($resource, string $key): Collection => $resource->included($request)
             );
@@ -78,7 +79,7 @@ trait Relationships
         return $this->requestedRelationships($request)
             ->map(
                 /**
-                 * @param JsonApiResource|JsonApiResourceCollection|UnknownRelationship $resource
+                 * @param JsonApiResource|JsonApiResourceCollection $resource
                  * @return mixed
                  */
                 fn ($resource) => $resource->toResourceLink($request)
@@ -94,10 +95,14 @@ trait Relationships
             ->only(Includes::getInstance()->parse($request, $this->includePrefix))
             ->map(
                 /**
-                 * @return JsonApiResource|JsonApiResourceCollection|UnknownRelationship
+                 * @return JsonApiResource|JsonApiResourceCollection|null
                  */
                 function (Closure $value, string $prefix) {
                     $resource = $value();
+
+                    if ($resource instanceof PotentiallyMissing && $resource->isMissing()) {
+                        return null;
+                    }
 
                     if ($resource instanceof JsonApiResource || $resource instanceof JsonApiResourceCollection) {
                         return $resource->withIncludePrefix($prefix);
@@ -107,13 +112,13 @@ trait Relationships
                         return new NullRelationship();
                     }
 
-                    return new UnknownRelationship($resource);
+                    throw new RuntimeException('Unknown relationship found. Your relationships must extend the JsonApiResource class.');
                 }
             )->reject(
                 /**
-                 * @param JsonApiResource|JsonApiResourceCollection|UnknownRelationship $resource
+                 * @param JsonApiResource|JsonApiResourceCollection|null $resource
                  */
-                fn ($resource): bool => $resource instanceof PotentiallyMissing && $resource->isMissing()
+                fn ($resource): bool => $resource === null
             ));
     }
 

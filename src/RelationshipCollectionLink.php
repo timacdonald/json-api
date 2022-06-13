@@ -25,6 +25,7 @@ final class RelationshipCollectionLink implements JsonSerializable
     private array $meta;
 
     /**
+     * @param array<ResourceIdentifier> $data
      * @param array<string|int, string|Link> $links
      * @param array<string, mixed> $meta
      */
@@ -38,7 +39,7 @@ final class RelationshipCollectionLink implements JsonSerializable
     }
 
     /**
-     * @return array{data: ResourceIdentifier, meta: stdClass, links: stdClass}
+     * @return array{data: array<ResourceIdentifier>, meta: stdClass, links: stdClass}
      */
     public function jsonSerialize(): array
     {

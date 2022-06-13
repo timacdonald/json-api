@@ -8,7 +8,6 @@ use Closure;
 use Illuminate\Support\Collection;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
-use TiMacDonald\JsonApi\Support\UnknownRelationship;
 
 trait Caching
 {
@@ -40,7 +39,7 @@ trait Caching
         if ($this->requestedRelationshipsCache !== null) {
             $this->requestedRelationshipsCache->each(
                 /**
-                 * @param JsonApiResource|JsonApiResourceCollection|UnknownRelationship $resource
+                 * @param JsonApiResource|JsonApiResourceCollection $resource
                  */
                 fn ($resource) => $resource->flush()
             );

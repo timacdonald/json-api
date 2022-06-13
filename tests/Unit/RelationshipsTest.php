@@ -8,12 +8,16 @@ use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use JsonSerializable;
 use Tests\Models\BasicModel;
 use Tests\Resources\BasicJsonApiResource;
 use Tests\Resources\PostResource;
 use Tests\Resources\UserResource;
 use Tests\TestCase;
+use TiMacDonald\JsonApi\Contracts\AdHocJsonApiResource;
+use TiMacDonald\JsonApi\Contracts\Identifiable;
 use TiMacDonald\JsonApi\JsonApiResource;
+use TiMacDonald\JsonApi\ResourceIdentifier;
 
 class RelationshipsTest extends TestCase
 {
@@ -1309,79 +1313,6 @@ class RelationshipsTest extends TestCase
         $this->assertNull($resource->requestedRelationshipsCache());
     }
 
-    public function testItCanHaveANonJsonApiRelationship(): void
-    {
-        $user = (new BasicModel([
-            'id' => '1',
-            'name' => 'user-name',
-        ]));
-        $resource = new class ($user) extends UserResource {
-            public function toRelationships(Request $request): array
-            {
-                return [
-                    'relation' => fn () => ['hello' => 'world'],
-                    'nested_relation' => fn () => new class (new BasicModel(['id' => '2', 'name' => 'nested-user'])) extends UserResource {
-                        public function toRelationships(Request $request): array
-                        {
-                            return [
-                                'relation' => fn () => 123,
-                            ];
-                        }
-                    },
-                ];
-            }
-        };
-        Route::get('test-route', fn () => $resource);
-
-        $response = $this->get('test-route?include=relation,nested_relation.relation');
-
-        $response->assertOk();
-        $response->assertExactJson([
-            'data' => [
-                'id' => '1',
-                'type' => 'basicModels',
-                'attributes' => [
-                    'name' => 'user-name',
-                ],
-                'relationships' => [
-                    'relation' => [
-                        'hello' => 'world',
-                    ],
-                    'nested_relation' => [
-                        'data' => [
-                            'id' => '2',
-                            'type' => 'basicModels',
-                            'meta' => [],
-                        ],
-                        'links' => [],
-                        'meta' => [],
-                    ],
-                ],
-                'meta' => [],
-                'links' => [],
-            ],
-            'jsonapi' => [
-                'version' => '1.0',
-                'meta' => [],
-            ],
-            'included' => [
-                [
-                    'id' => '2',
-                    'type' => 'basicModels',
-                    'attributes' => [
-                        'name' => 'nested-user',
-                    ],
-                    'relationships' => [
-                        'relation' => 123,
-                    ],
-                    'meta' => [],
-                    'links' => [],
-                ],
-            ],
-        ]);
-        $this->assertValidJsonApi($response);
-    }
-
     public function testItRemovesPotentiallyMissingRelationships(): void
     {
         $user = new BasicModel([
@@ -1431,7 +1362,11 @@ class RelationshipsTest extends TestCase
             public function toRelationships(Request $request): array
             {
                 return [
-                    'relation' => fn () => $this->when(true, fn () => ['hello' => 'world']),
+                    'relation' => fn () => $this->when(true, fn () => new class(new BasicModel([
+                        'id' => '2',
+                        'name' => 'relation-name',
+                    ])) extends UserResource {
+                    }),
                 ];
             }
         };
@@ -1448,7 +1383,15 @@ class RelationshipsTest extends TestCase
                     'name' => 'user-name',
                 ],
                 'relationships' => [
-                    'relation' => ['hello' => 'world'],
+                    'relation' => [
+                        'data' => [
+                            'type' => 'basicModels',
+                            'id' => '2',
+                            'meta' => [],
+                        ],
+                        'links' => [],
+                        'meta' => [],
+                    ]
                 ],
                 'meta' => [],
                 'links' => [],
@@ -1457,7 +1400,18 @@ class RelationshipsTest extends TestCase
                 'version' => '1.0',
                 'meta' => [],
             ],
-            'included' => [],
+            'included' => [
+                [
+                    'id' => '2',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'name' => 'relation-name',
+                    ],
+                    'relationships' => [],
+                    'links' => [],
+                    'meta' => [],
+                ]
+            ],
         ]);
         $this->assertValidJsonApi($response);
     }

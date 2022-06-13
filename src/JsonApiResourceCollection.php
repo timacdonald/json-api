@@ -35,7 +35,12 @@ class JsonApiResourceCollection extends AnonymousResourceCollection implements F
         return tap(parent::toResponse($request)->header('Content-type', 'application/vnd.api+json'), fn () => Cache::flush($this));
     }
 
-    public function paginationInformation($request, $paginated, $default): array
+    /**
+     * @param array<array-key, mixed> $paginated
+     * @param array{ links: array<string, ?string> } $default
+     * @return array{ links: array<string, string> }
+     */
+    public function paginationInformation(Request $request, array $paginated, array $default): array
     {
         $default['links'] = array_filter($default['links'], fn (?string $link) => $link !== null);
 
@@ -49,7 +54,6 @@ class JsonApiResourceCollection extends AnonymousResourceCollection implements F
     public function withIncludePrefix(string $prefix): self
     {
         return tap($this, function (JsonApiResourceCollection $resource) use ($prefix): void {
-            /** @phpstan-ignore-next-line */
             $resource->collection->each(fn (JsonApiResource $resource): JsonApiResource => $resource->withIncludePrefix($prefix));
         });
     }

@@ -112,7 +112,7 @@ trait Relationships
                         return new NullRelationship();
                     }
 
-                    throw new RuntimeException('Unknown relationship found. Your relationships must extend the JsonApiResource class.');
+                    throw new RuntimeException('Unknown relationship found. Your relationships resources must extend the JsonApiResource class.');
                 }
             )->reject(
                 /**

@@ -37,8 +37,8 @@ class JsonApiResourceCollection extends AnonymousResourceCollection implements F
 
     /**
      * @param array<array-key, mixed> $paginated
-     * @param array{ links: array<string, ?string> } $default
-     * @return array{ links: array<string, string> }
+     * @param array{links: array<string, ?string>} $default
+     * @return array{links: array<string, string>}
      */
     public function paginationInformation(Request $request, array $paginated, array $default): array
     {

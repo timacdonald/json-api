@@ -13,7 +13,7 @@ use TiMacDonald\JsonApi\RelationshipLink;
 /**
  * @internal
  */
-final class NullRelationship implements PotentiallyMissing, Flushable
+final class NullRelationship implements Flushable
 {
     /**
      * @return mixed
@@ -40,11 +40,6 @@ final class NullRelationship implements PotentiallyMissing, Flushable
 
     public function flush(): void
     {
-        //
-    }
-
-    public function isMissing(): bool
-    {
-        return false;
+        // noop
     }
 }

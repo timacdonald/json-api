@@ -30,16 +30,6 @@ final class ResourceIdentifier implements JsonSerializable
         $this->meta = $meta;
     }
 
-    public function id(): string
-    {
-        return $this->id;
-    }
-
-    public function type(): string
-    {
-        return $this->type;
-    }
-
     /**
      * @return array{id: string, type: string, meta: stdClass}
      */

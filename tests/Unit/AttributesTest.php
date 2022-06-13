@@ -185,9 +185,7 @@ class AttributesTest extends TestCase
             protected function toAttributes(Request $request): array
             {
                 return [
-                    'location' => function () {
-                        throw new Exception('xxxx');
-                    },
+                    'location' => fn () => throw new Exception('xxxx'),
                 ];
             }
         });
@@ -241,7 +239,9 @@ class AttributesTest extends TestCase
 
     public function testItCanSpecifyMinimalAttributes(): void
     {
+        // TODO: should this accept a closure?
         JsonApiResource::minimalAttributes();
+
         $user = (new BasicModel([
             'id' => 'user-id',
             'name' => 'user-name',
@@ -269,6 +269,13 @@ class AttributesTest extends TestCase
         $this->assertValidJsonApi($response);
 
         JsonApiResource::maximalAttributes();
+    }
+
+    public function testItCanRequestAttributesWhenUsingMinimalAttributes()
+    {
+        // Test that when using minimal attributes, you can still request
+        // specific attributes and they are included in the payload.
+        $this->markTestSkipped('Not yet implemented.');
     }
 
     public function testItCanUseSparseFieldsetsWithIncludedCollections(): void
@@ -433,5 +440,13 @@ class AttributesTest extends TestCase
             'included' => [],
         ]);
         $this->assertValidJsonApi($response);
+    }
+
+    public function testPotentiallyMissingValuesAreRespectedOverSparseFieldsets()
+    {
+        // This test should ensure that potentially missing values that
+        // result in "not missing" are still excluded when requested in
+        // sparefieldsets.
+        $this->markTestSkipped('Not yet implemented.');
     }
 }

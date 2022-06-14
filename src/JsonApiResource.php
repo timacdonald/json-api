@@ -53,9 +53,19 @@ abstract class JsonApiResource extends JsonResource implements Flushable
     /**
      * @see https://github.com/timacdonald/json-api#minimal-resource-attributes
      */
-    public static function minimalAttributes(): void
+    public static function minimalAttributes(?Closure $callback = null): void
     {
         self::$minimalAttributes = true;
+
+        if ($callback === null) {
+            return;
+        }
+
+        try {
+            $callback();
+        } finally {
+            self::$minimalAttributes = false;
+        }
     }
 
     /**

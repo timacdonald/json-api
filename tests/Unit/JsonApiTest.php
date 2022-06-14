@@ -188,7 +188,9 @@ class JsonApiTest extends TestCase
             protected function toLinks(Request $request): array
             {
                 return [
-                    Link::self('https://example.test/self'),
+                    Link::self('https://example.test/self', [
+                        'some' => 'meta',
+                    ]),
                     Link::related('https://example.test/related'),
                     'home' => 'https://example.test',
                 ];
@@ -208,7 +210,9 @@ class JsonApiTest extends TestCase
                 'links' => [
                     'self' => [
                         'href' => 'https://example.test/self',
-                        'meta' => [],
+                        'meta' => [
+                            'some' => 'meta',
+                        ],
                     ],
                     'related' => [
                         'href' => 'https://example.test/related',
@@ -431,5 +435,59 @@ class JsonApiTest extends TestCase
         $json = json_encode($resourceLink);
 
         self::assertSame('{"data":{"id":"expected-id","type":"expected-type","meta":{}},"meta":{},"links":{}}', $json);
+    }
+
+    public function testItCanPopulateAllTheMetasForASingleInstance()
+    {
+        $this->markTestSkipped('Not yet implemented.');
+        $user = (new BasicModel([
+            'id' => 'user-id',
+            'name' => 'user-name',
+        ]));
+        Route::get('test-route', fn () => new class($user) extends JsonApiResource {
+            protected function toMeta(Request $request): array
+            {
+                return [
+                    'instance' => 'meta',
+                ];
+            }
+
+            protected function toRelationships(Request $request): array
+            {
+                return [
+                    'relation' => fn () => new class($this->resource) extends JsonApiResource {
+                        protected function toMeta(Request $request): array
+                        {
+                            return [
+                                'nested-instance' => 'meta',
+                            ];
+                        }
+                    },
+                ];
+            }
+        });
+
+        $response = $this->getJson('test-route?include=relation');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                'id' => 'user-id',
+                'type' => 'basicModels',
+                'attributes' => [],
+                'relationships' => [],
+                'meta' => [
+                    'instance' => 'meta',
+                ],
+                'links' => [],
+            ],
+            'included' => [],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
+            ],
+        ]);
+        $this->assertValidJsonApi($response);
+
     }
 }

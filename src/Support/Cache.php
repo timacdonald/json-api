@@ -11,10 +11,7 @@ use TiMacDonald\JsonApi\Contracts\Flushable;
  */
 final class Cache
 {
-    /**
-     * @param Flushable $resource
-     */
-    public static function flush($resource): void
+    public static function flush(Flushable $resource): void
     {
         $resource->flush();
 

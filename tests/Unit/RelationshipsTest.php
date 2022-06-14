@@ -45,9 +45,7 @@ class RelationshipsTest extends TestCase
             protected function toRelationships(Request $request): array
             {
                 return [
-                    'author' => function () {
-                        throw new Exception('xxxx');
-                    },
+                    'author' => fn () => throw new Exception('xxxx')
                 ];
             }
         });
@@ -958,7 +956,7 @@ class RelationshipsTest extends TestCase
                         protected function toAttributes(Request $request): array
                         {
                             return [
-                                'name' => $this->name,
+                                'name' => $this->resource->input('name'),
                             ];
                         }
                     },
@@ -1384,6 +1382,71 @@ class RelationshipsTest extends TestCase
                 ],
                 'relationships' => [
                     'relation' => [
+                        'data' => [
+                            'type' => 'basicModels',
+                            'id' => '2',
+                            'meta' => [],
+                        ],
+                        'links' => [],
+                        'meta' => [],
+                    ]
+                ],
+                'meta' => [],
+                'links' => [],
+            ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
+            ],
+            'included' => [
+                [
+                    'id' => '2',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'name' => 'relation-name',
+                    ],
+                    'relationships' => [],
+                    'links' => [],
+                    'meta' => [],
+                ]
+            ],
+        ]);
+        $this->assertValidJsonApi($response);
+    }
+
+    public function testPotentiallyMissingValuesAreRespectedOverSparseFieldsets()
+    {
+        $user = new BasicModel([
+            'id' => '1',
+            'name' => 'user-name',
+        ]);
+        $resource = new class ($user) extends UserResource {
+            public function toRelationships(Request $request): array
+            {
+                return [
+                    'relation_1' => fn () => $this->when(false, fn () => ['hello' => 'world']),
+                    'relation_2' => fn () => $this->when(true, fn () => new class(new BasicModel([
+                        'id' => '2',
+                        'name' => 'relation-name',
+                    ])) extends UserResource {
+                    }),
+                ];
+            }
+        };
+        Route::get('test-route', fn () => $resource);
+
+        $response = $this->get('test-route?include=relation_1,relation_2');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                'id' => '1',
+                'type' => 'basicModels',
+                'attributes' => [
+                    'name' => 'user-name',
+                ],
+                'relationships' => [
+                    'relation_2' => [
                         'data' => [
                             'type' => 'basicModels',
                             'id' => '2',

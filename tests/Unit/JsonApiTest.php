@@ -439,10 +439,14 @@ class JsonApiTest extends TestCase
 
     public function testItCanPopulateAllTheMetasForASingleInstance()
     {
-        $this->markTestSkipped('Not yet implemented.');
+        JsonApiResource::resolveServerImplementationUsing(fn () => (new JsonApiServerImplementation('1.0'))->withMeta([
+            'implementation' => 'meta'
+        ]));
         $user = (new BasicModel([
             'id' => 'user-id',
             'name' => 'user-name',
+        ]))->setRelation('avatar', new BasicModel([
+            'id' => 'avatar-id',
         ]));
         Route::get('test-route', fn () => new class($user) extends JsonApiResource {
             protected function toMeta(Request $request): array
@@ -452,14 +456,46 @@ class JsonApiTest extends TestCase
                 ];
             }
 
+            protected function toLinks(Request $request): array
+            {
+                return [
+                    Link::self('test.com')->withMeta(['test.com' => 'meta'])
+                ];
+            }
+
             protected function toRelationships(Request $request): array
             {
                 return [
-                    'relation' => fn () => new class($this->resource) extends JsonApiResource {
+                    'relation' => fn () => new class($this->resource->avatar) extends JsonApiResource {
+                        protected function toLinks(Request $request): array
+                        {
+                            return [
+                                Link::self('nested-relation-to-links')->withMeta([
+                                    'nested-relation-to-links' => 'meta',
+                                ])
+                            ];
+                        }
+
+                        public function toResourceIdentifier(Request $request): ResourceIdentifier
+                        {
+                            return parent::toResourceIdentifier($request)->withMeta([
+                                'nested-resource-identifier' => 'meta',
+                            ]);
+                        }
+                        public function toResourceLink(Request $request): RelationshipLink
+                        {
+                            return parent::toResourceLink($request)->withMeta([
+                                'nested-resource-link' => 'meta',
+                            ])->withLinks([
+                                Link::related('nested-resource.com')->withMeta([
+                                    'nested-resource.com' => 'meta'
+                                ]),
+                            ]);
+                        }
                         protected function toMeta(Request $request): array
                         {
                             return [
-                                'nested-instance' => 'meta',
+                                'nested-resource' => 'meta',
                             ];
                         }
                     },
@@ -475,19 +511,68 @@ class JsonApiTest extends TestCase
                 'id' => 'user-id',
                 'type' => 'basicModels',
                 'attributes' => [],
-                'relationships' => [],
+                'relationships' => [
+                    'relation' => [
+                        'data' => [
+                            'id' => 'avatar-id',
+                            'type' => 'basicModels',
+                            'meta' => [
+                                'nested-resource-identifier' => 'meta',
+                            ],
+                        ],
+                        'links' => [
+                            'related' => [
+                                'href' => 'nested-resource.com',
+                                'meta' => [
+                                    'nested-resource.com' => 'meta'
+                                ]
+                            ]
+                        ],
+                        'meta' => [
+                            'nested-resource-link' => 'meta',
+                        ]
+                    ]
+                ],
                 'meta' => [
                     'instance' => 'meta',
                 ],
-                'links' => [],
+                'links' => [
+                    'self' => [
+                        'href' => 'test.com',
+                        'meta' => [
+                            'test.com' => 'meta'
+                        ]
+                    ]
+                ],
             ],
-            'included' => [],
+            'included' => [
+                [
+                    'id' => 'avatar-id',
+                    'type' => 'basicModels',
+                    'attributes' => [],
+                    'relationships' => [],
+                    'meta' => [
+                        'nested-resource' => 'meta',
+                    ],
+                    'links' => [
+                        'self' => [
+                            'href' => 'nested-relation-to-links',
+                            'meta' => [
+                                'nested-relation-to-links' => 'meta'
+                            ]
+                        ]
+                    ],
+                ]
+            ],
             'jsonapi' => [
+                'meta' => [
+                    'implementation' => 'meta'
+                ],
                 'version' => '1.0',
-                'meta' => [],
             ],
         ]);
         $this->assertValidJsonApi($response);
 
+        JsonApiResource::resolveServerImplementationNormally();
     }
 }

@@ -48,6 +48,13 @@ final class Link implements JsonSerializable
         $this->meta = $meta;
     }
 
+    public function withMeta(array $meta): self
+    {
+        $this->meta = array_merge_recursive($this->meta, $meta);
+
+        return $this;
+    }
+
     /**
      * @return array{href: string, meta: stdClass}
      */

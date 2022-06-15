@@ -6,9 +6,12 @@ namespace TiMacDonald\JsonApi;
 
 use JsonSerializable;
 use stdClass;
+use TiMacDonald\JsonApi\Concerns\Links;
 
 final class RelationshipCollectionLink implements JsonSerializable
 {
+    use Links;
+
     /**
      * @var array<ResourceIdentifier>
      */
@@ -38,6 +41,20 @@ final class RelationshipCollectionLink implements JsonSerializable
         $this->meta = $meta;
     }
 
+    public function withLinks(array $links): self
+    {
+        $this->links = array_merge_recursive($this->links, $links);
+
+        return $this;
+    }
+
+    public function withMeta(array $meta): self
+    {
+        $this->meta = array_merge_recursive($this->meta, $meta);
+
+        return $this;
+    }
+
     /**
      * @return array{data: array<ResourceIdentifier>, meta: stdClass, links: stdClass}
      */
@@ -46,7 +63,7 @@ final class RelationshipCollectionLink implements JsonSerializable
         return [
             'data' => $this->data,
             'meta' => (object) $this->meta,
-            'links' => (object) $this->links,
+            'links' => (object) $this->parseLinks($this->links),
         ];
     }
 }

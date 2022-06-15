@@ -19,7 +19,12 @@ trait Links
      */
     private function resolveLinks(Request $request): array
     {
-        return Collection::make($this->toLinks($request))
+        return $this->parseLinks($this->toLinks($request));
+    }
+
+    private function parseLinks(array $links): array
+    {
+        return Collection::make($links)
             ->mapWithKeys(
                 /**
                  * @param string|Link $value

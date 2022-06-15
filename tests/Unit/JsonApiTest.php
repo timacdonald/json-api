@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\Route;
 use Tests\Models\BasicModel;
 use Tests\Resources\BasicJsonApiResource;
+use Tests\Resources\PostResource;
 use Tests\Resources\UserResource;
 use Tests\TestCase;
 use TiMacDonald\JsonApi\JsonApiResource;
@@ -437,7 +439,7 @@ class JsonApiTest extends TestCase
         self::assertSame('{"data":{"id":"expected-id","type":"expected-type","meta":{}},"meta":{},"links":{}}', $json);
     }
 
-    public function testItCanPopulateAllTheMetasForASingleInstance()
+    public function testItCanPopulateAllTheMetasAndAllTheLinks()
     {
         JsonApiResource::resolveServerImplementationUsing(fn () => (new JsonApiServerImplementation('1.0'))->withMeta([
             'implementation' => 'meta'
@@ -447,7 +449,10 @@ class JsonApiTest extends TestCase
             'name' => 'user-name',
         ]))->setRelation('avatar', new BasicModel([
             'id' => 'avatar-id',
-        ]));
+        ]))->setRelation('posts', [
+            (new BasicModel(['id' => 'post-id-1'])),
+            (new BasicModel(['id' => 'post-id-2'])),
+        ]);
         Route::get('test-route', fn () => new class($user) extends JsonApiResource {
             protected function toMeta(Request $request): array
             {
@@ -499,11 +504,19 @@ class JsonApiTest extends TestCase
                             ];
                         }
                     },
+                    'posts' => fn () => PostResource::collection($this->resource->posts)
+                        ->withMeta([
+                            'collection-resource-link' => 'meta',
+                        ])->withLinks([
+                            Link::self('collection-resource-link.com', [
+                                'collection-resource-link' => 'link-meta'
+                            ])
+                        ])
                 ];
             }
         });
 
-        $response = $this->getJson('test-route?include=relation');
+        $response = $this->getJson('test-route?include=relation,posts');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -531,7 +544,32 @@ class JsonApiTest extends TestCase
                         'meta' => [
                             'nested-resource-link' => 'meta',
                         ]
-                    ]
+                    ],
+                    'posts' => [
+                        'data' => [
+                            [
+                                'id' => 'post-id-1',
+                                'type' => 'basicModels',
+                                'meta' => [],
+                            ],
+                            [
+                                'id' => 'post-id-2',
+                                'type' => 'basicModels',
+                                'meta' => [],
+                            ]
+                        ],
+                        'links' => [
+                            'self' => [
+                                'href' => 'collection-resource-link.com',
+                                'meta' => [
+                                    'collection-resource-link' => 'link-meta'
+                                ]
+                            ]
+                        ],
+                        'meta' => [
+                            'collection-resource-link' => 'meta',
+                        ],
+                    ],
                 ],
                 'meta' => [
                     'instance' => 'meta',
@@ -562,6 +600,28 @@ class JsonApiTest extends TestCase
                             ]
                         ]
                     ],
+                ],
+                [
+                    'id' => 'post-id-1',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'content' => null,
+                        'title' => null
+                    ],
+                    'relationships' => [],
+                    'meta' => [],
+                    'links' => []
+                ],
+                [
+                    'id' => 'post-id-2',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'content' => null,
+                        'title' => null
+                    ],
+                    'relationships' => [],
+                    'meta' => [],
+                    'links' => []
                 ]
             ],
             'jsonapi' => [

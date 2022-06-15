@@ -12,6 +12,24 @@ use TiMacDonald\JsonApi\Support\Cache;
 
 class JsonApiResourceCollection extends AnonymousResourceCollection implements Flushable
 {
+    private array $meta = [];
+
+    private array $links = [];
+
+    public function withMeta(array $meta): self
+    {
+        $this->meta = array_merge_recursive($this->meta, $meta);
+
+        return $this;
+    }
+
+    public function withLinks(array $links): self
+    {
+        $this->links = array_merge_recursive($this->links, $links);
+
+        return $this;
+    }
+
     /**
      * @param Request $request
      * @return array{included: Collection, jsonapi: JsonApiResource}
@@ -75,7 +93,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection implements F
             ->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request))
             ->map(fn (JsonApiResource $resource): ResourceIdentifier => $resource->toResourceIdentifier($request));
 
-        return new RelationshipCollectionLink($resourceLinks->all());
+        return new RelationshipCollectionLink($resourceLinks->all(), $this->links, $this->meta);
     }
 
     /**

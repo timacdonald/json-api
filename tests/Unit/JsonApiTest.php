@@ -504,7 +504,7 @@ class JsonApiTest extends TestCase
                             ];
                         }
                     },
-                    'posts' => fn () => PostResource::collection($this->resource->posts)
+                    'posts' => fn () => MetadUpPostResource::collection($this->resource->posts)
                         ->withMeta([
                             'collection-resource-link' => 'meta',
                         ])->withLinks([
@@ -634,5 +634,15 @@ class JsonApiTest extends TestCase
         $this->assertValidJsonApi($response);
 
         JsonApiResource::resolveServerImplementationNormally();
+    }
+}
+
+class MetadUpPostResource extends PostResource
+{
+    public function toResourceLink(Request $request): RelationshipLink
+    {
+        return parent::toResourceLink($request)->withMeta([
+            'post-rel-link' => 'meta'
+        ]);
     }
 }

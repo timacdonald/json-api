@@ -7,28 +7,15 @@ namespace TiMacDonald\JsonApi;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
+use TiMacDonald\JsonApi\Concerns\Links;
+use TiMacDonald\JsonApi\Concerns\Meta;
 use TiMacDonald\JsonApi\Contracts\Flushable;
 use TiMacDonald\JsonApi\Support\Cache;
 
 class JsonApiResourceCollection extends AnonymousResourceCollection implements Flushable
 {
-    private array $meta = [];
-
-    private array $links = [];
-
-    public function withMeta(array $meta): self
-    {
-        $this->meta = array_merge_recursive($this->meta, $meta);
-
-        return $this;
-    }
-
-    public function withLinks(array $links): self
-    {
-        $this->links = array_merge_recursive($this->links, $links);
-
-        return $this;
-    }
+    use Links;
+    use Meta;
 
     /**
      * @param Request $request

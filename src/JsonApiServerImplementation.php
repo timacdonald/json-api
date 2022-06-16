@@ -6,15 +6,13 @@ namespace TiMacDonald\JsonApi;
 
 use JsonSerializable;
 use stdClass;
+use TiMacDonald\JsonApi\Concerns\Meta;
 
 final class JsonApiServerImplementation implements JsonSerializable
 {
-    private string $version;
+    use Meta;
 
-    /**
-     * @var array<string, mixed>
-     */
-    private array $meta;
+    private string $version;
 
     /**
      * @param array<string, mixed> $meta
@@ -24,13 +22,6 @@ final class JsonApiServerImplementation implements JsonSerializable
         $this->version = $version;
 
         $this->meta = $meta;
-    }
-
-    public function withMeta(array $meta): self
-    {
-        $this->meta = array_merge_recursive($this->meta, $meta);
-
-        return $this;
     }
 
     /**

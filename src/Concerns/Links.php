@@ -14,6 +14,21 @@ use TiMacDonald\JsonApi\Link;
 trait Links
 {
     /**
+     * @var array<string|int, string|Link>
+     */
+    private array $links = [];
+
+    /**
+     * @param array<string|int, string|Link> $links
+     */
+    public function withLinks(array $links): self
+    {
+        $this->links = array_merge($this->links, $links);
+
+        return $this;
+    }
+
+    /**
      * @internal
      * @return array<string, Link>
      */
@@ -22,6 +37,9 @@ trait Links
         return $this->parseLinks($this->toLinks($request));
     }
 
+    /**
+     * @param array<string|int, string|Link> $links
+     */
     private function parseLinks(array $links): array
     {
         return Collection::make($links)

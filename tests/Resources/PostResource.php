@@ -6,6 +6,7 @@ namespace Tests\Resources;
 
 use Illuminate\Http\Request;
 use TiMacDonald\JsonApi\JsonApiResource;
+use TiMacDonald\JsonApi\JsonApiResourceCollection;
 
 /**
  * @mixin \Tests\Models\BasicModel
@@ -27,5 +28,15 @@ class PostResource extends JsonApiResource
             'featureImage' => fn () => ImageResource::make($this->feature_image),
             'comments' => fn () => CommentResource::collection($this->comments),
         ];
+    }
+
+    public static function collection($resource): JsonApiResourceCollection
+    {
+        return parent::collection($resource)
+            ->withMeta([
+                //
+            ])->withLinks([
+                //
+            ]);
     }
 }

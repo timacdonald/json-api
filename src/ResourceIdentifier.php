@@ -6,17 +6,15 @@ namespace TiMacDonald\JsonApi;
 
 use JsonSerializable;
 use stdClass;
+use TiMacDonald\JsonApi\Concerns\Meta;
 
 final class ResourceIdentifier implements JsonSerializable
 {
+    use Meta;
+
     private string $id;
 
     private string $type;
-
-    /**
-     * @var array<string, mixed>
-     */
-    private array $meta;
 
     /**
      * @param array<string, mixed> $meta
@@ -28,13 +26,6 @@ final class ResourceIdentifier implements JsonSerializable
         $this->type = $type;
 
         $this->meta = $meta;
-    }
-
-    public function withMeta(array $meta): self
-    {
-        $this->meta = array_merge_recursive($this->meta, $meta);
-
-        return $this;
     }
 
     /**

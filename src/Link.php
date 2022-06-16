@@ -6,18 +6,16 @@ namespace TiMacDonald\JsonApi;
 
 use JsonSerializable;
 use stdClass;
+use TiMacDonald\JsonApi\Concerns\Meta;
 
 /**
  * @see https://jsonapi.org/format/#document-resource-object-links
  */
 final class Link implements JsonSerializable
 {
-    private string $href;
+    use Meta;
 
-    /**
-     * @var array<string, mixed>
-     */
-    private array $meta;
+    private string $href;
 
     private string $key = 'unknown';
 
@@ -46,13 +44,6 @@ final class Link implements JsonSerializable
         $this->href = $href;
 
         $this->meta = $meta;
-    }
-
-    public function withMeta(array $meta): self
-    {
-        $this->meta = array_merge_recursive($this->meta, $meta);
-
-        return $this;
     }
 
     /**

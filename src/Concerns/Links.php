@@ -21,7 +21,7 @@ trait Links
     /**
      * @param array<string|int, string|Link> $links
      */
-    public function withLinks(array $links): self
+    public function withLinks(array $links): static
     {
         $this->links = array_merge($this->links, $links);
 
@@ -29,16 +29,8 @@ trait Links
     }
 
     /**
-     * @internal
-     * @return array<string, Link>
-     */
-    private function resolveLinks(Request $request): array
-    {
-        return $this->parseLinks($this->toLinks($request));
-    }
-
-    /**
      * @param array<string|int, string|Link> $links
+     * @return array<string, Link>
      */
     private function parseLinks(array $links): array
     {

@@ -28,7 +28,7 @@ trait Relationships
     /**
      * @internal
      */
-    public function withIncludePrefix(string $prefix): self
+    public function withIncludePrefix(string $prefix): static
     {
         return tap($this, fn (JsonApiResource $resource): string => $resource->includePrefix = "{$this->includePrefix}{$prefix}.");
     }
@@ -82,7 +82,7 @@ trait Relationships
                  * @param JsonApiResource|JsonApiResourceCollection $resource
                  * @return mixed
                  */
-                fn ($resource) => $resource->toResourceLink($request)
+                fn ($resource) => $resource->resolveRelationshipLink($request)
             );
     }
 
@@ -125,7 +125,7 @@ trait Relationships
     /**
      * @internal
      */
-    private function includable(): self
+    private function includable(): static
     {
         return $this;
     }

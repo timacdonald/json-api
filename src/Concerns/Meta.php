@@ -9,7 +9,10 @@ trait Meta
      */
     private array $meta = [];
 
-    public function withMeta(array $meta): self
+    /**
+     * @param array<string, mixed> $meta
+     */
+    public function withMeta(array $meta): static
     {
         $this->meta = array_merge($this->meta, $meta);
 

@@ -21,7 +21,18 @@ abstract class JsonApiResource extends JsonResource implements Flushable
     use Concerns\Identification;
     use Concerns\Implementation;
     use Concerns\Links;
+    use Concerns\Meta;
     use Concerns\Relationships;
+
+    /**
+     * @var array<Closure(ResourceIdentifier): void>
+     */
+    private array $resourceIdentifierCallbacks = [];
+
+    /**
+     * @var array<Closure(RelationshipLink): void>
+     */
+    private array $relationshipLinkCallbacks = [];
 
     /**
      * @see https://github.com/timacdonald/json-api#customising-the-resource-id
@@ -144,16 +155,55 @@ abstract class JsonApiResource extends JsonResource implements Flushable
 
     /**
      * TODO: @see docs-link
+     * TODO: naming is inconsistent: resource link vs relationship link
      * @see https://jsonapi.org/format/#document-resource-object-linkage
      */
     public function toResourceLink(Request $request): RelationshipLink
     {
-        return new RelationshipLink($this->toResourceIdentifier($request));
+        return new RelationshipLink($this->resolveResourceIdentifier($request));
+    }
+
+    /**
+     * @internal
+     */
+    public function resolveRelationshipLink(Request $request): RelationshipLink
+    {
+        return tap($this->toResourceLink($request), function (RelationshipLink $link) {
+            foreach ($this->relationshipLinkCallbacks as $callback) {
+                $callback($link);
+            }
+        });
+    }
+
+    public function withRelationshipLink(Closure $callback): self
+    {
+        $this->relationshipLinkCallbacks[] = $callback;
+
+        return $this;
     }
 
     public function toResourceIdentifier(Request $request): ResourceIdentifier
     {
         return new ResourceIdentifier($this->resolveId($request), $this->resolveType($request));
+    }
+
+    /**
+     * @internal
+     */
+    public function resolveResourceIdentifier(Request $request): ResourceIdentifier
+    {
+        return tap($this->toResourceIdentifier($request), function (ResourceIdentifier $identifier) {
+            foreach ($this->resourceIdentifierCallbacks as $callback) {
+                $callback($identifier);
+            }
+        });
+    }
+
+    public function withResourceIdentifier(Closure $callback): self
+    {
+        $this->resourceIdentifierCallbacks[] = $callback;
+
+        return $this;
     }
 
     /**
@@ -167,8 +217,8 @@ abstract class JsonApiResource extends JsonResource implements Flushable
             'type' => $this->resolveType($request),
             'attributes' => (object) $this->requestedAttributes($request)->all(),
             'relationships' => (object) $this->requestedRelationshipsAsIdentifiers($request)->all(),
-            'meta' => (object) $this->toMeta($request),
-            'links' => (object) $this->resolveLinks($request),
+            'meta' => (object) array_merge($this->toMeta($request), $this->meta),
+            'links' => (object) $this->parseLinks(array_merge($this->toLinks($request), $this->links))
         ];
     }
 

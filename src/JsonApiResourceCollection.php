@@ -78,9 +78,14 @@ class JsonApiResourceCollection extends AnonymousResourceCollection implements F
     {
         $resourceLinks = $this->collection
             ->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request))
-            ->map(fn (JsonApiResource $resource): ResourceIdentifier => $resource->toResourceIdentifier($request));
+            ->map(fn (JsonApiResource $resource): ResourceIdentifier => $resource->resolveResourceIdentifier($request));
 
         return new RelationshipCollectionLink($resourceLinks->all(), $this->links, $this->meta);
+    }
+
+    public function resolveRelationshipLink(Request $request): RelationshipCollectionLink
+    {
+        return $this->toResourceLink($request);
     }
 
     /**

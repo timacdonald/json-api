@@ -457,53 +457,73 @@ class JsonApiTest extends TestCase
             protected function toMeta(Request $request): array
             {
                 return [
-                    'instance' => 'meta',
+                    'user-internal' => 'meta',
                 ];
             }
 
             protected function toLinks(Request $request): array
             {
                 return [
-                    Link::self('test.com')->withMeta(['test.com' => 'meta'])
+                    Link::self('user-internal.com')->withMeta(['user-internal.com' => 'meta'])
                 ];
             }
 
             protected function toRelationships(Request $request): array
             {
                 return [
-                    'relation' => fn () => new class($this->resource->avatar) extends JsonApiResource {
+                    'avatar' => fn () => (new class($this->resource->avatar) extends JsonApiResource {
                         protected function toLinks(Request $request): array
                         {
                             return [
-                                Link::self('nested-relation-to-links')->withMeta([
-                                    'nested-relation-to-links' => 'meta',
+                                Link::self('avatar-internal.com')->withMeta([
+                                    'avatar-internal.com' => 'meta',
                                 ])
+                            ];
+                        }
+
+                        protected function toMeta(Request $request): array
+                        {
+                            return [
+                                'avatar-internal' => 'meta',
                             ];
                         }
 
                         public function toResourceIdentifier(Request $request): ResourceIdentifier
                         {
                             return parent::toResourceIdentifier($request)->withMeta([
-                                'nested-resource-identifier' => 'meta',
+                                'avatar-internal-resource-identifier' => 'meta',
                             ]);
                         }
+
                         public function toResourceLink(Request $request): RelationshipLink
                         {
                             return parent::toResourceLink($request)->withMeta([
-                                'nested-resource-link' => 'meta',
+                                'avatar-internal-resource-link' => 'meta',
                             ])->withLinks([
-                                Link::related('nested-resource.com')->withMeta([
-                                    'nested-resource.com' => 'meta'
+                                Link::self('avatar-internal-resource-link.com')->withMeta([
+                                    'avatar-internal-resource-link.com' => 'meta'
                                 ]),
                             ]);
                         }
-                        protected function toMeta(Request $request): array
-                        {
-                            return [
-                                'nested-resource' => 'meta',
-                            ];
-                        }
-                    },
+                    })->withMeta([
+                        'avatar-external' => 'meta',
+                    ])->withLinks([
+                        Link::related('avatar-external.com')->withMeta([
+                            'avatar-external.com' => 'meta',
+                        ]),
+                    ])->withResourceIdentifier(
+                        fn (ResourceIdentifier $identifier) => $identifier->withMeta([
+                            'avatar-external-resource-identifier' => 'meta',
+                        ])
+                    )->withRelationshipLink(
+                        fn (RelationshipLink $link) => $link->withMeta([
+                            'avatar-external-resource-link' => 'meta',
+                        ])->withLinks([
+                            Link::related('avatar-external-resource-link.com')->withMeta([
+                                'avatar-external-resource-link.com' => 'meta'
+                            ])
+                        ])
+                    ),
                     'posts' => fn () => MetadUpPostResource::collection($this->resource->posts)
                         ->withMeta([
                             'collection-resource-link' => 'meta',
@@ -516,7 +536,7 @@ class JsonApiTest extends TestCase
             }
         });
 
-        $response = $this->getJson('test-route?include=relation,posts');
+        $response = $this->getJson('test-route?include=avatar,posts');
 
         $response->assertOk();
         $response->assertExactJson([
@@ -525,24 +545,32 @@ class JsonApiTest extends TestCase
                 'type' => 'basicModels',
                 'attributes' => [],
                 'relationships' => [
-                    'relation' => [
+                    'avatar' => [
                         'data' => [
                             'id' => 'avatar-id',
                             'type' => 'basicModels',
                             'meta' => [
-                                'nested-resource-identifier' => 'meta',
+                                'avatar-internal-resource-identifier' => 'meta',
+                                'avatar-external-resource-identifier' => 'meta',
                             ],
                         ],
                         'links' => [
-                            'related' => [
-                                'href' => 'nested-resource.com',
+                            'self' => [
+                                'href' => 'avatar-internal-resource-link.com',
                                 'meta' => [
-                                    'nested-resource.com' => 'meta'
+                                    'avatar-internal-resource-link.com' => 'meta'
+                                ]
+                            ],
+                            'related' => [
+                                'href' => 'avatar-external-resource-link.com',
+                                'meta' => [
+                                    'avatar-external-resource-link.com' => 'meta'
                                 ]
                             ]
                         ],
                         'meta' => [
-                            'nested-resource-link' => 'meta',
+                            'avatar-internal-resource-link' => 'meta',
+                            'avatar-external-resource-link' => 'meta',
                         ]
                     ],
                     'posts' => [
@@ -572,13 +600,13 @@ class JsonApiTest extends TestCase
                     ],
                 ],
                 'meta' => [
-                    'instance' => 'meta',
+                    'user-internal' => 'meta',
                 ],
                 'links' => [
                     'self' => [
-                        'href' => 'test.com',
+                        'href' => 'user-internal.com',
                         'meta' => [
-                            'test.com' => 'meta'
+                            'user-internal.com' => 'meta'
                         ]
                     ]
                 ],
@@ -590,13 +618,20 @@ class JsonApiTest extends TestCase
                     'attributes' => [],
                     'relationships' => [],
                     'meta' => [
-                        'nested-resource' => 'meta',
+                        'avatar-internal' => 'meta',
+                        'avatar-external' => 'meta',
                     ],
                     'links' => [
                         'self' => [
-                            'href' => 'nested-relation-to-links',
+                            'href' => 'avatar-internal.com',
                             'meta' => [
-                                'nested-relation-to-links' => 'meta'
+                                'avatar-internal.com' => 'meta'
+                            ]
+                        ],
+                        'related' => [
+                            'href' => 'avatar-external.com',
+                            'meta' => [
+                                'avatar-external.com' => 'meta',
                             ]
                         ]
                     ],

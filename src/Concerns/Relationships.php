@@ -108,11 +108,7 @@ trait Relationships
                         return $resource->withIncludePrefix($prefix);
                     }
 
-                    if ($resource === null) {
-                        return new NullRelationship();
-                    }
-
-                    throw new RuntimeException('Unknown relationship found. Your relationships resources must extend the JsonApiResource class.');
+                    throw new RuntimeException('Unknown relationship found. Your relationships should always return a class that extend the JsonApiResource.');
                 }
             )->reject(
                 /**
@@ -135,6 +131,6 @@ trait Relationships
      */
     private function shouldBePresentInIncludes(): bool
     {
-        return true;
+        return $this->resource !== null;
     }
 }

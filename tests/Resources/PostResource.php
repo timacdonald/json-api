@@ -32,11 +32,6 @@ class PostResource extends JsonApiResource
 
     public static function collection($resource): JsonApiResourceCollection
     {
-        return parent::collection($resource)
-            ->withMeta([
-                //
-            ])->withLinks([
-                //
-            ]);
+        return parent::collection($resource);
     }
 }

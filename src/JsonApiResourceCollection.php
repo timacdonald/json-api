@@ -7,15 +7,17 @@ namespace TiMacDonald\JsonApi;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
-use TiMacDonald\JsonApi\Concerns\Links;
-use TiMacDonald\JsonApi\Concerns\Meta;
 use TiMacDonald\JsonApi\Contracts\Flushable;
 use TiMacDonald\JsonApi\Support\Cache;
 
 class JsonApiResourceCollection extends AnonymousResourceCollection implements Flushable
 {
-    use Links;
-    use Meta;
+    public function map(callable $callback): static
+    {
+        $this->collection = $this->collection->map($callback);
+
+        return $this;
+    }
 
     /**
      * @param Request $request
@@ -80,7 +82,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection implements F
             ->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request))
             ->map(fn (JsonApiResource $resource): ResourceIdentifier => $resource->resolveResourceIdentifier($request));
 
-        return new RelationshipCollectionLink($resourceLinks->all(), $this->links, $this->meta);
+        return new RelationshipCollectionLink($resourceLinks->all());
     }
 
     public function resolveRelationshipLink(Request $request): RelationshipCollectionLink

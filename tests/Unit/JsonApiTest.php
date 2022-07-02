@@ -587,7 +587,57 @@ class JsonApiTest extends TestCase
                             ]),
                         ])
                     ),
-                    'posts' => fn () => MetadUpPostResource::collection($this->resource->posts)
+                    'posts' => fn () => (new class ($this->posts) extends JsonApiResource {
+                        protected function toMeta(Request $request): array
+                        {
+                            return [
+                                'posts-internal' => 'meta',
+                            ];
+                        }
+
+                        protected function toLinks(Request $request): array
+                        {
+                            return [
+                                Link::self('posts-internal.com')->withMeta([
+                                    'posts-internal.com' => 'meta',
+                                ]),
+                            ];
+                        }
+
+                        public function toResourceIdentifier(Request $request): ResourceIdentifier
+                        {
+                            return parent::toResourceIdentifier($request)->withMeta([
+                                'posts-internal-resource-identifier' => 'meta',
+                            ]);
+                        }
+
+                        public function toResourceLink(Request $request): RelationshipLink
+                        {
+                            // should not be present in the response.
+                            return parent::toResourceLink($request)->withMeta([
+                                'posts-internal-resource-link' => 'meta',
+                            ])->withLinks([
+                                Link::self('posts-internal-resource-link.com')->withMeta([
+                                    'posts-internal-resource-link.com' => 'meta',
+                                ]),
+                            ]);
+                        }
+
+                        public static function collection($resource): JsonApiResourceCollection
+                        {
+                            return parent::collection($resource)
+                                ->withRelationshipLink(fn ($link) => $link->withMeta([
+                                    // TODO
+                                ]))
+                                ->map(fn ($resource) => $resource->withMeta([
+                                    'posts-internal-collection' => 'meta',
+                                ])->withLinks([
+                                    Link::related('posts-internal-collection.com')->withMeta([
+                                        'posts-internal-collection.com' => 'meta',
+                                    ])
+                                ]));
+                        }
+                    })::collection($this->posts)
                 ];
             }
         })->withMeta([
@@ -662,14 +712,14 @@ class JsonApiTest extends TestCase
                                 'id' => 'post-id-1',
                                 'type' => 'basicModels',
                                 'meta' => [
-                                    // TODO
+                                    'posts-internal-resource-identifier' => 'meta'
                                 ],
                             ],
                             [
                                 'id' => 'post-id-2',
                                 'type' => 'basicModels',
                                 'meta' => [
-                                    // TODO
+                                    'posts-internal-resource-identifier' => 'meta'
                                 ],
                             ],
                         ],
@@ -728,10 +778,7 @@ class JsonApiTest extends TestCase
                 [
                     'id' => 'post-id-1',
                     'type' => 'basicModels',
-                    'attributes' => [
-                        'content' => null,
-                        'title' => null,
-                    ],
+                    'attributes' => [],
                     'relationships' => [],
                     'meta' => [
                         'posts-internal' => 'meta',
@@ -757,10 +804,7 @@ class JsonApiTest extends TestCase
                 [
                     'id' => 'post-id-2',
                     'type' => 'basicModels',
-                    'attributes' => [
-                        'content' => null,
-                        'title' => null,
-                    ],
+                    'attributes' => [],
                     'relationships' => [],
                     'meta' => [
                         'posts-internal' => 'meta',
@@ -794,36 +838,5 @@ class JsonApiTest extends TestCase
         $this->assertValidJsonApi($response);
 
         JsonApiResource::resolveServerImplementationNormally();
-    }
-}
-
-class MetadUpPostResource extends PostResource
-{
-    protected function toMeta(Request $request): array
-    {
-        return [
-            'posts-internal' => 'meta',
-        ];
-    }
-
-    protected function toLinks(Request $request): array
-    {
-        return [
-            Link::self('posts-internal.com')->withMeta([
-                'posts-internal.com' => 'meta',
-            ]),
-        ];
-    }
-
-    public static function collection($resource): JsonApiResourceCollection
-    {
-        return parent::collection($resource)
-            ->map(fn ($resource) => $resource->withMeta([
-                'posts-internal-collection' => 'meta',
-            ])->withLinks([
-                Link::related('posts-internal-collection.com')->withMeta([
-                    'posts-internal-collection.com' => 'meta',
-                ])
-            ]));
     }
 }

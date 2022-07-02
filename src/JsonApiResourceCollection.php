@@ -12,9 +12,21 @@ use TiMacDonald\JsonApi\Support\Cache;
 
 class JsonApiResourceCollection extends AnonymousResourceCollection implements Flushable
 {
+    /**
+     * @var array<Closure(RelationshipLink): void>
+     */
+    private array $relationshipLinkCallbacks = [];
+
     public function map(callable $callback): static
     {
         $this->collection = $this->collection->map($callback);
+
+        return $this;
+    }
+
+    public function withRelationshipLink(Closure $callback): self
+    {
+        $this->relationshipLinkCallbacks[] = $callback;
 
         return $this;
     }
@@ -85,9 +97,16 @@ class JsonApiResourceCollection extends AnonymousResourceCollection implements F
         return new RelationshipCollectionLink($resourceLinks->all());
     }
 
-    public function resolveRelationshipLink(Request $request): RelationshipCollectionLink
+    /**
+     * @internal
+     */
+    public function resolveRelationshipLink(Request $request): RelationshipLink
     {
-        return $this->toResourceLink($request);
+        return tap($this->toResourceLink($request), function (RelationshipLink $link) {
+            foreach ($this->relationshipLinkCallbacks as $callback) {
+                $callback($link);
+            }
+        });
     }
 
     /**

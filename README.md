@@ -367,3 +367,9 @@ And a special (vegi) thanks to [Caneco](https://twitter.com/caneco) for the logo
 - [ ] Responses that contain only resource identifiers (related)
 - [ ] `400` when requesting relationships that are not present.
 - [ ] Converting non-json api resources to json resources. Needs to support both single and collection of resources.
+
+---
+
+Notes
+- How do you get the request when making a collection.
+- What does it look like to create a custom collection class instead of chaining.

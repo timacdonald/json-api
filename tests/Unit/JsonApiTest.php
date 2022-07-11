@@ -627,18 +627,35 @@ class JsonApiTest extends TestCase
                         public static function collection($resource): JsonApiResourceCollection
                         {
                             return parent::collection($resource)
-                                ->withRelationshipLink(fn ($link) => $link->withMeta([
-                                    // TODO
-                                ]))
-                                ->map(fn ($resource) => $resource->withMeta([
-                                    'posts-internal-collection' => 'meta',
-                                ])->withLinks([
-                                    Link::related('posts-internal-collection.com')->withMeta([
-                                        'posts-internal-collection.com' => 'meta',
+                                ->withRelationshipLink(fn ($link) => $link->withLinks([
+                                    Link::self('posts-collection-internal-resource-link.com', [
+                                        'posts-collection-internal-resource-link' => 'meta',
                                     ])
-                                ]));
+                                ])->withMeta([
+                                    'posts-internal-collection-resource-link' => 'meta',
+                                ]))
+                                ->map(fn (JsonApiResource $resource) => $resource->withMeta([
+                                        'posts-internal-collection' => 'meta',
+                                    ])->withLinks([
+                                        Link::related('posts-internal-collection.com')->withMeta([
+                                            'posts-internal-collection.com' => 'meta',
+                                        ])
+                                    ])->withResourceIdentifier(fn ($identifier) => $identifier->withMeta([
+                                        'posts-internal-collection-resource-identifier' => 'meta', 
+                                    ]))
+                                );
                         }
                     })::collection($this->posts)
+                        ->withRelationshipLink(fn ($link) => $link->withLinks([
+                            Link::related('posts-external-resource-link.com', [
+                                'posts-external-resource-link' => 'meta',
+                            ]),
+                        ])->withMeta([
+                            'posts-external-resource-link' => 'meta',
+                        ]))
+                        ->map(fn ($post) => $post->withResourceIdentifier(fn ($identifier) => $identifier->withMeta([
+                            'posts-external-resource-identifier' => 'meta', 
+                        ])))
                 ];
             }
         })->withMeta([
@@ -713,26 +730,38 @@ class JsonApiTest extends TestCase
                                 'id' => 'post-id-1',
                                 'type' => 'basicModels',
                                 'meta' => [
-                                    'posts-internal-resource-identifier' => 'meta'
-                                    // TODO internal collection
-                                    // TODO external
+                                    'posts-internal-resource-identifier' => 'meta',
+                                    'posts-internal-collection-resource-identifier' => 'meta',
+                                    'posts-external-resource-identifier' => 'meta',
                                 ],
                             ],
                             [
                                 'id' => 'post-id-2',
                                 'type' => 'basicModels',
                                 'meta' => [
-                                    'posts-internal-resource-identifier' => 'meta'
-                                    // TODO internal collection
-                                    // TODO external
+                                    'posts-internal-resource-identifier' => 'meta',
+                                    'posts-internal-collection-resource-identifier' => 'meta',
+                                    'posts-external-resource-identifier' => 'meta',
                                 ],
                             ],
                         ],
                         'links' => [
-                            // TODO
+                            'self' => [
+                                'href' => 'posts-collection-internal-resource-link.com',
+                                'meta' => [
+                                    'posts-collection-internal-resource-link' => 'meta',
+                                ],
+                            ],
+                            'related' => [
+                                'href' => 'posts-external-resource-link.com',
+                                'meta' => [
+                                    'posts-external-resource-link' => 'meta',
+                                ],
+                            ],
                         ],
                         'meta' => [
-                            // TODO
+                            'posts-internal-collection-resource-link' => 'meta',
+                            'posts-external-resource-link' => 'meta',
                         ],
                     ],
                 ],

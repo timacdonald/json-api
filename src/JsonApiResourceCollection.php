@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi;
 
+use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
@@ -100,9 +101,9 @@ class JsonApiResourceCollection extends AnonymousResourceCollection implements F
     /**
      * @internal
      */
-    public function resolveRelationshipLink(Request $request): RelationshipLink
+    public function resolveRelationshipLink(Request $request): RelationshipCollectionLink
     {
-        return tap($this->toResourceLink($request), function (RelationshipLink $link) {
+        return tap($this->toResourceLink($request), function (RelationshipCollectionLink $link) {
             foreach ($this->relationshipLinkCallbacks as $callback) {
                 $callback($link);
             }

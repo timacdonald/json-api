@@ -15,6 +15,7 @@ use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
 use TiMacDonald\JsonApi\JsonApiServerImplementation;
 use TiMacDonald\JsonApi\Link;
+use TiMacDonald\JsonApi\RelationshipCollectionLink;
 use TiMacDonald\JsonApi\RelationshipLink;
 use TiMacDonald\JsonApi\ResourceIdentifier;
 use TiMacDonald\JsonApi\Support\Fields;
@@ -713,6 +714,8 @@ class JsonApiTest extends TestCase
                                 'type' => 'basicModels',
                                 'meta' => [
                                     'posts-internal-resource-identifier' => 'meta'
+                                    // TODO internal collection
+                                    // TODO external
                                 ],
                             ],
                             [
@@ -720,6 +723,8 @@ class JsonApiTest extends TestCase
                                 'type' => 'basicModels',
                                 'meta' => [
                                     'posts-internal-resource-identifier' => 'meta'
+                                    // TODO internal collection
+                                    // TODO external
                                 ],
                             ],
                         ],

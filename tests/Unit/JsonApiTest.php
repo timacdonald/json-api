@@ -655,7 +655,11 @@ class JsonApiTest extends TestCase
                         ]))
                         ->map(fn ($post) => $post->withResourceIdentifier(fn ($identifier) => $identifier->withMeta([
                             'posts-external-resource-identifier' => 'meta', 
-                        ])))
+                        ]))->withMeta([
+                            'posts-external' => 'meta',
+                        ])->withLinks([
+                            'external' => 'posts.com',
+                        ]))
                 ];
             }
         })->withMeta([
@@ -817,7 +821,7 @@ class JsonApiTest extends TestCase
                     'meta' => [
                         'posts-internal' => 'meta',
                         'posts-internal-collection' => 'meta',
-                        // TODO external
+                        'posts-external' => 'meta',
                     ],
                     'links' => [
                         'self' => [
@@ -832,7 +836,10 @@ class JsonApiTest extends TestCase
                                 'posts-internal-collection.com' => 'meta',
                             ]
                         ],
-                        // TODO external
+                        'external' => [
+                            'href' => 'posts.com',
+                            'meta' => [],
+                        ],
                     ],
                 ],
                 [
@@ -843,7 +850,7 @@ class JsonApiTest extends TestCase
                     'meta' => [
                         'posts-internal' => 'meta',
                         'posts-internal-collection' => 'meta',
-                        // TODO external
+                        'posts-external' => 'meta',
                     ],
                     'links' => [
                         'self' => [
@@ -858,7 +865,10 @@ class JsonApiTest extends TestCase
                                 'posts-internal-collection.com' => 'meta',
                             ]
                         ],
-                        // TODO external
+                        'external' => [
+                            'href' => 'posts.com',
+                            'meta' => [],
+                        ],
                     ],
                 ],
             ],

@@ -10,9 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use TiMacDonald\JsonApi\Exceptions\ResourceIdentificationException;
 
-/**
- * @internal
- */
 trait Identification
 {
     /**
@@ -54,7 +51,7 @@ trait Identification
      */
     private function resolveId(Request $request): string
     {
-        return $this->rememberId(fn (): string => $this->toId($request));
+        return $this->rememberId(fn () => $this->toId($request));
     }
 
     /**
@@ -62,7 +59,7 @@ trait Identification
      */
     private function resolveType(Request $request): string
     {
-        return $this->rememberType(fn (): string => $this->toType($request));
+        return $this->rememberType(fn () => $this->toType($request));
     }
 
     /**
@@ -70,7 +67,7 @@ trait Identification
      */
     private static function idResolver(): Closure
     {
-        return self::$idResolver ??= static function ($resource): string {
+        return self::$idResolver ??= static function ($resource) {
             if (! $resource instanceof Model) {
                 throw ResourceIdentificationException::attemptingToDetermineIdFor($resource);
             }
@@ -88,7 +85,7 @@ trait Identification
      */
     private static function typeResolver(): Closure
     {
-        return self::$typeResolver ??= static function ($resource): string {
+        return self::$typeResolver ??= static function ($resource) {
             if (! $resource instanceof Model) {
                 throw ResourceIdentificationException::attemptingToDetermineTypeFor($resource);
             }

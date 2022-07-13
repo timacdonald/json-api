@@ -79,34 +79,34 @@ class FeatureTest extends TestCase
                     [
                         "active" => false,
                         "label" => "&laquo; Previous",
-                        "url" => null
+                        "url" => null,
                     ],
                     [
                         "active" => true,
                         "label" => "1",
-                        "url" => "http://localhost/test-route?page=1"
+                        "url" => "http://localhost/test-route?page=1",
                     ],
                     [
                         "active" => false,
                         "label" => "2",
-                        "url" => "http://localhost/test-route?page=2"
+                        "url" => "http://localhost/test-route?page=2",
                     ],
                     [
                         "active" => false,
                         "label" => "3",
-                        "url" => "http://localhost/test-route?page=3"
+                        "url" => "http://localhost/test-route?page=3",
                     ],
                     [
                         "active" => false,
                         "label" => "Next &raquo;",
-                        "url" => "http://localhost/test-route?page=2"
-                    ]
+                        "url" => "http://localhost/test-route?page=2",
+                    ],
                 ],
             ],
             'jsonapi' => [
                 'meta' => [],
                 'version' => '1.0',
-            ]
+            ],
         ]);
         $this->assertValidJsonApi($response);
     }

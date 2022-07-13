@@ -6,8 +6,6 @@ namespace TiMacDonald\JsonApi\Concerns;
 
 use Closure;
 use Illuminate\Support\Collection;
-use TiMacDonald\JsonApi\JsonApiResource;
-use TiMacDonald\JsonApi\JsonApiResourceCollection;
 
 trait Caching
 {
@@ -37,12 +35,7 @@ trait Caching
         $this->typeCache = null;
 
         if ($this->requestedRelationshipsCache !== null) {
-            $this->requestedRelationshipsCache->each(
-                /**
-                 * @param JsonApiResource|JsonApiResourceCollection $resource
-                 */
-                fn ($resource) => $resource->flush()
-            );
+            $this->requestedRelationshipsCache->each->flush();
         }
 
         $this->requestedRelationshipsCache = null;
@@ -56,7 +49,6 @@ trait Caching
     {
         return $this->idCache ??= $closure();
     }
-
 
     /**
      * @internal

@@ -373,3 +373,4 @@ And a special (vegi) thanks to [Caneco](https://twitter.com/caneco) for the logo
 Notes
 - How do you get the request when making a collection.
 - What does it look like to create a custom collection class instead of chaining.
+- Links can go against the spec with arbitrary names.

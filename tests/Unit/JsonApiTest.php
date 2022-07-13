@@ -8,14 +8,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Tests\Models\BasicModel;
 use Tests\Resources\BasicJsonApiResource;
-use Tests\Resources\PostResource;
 use Tests\Resources\UserResource;
 use Tests\TestCase;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
 use TiMacDonald\JsonApi\JsonApiServerImplementation;
 use TiMacDonald\JsonApi\Link;
-use TiMacDonald\JsonApi\RelationshipCollectionLink;
 use TiMacDonald\JsonApi\RelationshipLink;
 use TiMacDonald\JsonApi\ResourceIdentifier;
 use TiMacDonald\JsonApi\Support\Fields;
@@ -630,18 +628,19 @@ class JsonApiTest extends TestCase
                                 ->withRelationshipLink(fn ($link) => $link->withLinks([
                                     Link::self('posts-collection-internal-resource-link.com', [
                                         'posts-collection-internal-resource-link' => 'meta',
-                                    ])
+                                    ]),
                                 ])->withMeta([
                                     'posts-internal-collection-resource-link' => 'meta',
                                 ]))
-                                ->map(fn (JsonApiResource $resource) => $resource->withMeta([
+                                ->map(
+                                    fn (JsonApiResource $resource) => $resource->withMeta([
                                         'posts-internal-collection' => 'meta',
                                     ])->withLinks([
                                         Link::related('posts-internal-collection.com')->withMeta([
                                             'posts-internal-collection.com' => 'meta',
-                                        ])
+                                        ]),
                                     ])->withResourceIdentifier(fn ($identifier) => $identifier->withMeta([
-                                        'posts-internal-collection-resource-identifier' => 'meta', 
+                                        'posts-internal-collection-resource-identifier' => 'meta',
                                     ]))
                                 );
                         }
@@ -654,12 +653,12 @@ class JsonApiTest extends TestCase
                             'posts-external-resource-link' => 'meta',
                         ]))
                         ->map(fn ($post) => $post->withResourceIdentifier(fn ($identifier) => $identifier->withMeta([
-                            'posts-external-resource-identifier' => 'meta', 
+                            'posts-external-resource-identifier' => 'meta',
                         ]))->withMeta([
                             'posts-external' => 'meta',
                         ])->withLinks([
                             'external' => 'posts.com',
-                        ]))
+                        ])),
                 ];
             }
         })->withMeta([
@@ -828,13 +827,13 @@ class JsonApiTest extends TestCase
                             'href' => 'posts-internal.com',
                             'meta' => [
                                 'posts-internal.com' => 'meta',
-                            ]
+                            ],
                         ],
                         'related' => [
                             'href' => 'posts-internal-collection.com',
                             'meta' => [
                                 'posts-internal-collection.com' => 'meta',
-                            ]
+                            ],
                         ],
                         'external' => [
                             'href' => 'posts.com',
@@ -857,13 +856,13 @@ class JsonApiTest extends TestCase
                             'href' => 'posts-internal.com',
                             'meta' => [
                                 'posts-internal.com' => 'meta',
-                            ]
+                            ],
                         ],
                         'related' => [
                             'href' => 'posts-internal-collection.com',
                             'meta' => [
                                 'posts-internal-collection.com' => 'meta',
-                            ]
+                            ],
                         ],
                         'external' => [
                             'href' => 'posts.com',

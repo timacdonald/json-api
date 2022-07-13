@@ -5,11 +5,8 @@ declare(strict_types=1);
 namespace TiMacDonald\JsonApi\Concerns;
 
 use Closure;
-use TiMacDonald\JsonApi\JsonApiServerImplementation as ServerImplementation;
+use TiMacDonald\JsonApi\JsonApiServerImplementation;
 
-/**
- * @internal
- */
 trait Implementation
 {
     /**
@@ -30,6 +27,6 @@ trait Implementation
      */
     public static function serverImplementationResolver(): Closure
     {
-        return self::$serverImplementationResolver ?? fn (): ServerImplementation => new ServerImplementation('1.0');
+        return self::$serverImplementationResolver ?? fn () => new JsonApiServerImplementation('1.0');
     }
 }

@@ -286,7 +286,7 @@ class AttributesTest extends TestCase
                     'type' => 'basicModels',
                     'id' => 'user-id',
                     'attributes' => [
-                        'name' => 'user-name'
+                        'name' => 'user-name',
                     ],
                     'relationships' => [],
                     'meta' => [],

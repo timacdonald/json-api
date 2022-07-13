@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TiMacDonald\JsonApi\Concerns;
 
 trait Meta
@@ -10,9 +12,12 @@ trait Meta
     private array $meta = [];
 
     /**
+     * @api
+     *
      * @param array<string, mixed> $meta
+     * @return $this
      */
-    public function withMeta(array $meta): static
+    public function withMeta($meta)
     {
         $this->meta = array_merge($this->meta, $meta);
 

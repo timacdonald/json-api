@@ -9,9 +9,6 @@ use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;
 use TiMacDonald\JsonApi\Support\Fields;
 
-/**
- * @internal
- */
 trait Attributes
 {
     /**
@@ -35,18 +32,7 @@ trait Attributes
     {
         return Collection::make($this->toAttributes($request))
             ->only(Fields::getInstance()->parse($request, $this->toType($request), self::$minimalAttributes))
-            ->map(
-                /**
-                 * @param mixed $value
-                 * @return mixed
-                 */
-                fn ($value) => value($value)
-            )
-            ->reject(
-                /**
-                 * @param mixed $value
-                 */
-                fn ($value): bool => $value instanceof PotentiallyMissing && $value->isMissing()
-            );
+            ->map(fn ($value) => value($value))
+            ->reject(fn ($value) => $value instanceof PotentiallyMissing && $value->isMissing());
     }
 }

@@ -9,11 +9,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;
 use RuntimeException;
-use TiMacDonald\JsonApi\Contracts\AdHocJsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
 use TiMacDonald\JsonApi\Support\Includes;
-use TiMacDonald\JsonApi\Support\NullRelationship;
 
 /**
  * @internal

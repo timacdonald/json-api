@@ -8,16 +8,12 @@ use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use JsonSerializable;
 use Tests\Models\BasicModel;
 use Tests\Resources\BasicJsonApiResource;
 use Tests\Resources\PostResource;
 use Tests\Resources\UserResource;
 use Tests\TestCase;
-use TiMacDonald\JsonApi\Contracts\AdHocJsonApiResource;
-use TiMacDonald\JsonApi\Contracts\Identifiable;
 use TiMacDonald\JsonApi\JsonApiResource;
-use TiMacDonald\JsonApi\ResourceIdentifier;
 
 class RelationshipsTest extends TestCase
 {
@@ -45,7 +41,7 @@ class RelationshipsTest extends TestCase
             protected function toRelationships(Request $request): array
             {
                 return [
-                    'author' => fn () => throw new Exception('xxxx')
+                    'author' => fn () => throw new Exception('xxxx'),
                 ];
             }
         });
@@ -584,10 +580,10 @@ class RelationshipsTest extends TestCase
                                 'id' => 'post-id-2',
                                 'type' => 'basicModels',
                                 'meta' => [],
-                            ]
+                            ],
                         ],
                         'links' => [],
-                        'meta' => []
+                        'meta' => [],
                     ],
                 ],
                 'meta' => [],
@@ -1360,7 +1356,7 @@ class RelationshipsTest extends TestCase
             public function toRelationships(Request $request): array
             {
                 return [
-                    'relation' => fn () => $this->when(true, fn () => new class(new BasicModel([
+                    'relation' => fn () => $this->when(true, fn () => new class (new BasicModel([
                         'id' => '2',
                         'name' => 'relation-name',
                     ])) extends UserResource {
@@ -1389,7 +1385,7 @@ class RelationshipsTest extends TestCase
                         ],
                         'links' => [],
                         'meta' => [],
-                    ]
+                    ],
                 ],
                 'meta' => [],
                 'links' => [],
@@ -1408,7 +1404,7 @@ class RelationshipsTest extends TestCase
                     'relationships' => [],
                     'links' => [],
                     'meta' => [],
-                ]
+                ],
             ],
         ]);
         $this->assertValidJsonApi($response);
@@ -1425,7 +1421,7 @@ class RelationshipsTest extends TestCase
             {
                 return [
                     'relation_1' => fn () => $this->when(false, fn () => ['hello' => 'world']),
-                    'relation_2' => fn () => $this->when(true, fn () => new class(new BasicModel([
+                    'relation_2' => fn () => $this->when(true, fn () => new class (new BasicModel([
                         'id' => '2',
                         'name' => 'relation-name',
                     ])) extends UserResource {
@@ -1454,7 +1450,7 @@ class RelationshipsTest extends TestCase
                         ],
                         'links' => [],
                         'meta' => [],
-                    ]
+                    ],
                 ],
                 'meta' => [],
                 'links' => [],
@@ -1473,7 +1469,7 @@ class RelationshipsTest extends TestCase
                     'relationships' => [],
                     'links' => [],
                     'meta' => [],
-                ]
+                ],
             ],
         ]);
         $this->assertValidJsonApi($response);

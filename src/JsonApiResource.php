@@ -138,8 +138,11 @@ abstract class JsonApiResource extends JsonResource implements Flushable
     /**
      * @see https://github.com/timacdonald/json-api#customising-the-resource-id
      * @see https://jsonapi.org/format/#document-resource-object-identification
+     *
+     * @param Request $request
+     * @return string
      */
-    protected function toId(Request $request): string
+    protected function toId($request)
     {
         return self::idResolver()($this->resource, $request);
     }
@@ -147,8 +150,11 @@ abstract class JsonApiResource extends JsonResource implements Flushable
     /**
      * @see https://github.com/timacdonald/json-api#customising-the-resource-type
      * @see https://jsonapi.org/format/#document-resource-object-identification
+     *
+     * @param Request $request
+     * @return string
      */
-    protected function toType(Request $request): string
+    protected function toType($request)
     {
         return self::typeResolver()($this->resource, $request);
     }
@@ -222,7 +228,7 @@ abstract class JsonApiResource extends JsonResource implements Flushable
             'attributes' => (object) $this->requestedAttributes($request)->all(),
             'relationships' => (object) $this->requestedRelationshipsAsIdentifiers($request)->all(),
             'meta' => (object) array_merge($this->toMeta($request), $this->meta),
-            'links' => (object) $this->parseLinks(array_merge($this->toLinks($request), $this->links))
+            'links' => (object) $this->parseLinks(array_merge($this->toLinks($request), $this->links)),
         ];
     }
 
@@ -245,12 +251,21 @@ abstract class JsonApiResource extends JsonResource implements Flushable
      */
     public static function collection($resource): JsonApiResourceCollection
     {
-        return tap(new JsonApiResourceCollection($resource, static::class), function (JsonApiResourceCollection $collection): void {
+        return tap($this->newCollection($resource), function (JsonApiResourceCollection $collection): void {
             if (property_exists(static::class, 'preserveKeys')) {
                 /** @phpstan-ignore-next-line */
                 $collection->preserveKeys = (new static([]))->preserveKeys === true;
             }
         });
+    }
+
+    /**
+     * @param mixed $resource
+     * @return JsonApiResourceCollection<mixed>
+     */
+    protected function newCollection($resource)
+    {
+        return new JsonApiResourceCollection($resource, static::class);
     }
 
     /**

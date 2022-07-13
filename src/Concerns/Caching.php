@@ -6,6 +6,7 @@ namespace TiMacDonald\JsonApi\Concerns;
 
 use Closure;
 use Illuminate\Support\Collection;
+use TiMacDonald\JsonApi\Contracts\Flushable;
 
 trait Caching
 {
@@ -35,7 +36,7 @@ trait Caching
         $this->typeCache = null;
 
         if ($this->requestedRelationshipsCache !== null) {
-            $this->requestedRelationshipsCache->each->flush();
+            $this->requestedRelationshipsCache->each(fn (Flushable $relation) => $relation->flush());
         }
 
         $this->requestedRelationshipsCache = null;

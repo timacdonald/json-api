@@ -39,7 +39,7 @@ trait Links
     {
         return Collection::make($links)
             ->mapWithKeys(
-                fn ($value, $key) => $value instanceof Link
+                fn (Link|string $value, int|string $key) => $value instanceof Link
                     ? [$value->key() => $value]
                     : [$key => new Link($value)]
             )

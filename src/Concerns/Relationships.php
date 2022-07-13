@@ -13,9 +13,6 @@ use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
 use TiMacDonald\JsonApi\Support\Includes;
 
-/**
- * @internal
- */
 trait Relationships
 {
     /**
@@ -28,7 +25,9 @@ trait Relationships
      */
     public function withIncludePrefix(string $prefix): static
     {
-        return tap($this, fn (JsonApiResource $resource): string => $resource->includePrefix = "{$this->includePrefix}{$prefix}.");
+        $this->includePrefix = "{$this->includePrefix}{$prefix}.");
+
+        return $this;
     }
 
     /**
@@ -37,13 +36,7 @@ trait Relationships
     public function included(Request $request): Collection
     {
         return $this->requestedRelationships($request)
-            ->map(
-                /**
-                 * @param JsonApiResource|JsonApiResourceCollection $include
-                 * @return Collection|JsonApiResource
-                 */
-                fn ($include) => $include->includable()
-            )
+            ->map(fn (JsonApiResource|JsonApiResourceCollection $include): Collection|JsonApiResource => $include->includable())
             ->merge($this->nestedIncluded($request))
             ->flatten()
             ->filter(

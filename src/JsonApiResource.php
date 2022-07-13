@@ -185,7 +185,7 @@ abstract class JsonApiResource extends JsonResource implements Flushable
         });
     }
 
-    public function withRelationshipLink(Closure $callback): self
+    public function withRelationshipLink(Closure $callback): static
     {
         $this->relationshipLinkCallbacks[] = $callback;
 
@@ -209,7 +209,7 @@ abstract class JsonApiResource extends JsonResource implements Flushable
         });
     }
 
-    public function withResourceIdentifier(Closure $callback): self
+    public function withResourceIdentifier(Closure $callback): static
     {
         $this->resourceIdentifierCallbacks[] = $callback;
 

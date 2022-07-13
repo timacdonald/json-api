@@ -32,7 +32,7 @@ trait Attributes
     {
         return Collection::make($this->toAttributes($request))
             ->only(Fields::getInstance()->parse($request, $this->toType($request), self::$minimalAttributes))
-            ->map(fn ($value) => value($value))
-            ->reject(fn ($value) => $value instanceof PotentiallyMissing && $value->isMissing());
+            ->map(fn (mixed $value): mixed => value($value))
+            ->reject(fn (mixed $value): bool => $value instanceof PotentiallyMissing && $value->isMissing());
     }
 }

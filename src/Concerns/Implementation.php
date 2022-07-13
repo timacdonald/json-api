@@ -27,6 +27,6 @@ trait Implementation
      */
     public static function serverImplementationResolver(): Closure
     {
-        return self::$serverImplementationResolver ?? fn () => new JsonApiServerImplementation('1.0');
+        return self::$serverImplementationResolver ?? fn (): JsonApiServerImplementation => new JsonApiServerImplementation('1.0');
     }
 }

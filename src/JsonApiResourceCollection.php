@@ -25,7 +25,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection implements F
         return $this;
     }
 
-    public function withRelationshipLink(Closure $callback): self
+    public function withRelationshipLink(Closure $callback): static
     {
         $this->relationshipLinkCallbacks[] = $callback;
 

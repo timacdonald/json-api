@@ -51,7 +51,7 @@ trait Identification
      */
     private function resolveId(Request $request): string
     {
-        return $this->rememberId(fn () => $this->toId($request));
+        return $this->rememberId(fn (): string => $this->toId($request));
     }
 
     /**
@@ -59,7 +59,7 @@ trait Identification
      */
     private function resolveType(Request $request): string
     {
-        return $this->rememberType(fn () => $this->toType($request));
+        return $this->rememberType(fn (): string => $this->toType($request));
     }
 
     /**
@@ -67,7 +67,7 @@ trait Identification
      */
     private static function idResolver(): Closure
     {
-        return self::$idResolver ??= static function ($resource) {
+        return self::$idResolver ??= static function ($resource): string {
             if (! $resource instanceof Model) {
                 throw ResourceIdentificationException::attemptingToDetermineIdFor($resource);
             }
@@ -85,7 +85,7 @@ trait Identification
      */
     private static function typeResolver(): Closure
     {
-        return self::$typeResolver ??= static function ($resource) {
+        return self::$typeResolver ??= static function ($resource): string {
             if (! $resource instanceof Model) {
                 throw ResourceIdentificationException::attemptingToDetermineTypeFor($resource);
             }

@@ -8,14 +8,13 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-
 use function explode;
 use function is_array;
 
 /**
  * @internal
  */
-final class Includes
+class Includes
 {
     private static ?Includes $instance;
 

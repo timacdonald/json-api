@@ -19,7 +19,6 @@ return (new PhpCsFixer\Config())
         'explicit_string_variable' => true,
         'trailing_comma_in_multiline' => true,
         'array_indentation' => true,
-        'static_lambda' => true,
         'ordered_imports' => ['imports_order' => ['class', 'function', 'const'], 'sort_algorithm' => 'alpha'],
     ])
     ->setRiskyAllowed(true)

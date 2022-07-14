@@ -75,7 +75,7 @@ trait Relationships
     {
         return $this->rememberRequestRelationships(fn (): Collection => Collection::make($this->toRelationships($request))
             ->only(Includes::getInstance()->parse($request, $this->includePrefix))
-            ->map(static function (Closure $value, string $prefix): null|JsonApiResource|JsonApiResourceCollection {
+            ->map(function (Closure $value, string $prefix): null|JsonApiResource|JsonApiResourceCollection {
                 $resource = $value();
 
                 if ($resource instanceof PotentiallyMissing && $resource->isMissing()) {

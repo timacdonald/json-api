@@ -8,10 +8,9 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
-use TiMacDonald\JsonApi\Contracts\Flushable;
 use TiMacDonald\JsonApi\Support\Cache;
 
-class JsonApiResourceCollection extends AnonymousResourceCollection implements Flushable
+class JsonApiResourceCollection extends AnonymousResourceCollection
 {
     /**
      * @var array<Closure(RelationshipLink): void>
@@ -40,9 +39,9 @@ class JsonApiResourceCollection extends AnonymousResourceCollection implements F
     {
         return [
             'included' => $this->collection
-                ->map(fn (JsonApiResource $resource): Collection => $resource->included($request))
+                ->map(static fn (JsonApiResource $resource): Collection => $resource->included($request))
                 ->flatten()
-                ->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request)),
+                ->uniqueStrict(static fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request)),
             'jsonapi' => JsonApiResource::serverImplementationResolver()($request),
         ];
     }
@@ -62,7 +61,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection implements F
      */
     public function paginationInformation(Request $request, array $paginated, array $default): array
     {
-        $default['links'] = array_filter($default['links'], fn (?string $link) => $link !== null);
+        $default['links'] = array_filter($default['links'], static fn (?string $link) => $link !== null);
 
         return $default;
     }
@@ -73,8 +72,8 @@ class JsonApiResourceCollection extends AnonymousResourceCollection implements F
      */
     public function withIncludePrefix(string $prefix): self
     {
-        return tap($this, function (JsonApiResourceCollection $resource) use ($prefix): void {
-            $resource->collection->each(fn (JsonApiResource $resource): JsonApiResource => $resource->withIncludePrefix($prefix));
+        return tap($this, static function (JsonApiResourceCollection $resource) use ($prefix): void {
+            $resource->collection->each(static fn (JsonApiResource $resource): JsonApiResource => $resource->withIncludePrefix($prefix));
         });
     }
 
@@ -83,14 +82,14 @@ class JsonApiResourceCollection extends AnonymousResourceCollection implements F
      */
     public function included(Request $request): Collection
     {
-        return $this->collection->map(fn (JsonApiResource $resource): Collection => $resource->included($request));
+        return $this->collection->map(static fn (JsonApiResource $resource): Collection => $resource->included($request));
     }
 
     public function toResourceLink(Request $request): RelationshipCollectionLink
     {
         $resourceLinks = $this->collection
-            ->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request))
-            ->map(fn (JsonApiResource $resource): ResourceIdentifier => $resource->resolveResourceIdentifier($request));
+            ->uniqueStrict(static fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request))
+            ->map(static fn (JsonApiResource $resource): ResourceIdentifier => $resource->resolveResourceIdentifier($request));
 
         return new RelationshipCollectionLink($resourceLinks->all());
     }
@@ -121,6 +120,6 @@ class JsonApiResourceCollection extends AnonymousResourceCollection implements F
      */
     public function flush(): void
     {
-        $this->collection->each(fn (JsonApiResource $resource) => $resource->flush());
+        $this->collection->each(static fn (JsonApiResource $resource) => $resource->flush());
     }
 }

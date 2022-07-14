@@ -73,7 +73,6 @@ trait Identification
             }
 
             /**
-             * @see https://github.com/timacdonald/json-api#customising-the-resource-id
              * @phpstan-ignore-next-line
              */
             return (string) $resource->getKey();

@@ -10,11 +10,10 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Collection;
 use stdClass;
-use TiMacDonald\JsonApi\Contracts\Flushable;
 use TiMacDonald\JsonApi\Support\Cache;
 use function property_exists;
 
-abstract class JsonApiResource extends JsonResource implements Flushable
+abstract class JsonApiResource extends JsonResource
 {
     use Concerns\Attributes;
     use Concerns\Caching;
@@ -240,7 +239,7 @@ abstract class JsonApiResource extends JsonResource implements Flushable
     {
         return [
             'included' => $this->included($request)
-                ->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request)),
+                ->uniqueStrict(static fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request)),
             'jsonapi' => self::serverImplementationResolver()($request),
         ];
     }
@@ -251,7 +250,7 @@ abstract class JsonApiResource extends JsonResource implements Flushable
      */
     public static function collection($resource): JsonApiResourceCollection
     {
-        return tap($this->newCollection($resource), function (JsonApiResourceCollection $collection): void {
+        return tap($this->newCollection($resource), static function (JsonApiResourceCollection $collection): void {
             if (property_exists(static::class, 'preserveKeys')) {
                 /** @phpstan-ignore-next-line */
                 $collection->preserveKeys = (new static([]))->preserveKeys === true;

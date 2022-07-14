@@ -10,7 +10,7 @@ class TestMigrations extends Migration
 {
     public function up(): void
     {
-        Schema::create('basic_models', function (Blueprint $table): void {
+        Schema::create('basic_models', static function (Blueprint $table): void {
             $table->id();
             $table->string('name');
             $table->timestamps();

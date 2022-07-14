@@ -24,7 +24,7 @@ final class Link implements JsonSerializable
      */
     public static function self(string $href, array $meta = []): self
     {
-        return tap(new self($href, $meta), fn (self $instance): string => $instance->key = 'self');
+        return tap(new self($href, $meta), static fn (self $instance): string => $instance->key = 'self');
     }
 
     /**
@@ -32,7 +32,7 @@ final class Link implements JsonSerializable
      */
     public static function related(string $href, array $meta = []): self
     {
-        return tap(new self($href, $meta), fn (self $instance): string => $instance->key = 'related');
+        return tap(new self($href, $meta), static fn (self $instance): string => $instance->key = 'related');
     }
 
     /**

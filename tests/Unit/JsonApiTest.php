@@ -28,7 +28,7 @@ class JsonApiTest extends TestCase
             'id' => 'user-id',
             'name' => 'user-name',
         ]));
-        Route::get('test-route', fn () => UserResource::make($user));
+        Route::get('test-route', static fn () => UserResource::make($user));
 
         $response = $this->getJson('test-route');
 
@@ -65,7 +65,7 @@ class JsonApiTest extends TestCase
                 'name' => 'user-name-2',
             ])),
         ];
-        Route::get('test-route', fn () => UserResource::collection($users));
+        Route::get('test-route', static fn () => UserResource::collection($users));
 
         $response = $this->getJson('test-route');
 
@@ -104,7 +104,7 @@ class JsonApiTest extends TestCase
 
     public function testItCastsEmptyAttributesAndRelationshipsToAnObject(): void
     {
-        Route::get('test-route', fn () => UserResource::make((new BasicModel(['id' => 'user-id']))));
+        Route::get('test-route', static fn () => UserResource::make((new BasicModel(['id' => 'user-id']))));
 
         $response = $this->getJson('test-route?fields[basicModels]=');
 
@@ -114,7 +114,7 @@ class JsonApiTest extends TestCase
 
     public function testItAddsMetaToIndividualResources(): void
     {
-        Route::get('test-route', fn () => new class ((new BasicModel(['id' => 'expected-id']))) extends JsonApiResource {
+        Route::get('test-route', static fn () => new class ((new BasicModel(['id' => 'expected-id']))) extends JsonApiResource {
             protected function toMeta(Request $request): array
             {
                 return [
@@ -148,7 +148,7 @@ class JsonApiTest extends TestCase
 
     public function testItAddsArbitraryLinksToIndividualResources(): void
     {
-        Route::get('test-route', fn () => new class ((new BasicModel(['id' => 'expected-id']))) extends JsonApiResource {
+        Route::get('test-route', static fn () => new class ((new BasicModel(['id' => 'expected-id']))) extends JsonApiResource {
             protected function toLinks(Request $request): array
             {
                 return [
@@ -185,7 +185,7 @@ class JsonApiTest extends TestCase
 
     public function testItHandlesSelfAndRelatedLinks(): void
     {
-        Route::get('test-route', fn () => new class ((new BasicModel(['id' => 'expected-id']))) extends JsonApiResource {
+        Route::get('test-route', static fn () => new class ((new BasicModel(['id' => 'expected-id']))) extends JsonApiResource {
             protected function toLinks(Request $request): array
             {
                 return [
@@ -236,7 +236,7 @@ class JsonApiTest extends TestCase
 
     public function testItSetsTheContentTypeHeaderForASingleResource(): void
     {
-        Route::get('test-route', fn () => BasicJsonApiResource::make((new BasicModel(['id' => 'xxxx']))));
+        Route::get('test-route', static fn () => BasicJsonApiResource::make((new BasicModel(['id' => 'xxxx']))));
 
         $response = $this->getJson('test-route');
 
@@ -246,7 +246,7 @@ class JsonApiTest extends TestCase
 
     public function testItSetsTheContentTypeHeaderForACollectionOfResources(): void
     {
-        Route::get('test-route', fn () => BasicJsonApiResource::collection([(new BasicModel(['id' => 'xxxx']))]));
+        Route::get('test-route', static fn () => BasicJsonApiResource::collection([(new BasicModel(['id' => 'xxxx']))]));
 
         $response = $this->getJson('test-route');
 
@@ -256,8 +256,8 @@ class JsonApiTest extends TestCase
 
     public function testItCanCustomiseTheTypeResolution(): void
     {
-        JsonApiResource::resolveTypeUsing(fn (BasicModel $model): string => get_class($model));
-        Route::get('test-route', fn () => BasicJsonApiResource::make((new BasicModel(['id' => 'expected-id']))));
+        JsonApiResource::resolveTypeUsing(static fn (BasicModel $model): string => get_class($model));
+        Route::get('test-route', static fn () => BasicJsonApiResource::make((new BasicModel(['id' => 'expected-id']))));
 
         $response = $this->get("test-route");
 
@@ -283,8 +283,8 @@ class JsonApiTest extends TestCase
 
     public function testItCanCustomiseTheIdResolution(): void
     {
-        JsonApiResource::resolveIdUsing(fn (BasicModel $model): string => 'expected-id');
-        Route::get('test-route', fn () => BasicJsonApiResource::make((new BasicModel(['id' => 'missing-id']))));
+        JsonApiResource::resolveIdUsing(static fn (BasicModel $model): string => 'expected-id');
+        Route::get('test-route', static fn () => BasicJsonApiResource::make((new BasicModel(['id' => 'missing-id']))));
 
         $response = $this->get("test-route");
 
@@ -310,7 +310,7 @@ class JsonApiTest extends TestCase
 
     public function testItClearsTheHelperCachesAfterPreparingResponseForASingleResource(): void
     {
-        Route::get('test-route', fn () => BasicJsonApiResource::make((new BasicModel(['id' => 'missing-id']))));
+        Route::get('test-route', static fn () => BasicJsonApiResource::make((new BasicModel(['id' => 'missing-id']))));
 
         $response = $this->get("test-route?include=test&fields[basicModels]=a");
 
@@ -336,7 +336,7 @@ class JsonApiTest extends TestCase
 
     public function testItClearsTheHelperCachesAfterPreparingResponseForACollectionOfResources(): void
     {
-        Route::get('test-route', fn () => BasicJsonApiResource::collection([ (new BasicModel(['id' => 'missing-id'])) ]));
+        Route::get('test-route', static fn () => BasicJsonApiResource::collection([ (new BasicModel(['id' => 'missing-id'])) ]));
 
         $response = $this->get("test-route?include=test&fields[basicModels]=a");
 
@@ -391,14 +391,14 @@ class JsonApiTest extends TestCase
 
     public function testItCanSpecifyAnImplementation(): void
     {
-        BasicJsonApiResource::resolveServerImplementationUsing(fn () => new JsonApiServerImplementation('1.4.3', [
+        BasicJsonApiResource::resolveServerImplementationUsing(static fn () => new JsonApiServerImplementation('1.4.3', [
             'secure' => true,
         ]));
         $user = new BasicModel([
             'id' => 'user-id',
             'name' => 'user-name',
         ]);
-        Route::get('test-route', fn () => UserResource::make($user));
+        Route::get('test-route', static fn () => UserResource::make($user));
 
         $response = $this->getJson('test-route');
 
@@ -444,7 +444,7 @@ class JsonApiTest extends TestCase
         // 2. Single resource ✅
         // 3. Empty collection of resources.
         // 4. Collection of resources.
-        JsonApiResource::resolveServerImplementationUsing(fn () => (new JsonApiServerImplementation('1.0'))->withMeta([
+        JsonApiResource::resolveServerImplementationUsing(static fn () => (new JsonApiServerImplementation('1.0'))->withMeta([
             'implementation' => 'meta',
         ]));
         $user = (new BasicModel([
@@ -521,11 +521,11 @@ class JsonApiTest extends TestCase
                         ]),
                     ])->withResourceIdentifier(
                         // This should not be in the response.
-                        fn (ResourceIdentifier $identifier) => $identifier->withMeta([
+                        static fn (ResourceIdentifier $identifier) => $identifier->withMeta([
                             'profile-external-resource-identifier' => 'meta',
                         ])
                     )->withRelationshipLink(
-                        fn (RelationshipLink $link) => $link->withMeta([
+                        static fn (RelationshipLink $link) => $link->withMeta([
                             'profile-external-resource-link' => 'meta',
                         ])->withLinks([
                             Link::related('profile-external-resource-link.com')->withMeta([
@@ -574,11 +574,11 @@ class JsonApiTest extends TestCase
                             'avatar-external.com' => 'meta',
                         ]),
                     ])->withResourceIdentifier(
-                        fn (ResourceIdentifier $identifier) => $identifier->withMeta([
+                        static fn (ResourceIdentifier $identifier) => $identifier->withMeta([
                             'avatar-external-resource-identifier' => 'meta',
                         ])
                     )->withRelationshipLink(
-                        fn (RelationshipLink $link) => $link->withMeta([
+                        static fn (RelationshipLink $link) => $link->withMeta([
                             'avatar-external-resource-link' => 'meta',
                         ])->withLinks([
                             Link::related('avatar-external-resource-link.com')->withMeta([
@@ -625,7 +625,7 @@ class JsonApiTest extends TestCase
                         public static function collection($resource): JsonApiResourceCollection
                         {
                             return parent::collection($resource)
-                                ->withRelationshipLink(fn ($link) => $link->withLinks([
+                                ->withRelationshipLink(static fn ($link) => $link->withLinks([
                                     Link::self('posts-collection-internal-resource-link.com', [
                                         'posts-collection-internal-resource-link' => 'meta',
                                     ]),
@@ -633,26 +633,26 @@ class JsonApiTest extends TestCase
                                     'posts-internal-collection-resource-link' => 'meta',
                                 ]))
                                 ->map(
-                                    fn (JsonApiResource $resource) => $resource->withMeta([
+                                    static fn (JsonApiResource $resource) => $resource->withMeta([
                                         'posts-internal-collection' => 'meta',
                                     ])->withLinks([
                                         Link::related('posts-internal-collection.com')->withMeta([
                                             'posts-internal-collection.com' => 'meta',
                                         ]),
-                                    ])->withResourceIdentifier(fn ($identifier) => $identifier->withMeta([
+                                    ])->withResourceIdentifier(static fn ($identifier) => $identifier->withMeta([
                                         'posts-internal-collection-resource-identifier' => 'meta',
                                     ]))
                                 );
                         }
                     })::collection($this->posts)
-                        ->withRelationshipLink(fn ($link) => $link->withLinks([
+                        ->withRelationshipLink(static fn ($link) => $link->withLinks([
                             Link::related('posts-external-resource-link.com', [
                                 'posts-external-resource-link' => 'meta',
                             ]),
                         ])->withMeta([
                             'posts-external-resource-link' => 'meta',
                         ]))
-                        ->map(fn ($post) => $post->withResourceIdentifier(fn ($identifier) => $identifier->withMeta([
+                        ->map(static fn ($post) => $post->withResourceIdentifier(static fn ($identifier) => $identifier->withMeta([
                             'posts-external-resource-identifier' => 'meta',
                         ]))->withMeta([
                             'posts-external' => 'meta',

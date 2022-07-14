@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;
 use RuntimeException;
+use TiMacDonald\JsonApi\Exceptions\UnknownRelationshipException;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
 use TiMacDonald\JsonApi\Support\Includes;
@@ -36,15 +37,12 @@ trait Relationships
     public function included(Request $request): Collection
     {
         return $this->requestedRelationships($request)
-            ->map(fn (JsonApiResource|JsonApiResourceCollection $include): Collection|JsonApiResource => $include->includable())
+            ->map(
+                fn (JsonApiResource|JsonApiResourceCollection $include): Collection|JsonApiResource => $include->includable()
+            )
             ->merge($this->nestedIncluded($request))
             ->flatten()
-            ->filter(
-                /**
-                 * @param JsonApiResource $resource
-                 */
-                fn ($resource): bool => $resource->shouldBePresentInIncludes()
-            )
+            ->filter(fn (JsonApiResource $resource): bool => $resource->shouldBePresentInIncludes())
             ->values();
     }
 
@@ -55,10 +53,7 @@ trait Relationships
     {
         return $this->requestedRelationships($request)
             ->flatMap(
-                /**
-                 * @param JsonApiResource|JsonApiResourceCollection $resource
-                 */
-                fn ($resource, string $key): Collection => $resource->included($request)
+                fn (JsonApiResource|JsonApiResourceCollection $resource, string $key): Collection => $resource->included($request)
             );
     }
 
@@ -69,11 +64,7 @@ trait Relationships
     {
         return $this->requestedRelationships($request)
             ->map(
-                /**
-                 * @param JsonApiResource|JsonApiResourceCollection $resource
-                 * @return mixed
-                 */
-                fn ($resource) => $resource->resolveRelationshipLink($request)
+                fn (JsonApiResource|JsonApiResourceCollection $resource): mixed => $resource->resolveRelationshipLink($request)
             );
     }
 
@@ -84,29 +75,19 @@ trait Relationships
     {
         return $this->rememberRequestRelationships(fn (): Collection => Collection::make($this->toRelationships($request))
             ->only(Includes::getInstance()->parse($request, $this->includePrefix))
-            ->map(
-                /**
-                 * @return JsonApiResource|JsonApiResourceCollection|null
-                 */
-                function (Closure $value, string $prefix) {
-                    $resource = $value();
+            ->map(static function (Closure $value, string $prefix): null|JsonApiResource|JsonApiResourceCollection {
+                $resource = $value();
 
-                    if ($resource instanceof PotentiallyMissing && $resource->isMissing()) {
-                        return null;
-                    }
-
-                    if ($resource instanceof JsonApiResource || $resource instanceof JsonApiResourceCollection) {
-                        return $resource->withIncludePrefix($prefix);
-                    }
-
-                    throw new RuntimeException('Unknown relationship found. Your relationships should always return a class that extend the JsonApiResource.');
+                if ($resource instanceof PotentiallyMissing && $resource->isMissing()) {
+                    return null;
                 }
-            )->reject(
-                /**
-                 * @param JsonApiResource|JsonApiResourceCollection|null $resource
-                 */
-                fn ($resource): bool => $resource === null
-            ));
+
+                if ($resource instanceof JsonApiResource || $resource instanceof JsonApiResourceCollection) {
+                    return $resource->withIncludePrefix($prefix);
+                }
+
+                throw UnknownRelationshipException::from($resource);
+            })->reject(fn (JsonApiResource|JsonApiResourceCollection $resource): bool => $resource === null)); 
     }
 
     /**

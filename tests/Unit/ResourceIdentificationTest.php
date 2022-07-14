@@ -19,7 +19,7 @@ class ResourceIdentificationTest extends TestCase
         $user = (new BasicModel([
             'id' => 'user-id',
         ]));
-        Route::get('test-route', fn () => (new BasicJsonApiResource($user)));
+        Route::get('test-route', static fn () => (new BasicJsonApiResource($user)));
 
         $response = $this->getJson('test-route');
 
@@ -47,7 +47,7 @@ class ResourceIdentificationTest extends TestCase
         $user = (new BasicModel([
             'id' => 55,
         ]))->setKeyType('int');
-        Route::get('test-route', fn () => (new BasicJsonApiResource($user)));
+        Route::get('test-route', static fn () => (new BasicJsonApiResource($user)));
 
         self::assertSame(55, $user->getKey());
 
@@ -75,7 +75,7 @@ class ResourceIdentificationTest extends TestCase
     public function testItThrowsWhenUnableToAutomaticallyResolveTheIdOfANonObject(): void
     {
         $array = [];
-        Route::get('test-route', fn () => (new BasicJsonApiResource($array)));
+        Route::get('test-route', static fn () => (new BasicJsonApiResource($array)));
 
         $this->expectException(ResourceIdentificationException::class);
         $this->expectExceptionMessage('Unable to resolve resource object id for array.');
@@ -86,7 +86,7 @@ class ResourceIdentificationTest extends TestCase
     public function testItThrowsWhenUnableToAutomaticallyResolveTheIdOfAnObject(): void
     {
         $array = new stdClass();
-        Route::get('test-route', fn () => (new BasicJsonApiResource($array)));
+        Route::get('test-route', static fn () => (new BasicJsonApiResource($array)));
 
         $this->expectException(ResourceIdentificationException::class);
         $this->expectExceptionMessage('Unable to resolve resource object id for stdClass.');
@@ -97,7 +97,7 @@ class ResourceIdentificationTest extends TestCase
     public function testItThrowsWhenUnableToAutomaticallyResolveTheTypeOfANonObject(): void
     {
         $array = [];
-        Route::get('test-route', fn () => new class ($array) extends BasicJsonApiResource {
+        Route::get('test-route', static fn () => new class ($array) extends BasicJsonApiResource {
             protected function toId(Request $request): string
             {
                 return 'id';
@@ -113,7 +113,7 @@ class ResourceIdentificationTest extends TestCase
     public function testItThrowsWhenUnableToAutomaticallyResolveTypeOfAnObject(): void
     {
         $object = new stdClass();
-        Route::get('test-route', fn () => new class ($object) extends BasicJsonApiResource {
+        Route::get('test-route', static fn () => new class ($object) extends BasicJsonApiResource {
             protected function toId(Request $request): string
             {
                 return 'id';

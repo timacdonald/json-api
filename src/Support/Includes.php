@@ -8,7 +8,6 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use TiMacDonald\JsonApi\Contracts\Flushable;
 
 use function explode;
 use function is_array;
@@ -16,7 +15,7 @@ use function is_array;
 /**
  * @internal
  */
-final class Includes implements Flushable
+final class Includes
 {
     private static ?Includes $instance;
 
@@ -37,20 +36,20 @@ final class Includes implements Flushable
 
     public function parse(Request $request, string $prefix): Collection
     {
-        return $this->rememberIncludes($prefix, function () use ($request, $prefix): Collection {
+        return $this->rememberIncludes($prefix, static function () use ($request, $prefix): Collection {
             $includes = $request->query('include') ?? '';
 
             abort_if(is_array($includes), 400, 'The include parameter must be a comma seperated list of relationship paths.');
 
             /** @var Collection */
             $includes = Collection::make(explode(',', $includes))
-                ->when($prefix !== '', function (Collection $includes) use ($prefix): Collection {
-                    return $includes->filter(fn (string $include): bool => Str::startsWith($include, $prefix));
+                ->when($prefix !== '', static function (Collection $includes) use ($prefix): Collection {
+                    return $includes->filter(static fn (string $include): bool => str_starts_with($include, $prefix));
                 });
 
-            return $includes->map(fn ($include): string => Str::before(Str::after($include, $prefix), '.'))
+            return $includes->map(static fn ($include): string => Str::before(Str::after($include, $prefix), '.'))
                 ->uniqueStrict()
-                ->filter(fn (string $include): bool => $include !== '');
+                ->filter(static fn (string $include): bool => $include !== '');
         });
     }
 

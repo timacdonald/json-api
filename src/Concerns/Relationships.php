@@ -8,7 +8,6 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;
-use RuntimeException;
 use TiMacDonald\JsonApi\Exceptions\UnknownRelationshipException;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
@@ -28,7 +27,7 @@ trait Relationships
      */
     public function withIncludePrefix(string $prefix): static
     {
-        $this->includePrefix = "{$this->includePrefix}{$prefix}.");
+        $this->includePrefix = "{$this->includePrefix}{$prefix}.";
 
         return $this;
     }
@@ -83,7 +82,7 @@ trait Relationships
                 }
 
                 throw UnknownRelationshipException::from($resource);
-            })->reject(fn (JsonApiResource|JsonApiResourceCollection $resource): bool => $resource === null)); 
+            })->reject(fn (JsonApiResource|JsonApiResourceCollection $resource): bool => $resource === null));
     }
 
     /**

@@ -11,6 +11,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Collection;
 use stdClass;
 use TiMacDonald\JsonApi\Support\Cache;
+
 use function property_exists;
 
 abstract class JsonApiResource extends JsonResource

@@ -8,6 +8,7 @@ include __DIR__.'../../../vendor/autoload.php';
 
 use Illuminate\Http\Request;
 use TiMacDonald\JsonApi\Support\Includes;
+
 use function count;
 
 $numberOfResourcesReturned = 1_000;

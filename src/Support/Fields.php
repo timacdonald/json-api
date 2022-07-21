@@ -6,6 +6,7 @@ namespace TiMacDonald\JsonApi\Support;
 
 use Closure;
 use Illuminate\Http\Request;
+
 use function array_key_exists;
 use function explode;
 use function is_string;
@@ -13,7 +14,7 @@ use function is_string;
 /**
  * @internal
  */
-class Fields
+final class Fields
 {
     private static ?Fields $instance;
 

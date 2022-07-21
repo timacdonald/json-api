@@ -10,6 +10,7 @@ use Orchestra\Testbench\TestCase as BaseTestCase;
 use RuntimeException;
 use TiMacDonald\JsonApi\Support\Fields;
 use TiMacDonald\JsonApi\Support\Includes;
+
 use function is_string;
 
 class TestCase extends BaseTestCase

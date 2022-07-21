@@ -8,13 +8,14 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+
 use function explode;
 use function is_array;
 
 /**
  * @internal
  */
-class Includes
+final class Includes
 {
     private static ?Includes $instance;
 
@@ -40,13 +41,11 @@ class Includes
 
             abort_if(is_array($includes), 400, 'The include parameter must be a comma seperated list of relationship paths.');
 
-            /** @var Collection */
-            $includes = Collection::make(explode(',', $includes))
+            return Collection::make(explode(',', $includes))
                 ->when($prefix !== '', function (Collection $includes) use ($prefix): Collection {
                     return $includes->filter(fn (string $include): bool => str_starts_with($include, $prefix));
-                });
-
-            return $includes->map(fn ($include): string => Str::before(Str::after($include, $prefix), '.'))
+                })
+                ->map(fn ($include): string => Str::before(Str::after($include, $prefix), '.'))
                 ->uniqueStrict()
                 ->filter(fn (string $include): bool => $include !== '');
         });

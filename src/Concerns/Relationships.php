@@ -39,9 +39,7 @@ trait Relationships
     public function included(Request $request): Collection
     {
         return $this->requestedRelationships($request)
-            ->map(
-                fn (JsonApiResource|JsonApiResourceCollection $include): Collection|JsonApiResource => $include->includable()
-            )
+            ->map(fn (JsonApiResource|JsonApiResourceCollection $include): Collection|JsonApiResource => $include->includable())
             ->merge($this->nestedIncluded($request))
             ->flatten()
             ->filter(fn (JsonApiResource $resource): bool => $resource->shouldBePresentInIncludes())
@@ -54,9 +52,7 @@ trait Relationships
     private function nestedIncluded(Request $request): Collection
     {
         return $this->requestedRelationships($request)
-            ->flatMap(
-                fn (JsonApiResource|JsonApiResourceCollection $resource, string $key): Collection => $resource->included($request)
-            );
+            ->flatMap(fn (JsonApiResource|JsonApiResourceCollection $resource, string $key): Collection => $resource->included($request));
     }
 
     /**
@@ -65,9 +61,7 @@ trait Relationships
     private function requestedRelationshipsAsIdentifiers(Request $request): Collection
     {
         return $this->requestedRelationships($request)
-            ->map(
-                fn (JsonApiResource|JsonApiResourceCollection $resource): RelationshipLink|RelationshipCollectionLink => $resource->resolveRelationshipLink($request)
-            );
+            ->map(fn (JsonApiResource|JsonApiResourceCollection $resource): RelationshipLink|RelationshipCollectionLink => $resource->resolveRelationshipLink($request));
     }
 
     /**

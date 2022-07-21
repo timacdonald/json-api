@@ -7,7 +7,6 @@ namespace TiMacDonald\JsonApi\Concerns;
 use Closure;
 use TiMacDonald\JsonApi\JsonApiServerImplementation;
 
-// TODO: Should this be something you control on a per response level instead? withImplementation or something?
 trait Implementation
 {
     /**

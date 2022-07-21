@@ -7,6 +7,8 @@ namespace TiMacDonald\JsonApi\Concerns;
 trait Meta
 {
     /**
+     * @internal
+     *
      * @var array<string, mixed> $meta
      */
     private array $meta = [];

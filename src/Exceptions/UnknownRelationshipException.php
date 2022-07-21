@@ -6,10 +6,7 @@ use Exception;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
 
-/**
- * @internal
- */
-class UnknownRelationshipException extends Exception
+final class UnknownRelationshipException extends Exception
 {
     public static function from(mixed $resource)
     {

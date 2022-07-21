@@ -18,6 +18,7 @@ use TiMacDonald\JsonApi\RelationshipLink;
 use TiMacDonald\JsonApi\ResourceIdentifier;
 use TiMacDonald\JsonApi\Support\Fields;
 use TiMacDonald\JsonApi\Support\Includes;
+
 use function get_class;
 
 class JsonApiTest extends TestCase

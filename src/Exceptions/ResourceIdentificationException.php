@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace TiMacDonald\JsonApi\Exceptions;
 
 use RuntimeException;
+
 use function get_class;
 use function gettype;
 use function is_object;
 
-/**
- * @internal
- */
-class ResourceIdentificationException extends RuntimeException
+final class ResourceIdentificationException extends RuntimeException
 {
     public static function attemptingToDetermineIdFor(mixed $model): self
     {

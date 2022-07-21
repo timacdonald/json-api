@@ -35,7 +35,9 @@ trait Caching
         $this->typeCache = null;
 
         if ($this->requestedRelationshipsCache !== null) {
-            $this->requestedRelationshipsCache->each(fn (Flushable $relation) => $relation->flush());
+            $this->requestedRelationshipsCache->each(
+                fn (JsonApiResource|JsonApiResourceCollection $relation) => $relation->flush()
+            );
         }
 
         $this->requestedRelationshipsCache = null;

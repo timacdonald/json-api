@@ -37,7 +37,7 @@ final class RelationshipLink implements JsonSerializable
         return [
             'data' => $this->data,
             'meta' => (object) $this->meta,
-            'links' => (object) $this->parseLinks($this->links),
+            'links' => (object) self::parseLinks($this->links),
         ];
     }
 }

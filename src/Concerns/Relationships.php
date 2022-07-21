@@ -12,6 +12,8 @@ use RuntimeException;
 use TiMacDonald\JsonApi\Exceptions\UnknownRelationshipException;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
+use TiMacDonald\JsonApi\RelationshipCollectionLink;
+use TiMacDonald\JsonApi\RelationshipLink;
 use TiMacDonald\JsonApi\Support\Includes;
 
 trait Relationships
@@ -64,7 +66,7 @@ trait Relationships
     {
         return $this->requestedRelationships($request)
             ->map(
-                fn (JsonApiResource|JsonApiResourceCollection $resource): mixed => $resource->resolveRelationshipLink($request)
+                fn (JsonApiResource|JsonApiResourceCollection $resource): RelationshipLink|RelationshipCollectionLink => $resource->resolveRelationshipLink($request)
             );
     }
 

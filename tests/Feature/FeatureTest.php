@@ -6,7 +6,6 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Str;
 use Tests\Models\BasicModel;
 use Tests\Resources\UserResource;
 use Tests\TestCase;

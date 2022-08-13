@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi\Concerns;
 
-use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;

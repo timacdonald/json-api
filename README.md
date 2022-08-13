@@ -331,7 +331,6 @@ Relationships can be resolved deeply and also multiple relationship paths can be
 # Support
 
 - We do not promise named parameter support.
-- If a method is not documented in these docs, you should assume it is an internal API that can change at any time.
 
 ## Credits
 
@@ -340,37 +339,3 @@ Relationships can be resolved deeply and also multiple relationship paths can be
 - [All Contributors](../../contributors)
 
 And a special (vegi) thanks to [Caneco](https://twitter.com/caneco) for the logo ✨
-
-# Coming soon...
-
-- [ ] Handle loading relations on a already in memory object with Spatie Query builder (PR)
-- [ ] Investigate collection count support
-- [ ] a contract that other classes can implement to support the JSON:API spec as relationships? Can we have it work at a top level as well? Would that even make sense? Maybe be providing a toResponse implementation?
-
-# To document
-
-- [ ] Document loading things via Spatie Query Builder
-- [ ] `->when()` stuff for attributes and relationships
-- [ ] document how you could handle type mapping in config file class > type
-- [ ] caching
- - [ ] flushing the cache
- - [ ] caching id and type
- - [ ] caching includes and fields
- - [ ] how it clears itself on toResponse
- - [ ] that the goal is to have a consistent output at all levels, hence the maximal dataset for empty values
- - [ ] Link object and meta
-
-# Not yet supported
-- [ ] Top level links & meta - how would you modify this for a collection? Top level links need to merge with pagination links
-  - [ ] decide how to handle top level keys for single and collections (static? should collections have to be extended to specify the values? or can there be static methods on the single resource for the collection?)
-- [ ] returning a resource as `null` as the Laravel resource does not support this. Is possible to support locally, but it might be unexpected. Perhaps a PR to Laravel is best?
-- [ ] Responses that contain only resource identifiers (related)
-- [ ] `400` when requesting relationships that are not present.
-- [ ] Converting non-json api resources to json resources. Needs to support both single and collection of resources.
-
----
-
-Notes
-- How do you get the request when making a collection.
-- What does it look like to create a custom collection class instead of chaining.
-- Links can go against the spec with arbitrary names.

@@ -3,9 +3,10 @@
     "description": "A Lightweight JSON:API Resource for Laravel",
     "keywords": [
         "laravel",
-        "json-api",
-        "jsonapi",
-        "Json API"
+        "json",
+        "api",
+        "resource",
+        "JSON:API"
     ],
     "license": "MIT",
     "authors": [
@@ -49,23 +50,6 @@
         ],
         "post-update-cmd": [
             "@composer bin all update --ansi"
-        ],
-        "fix": [
-            "clear",
-            "@composer normalize",
-            "./vendor/bin/php-cs-fixer fix"
-        ],
-        "lint": [
-            "clear",
-            "@composer normalize --dry-run",
-            "./vendor/bin/php-cs-fixer fix --dry-run",
-            "./vendor/bin/psalm --threads=8",
-            "./vendor/bin/phpstan analyse"
-        ],
-        "test": [
-            "clear",
-            "./vendor/bin/phpunit",
-            "./vendor/bin/infection --threads=8"
         ]
     },
     "support": {

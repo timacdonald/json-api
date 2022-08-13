@@ -11,8 +11,21 @@ trait Implementation
 {
     /**
      * @internal
+     *
+     * @var ?callable
      */
-    private static ?Closure $serverImplementationResolver = null;
+    private static $serverImplementationResolver = null;
+
+    /**
+     * @api
+     *
+     * @param callable $resolver
+     * @return void
+     */
+    public static function resolveServerImplementationUsing($resolver)
+    {
+        self::$serverImplementationResolver = $resolver;
+    }
 
     /**
      * @internal

@@ -34,111 +34,54 @@ abstract class JsonApiResource extends JsonResource
      */
     private array $relationshipLinkCallbacks = [];
 
+    // TODO should all these methods be public lie toArray() ?
     /**
-     * @see https://github.com/timacdonald/json-api#customising-the-resource-id
-     * @see https://jsonapi.org/format/#document-resource-object-identification
-     */
-    public static function resolveIdUsing(Closure $resolver): void
-    {
-        self::$idResolver = $resolver;
-    }
-
-    /**
-     * @see https://github.com/timacdonald/json-api#customising-the-resource-type
-     * @see https://jsonapi.org/format/#document-resource-object-identification
-     */
-    public static function resolveTypeUsing(Closure $resolver): void
-    {
-        self::$typeResolver = $resolver;
-    }
-
-    /**
-     * TODO see local-docs
-     * @see https://jsonapi.org/format/#document-jsonapi-object
-     */
-    public static function resolveServerImplementationUsing(Closure $resolver): void
-    {
-        self::$serverImplementationResolver = $resolver;
-    }
-
-    /**
-     * @see https://github.com/timacdonald/json-api#minimal-resource-attributes
-     */
-    public static function minimalAttributes(?Closure $callback = null): void
-    {
-        self::$minimalAttributes = true;
-
-        if ($callback === null) {
-            return;
-        }
-
-        try {
-            $callback();
-        } finally {
-            self::$minimalAttributes = false;
-        }
-    }
-
-    /**
-     * @see https://github.com/timacdonald/json-api#resource-attributes
-     * @see https://jsonapi.org/format/#document-resource-object-attributes
+     * @api
+     *
+     * @param Request $request
      * @return array<string, mixed>
      */
-    protected function toAttributes(Request $request): array
+    protected function toAttributes($request)
     {
         return [
-            // 'name' => $this->name,
             //
-            // or with lazy evaluation...
-            //
-            // 'address' => fn () => new Address($this->address),
         ];
     }
 
     /**
-     * @see https://github.com/timacdonald/json-api#resource-relationships
-     * @see https://jsonapi.org/format/#document-resource-object-relationships
+     * @param Request $request
      * @return array<string, Closure>
      */
-    protected function toRelationships(Request $request): array
+    protected function toRelationships($request)
     {
         return [
-            // 'posts' => fn () => PostResource::collection($this->posts),
-            // 'avatar' => fn () => AvatarResource::make($this->avatar),
+            //
         ];
     }
 
     /**
-     * @see https://github.com/timacdonald/json-api#resource-links
-     * @see https://jsonapi.org/format/#document-resource-object-links
+     * @param Request $request
      * @return array<int|string, Link|string>
      */
-    protected function toLinks(Request $request): array
+    protected function toLinks($request)
     {
         return [
-            // Link::self(route('users.show'), $this->resource),
-            // Link::related(/** ... */),
-            // 'whatever' => 'Something'
-            // 'whateverElse' => new Link('whatever')
+            //
         ];
     }
 
     /**
-     * @see https://github.com/timacdonald/json-api#resource-meta
-     * @see https://jsonapi.org/format/#document-meta
+     * @param Request $request
      * @return array<string, mixed>
      */
-    protected function toMeta(Request $request): array
+    protected function toMeta($request)
     {
         return [
-            // 'resourceDeprecated' => false,
+            //
         ];
     }
 
     /**
-     * @see https://github.com/timacdonald/json-api#customising-the-resource-id
-     * @see https://jsonapi.org/format/#document-resource-object-identification
-     *
      * @param Request $request
      * @return string
      */
@@ -164,7 +107,7 @@ abstract class JsonApiResource extends JsonResource
      * TODO: naming is inconsistent: resource link vs relationship link
      * @see https://jsonapi.org/format/#document-resource-object-linkage
      */
-    public function toResourceLink(Request $request): RelationshipLink
+    public function toResourceLink($request)
     {
         if ($this->resource === null) {
             return new RelationshipLink(null);
@@ -185,14 +128,14 @@ abstract class JsonApiResource extends JsonResource
         });
     }
 
-    public function withRelationshipLink(Closure $callback): static
+    public function withRelationshipLink($callback)
     {
         $this->relationshipLinkCallbacks[] = $callback;
 
         return $this;
     }
 
-    public function toResourceIdentifier(Request $request): ResourceIdentifier
+    public function toResourceIdentifier($request)
     {
         return new ResourceIdentifier($this->resolveId($request), $this->resolveType($request));
     }
@@ -209,7 +152,7 @@ abstract class JsonApiResource extends JsonResource
         });
     }
 
-    public function withResourceIdentifier(Closure $callback): static
+    public function withResourceIdentifier($callback)
     {
         $this->resourceIdentifierCallbacks[] = $callback;
 
@@ -220,7 +163,7 @@ abstract class JsonApiResource extends JsonResource
      * @param Request $request
      * @return array{id: string, type: string, attributes: stdClass, relationships: stdClass, meta: stdClass, links: stdClass}
      */
-    public function toArray($request): array
+    public function toArray($request)
     {
         return [
             'id' => $this->resolveId($request),
@@ -236,7 +179,7 @@ abstract class JsonApiResource extends JsonResource
      * @param Request $request
      * @return array{included: Collection, jsonapi: JsonApiServerImplementation}
      */
-    public function with($request): array
+    public function with($request)
     {
         return [
             'included' => $this->included($request)
@@ -249,7 +192,7 @@ abstract class JsonApiResource extends JsonResource
      * @param mixed $resource
      * @return JsonApiResourceCollection<mixed>
      */
-    public static function collection($resource): JsonApiResourceCollection
+    public static function collection($resource)
     {
         return tap($this->newCollection($resource), static function (JsonApiResourceCollection $collection): void {
             if (property_exists(static::class, 'preserveKeys')) {
@@ -270,8 +213,9 @@ abstract class JsonApiResource extends JsonResource
 
     /**
      * @param Request $request
+     * @return JsonResponse
      */
-    public function toResponse($request): JsonResponse
+    public function toResponse($request)
     {
         return tap(parent::toResponse($request)->header('Content-type', 'application/vnd.api+json'), fn () => Cache::flush($this));
     }

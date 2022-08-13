@@ -14,13 +14,39 @@ trait Identification
 {
     /**
      * @internal
+     *
+     * @var ?callable
      */
-    private static ?Closure $idResolver;
+    private static $idResolver = null;
 
     /**
      * @internal
+     *
+     * @var ?callable
      */
-    private static ?Closure $typeResolver;
+    private static $typeResolver = null;
+
+    /**
+     * @api
+     *
+     * @param callable $resolver
+     * @return void
+     */
+    public static function resolveIdUsing($resolver)
+    {
+        self::$idResolver = $resolver;
+    }
+
+    /**
+     * @api
+     *
+     * @param callable $resolver
+     * @return void
+     */
+    public static function resolveTypeUsing($resolver)
+    {
+        self::$typeResolver = $resolver;
+    }
 
     /**
      * @internal

@@ -6,7 +6,7 @@
         "json",
         "api",
         "resource",
-        "JSON:API"
+        "JSON-API"
     ],
     "license": "MIT",
     "authors": [

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi\Concerns;
 
-use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -25,6 +24,24 @@ trait Identification
      * @var ?callable
      */
     private static $typeResolver = null;
+
+    /**
+     * @var array<callable(ResourceIdentifier): void>
+     */
+    private array $resourceIdentifierCallbacks = [];
+
+    /**
+     * @api
+     *
+     * @param callable(ResourceIdentifier): void $callback
+     * @return $this
+     */
+    public function withResourceIdentifier($callback)
+    {
+        $this->resourceIdentifierCallbacks[] = $callback;
+
+        return $this;
+    }
 
     /**
      * @api
@@ -91,7 +108,7 @@ trait Identification
     /**
      * @internal
      */
-    private static function idResolver(): Closure
+    private static function idResolver(): callable
     {
         return self::$idResolver ??= function ($resource): string {
             if (! $resource instanceof Model) {
@@ -108,7 +125,7 @@ trait Identification
     /**
      * @internal
      */
-    private static function typeResolver(): Closure
+    private static function typeResolver(): callable
     {
         return self::$typeResolver ??= function ($resource): string {
             if (! $resource instanceof Model) {
@@ -117,5 +134,17 @@ trait Identification
 
             return Str::camel($resource->getTable());
         };
+    }
+
+    /**
+     * @internal
+     */
+    public function resolveResourceIdentifier(Request $request): ResourceIdentifier
+    {
+        return tap($this->toResourceIdentifier($request), function (ResourceIdentifier $identifier) {
+            foreach ($this->resourceIdentifierCallbacks as $callback) {
+                $callback($identifier);
+            }
+        });
     }
 }

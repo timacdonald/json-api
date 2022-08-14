@@ -6,11 +6,10 @@ namespace TiMacDonald\JsonApi;
 
 use JsonSerializable;
 use stdClass;
-use TiMacDonald\JsonApi\Concerns\Meta;
 
 final class JsonApiServerImplementation implements JsonSerializable
 {
-    use Meta;
+    use Concerns\Meta;
 
     private string $version;
 

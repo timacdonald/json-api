@@ -6,14 +6,10 @@ namespace TiMacDonald\JsonApi;
 
 use JsonSerializable;
 use stdClass;
-use TiMacDonald\JsonApi\Concerns\Meta;
 
-/**
- * @see https://jsonapi.org/format/#document-resource-object-links
- */
 final class Link implements JsonSerializable
 {
-    use Meta;
+    use Concerns\Meta;
 
     private string $href;
 

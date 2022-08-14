@@ -12,6 +12,9 @@ use function get_class;
 use function gettype;
 use function is_object;
 
+/**
+ * @internal
+ */
 final class UnknownRelationshipException extends Exception
 {
     public static function from(mixed $resource): self

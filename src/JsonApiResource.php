@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi;
 
-use Closure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -25,23 +24,51 @@ abstract class JsonApiResource extends JsonResource
     use Concerns\Relationships;
 
     /**
-     * @var array<Closure(ResourceIdentifier): void>
+     * @api
+     *
+     * @param Request $request
+     * @return array<string, mixed>
      */
-    private array $resourceIdentifierCallbacks = [];
+    public function toAttributes($request)
+    {
+        return [
+            //
+        ];
+    }
 
     /**
-     * @var array<Closure(RelationshipLink): void>
+     * @api 
+     *
+     * @param Request $request
+     * @return array<string, callable>
      */
-    private array $relationshipLinkCallbacks = [];
+    public function toRelationships($request)
+    {
+        return [
+            //
+        ];
+    }
 
-    // TODO should all these methods be public lie toArray() ?
+    /**
+     * @api
+     *
+     * @param Request $request
+     * @return array<int|string, Link|string>
+     */
+    public function toLinks($request)
+    {
+        return [
+            //
+        ];
+    }
+
     /**
      * @api
      *
      * @param Request $request
      * @return array<string, mixed>
      */
-    protected function toAttributes($request)
+    public function toMeta($request)
     {
         return [
             //
@@ -49,63 +76,32 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
-     * @param Request $request
-     * @return array<string, Closure>
-     */
-    protected function toRelationships($request)
-    {
-        return [
-            //
-        ];
-    }
-
-    /**
-     * @param Request $request
-     * @return array<int|string, Link|string>
-     */
-    protected function toLinks($request)
-    {
-        return [
-            //
-        ];
-    }
-
-    /**
-     * @param Request $request
-     * @return array<string, mixed>
-     */
-    protected function toMeta($request)
-    {
-        return [
-            //
-        ];
-    }
-
-    /**
+     * @api
+     *
      * @param Request $request
      * @return string
      */
-    protected function toId($request)
+    public function toId($request)
     {
         return self::idResolver()($this->resource, $request);
     }
 
     /**
-     * @see https://github.com/timacdonald/json-api#customising-the-resource-type
-     * @see https://jsonapi.org/format/#document-resource-object-identification
+    * @api
      *
      * @param Request $request
      * @return string
      */
-    protected function toType($request)
+    public function toType($request)
     {
         return self::typeResolver()($this->resource, $request);
     }
 
     /**
-     * TODO: @see docs-link
-     * TODO: naming is inconsistent: resource link vs relationship link
-     * @see https://jsonapi.org/format/#document-resource-object-linkage
+     * @api
+     *
+     * @param Request $request
+     * @return RelationshipLink
      */
     public function toResourceLink($request)
     {
@@ -117,49 +113,19 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
-     * @internal
+     * @api
+     *
+     * @param Request $request
+     * @return ResourceIdentifier
      */
-    public function resolveRelationshipLink(Request $request): RelationshipLink
-    {
-        return tap($this->toResourceLink($request), function (RelationshipLink $link) {
-            foreach ($this->relationshipLinkCallbacks as $callback) {
-                $callback($link);
-            }
-        });
-    }
-
-    public function withRelationshipLink($callback)
-    {
-        $this->relationshipLinkCallbacks[] = $callback;
-
-        return $this;
-    }
-
     public function toResourceIdentifier($request)
     {
         return new ResourceIdentifier($this->resolveId($request), $this->resolveType($request));
     }
 
     /**
-     * @internal
-     */
-    public function resolveResourceIdentifier(Request $request): ResourceIdentifier
-    {
-        return tap($this->toResourceIdentifier($request), function (ResourceIdentifier $identifier) {
-            foreach ($this->resourceIdentifierCallbacks as $callback) {
-                $callback($identifier);
-            }
-        });
-    }
-
-    public function withResourceIdentifier($callback)
-    {
-        $this->resourceIdentifierCallbacks[] = $callback;
-
-        return $this;
-    }
-
-    /**
+     * @api
+     *
      * @param Request $request
      * @return array{id: string, type: string, attributes: stdClass, relationships: stdClass, meta: stdClass, links: stdClass}
      */
@@ -176,6 +142,8 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
+     * @api
+     *
      * @param Request $request
      * @return array{included: Collection, jsonapi: JsonApiServerImplementation}
      */
@@ -189,6 +157,8 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
+     * @api
+     *
      * @param mixed $resource
      * @return JsonApiResourceCollection<mixed>
      */
@@ -203,15 +173,19 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
+     * @api
+     *
      * @param mixed $resource
      * @return JsonApiResourceCollection<mixed>
      */
-    protected function newCollection($resource)
+    public function newCollection($resource)
     {
         return new JsonApiResourceCollection($resource, static::class);
     }
 
     /**
+     * @api
+     *
      * @param Request $request
      * @return JsonResponse
      */

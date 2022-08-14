@@ -12,7 +12,7 @@ trait Links
     /**
      * @internal
      *
-     * @var array<string|int, string|Link>
+     * @var array<int|string, Link, string>
      */
     private array $links = [];
 

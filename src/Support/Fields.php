@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi\Support;
 
-use Closure;
 use Illuminate\Http\Request;
 
 use function array_key_exists;
@@ -66,7 +65,7 @@ final class Fields
      *
      * @return array<string>
      */
-    private function rememberResourceType(string $resourceType, Closure $callback): ?array
+    private function rememberResourceType(string $resourceType, callable $callback): ?array
     {
         return $this->cache[$resourceType] ??= $callback();
     }

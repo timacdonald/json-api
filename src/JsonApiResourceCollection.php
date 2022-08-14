@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi;
 
-use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
@@ -13,18 +12,30 @@ use TiMacDonald\JsonApi\Support\Cache;
 class JsonApiResourceCollection extends AnonymousResourceCollection
 {
     /**
-     * @var array<Closure(RelationshipLink): void>
+     * @var array<callable(RelationshipLink): void>
      */
     private array $relationshipLinkCallbacks = [];
 
-    public function map(callable $callback): static
+    /**
+     * @api
+     *
+     * @param callable $callable
+     * @return $this
+     */
+    public function map($callback)
     {
         $this->collection = $this->collection->map($callback);
 
         return $this;
     }
 
-    public function withRelationshipLink(Closure $callback): static
+    /**
+     * @api
+     *
+     * @param callable $callback
+     * @return $this
+     */
+    public function withRelationshipLink($callback)
     {
         $this->relationshipLinkCallbacks[] = $callback;
 
@@ -32,10 +43,12 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     }
 
     /**
+     * @api
+     *
      * @param Request $request
      * @return array{included: Collection, jsonapi: JsonApiResource}
      */
-    public function with($request): array
+    public function with($request)
     {
         return [
             'included' => $this->collection
@@ -47,7 +60,10 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     }
 
     /**
+     * @api
+     *
      * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function toResponse($request)
     {
@@ -55,6 +71,8 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     }
 
     /**
+     * @api
+     *
      * @param array<array-key, mixed> $paginated
      * @param array{links: array<string, ?string>} $default
      * @return array{links: array<string, string>}
@@ -68,6 +86,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
 
     /**
      * @internal
+     *
      * @return JsonApiResourceCollection<JsonApiResource>
      */
     public function withIncludePrefix(string $prefix): self
@@ -85,7 +104,13 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
         return $this->collection->map(static fn (JsonApiResource $resource): Collection => $resource->included($request));
     }
 
-    public function toResourceLink(Request $request): RelationshipCollectionLink
+    /**
+     * @api
+     *
+     * @param Request $request
+     * @return RelationshipCollectionLink
+     */
+    public function toResourceLink($request)
     {
         $resourceLinks = $this->collection
             ->uniqueStrict(static fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request))

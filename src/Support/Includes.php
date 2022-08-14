@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi\Support;
 
-use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -54,7 +53,7 @@ final class Includes
     /**
      * @infection-ignore-all
      */
-    private function rememberIncludes(string $prefix, Closure $callback): Collection
+    private function rememberIncludes(string $prefix, callable $callback): Collection
     {
         return $this->cache[$prefix] ??= $callback();
     }

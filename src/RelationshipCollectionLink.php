@@ -6,13 +6,11 @@ namespace TiMacDonald\JsonApi;
 
 use JsonSerializable;
 use stdClass;
-use TiMacDonald\JsonApi\Concerns\Links;
-use TiMacDonald\JsonApi\Concerns\Meta;
 
 final class RelationshipCollectionLink implements JsonSerializable
 {
-    use Links;
-    use Meta;
+    use Concerns\Links;
+    use Concerns\Meta;
 
     /**
      * @var array<ResourceIdentifier>

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi\Concerns;
 
-use Closure;
 use Illuminate\Support\Collection;
 
 trait Caching
@@ -49,7 +48,7 @@ trait Caching
      * @internal
      * @infection-ignore-all
      */
-    private function rememberId(Closure $closure): string
+    private function rememberId(callable $closure): string
     {
         return $this->idCache ??= $closure();
     }
@@ -58,7 +57,7 @@ trait Caching
      * @internal
      * @infection-ignore-all
      */
-    private function rememberType(Closure $closure): string
+    private function rememberType(callable $closure): string
     {
         return $this->typeCache ??= $closure();
     }
@@ -67,7 +66,7 @@ trait Caching
      * @internal
      * @infection-ignore-all
      */
-    private function rememberRequestRelationships(Closure $closure): Collection
+    private function rememberRequestRelationships(callable $closure): Collection
     {
         return $this->requestedRelationshipsCache ??= $closure();
     }

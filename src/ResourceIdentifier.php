@@ -6,11 +6,10 @@ namespace TiMacDonald\JsonApi;
 
 use JsonSerializable;
 use stdClass;
-use TiMacDonald\JsonApi\Concerns\Meta;
 
 final class ResourceIdentifier implements JsonSerializable
 {
-    use Meta;
+    use Concerns\Meta;
 
     private string $id;
 

@@ -38,7 +38,7 @@ trait Attributes
     }
 
     /**
-     * @internal
+     * @api
      * @infection-ignore-all
      */
     public static function maximalAttributes(): void

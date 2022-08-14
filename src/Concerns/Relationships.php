@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi\Concerns;
 
-use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;
@@ -21,6 +20,24 @@ trait Relationships
      * @internal
      */
     private string $includePrefix = '';
+
+    /**
+     * @var array<callable(RelationshipLink): void>
+     */
+    private array $relationshipLinkCallbacks = [];
+
+    /**
+     * @api
+     *
+     * @param callable(RelationshipLink): void $callback
+     * @return $this
+     */
+    public function withRelationshipLink($callback)
+    {
+        $this->relationshipLinkCallbacks[] = $callback;
+
+        return $this;
+    }
 
     /**
      * @internal
@@ -70,7 +87,7 @@ trait Relationships
     {
         return $this->rememberRequestRelationships(fn (): Collection => Collection::make($this->toRelationships($request))
             ->only(Includes::getInstance()->parse($request, $this->includePrefix))
-            ->map(function (Closure $value, string $prefix): null|JsonApiResource|JsonApiResourceCollection {
+            ->map(function (callable $value, string $prefix): null|JsonApiResource|JsonApiResourceCollection {
                 $resource = $value();
 
                 if ($resource instanceof PotentiallyMissing && $resource->isMissing()) {
@@ -84,6 +101,19 @@ trait Relationships
                 throw UnknownRelationshipException::from($resource);
             })->reject(fn (JsonApiResource|JsonApiResourceCollection $resource): bool => $resource === null));
     }
+
+    /**
+     * @internal
+     */
+    public function resolveRelationshipLink(Request $request): RelationshipLink
+    {
+        return tap($this->toResourceLink($request), function (RelationshipLink $link) {
+            foreach ($this->relationshipLinkCallbacks as $callback) {
+                $callback($link);
+            }
+        });
+    }
+
 
     /**
      * @internal

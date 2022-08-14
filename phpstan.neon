@@ -1,9 +1,10 @@
 parameters:
     level: 8
     paths:
-        - src
+        - src/ResourceIdentifier.php
+        - src/ResourceLinkage.php
     checkInternalClassCaseSensitivity: true
-    checkGenericClassInNonGenericObjectType: false
+    checkGenericClassInNonGenericObjectType: true
     checkTooWideReturnTypesInProtectedAndPublicMethods: true
     checkUninitializedProperties: true
     checkMissingIterableValueType: true

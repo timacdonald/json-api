@@ -7,6 +7,9 @@ namespace TiMacDonald\JsonApi;
 use JsonSerializable;
 use stdClass;
 
+/**
+ * @see https://jsonapi.org/format/#document-resource-identifier-objects
+ */
 final class ResourceIdentifier implements JsonSerializable
 {
     use Concerns\Meta;

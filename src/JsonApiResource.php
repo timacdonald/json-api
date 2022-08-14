@@ -37,7 +37,7 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
-     * @api 
+     * @api
      *
      * @param Request $request
      * @return array<string, callable>
@@ -101,15 +101,15 @@ abstract class JsonApiResource extends JsonResource
      * @api
      *
      * @param Request $request
-     * @return RelationshipLink
+     * @return ResourceLinkage
      */
     public function toResourceLink($request)
     {
         if ($this->resource === null) {
-            return new RelationshipLink(null);
+            return new ResourceLinkage(null);
         }
 
-        return new RelationshipLink($this->resolveResourceIdentifier($request));
+        return new ResourceLinkage($this->resolveResourceIdentifier($request));
     }
 
     /**

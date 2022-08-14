@@ -38,14 +38,15 @@ class RelationshipObjectTest extends TestCase
         $this->assertSame('{"data":{"type":"expected-type","id":"expected-id","meta":{}},"meta":{},"links":{}}', $serialized);
     }
 
-    public function testMetaCanBeAppended(): void
+    public function testMetaAndLinksCanBeAppended(): void
     {
-        $link = RelationshipObject::toMany([new ResourceIdentifier('expected-type', 'expected-id')], [], ["original" => "meta"]);
+        $link = RelationshipObject::toMany([new ResourceIdentifier('expected-type', 'expected-id')], [Link::related('related.com')], ["original" => "meta"]);
 
         $serialized = json_encode(
             $link->withMeta(['expected' => 'meta'])->withMeta(['another' => 'one'])
+                ->withLinks([Link::self('self.com')])
         );
 
-        $this->assertSame('{"data":[{"type":"expected-type","id":"expected-id","meta":{}}],"meta":{"original":"meta","expected":"meta","another":"one"},"links":{}}', $serialized);
+        $this->assertSame('{"data":[{"type":"expected-type","id":"expected-id","meta":{}}],"meta":{"original":"meta","expected":"meta","another":"one"},"links":{"related":{"href":"related.com","meta":{}},"self":{"href":"self.com","meta":{}}}}', $serialized);
     }
 }

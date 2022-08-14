@@ -7,7 +7,7 @@ use TiMacDonald\JsonApi\Link;
 
 class LinkTest extends TestCase
 {
-    public function testItSerializes()
+    public function testItSerializes(): void
     {
         $link = Link::related('https://related.com', ['expected' => 'meta']);
 
@@ -16,7 +16,7 @@ class LinkTest extends TestCase
         $this->assertSame('{"href":"https:\/\/related.com","meta":{"expected":"meta"}}', $serialized);
     }
 
-    public function testEmptyMetaIsObject()
+    public function testEmptyMetaIsObject(): void
     {
         $link = Link::related('https://related.com', []);
 
@@ -25,7 +25,7 @@ class LinkTest extends TestCase
         $this->assertSame('{"href":"https:\/\/related.com","meta":{}}', $serialized);
     }
 
-    public function testMissingMetaIsObject()
+    public function testMissingMetaIsObject(): void
     {
         $link = Link::related('https://related.com');
 
@@ -34,7 +34,7 @@ class LinkTest extends TestCase
         $this->assertSame('{"href":"https:\/\/related.com","meta":{}}', $serialized);
     }
 
-    public function testMetaCanBeAppended()
+    public function testMetaCanBeAppended(): void
     {
         $link = Link::related('https://related.com', ['original' => 'meta']);
 
@@ -45,7 +45,7 @@ class LinkTest extends TestCase
         $this->assertSame('{"href":"https:\/\/related.com","meta":{"original":"meta","expected":"meta","another":"one"}}', $serialized);
     }
 
-    public function testTypeIsSet()
+    public function testTypeIsSet(): void
     {
         $this->assertSame('related', Link::related('https://related.com')->type);
         $this->assertSame('self', Link::self('https://self.com')->type);

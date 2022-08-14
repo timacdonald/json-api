@@ -10,7 +10,7 @@ use TiMacDonald\JsonApi\RelationshipObject;
 
 class RelationshipObjectTest extends TestCase
 {
-    public function testItSerializes()
+    public function testItSerializes(): void
     {
         $link = RelationshipObject::toOne(new ResourceIdentifier('expected-type', 'expected-id'), ['expected' => 'link'], ['expected' => 'meta']);
 
@@ -19,7 +19,7 @@ class RelationshipObjectTest extends TestCase
         $this->assertSame('{"data":{"type":"expected-type","id":"expected-id","meta":{}},"meta":{"expected":"meta"},"links":{"expected":{"href":"link","meta":{}}}}', $serialized);
     }
 
-    public function testEmptyMetaAndLinksIsObject()
+    public function testEmptyMetaAndLinksIsObject(): void
     {
         $link = RelationshipObject::toOne(new ResourceIdentifier('expected-type', 'expected-id'), [], []);
 
@@ -28,7 +28,7 @@ class RelationshipObjectTest extends TestCase
         $this->assertSame('{"data":{"type":"expected-type","id":"expected-id","meta":{}},"meta":{},"links":{}}', $serialized);
     }
 
-    public function testMissingMetaAndLinksIsObject()
+    public function testMissingMetaAndLinksIsObject(): void
     {
         $link = RelationshipObject::toOne(new ResourceIdentifier('expected-type', 'expected-id'));
 
@@ -37,7 +37,7 @@ class RelationshipObjectTest extends TestCase
         $this->assertSame('{"data":{"type":"expected-type","id":"expected-id","meta":{}},"meta":{},"links":{}}', $serialized);
     }
 
-    public function testMetaCanBeAppended()
+    public function testMetaCanBeAppended(): void
     {
         $link = RelationshipObject::toMany([new ResourceIdentifier('expected-type', 'expected-id')], [], ["original" => "meta"]);
 

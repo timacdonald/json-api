@@ -12,14 +12,14 @@ trait Links
     /**
      * @internal
      *
-     * @var array<int|string, Link, string>
+     * @var array<int, Link>
      */
     private array $links = [];
 
     /**
      * @api
      *
-     * @param array<int, Link>|array<string, string> $links
+     * @param array<int, Link> $links
      * @return $this
      */
     public function withLinks($links)
@@ -32,17 +32,13 @@ trait Links
     /**
      * @internal
      *
-     * @param array<int, Link>|array<string, string> $links
+     * @param array<int, Link> $links
      * @return array<string, Link>
      */
     private static function parseLinks(array $links): array
     {
         return Collection::make($links)
-            ->mapWithKeys(
-                fn (Link|string $value, int|string $key) => $value instanceof Link
-                    ? [$value->type() => $value]
-                    : [$key => new Link($value)]
-            )
+            ->mapWithKeys(fn (Link $link): array => [$link->type => $link])
             ->all();
     }
 }

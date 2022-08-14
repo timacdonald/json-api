@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use TiMacDonald\JsonApi\Link;
 use TiMacDonald\JsonApi\ResourceIdentifier;
 use TiMacDonald\JsonApi\RelationshipObject;
 
@@ -12,7 +13,7 @@ class RelationshipObjectTest extends TestCase
 {
     public function testItSerializes(): void
     {
-        $link = RelationshipObject::toOne(new ResourceIdentifier('expected-type', 'expected-id'), ['expected' => 'link'], ['expected' => 'meta']);
+        $link = RelationshipObject::toOne(new ResourceIdentifier('expected-type', 'expected-id'), [new Link('expected', 'link')], ['expected' => 'meta']);
 
         $serialized = json_encode($link);
 

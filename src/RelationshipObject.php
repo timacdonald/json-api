@@ -21,7 +21,7 @@ final class RelationshipObject implements JsonSerializable
     private ResourceIdentifier|null|array $data;
 
     /**
-     * @param array<string|int, string|Link> $links
+     * @param array<int, Link> $links
      * @param array<string, mixed> $meta
      */
     public static function toOne(ResourceIdentifier|null $data, array $links = [], array $meta = []): self
@@ -31,7 +31,7 @@ final class RelationshipObject implements JsonSerializable
 
     /**
      * @param array<ResourceIdentifier> $data
-     * @param array<string|int, string|Link> $links
+     * @param array<int, Link> $links
      * @param array<string, mixed> $meta
      */
     public static function toMany(array $data, array $links = [], array $meta = []): self
@@ -41,7 +41,7 @@ final class RelationshipObject implements JsonSerializable
 
     /**
      * @param ResourceIdentifier|null|array<ResourceIdentifier> $data
-     * @param array<string|int, string|Link> $links
+     * @param array<int, Link> $links
      * @param array<string, mixed> $meta
      */
     private function __construct(ResourceIdentifier|null|array $data, array $links = [], array $meta = [])

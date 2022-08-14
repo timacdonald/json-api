@@ -15,7 +15,7 @@ use TiMacDonald\JsonApi\JsonApiResourceCollection;
 use TiMacDonald\JsonApi\JsonApiServerImplementation;
 use TiMacDonald\JsonApi\Link;
 use TiMacDonald\JsonApi\ResourceIdentifier;
-use TiMacDonald\JsonApi\ResourceLinkage;
+use TiMacDonald\JsonApi\RelationshipObject;
 use TiMacDonald\JsonApi\Support\Fields;
 use TiMacDonald\JsonApi\Support\Includes;
 
@@ -430,7 +430,7 @@ class JsonApiTest extends TestCase
 
     public function testItCastsEmptyRelationshipLinkMetaToJsonObject()
     {
-        $resourceLink = new ResourceLinkage(
+        $resourceLink = new RelationshipObject(
             new ResourceIdentifier('expected-id', 'expected-type')
         );
 
@@ -502,7 +502,7 @@ class JsonApiTest extends TestCase
                             ]);
                         }
 
-                        public function toResourceLink(Request $request): ResourceLinkage
+                        public function toResourceLink(Request $request): RelationshipObject
                         {
                             return parent::toResourceLink($request)->withMeta([
                                 'profile-internal-resource-link' => 'meta',
@@ -526,7 +526,7 @@ class JsonApiTest extends TestCase
                             'profile-external-resource-identifier' => 'meta',
                         ])
                     )->withRelationshipLink(
-                        static fn (ResourceLinkage $link) => $link->withMeta([
+                        static fn (RelationshipObject $link) => $link->withMeta([
                             'profile-external-resource-link' => 'meta',
                         ])->withLinks([
                             Link::related('profile-external-resource-link.com')->withMeta([
@@ -558,7 +558,7 @@ class JsonApiTest extends TestCase
                             ]);
                         }
 
-                        public function toResourceLink(Request $request): ResourceLinkage
+                        public function toResourceLink(Request $request): RelationshipObject
                         {
                             return parent::toResourceLink($request)->withMeta([
                                 'avatar-internal-resource-link' => 'meta',
@@ -579,7 +579,7 @@ class JsonApiTest extends TestCase
                             'avatar-external-resource-identifier' => 'meta',
                         ])
                     )->withRelationshipLink(
-                        static fn (ResourceLinkage $link) => $link->withMeta([
+                        static fn (RelationshipObject $link) => $link->withMeta([
                             'avatar-external-resource-link' => 'meta',
                         ])->withLinks([
                             Link::related('avatar-external-resource-link.com')->withMeta([
@@ -611,7 +611,7 @@ class JsonApiTest extends TestCase
                             ]);
                         }
 
-                        public function toResourceLink(Request $request): ResourceLinkage
+                        public function toResourceLink(Request $request): RelationshipObject
                         {
                             // should not be present in the response.
                             return parent::toResourceLink($request)->withMeta([

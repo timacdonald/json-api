@@ -11,37 +11,39 @@ class ResourceIdentifierTest extends TestCase
 {
     public function testItSerializes()
     {
-        $identifier = new ResourceIdentifier('expected-id', 'expected-type', ['expected' => 'meta']);
+        $identifier = new ResourceIdentifier('expected-type', 'expected-id', ['expected' => 'meta']);
 
         $serialized = json_encode($identifier);
 
-        $this->assertSame('{"id":"expected-id","type":"expected-type","meta":{"expected":"meta"}}', $serialized);
+        $this->assertSame('{"type":"expected-type","id":"expected-id","meta":{"expected":"meta"}}', $serialized);
     }
 
     public function testEmptyMetaIsObject()
     {
-        $identifier = new ResourceIdentifier('expected-id', 'expected-type', []);
+        $identifier = new ResourceIdentifier('expected-type', 'expected-id', []);
 
         $serialized = json_encode($identifier);
 
-        $this->assertSame('{"id":"expected-id","type":"expected-type","meta":{}}', $serialized);
+        $this->assertSame('{"type":"expected-type","id":"expected-id","meta":{}}', $serialized);
     }
 
     public function testMissingMetaIsObject()
     {
-        $identifier = new ResourceIdentifier('expected-id', 'expected-type');
+        $identifier = new ResourceIdentifier('expected-type', 'expected-id');
 
         $serialized = json_encode($identifier);
 
-        $this->assertSame('{"id":"expected-id","type":"expected-type","meta":{}}', $serialized);
+        $this->assertSame('{"type":"expected-type","id":"expected-id","meta":{}}', $serialized);
     }
 
     public function testMetaCanBeAppended()
     {
-        $identifier = (new ResourceIdentifier('expected-id', 'expected-type'));
+        $identifier = (new ResourceIdentifier('expected-type', 'expected-id', ['original' => 'meta']));
 
-        $serialized = json_encode($identifier->withMeta(['expected' => 'meta']));
+        $serialized = json_encode(
+            $identifier->withMeta(['expected' => 'meta'])->withMeta(["another" => "one"])
+        );
 
-        $this->assertSame('{"id":"expected-id","type":"expected-type","meta":{"expected":"meta"}}', $serialized);
+        $this->assertSame('{"type":"expected-type","id":"expected-id","meta":{"original":"meta","expected":"meta","another":"one"}}', $serialized);
     }
 }

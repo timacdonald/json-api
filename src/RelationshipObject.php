@@ -8,9 +8,9 @@ use JsonSerializable;
 use stdClass;
 
 /**
- * @see https://jsonapi.org/format/#document-resource-object-linkage
+ * @see https://jsonapi.org/format/#document-resource-object-relationships
  */
-final class ResourceLinkage implements JsonSerializable
+final class RelationshipObject implements JsonSerializable
 {
     use Concerns\Links;
     use Concerns\Meta;
@@ -24,7 +24,7 @@ final class ResourceLinkage implements JsonSerializable
      * @param array<string|int, string|Link> $links
      * @param array<string, mixed> $meta
      */
-    public static function toOne(?ResourceIdentifier $data, array $links = [], array $meta = []): self
+    public static function toOne(ResourceIdentifier|null $data, array $links = [], array $meta = []): self
     {
         return new self($data, $links, $meta);
     }

@@ -101,15 +101,15 @@ abstract class JsonApiResource extends JsonResource
      * @api
      *
      * @param Request $request
-     * @return ResourceLinkage
+     * @return RelationshipObject
      */
     public function toResourceLink($request)
     {
         if ($this->resource === null) {
-            return new ResourceLinkage(null);
+            return new RelationshipObject(null);
         }
 
-        return new ResourceLinkage($this->resolveResourceIdentifier($request));
+        return new RelationshipObject($this->resolveResourceIdentifier($request));
     }
 
     /**

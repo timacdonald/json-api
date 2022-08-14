@@ -11,7 +11,7 @@ use TiMacDonald\JsonApi\Exceptions\UnknownRelationshipException;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
 use TiMacDonald\JsonApi\RelationshipCollectionLink;
-use TiMacDonald\JsonApi\ResourceLinkage;
+use TiMacDonald\JsonApi\RelationshipObject;
 use TiMacDonald\JsonApi\Support\Includes;
 
 trait Relationships
@@ -22,14 +22,14 @@ trait Relationships
     private string $includePrefix = '';
 
     /**
-     * @var array<callable(ResourceLinkage): void>
+     * @var array<callable(RelationshipObject): void>
      */
     private array $relationshipLinkCallbacks = [];
 
     /**
      * @api
      *
-     * @param callable(ResourceLinkage): void $callback
+     * @param callable(RelationshipObject): void $callback
      * @return $this
      */
     public function withRelationshipLink($callback)
@@ -77,7 +77,7 @@ trait Relationships
     private function requestedRelationshipsAsIdentifiers(Request $request): Collection
     {
         return $this->requestedRelationships($request)
-            ->map(fn (JsonApiResource|JsonApiResourceCollection $resource): ResourceLinkage|RelationshipCollectionLink => $resource->resolveRelationshipLink($request));
+            ->map(fn (JsonApiResource|JsonApiResourceCollection $resource): RelationshipObject|RelationshipCollectionLink => $resource->resolveRelationshipLink($request));
     }
 
     /**
@@ -105,9 +105,9 @@ trait Relationships
     /**
      * @internal
      */
-    public function resolveRelationshipLink(Request $request): ResourceLinkage
+    public function resolveRelationshipLink(Request $request): RelationshipObject
     {
-        return tap($this->toResourceLink($request), function (ResourceLinkage $link) {
+        return tap($this->toResourceLink($request), function (RelationshipObject $link) {
             foreach ($this->relationshipLinkCallbacks as $callback) {
                 $callback($link);
             }

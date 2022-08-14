@@ -12,7 +12,7 @@ use TiMacDonald\JsonApi\Support\Cache;
 class JsonApiResourceCollection extends AnonymousResourceCollection
 {
     /**
-     * @var array<callable(ResourceLinkage): void>
+     * @var array<callable(RelationshipObject): void>
      */
     private array $relationshipLinkCallbacks = [];
 

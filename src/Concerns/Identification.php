@@ -14,21 +14,21 @@ trait Identification
     /**
      * @internal
      *
-     * @var ?callable
+     * @var callable|null
      */
     private static $idResolver = null;
 
     /**
      * @internal
      *
-     * @var ?callable
+     * @var callable|null
      */
     private static $typeResolver = null;
 
     /**
      * @var array<callable(ResourceIdentifier): void>
      */
-    private array $resourceIdentifierCallbacks = [];
+    private $resourceIdentifierCallbacks = [];
 
     /**
      * @api

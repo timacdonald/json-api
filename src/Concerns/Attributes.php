@@ -13,8 +13,10 @@ trait Attributes
 {
     /**
      * @internal
+     *
+     * @var bool
      */
-    private static bool $minimalAttributes = false;
+    private static $minimalAttributes = false;
 
     /**
      * @api
@@ -40,16 +42,21 @@ trait Attributes
     /**
      * @api
      * @infection-ignore-all
+     *
+     * @return void
      */
-    public static function maximalAttributes(): void
+    public static function maximalAttributes()
     {
         self::$minimalAttributes = false;
     }
 
     /**
      * @internal
+     *
+     * @param Request $request
+     * @return Collection
      */
-    private function requestedAttributes(Request $request): Collection
+    private function requestedAttributes($request)
     {
         return Collection::make($this->toAttributes($request))
             ->only(Fields::getInstance()->parse($request, $this->toType($request), self::$minimalAttributes))

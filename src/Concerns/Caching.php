@@ -10,24 +10,32 @@ trait Caching
 {
     /**
      * @internal
+     *
+     * @var string|null
      */
-    private ?string $idCache = null;
+    private $idCache = null;
 
     /**
      * @internal
+     *
+     * @var string|null
      */
-    private ?string $typeCache = null;
+    private $typeCache = null;
 
     /**
      * @internal
+     *
+     * @var Collection|null
      */
-    private ?Collection $requestedRelationshipsCache = null;
+    private $requestedRelationshipsCache = null;
 
     /**
      * @internal
      * @infection-ignore-all
+     *
+     * @return $this
      */
-    public function flush(): void
+    public function flush()
     {
         $this->idCache = null;
 
@@ -42,13 +50,18 @@ trait Caching
         Includes::getInstance()->flush();
 
         Fields::getInstance()->flush();
+
+        return $this;
     }
 
     /**
      * @internal
      * @infection-ignore-all
+     *
+     * @param callable $closure
+     * @return string
      */
-    private function rememberId(callable $closure): string
+    private function rememberId($closure)
     {
         return $this->idCache ??= $closure();
     }
@@ -56,8 +69,11 @@ trait Caching
     /**
      * @internal
      * @infection-ignore-all
+     *
+     * @param callable $closure
+     * @return string
      */
-    private function rememberType(callable $closure): string
+    private function rememberType($closure)
     {
         return $this->typeCache ??= $closure();
     }
@@ -65,16 +81,21 @@ trait Caching
     /**
      * @internal
      * @infection-ignore-all
+     *
+     * @param callable $closure
+     * @return Collection
      */
-    private function rememberRequestRelationships(callable $closure): Collection
+    private function rememberRequestRelationships($closure)
     {
         return $this->requestedRelationshipsCache ??= $closure();
     }
 
     /**
      * @internal
+     *
+     * @return Collection|null
      */
-    public function requestedRelationshipsCache(): ?Collection
+    public function requestedRelationshipsCache()
     {
         return $this->requestedRelationshipsCache;
     }

@@ -15,27 +15,36 @@ use function is_string;
  */
 final class Fields
 {
-    private static ?Fields $instance;
+    /**
+     * @var static|null
+     */
+    private static $instance = null;
 
     /**
      * @var array<string, array<string>|null>
      */
-    private array $cache = [];
+    private $cache = [];
 
     private function __construct()
     {
         //
     }
 
-    public static function getInstance(): self
+    /**
+     * @return static
+     */
+    public static function getInstance()
     {
-        return self::$instance ??= new self();
+        return static::$instance ??= new static();
     }
 
     /**
-     * @return array<string>
+     * @param Request $request
+     * @param string $resourceType
+     * @param bool $minimalAttributes
+     * @return array<string>|null
      */
-    public function parse(Request $request, string $resourceType, bool $minimalAttributes): ?array
+    public function parse($request, $resourceType, $minimalAttributes)
     {
         return $this->rememberResourceType("type:{$resourceType};minimal:{$minimalAttributes};", function () use ($request, $resourceType, $minimalAttributes): ?array {
             $typeFields = $request->query('fields') ?? [];
@@ -63,22 +72,29 @@ final class Fields
     /**
      * @infection-ignore-all
      *
-     * @return array<string>
+     * @param string $resourceType
+     * @param callable $callback
+     * @return array<string>|null
      */
-    private function rememberResourceType(string $resourceType, callable $callback): ?array
+    private function rememberResourceType($resourceType, $callback)
     {
         return $this->cache[$resourceType] ??= $callback();
     }
 
-    public function flush(): void
+    /**
+     * @return $this
+     */
+    public function flush()
     {
         $this->cache = [];
+
+        return $this;
     }
 
     /**
      * @return array<string, array<string>|null>
      */
-    public function cache(): array
+    public function cache()
     {
         return $this->cache;
     }

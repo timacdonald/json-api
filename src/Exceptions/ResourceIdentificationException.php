@@ -15,20 +15,30 @@ use function is_object;
  */
 final class ResourceIdentificationException extends RuntimeException
 {
-    public static function attemptingToDetermineIdFor(mixed $model): self
+    /**
+     * @param mixed $model
+     * @return static
+     */
+    public static function attemptingToDetermineIdFor($model)
     {
-        return new self('Unable to resolve resource object id for '.self::determineType($model).'.');
+        return new static('Unable to resolve resource object id for '.static::determineType($model).'.');
     }
 
-    public static function attemptingToDetermineTypeFor(mixed $model): self
+    /**
+     * @param mixed $model
+     * @return static
+     */
+    public static function attemptingToDetermineTypeFor($model)
     {
-        return new self('Unable to resolve resource object type for '.self::determineType($model).'.');
+        return new static('Unable to resolve resource object type for '.static::determineType($model).'.');
     }
 
-    private static function determineType(mixed $model): string
+    /**
+     * @param mixed $model
+     * @return string
+     */
+    private static function determineType($model)
     {
-        return is_object($model)
-            ? get_class($model)
-            : gettype($model);
+        return is_object($model) ? get_class($model) : gettype($model);
     }
 }

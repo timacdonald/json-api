@@ -11,7 +11,7 @@ trait Implementation
     /**
      * @internal
      *
-     * @var ?callable
+     * @var callable|null
      */
     private static $serverImplementationResolver = null;
 
@@ -23,22 +23,26 @@ trait Implementation
      */
     public static function resolveServerImplementationUsing($resolver)
     {
-        self::$serverImplementationResolver = $resolver;
+        static::$serverImplementationResolver = $resolver;
     }
 
     /**
      * @internal
+     *
+     * @return void
      */
-    public static function resolveServerImplementationNormally(): void
+    public static function resolveServerImplementationNormally()
     {
-        self::$serverImplementationResolver = null;
+        static::$serverImplementationResolver = null;
     }
 
     /**
      * @internal
+     *
+     * @return callable
      */
-    public static function serverImplementationResolver(): callable
+    public static function serverImplementationResolver()
     {
-        return self::$serverImplementationResolver ?? fn (): JsonApiServerImplementation => new JsonApiServerImplementation('1.0');
+        return static::$serverImplementationResolver ?? fn (): JsonApiServerImplementation => new JsonApiServerImplementation('1.0');
     }
 }

@@ -14,7 +14,7 @@ trait Links
      *
      * @var array<int, Link>
      */
-    private array $links = [];
+    private $links = [];
 
     /**
      * @api
@@ -35,7 +35,7 @@ trait Links
      * @param array<int, Link> $links
      * @return array<string, Link>
      */
-    private static function parseLinks(array $links): array
+    private static function parseLinks($links)
     {
         return Collection::make($links)
             ->mapWithKeys(fn (Link $link): array => [$link->type => $link])

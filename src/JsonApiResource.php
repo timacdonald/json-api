@@ -151,7 +151,7 @@ abstract class JsonApiResource extends JsonResource
     {
         return [
             'included' => $this->included($request)
-                ->uniqueStrict(static fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request)),
+                ->uniqueStrict(static fn (static $resource): string => $resource->toUniqueResourceIdentifier($request)),
             'jsonapi' => self::serverImplementationResolver()($request),
         ];
     }

@@ -26,7 +26,7 @@ trait Attributes
      */
     public static function minimalAttributes($callback = null)
     {
-        self::$minimalAttributes = true;
+        static::$minimalAttributes = true;
 
         if ($callback === null) {
             return;
@@ -35,7 +35,7 @@ trait Attributes
         try {
             $callback();
         } finally {
-            self::$minimalAttributes = false;
+            static::$minimalAttributes = false;
         }
     }
 
@@ -47,7 +47,7 @@ trait Attributes
      */
     public static function maximalAttributes()
     {
-        self::$minimalAttributes = false;
+        static::$minimalAttributes = false;
     }
 
     /**
@@ -59,7 +59,7 @@ trait Attributes
     private function requestedAttributes($request)
     {
         return Collection::make($this->toAttributes($request))
-            ->only(Fields::getInstance()->parse($request, $this->toType($request), self::$minimalAttributes))
+            ->only(Fields::getInstance()->parse($request, $this->toType($request), static::$minimalAttributes))
             ->map(fn (mixed $value): mixed => value($value))
             ->reject(fn (mixed $value): bool => $value instanceof PotentiallyMissing && $value->isMissing());
     }

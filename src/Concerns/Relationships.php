@@ -18,13 +18,17 @@ trait Relationships
 {
     /**
      * @internal
+     *
+     * @var string
      */
-    private string $includePrefix = '';
+    private $includePrefix = '';
 
     /**
+     * @internal
+     *
      * @var array<callable(RelationshipObject): void>
      */
-    private array $relationshipLinkCallbacks = [];
+    private $relationshipLinkCallbacks = [];
 
     /**
      * @api
@@ -41,8 +45,10 @@ trait Relationships
 
     /**
      * @internal
+     *
+     * @return $this
      */
-    public function withIncludePrefix(string $prefix): static
+    public function withIncludePrefix($prefix)
     {
         $this->includePrefix = "{$this->includePrefix}{$prefix}.";
 
@@ -51,8 +57,11 @@ trait Relationships
 
     /**
      * @internal
+     *
+     * @param Rrequest $request
+     * @return Collection
      */
-    public function included(Request $request): Collection
+    public function included($request)
     {
         return $this->requestedRelationships($request)
             ->map(fn (JsonApiResource|JsonApiResourceCollection $include): Collection|JsonApiResource => $include->includable())
@@ -64,8 +73,11 @@ trait Relationships
 
     /**
      * @internal
+     *
+     * @param Request $request
+     * @return Collection
      */
-    private function nestedIncluded(Request $request): Collection
+    private function nestedIncluded($request)
     {
         return $this->requestedRelationships($request)
             ->flatMap(fn (JsonApiResource|JsonApiResourceCollection $resource, string $key): Collection => $resource->included($request));
@@ -73,8 +85,11 @@ trait Relationships
 
     /**
      * @internal
+     *
+     * @param Request $request
+     * @return Collection
      */
-    private function requestedRelationshipsAsIdentifiers(Request $request): Collection
+    private function requestedRelationshipsAsIdentifiers($request)
     {
         return $this->requestedRelationships($request)
             ->map(fn (JsonApiResource|JsonApiResourceCollection $resource): RelationshipObject|RelationshipCollectionLink => $resource->resolveRelationshipLink($request));
@@ -82,8 +97,11 @@ trait Relationships
 
     /**
      * @internal
+     *
+     * @param Request $request
+     * @return Collection
      */
-    private function requestedRelationships(Request $request): Collection
+    private function requested($request)
     {
         return $this->rememberRequestRelationships(fn (): Collection => Collection::make($this->toRelationships($request))
             ->only(Includes::getInstance()->parse($request, $this->includePrefix))
@@ -104,29 +122,35 @@ trait Relationships
 
     /**
      * @internal
+     *
+     * @param Request $request
+     * @return RelationshipObject
      */
-    public function resolveRelationshipLink(Request $request): RelationshipObject
+    public function resolveRelationshipLink($request)
     {
-        return tap($this->toResourceLink($request), function (RelationshipObject $link) {
+        return tap($this->toResourceLink($request), function (RelationshipObject $link): void {
             foreach ($this->relationshipLinkCallbacks as $callback) {
                 $callback($link);
             }
         });
     }
 
-
     /**
      * @internal
+     *
+     * @return $this
      */
-    private function includable(): static
+    private function includable()
     {
         return $this;
     }
 
     /**
      * @internal
+     *
+     * @return bool
      */
-    private function shouldBePresentInIncludes(): bool
+    private function shouldBePresentInIncludes()
     {
         return $this->resource !== null;
     }

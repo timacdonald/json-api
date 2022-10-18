@@ -17,15 +17,21 @@ use function is_object;
  */
 final class UnknownRelationshipException extends Exception
 {
-    public static function from(mixed $resource): self
+    /**
+     * @param mixed $model
+     * @return static
+     */
+    public static function from($resource)
     {
-        return new self('Unknown relationship encoutered. Relationships should always return a class that extend '.JsonApiResource::class.' or '.JsonApiResourceCollection::class.'. Instead found ['.self::determineType($resouce).'].');
+        return new static('Unknown relationship encoutered. Relationships should always return a class that extend '.JsonApiResource::class.' or '.JsonApiResourceCollection::class.'. Instead found ['.static::determineType($resouce).'].');
     }
 
-    private static function determineType(mixed $resource): string
+    /**
+     * @param mixed $model
+     * @return string
+     */
+    private static function determineType($resource)
     {
-        return is_object($resource)
-            ? get_class($resource)
-            : gettype($resource);
+        return is_object($resource) ? get_class($resource) : gettype($resource);
     }
 }

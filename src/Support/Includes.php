@@ -16,24 +16,35 @@ use function is_array;
  */
 final class Includes
 {
-    private static ?Includes $instance;
+    /**
+     * @param static|null
+     */
+    private static $instance = null;
 
     /**
      * @var array<string, Collection>
      */
-    private array $cache = [];
+    private $cache = [];
 
     private function __construct()
     {
         //
     }
 
-    public static function getInstance(): self
+    /**
+     * @return static
+     */
+    public static function getInstance()
     {
-        return self::$instance ??= new self();
+        return static::$instance ??= new static();
     }
 
-    public function parse(Request $request, string $prefix): Collection
+    /**
+     * @param Request $request
+     * @param string $prefix
+     * @return Collection
+     */
+    public function parse($request, $prefix)
     {
         return $this->rememberIncludes($prefix, function () use ($request, $prefix): Collection {
             $includes = $request->query('include') ?? '';
@@ -52,21 +63,30 @@ final class Includes
 
     /**
      * @infection-ignore-all
+     *
+     * @param string $prefix
+     * @param callable $callback
+     * @return Collection
      */
-    private function rememberIncludes(string $prefix, callable $callback): Collection
+    private function rememberIncludes($prefix, $callback)
     {
         return $this->cache[$prefix] ??= $callback();
     }
 
-    public function flush(): void
+    /**
+     * @return $this
+     */
+    public function flush()
     {
         $this->cache = [];
+
+        return $this;
     }
 
     /**
      * @return array<string, Collection>
      */
-    public function cache(): array
+    public function cache()
     {
         return $this->cache;
     }

@@ -11,7 +11,7 @@ trait Meta
      *
      * @var array<string, mixed> $meta
      */
-    private array $meta = [];
+    private $meta = [];
 
     /**
      * @api

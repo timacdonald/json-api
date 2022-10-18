@@ -14,7 +14,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     /**
      * @var array<callable(RelationshipObject): void>
      */
-    private array $relationshipLinkCallbacks = [];
+    private $relationshipLinkCallbacks = [];
 
     /**
      * @api
@@ -40,6 +40,21 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
         $this->relationshipLinkCallbacks[] = $callback;
 
         return $this;
+    }
+
+    /**
+     * @api
+     *
+     * @param Request $request
+     * @return RelationshipCollectionLink
+     */
+    public function toResourceLink($request)
+    {
+        $resourceLinks = $this->collection
+            ->uniqueStrict(static fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request))
+            ->map(static fn (JsonApiResource $resource): ResourceIdentifier => $resource->resolveResourceIdentifier($request));
+
+        return new RelationshipCollectionLink($resourceLinks->all());
     }
 
     /**
@@ -73,11 +88,12 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     /**
      * @api
      *
+     * @param Request $request
      * @param array<array-key, mixed> $paginated
      * @param array{links: array<string, ?string>} $default
      * @return array{links: array<string, string>}
      */
-    public function paginationInformation(Request $request, array $paginated, array $default): array
+    public function paginationInformation($request, $paginated, $default)
     {
         $default['links'] = array_filter($default['links'], static fn (?string $link) => $link !== null);
 
@@ -87,44 +103,37 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     /**
      * @internal
      *
-     * @return JsonApiResourceCollection<JsonApiResource>
+     * @param string $prefix
+     * @return $this
      */
-    public function withIncludePrefix(string $prefix): self
+    public function withIncludePrefix($prefix)
     {
-        return tap($this, static function (JsonApiResourceCollection $resource) use ($prefix): void {
+        return tap($this, static function (static $resource) use ($prefix): void {
             $resource->collection->each(static fn (JsonApiResource $resource): JsonApiResource => $resource->withIncludePrefix($prefix));
         });
     }
 
     /**
      * @internal
+     *
+     * @param Request $request
+     * @return Collection
      */
-    public function included(Request $request): Collection
+    public function included($request)
     {
         return $this->collection->map(static fn (JsonApiResource $resource): Collection => $resource->included($request));
     }
 
+
     /**
-     * @api
+     * @internal
      *
      * @param Request $request
      * @return RelationshipCollectionLink
      */
-    public function toResourceLink($request)
+    public function resolveRelationshipLink($request)
     {
-        $resourceLinks = $this->collection
-            ->uniqueStrict(static fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request))
-            ->map(static fn (JsonApiResource $resource): ResourceIdentifier => $resource->resolveResourceIdentifier($request));
-
-        return new RelationshipCollectionLink($resourceLinks->all());
-    }
-
-    /**
-     * @internal
-     */
-    public function resolveRelationshipLink(Request $request): RelationshipCollectionLink
-    {
-        return tap($this->toResourceLink($request), function (RelationshipCollectionLink $link) {
+        return tap($this->toResourceLink($request), function (RelationshipCollectionLink $link): void {
             foreach ($this->relationshipLinkCallbacks as $callback) {
                 $callback($link);
             }
@@ -133,8 +142,10 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
 
     /**
      * @internal
+     *
+     * @return Collection
      */
-    public function includable(): Collection
+    public function includable()
     {
         return $this->collection;
     }
@@ -142,8 +153,10 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     /**
      * @internal
      * @infection-ignore-all
+     *
+     * @return void
      */
-    public function flush(): void
+    public function flush()
     {
         $this->collection->each(static fn (JsonApiResource $resource) => $resource->flush());
     }

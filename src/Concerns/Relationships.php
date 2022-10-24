@@ -64,7 +64,9 @@ trait Relationships
     public function included($request)
     {
         return $this->requestedRelationships($request)
-            ->map(fn (JsonApiResource|JsonApiResourceCollection $include): Collection|JsonApiResource => $include->includable())
+            ->map(
+                fn (JsonApiResource|JsonApiResourceCollection $include): Collection|JsonApiResource => $include->includable()
+            )
             ->merge($this->nestedIncluded($request))
             ->flatten()
             ->filter(fn (JsonApiResource $resource): bool => $resource->shouldBePresentInIncludes())
@@ -80,7 +82,9 @@ trait Relationships
     private function nestedIncluded($request)
     {
         return $this->requestedRelationships($request)
-            ->flatMap(fn (JsonApiResource|JsonApiResourceCollection $resource, string $key): Collection => $resource->included($request));
+            ->flatMap(
+                fn (JsonApiResource|JsonApiResourceCollection $resource, string $key): Collection => $resource->included($request)
+            );
     }
 
     /**
@@ -92,7 +96,9 @@ trait Relationships
     private function requestedRelationshipsAsIdentifiers($request)
     {
         return $this->requestedRelationships($request)
-            ->map(fn (JsonApiResource|JsonApiResourceCollection $resource): RelationshipObject|RelationshipCollectionLink => $resource->resolveRelationshipLink($request));
+            ->map(
+                fn (JsonApiResource|JsonApiResourceCollection $resource): RelationshipObject|RelationshipCollectionLink => $resource->resolveRelationshipLink($request)
+            );
     }
 
     /**
@@ -101,10 +107,10 @@ trait Relationships
      * @param Request $request
      * @return Collection
      */
-    private function requested($request)
+    private function requestedRelationships($request)
     {
         return $this->rememberRequestRelationships(fn (): Collection => Collection::make($this->toRelationships($request))
-            ->only(Includes::getInstance()->parse($request, $this->includePrefix))
+            ->only($this->requestedIncludes($request))
             ->map(function (callable $value, string $prefix): null|JsonApiResource|JsonApiResourceCollection {
                 $resource = $value();
 
@@ -118,6 +124,17 @@ trait Relationships
 
                 throw UnknownRelationshipException::from($resource);
             })->reject(fn (JsonApiResource|JsonApiResourceCollection $resource): bool => $resource === null));
+    }
+
+    /**
+     * @internal
+     *
+     * @param Request $request
+     * @return Collection
+     */
+    private function requestedIncludes($request)
+    {
+        return Includes::getInstance()->parse($request, $this->includePrefix);
     }
 
     /**

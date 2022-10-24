@@ -124,7 +124,6 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
         return $this->collection->map(static fn (JsonApiResource $resource): Collection => $resource->included($request));
     }
 
-
     /**
      * @internal
      *

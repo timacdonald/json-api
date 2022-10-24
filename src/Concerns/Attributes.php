@@ -59,8 +59,19 @@ trait Attributes
     private function requestedAttributes($request)
     {
         return Collection::make($this->toAttributes($request))
-            ->only(Fields::getInstance()->parse($request, $this->toType($request), static::$minimalAttributes))
+            ->only($this->requestedFields($request))
             ->map(fn (mixed $value): mixed => value($value))
             ->reject(fn (mixed $value): bool => $value instanceof PotentiallyMissing && $value->isMissing());
+    }
+
+    /**
+     * @internal
+     *
+     * @param Request $request
+     * @return array|null
+     */
+    private function requestedFields($request)
+    {
+        return Fields::getInstance()->parse($request, $this->toType($request), static::$minimalAttributes);
     }
 }

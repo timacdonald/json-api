@@ -7,9 +7,6 @@ namespace TiMacDonald\JsonApi;
 use JsonSerializable;
 use stdClass;
 
-/**
- * @see https://jsonapi.org/format/#document-resource-object-relationships
- */
 final class RelationshipObject implements JsonSerializable
 {
     use Concerns\Links;
@@ -18,13 +15,15 @@ final class RelationshipObject implements JsonSerializable
     /**
      * @var ResourceIdentifier|null|array<ResourceIdentifier>
      */
-    private ResourceIdentifier|null|array $data;
+    private $data;
 
     /**
+     * @param ResourceIdentifier|null $data
      * @param array<int, Link> $links
      * @param array<string, mixed> $meta
+     * @return self
      */
-    public static function toOne(ResourceIdentifier|null $data, array $links = [], array $meta = []): self
+    public static function toOne($data, $links = [], $meta = [])
     {
         return new self($data, $links, $meta);
     }
@@ -33,8 +32,9 @@ final class RelationshipObject implements JsonSerializable
      * @param array<ResourceIdentifier> $data
      * @param array<int, Link> $links
      * @param array<string, mixed> $meta
+     * @return self
      */
-    public static function toMany(array $data, array $links = [], array $meta = []): self
+    public static function toMany($data, $links = [], $meta = [])
     {
         return new self($data, $links, $meta);
     }

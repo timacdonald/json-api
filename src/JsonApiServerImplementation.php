@@ -11,12 +11,16 @@ final class JsonApiServerImplementation implements JsonSerializable
 {
     use Concerns\Meta;
 
-    private string $version;
+    /**
+     * @var string
+     */
+    private $version;
 
     /**
+     * @param string $version
      * @param array<string, mixed> $meta
      */
-    public function __construct(string $version, array $meta = [])
+    public function __construct($version, $meta = [])
     {
         $this->version = $version;
 
@@ -26,7 +30,7 @@ final class JsonApiServerImplementation implements JsonSerializable
     /**
      * @return array{version: string, meta: stdClass}
      */
-    public function jsonSerialize(): array
+    public function jsonSerialize()
     {
         return [
             'version' => $this->version,

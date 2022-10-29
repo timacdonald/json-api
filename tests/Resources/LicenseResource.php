@@ -12,7 +12,7 @@ use TiMacDonald\JsonApi\JsonApiResource;
  */
 class LicenseResource extends JsonApiResource
 {
-    protected function toAttributes(Request $request): array
+    public function toAttributes(Request $request): array
     {
         return [
             'key' => $this->key,

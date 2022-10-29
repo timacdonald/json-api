@@ -46,6 +46,7 @@ trait Relationships
     /**
      * @internal
      *
+     * @param string $prefix
      * @return $this
      */
     public function withIncludePrefix($prefix)
@@ -58,7 +59,7 @@ trait Relationships
     /**
      * @internal
      *
-     * @param Rrequest $request
+     * @param Request $request
      * @return Collection
      */
     public function included($request)

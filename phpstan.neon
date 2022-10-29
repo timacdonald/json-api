@@ -1,12 +1,7 @@
 parameters:
     level: 8
     paths:
-        - src/ResourceIdentifier.php
-        - tests/Unit/ResourceIdentifierTest.php
-        - src/RelationshipObject.php
-        - tests/Unit/RelationshipObjectTest.php
-        - src/Link.php
-        - tests/Unit/LinkTest.php
+        - src
     checkInternalClassCaseSensitivity: true
     checkGenericClassInNonGenericObjectType: true
     checkTooWideReturnTypesInProtectedAndPublicMethods: true

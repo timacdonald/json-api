@@ -32,7 +32,7 @@ abstract class JsonApiResource extends JsonResource
     public function toAttributes($request)
     {
         return [
-            //
+            // TODO: return arrayable
         ];
     }
 
@@ -106,7 +106,7 @@ abstract class JsonApiResource extends JsonResource
     public function toResourceLink($request)
     {
         if ($this->resource === null) {
-            return new RelationshipObject(null);
+            return RelationshipObject::toOne(null);
         }
 
         return new RelationshipObject($this->resolveResourceIdentifier($request));
@@ -151,7 +151,7 @@ abstract class JsonApiResource extends JsonResource
     {
         return [
             'included' => $this->included($request)
-                ->uniqueStrict(static fn (static $resource): string => $resource->toUniqueResourceIdentifier($request)),
+                ->uniqueStrict(static fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request)),
             'jsonapi' => self::serverImplementationResolver()($request),
         ];
     }
@@ -191,6 +191,7 @@ abstract class JsonApiResource extends JsonResource
      */
     public function toResponse($request)
     {
-        return tap(parent::toResponse($request)->header('Content-type', 'application/vnd.api+json'), fn () => Cache::flush($this));
+        // TODO: the flush call here is triggering repeated Includes::flush() cals, because of collection.s
+        return tap(parent::toResponse($request)->header('Content-type', 'application/vnd.api+json'), fn (): mixed => $this->flush($this));
     }
 }

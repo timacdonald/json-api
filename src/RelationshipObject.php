@@ -44,7 +44,7 @@ final class RelationshipObject implements JsonSerializable
      * @param array<int, Link> $links
      * @param array<string, mixed> $meta
      */
-    private function __construct(ResourceIdentifier|null|array $data, array $links = [], array $meta = [])
+    private function __construct($data, $links = [], $meta = [])
     {
         $this->data = $data;
 
@@ -57,7 +57,8 @@ final class RelationshipObject implements JsonSerializable
     /**
      * @return array{data: ResourceIdentifier|null|array<ResourceIdentifier>, meta: stdClass, links: stdClass}
      */
-    public function jsonSerialize(): array
+    #[\ReturnTypeWillChange]
+    public function jsonSerialize()
     {
         return [
             'data' => $this->data,

@@ -30,6 +30,7 @@ final class JsonApiServerImplementation implements JsonSerializable
     /**
      * @return array{version: string, meta: stdClass}
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return [

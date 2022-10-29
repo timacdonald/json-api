@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace TiMacDonald\JsonApi\Concerns;
 
 use Illuminate\Support\Collection;
+use TiMacDonald\JsonApi\JsonApiResource;
+use TiMacDonald\JsonApi\JsonApiResourceCollection;
+use TiMacDonald\JsonApi\Support\Fields;
+use TiMacDonald\JsonApi\Support\Includes;
 
 trait Caching
 {
@@ -33,7 +37,7 @@ trait Caching
      * @internal
      * @infection-ignore-all
      *
-     * @return $this
+     * @return void
      */
     public function flush()
     {
@@ -43,7 +47,7 @@ trait Caching
 
         if ($this->requestedRelationshipsCache !== null) {
             $this->requestedRelationshipsCache->each(
-                fn (JsonApiResource|JsonApiResourceCollection $relation): void => $relation->flush()
+                fn (JsonApiResource|JsonApiResourceCollection $relation): mixed => $relation->flush()
             );
         }
 
@@ -52,8 +56,6 @@ trait Caching
         Includes::getInstance()->flush();
 
         Fields::getInstance()->flush();
-
-        return $this;
     }
 
     /**

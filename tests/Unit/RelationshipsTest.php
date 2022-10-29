@@ -949,7 +949,7 @@ class RelationshipsTest extends TestCase
                             return 'relation-type';
                         }
 
-                        protected function toAttributes(Request $request): array
+                        public function toAttributes(Request $request): array
                         {
                             return [
                                 'name' => $this->resource->input('name'),

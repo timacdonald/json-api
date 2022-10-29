@@ -18,16 +18,16 @@ use function is_object;
 final class UnknownRelationshipException extends Exception
 {
     /**
-     * @param mixed $model
+     * @param mixed $resource
      * @return static
      */
     public static function from($resource)
     {
-        return new static('Unknown relationship encoutered. Relationships should always return a class that extend '.JsonApiResource::class.' or '.JsonApiResourceCollection::class.'. Instead found ['.static::determineType($resouce).'].');
+        return new static('Unknown relationship encoutered. Relationships should always return a class that extend '.JsonApiResource::class.' or '.JsonApiResourceCollection::class.'. Instead found ['.static::determineType($resource).'].');
     }
 
     /**
-     * @param mixed $model
+     * @param mixed $resource
      * @return string
      */
     private static function determineType($resource)

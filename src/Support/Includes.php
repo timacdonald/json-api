@@ -17,12 +17,12 @@ use function is_array;
 final class Includes
 {
     /**
-     * @param static|null
+     * @var static|null
      */
     private static $instance = null;
 
     /**
-     * @var array<string, Collection>
+     * @var array<string, array<string>>
      */
     private $cache = [];
 
@@ -42,11 +42,11 @@ final class Includes
     /**
      * @param Request $request
      * @param string $prefix
-     * @return Collection
+     * @return array<string>
      */
     public function parse($request, $prefix)
     {
-        return $this->rememberIncludes($prefix, function () use ($request, $prefix): Collection {
+        return $this->rememberIncludes($prefix, function () use ($request, $prefix): array {
             $includes = $request->query('include') ?? '';
 
             abort_if(is_array($includes), 400, 'The include parameter must be a comma seperated list of relationship paths.');
@@ -57,7 +57,8 @@ final class Includes
                 })
                 ->map(fn ($include): string => Str::before(Str::after($include, $prefix), '.'))
                 ->uniqueStrict()
-                ->filter(fn (string $include): bool => $include !== '');
+                ->filter(fn (string $include): bool => $include !== '')
+                ->all();
         });
     }
 
@@ -66,7 +67,7 @@ final class Includes
      *
      * @param string $prefix
      * @param callable $callback
-     * @return Collection
+     * @return array<string>
      */
     private function rememberIncludes($prefix, $callback)
     {
@@ -84,7 +85,7 @@ final class Includes
     }
 
     /**
-     * @return array<string, Collection>
+     * @return array<string, array<string>>
      */
     public function cache()
     {

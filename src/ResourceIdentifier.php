@@ -7,21 +7,26 @@ namespace TiMacDonald\JsonApi;
 use JsonSerializable;
 use stdClass;
 
-/**
- * @see https://jsonapi.org/format/#document-resource-identifier-objects
- */
 final class ResourceIdentifier implements JsonSerializable
 {
     use Concerns\Meta;
 
-    private string $type;
-
-    private string $id;
+    /**
+     * @var string
+     */
+    private $type;
 
     /**
+     * @var string
+     */
+    private $id;
+
+    /**
+     * @param string $type
+     * @param string $id
      * @param array<string, mixed> $meta
      */
-    public function __construct(string $type, string $id, array $meta = [])
+    public function __construct($type, $id, $meta = [])
     {
         $this->type = $type;
 
@@ -33,7 +38,8 @@ final class ResourceIdentifier implements JsonSerializable
     /**
      * @return array{type: string, id: string, meta: stdClass}
      */
-    public function jsonSerialize(): array
+    #[\ReturnTypeWillChange]
+    public function jsonSerialize()
     {
         return [
             'type' => $this->type,

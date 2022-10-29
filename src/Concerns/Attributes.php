@@ -54,7 +54,7 @@ trait Attributes
      * @internal
      *
      * @param Request $request
-     * @return Collection
+     * @return Collection<string, mixed>
      */
     private function requestedAttributes($request)
     {
@@ -68,7 +68,7 @@ trait Attributes
      * @internal
      *
      * @param Request $request
-     * @return array|null
+     * @return array<string>|null
      */
     private function requestedFields($request)
     {

@@ -19,7 +19,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     /**
      * @api
      *
-     * @param callable $callable
+     * @param callable $callback
      * @return $this
      */
     public function map($callback)
@@ -82,7 +82,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
      */
     public function toResponse($request)
     {
-        return tap(parent::toResponse($request)->header('Content-type', 'application/vnd.api+json'), fn () => Cache::flush($this));
+        return tap(parent::toResponse($request)->header('Content-type', 'application/vnd.api+json'), fn (): mixed => $this->flush($this));
     }
 
     /**
@@ -95,7 +95,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
      */
     public function paginationInformation($request, $paginated, $default)
     {
-        $default['links'] = array_filter($default['links'], static fn (?string $link) => $link !== null);
+        $default['links'] = array_filter($default['links'], static fn (?string $link): bool => $link !== null);
 
         return $default;
     }
@@ -108,7 +108,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
      */
     public function withIncludePrefix($prefix)
     {
-        return tap($this, static function (static $resource) use ($prefix): void {
+        return tap($this, static function (JsonApiResourceCollection $resource) use ($prefix): void {
             $resource->collection->each(static fn (JsonApiResource $resource): JsonApiResource => $resource->withIncludePrefix($prefix));
         });
     }
@@ -157,6 +157,6 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
      */
     public function flush()
     {
-        $this->collection->each(static fn (JsonApiResource $resource) => $resource->flush());
+        $this->collection->each(static fn (JsonApiResource $resource): void => $resource->flush());
     }
 }

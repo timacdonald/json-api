@@ -31,7 +31,7 @@ final class Fields
     }
 
     /**
-     * @return static
+     * @return Fields
      */
     public static function getInstance()
     {

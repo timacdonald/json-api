@@ -13,7 +13,7 @@ use TiMacDonald\JsonApi\JsonApiResourceCollection;
  */
 class PostResource extends JsonApiResource
 {
-    protected function toAttributes(Request $request): array
+    public function toAttributes(Request $request): array
     {
         return [
             'title' => $this->title,

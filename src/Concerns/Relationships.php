@@ -124,7 +124,7 @@ trait Relationships
                 }
 
                 throw UnknownRelationshipException::from($resource);
-            })->reject(fn (JsonApiResource|JsonApiResourceCollection $resource): bool => $resource === null));
+            })->reject(fn (JsonApiResource|JsonApiResourceCollection|null $resource): bool => $resource === null));
     }
 
     /**

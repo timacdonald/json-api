@@ -21,7 +21,7 @@ class IncludesTest extends TestCase
 
         $includes = Includes::getInstance()->parse($request, 'a.');
 
-        $this->assertTrue($includes->isEmpty());
+        $this->assertCount(0, $includes);
     }
 
     public function testItRemovesDuplicates(): void
@@ -45,7 +45,7 @@ class IncludesTest extends TestCase
         Includes::getInstance()->flush();
         $includes[] = Includes::getInstance()->parse($requests[1], '');
 
-        $this->assertSame($includes[0]->all(), ['a']);
-        $this->assertSame($includes[1]->all(), ['b']);
+        $this->assertSame($includes[0], ['a']);
+        $this->assertSame($includes[1], ['b']);
     }
 }

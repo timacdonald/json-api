@@ -147,43 +147,6 @@ class JsonApiTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItAddsArbitraryLinksToIndividualResources(): void
-    {
-        Route::get('test-route', static fn () => new class ((new BasicModel(['id' => 'expected-id']))) extends JsonApiResource {
-            public function toLinks($request): array
-            {
-                return [
-                    'links-key' => 'links-value',
-                ];
-            }
-        });
-
-        $response = $this->getJson('test-route');
-
-        $response->assertOk();
-        $response->assertExactJson([
-            'data' => [
-                'id' => 'expected-id',
-                'type' => 'basicModels',
-                'attributes' => [],
-                'relationships' => [],
-                'meta' => [],
-                'links' => [
-                    'links-key' => [
-                        'href' => 'links-value',
-                        'meta' => [],
-                    ],
-                ],
-            ],
-            'included' => [],
-            'jsonapi' => [
-                'version' => '1.0',
-                'meta' => [],
-            ],
-        ]);
-        $this->assertValidJsonApi($response);
-    }
-
     public function testItHandlesSelfAndRelatedLinks(): void
     {
         Route::get('test-route', static fn () => new class ((new BasicModel(['id' => 'expected-id']))) extends JsonApiResource {
@@ -194,7 +157,7 @@ class JsonApiTest extends TestCase
                         'some' => 'meta',
                     ]),
                     Link::related('https://example.test/related'),
-                    'home' => 'https://example.test',
+                    new Link('home', 'https://example.test')
                 ];
             }
         });
@@ -369,7 +332,7 @@ class JsonApiTest extends TestCase
 
         $json = json_encode($relationship);
 
-        self::assertSame('{"id":"5","type":"users","meta":{}}', $json);
+        self::assertSame('{"type":"users","id":"5","meta":{}}', $json);
     }
 
     public function testItCastsEmptyLinksMetaToObject(): void
@@ -430,13 +393,13 @@ class JsonApiTest extends TestCase
 
     public function testItCastsEmptyRelationshipLinkMetaToJsonObject()
     {
-        $resourceLink = new RelationshipObject(
+        $resourceLink = RelationshipObject::toOne(
             new ResourceIdentifier('expected-type', 'expected-id')
         );
 
         $json = json_encode($resourceLink);
 
-        self::assertSame('{"data":{"id":"expected-id","type":"expected-type","meta":{}},"meta":{},"links":{}}', $json);
+        self::assertSame('{"data":{"type":"expected-type","id":"expected-id","meta":{}},"meta":{},"links":{}}', $json);
     }
 
     public function testItCanPopulateAllTheMetasAndAllTheLinks()
@@ -658,7 +621,7 @@ class JsonApiTest extends TestCase
                         ]))->withMeta([
                             'posts-external' => 'meta',
                         ])->withLinks([
-                            'external' => 'posts.com',
+                            new Link('external', 'posts.com'),
                         ])),
                 ];
             }

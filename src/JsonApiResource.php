@@ -120,7 +120,7 @@ abstract class JsonApiResource extends JsonResource
      */
     public function toResourceIdentifier($request)
     {
-        return new ResourceIdentifier($this->resolveId($request), $this->resolveType($request));
+        return new ResourceIdentifier($this->resolveType($request), $this->resolveId($request));
     }
 
     /**

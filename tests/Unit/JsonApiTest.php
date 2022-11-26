@@ -365,7 +365,7 @@ class JsonApiTest extends TestCase
 
     public function testItCastsEmptyResourceIdentifierMetaToObject(): void
     {
-        $relationship = new ResourceIdentifier('5', 'users');
+        $relationship = new ResourceIdentifier('users', '5');
 
         $json = json_encode($relationship);
 
@@ -431,7 +431,7 @@ class JsonApiTest extends TestCase
     public function testItCastsEmptyRelationshipLinkMetaToJsonObject()
     {
         $resourceLink = new RelationshipObject(
-            new ResourceIdentifier('expected-id', 'expected-type')
+            new ResourceIdentifier('expected-type', 'expected-id')
         );
 
         $json = json_encode($resourceLink);

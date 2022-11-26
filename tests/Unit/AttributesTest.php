@@ -334,13 +334,13 @@ class AttributesTest extends TestCase
                         'data' => [
                             [
                                 'id' => 'post-id-1',
-                                'type' => 'basicModels',
                                 'meta' => [],
+                                'type' => 'basicModels',
                             ],
                             [
                                 'id' => 'post-id-2',
-                                'type' => 'basicModels',
                                 'meta' => [],
+                                'type' => 'basicModels',
                             ],
                         ],
                         'links' => [],

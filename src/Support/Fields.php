@@ -57,11 +57,7 @@ final class Fields
                     : null;
             }
 
-            $fields = $typeFields[$resourceType];
-
-            if ($fields === null) {
-                return [];
-            }
+            $fields = $typeFields[$resourceType] ?? '';
 
             abort_if(! is_string($fields), 400, 'The fields parameter value must be a comma seperated list of attributes.');
 
@@ -82,13 +78,11 @@ final class Fields
     }
 
     /**
-     * @return $this
+     * @return void
      */
     public function flush()
     {
         $this->cache = [];
-
-        return $this;
     }
 
     /**

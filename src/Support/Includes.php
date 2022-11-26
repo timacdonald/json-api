@@ -75,13 +75,11 @@ final class Includes
     }
 
     /**
-     * @return $this
+     * @return void
      */
     public function flush()
     {
         $this->cache = [];
-
-        return $this;
     }
 
     /**

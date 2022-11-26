@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit;
+namespace Tests\Feature;
 
 use Exception;
 use Illuminate\Database\Eloquent\Collection;

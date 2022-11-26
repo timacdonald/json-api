@@ -66,7 +66,7 @@ trait Relationships
     {
         return $this->requestedRelationships($request)
             ->map(
-                fn (JsonApiResource|JsonApiResourceCollection $include): Collection|JsonApiResource => dump($include->includable())
+                fn (JsonApiResource|JsonApiResourceCollection $include): Collection|JsonApiResource => $include->includable()
             )
             ->merge($this->nestedIncluded($request))
             ->flatten()

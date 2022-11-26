@@ -4,12 +4,22 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
-use Tests\TestCase;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Throwable;
 use TiMacDonald\JsonApi\Support\Includes;
 
 class IncludesTest extends TestCase
 {
+    protected function tearDown(): void
+    {
+        Includes::getInstance()->flush();
+
+        parent::tearDown();
+    }
+
     public function testItIsASingleton(): void
     {
         $this->assertSame(Includes::getInstance(), Includes::getInstance());
@@ -47,5 +57,21 @@ class IncludesTest extends TestCase
 
         $this->assertSame($includes[0], ['a']);
         $this->assertSame($includes[1], ['b']);
+    }
+
+    public function testItAbortsWhenIncludesIsNotAString(): void
+    {
+        Application::getInstance();
+        $request = Request::create('https://example.com?include[]=');
+
+        try {
+            Includes::getInstance()->parse($request, '');
+            $this->fail('Exception should have been thrown');
+        } catch (HttpException $e) {
+            $this->assertSame('The include parameter must be a comma seperated list of relationship paths.', $e->getMessage());
+            $this->assertSame(400, $e->getStatusCode());
+        } catch (Throwable) {
+            $this->fail('Http exception should have been thrown');
+        }
     }
 }

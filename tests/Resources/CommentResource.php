@@ -12,14 +12,14 @@ use TiMacDonald\JsonApi\JsonApiResource;
  */
 class CommentResource extends JsonApiResource
 {
-    public function toAttributes(Request $request): array
+    public function toAttributes($request): array
     {
         return [
             'content' => $this->content,
         ];
     }
 
-    protected function toRelationships(Request $request): array
+    public function toRelationships($request): array
     {
         return [
             'post' => fn () => PostResource::make($this->post),

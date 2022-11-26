@@ -12,7 +12,7 @@ use TiMacDonald\JsonApi\JsonApiResource;
  */
 class ImageResource extends JsonApiResource
 {
-    public function toAttributes(Request $request): array
+    public function toAttributes($request): array
     {
         return [
             'url' => $this->url,

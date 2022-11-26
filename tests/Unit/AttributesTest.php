@@ -64,7 +64,7 @@ class AttributesTest extends TestCase
             'location' => 'Melbourne',
         ]));
         Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
-            public function toAttributes(Request $request): array
+            public function toAttributes($request): array
             {
                 return [
                     'name' => $this->name,
@@ -107,7 +107,7 @@ class AttributesTest extends TestCase
             'location' => 'Melbourne',
         ]));
         Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
-            public function toAttributes(Request $request): array
+            public function toAttributes($request): array
             {
                 return [
                     'name' => $this->name,
@@ -145,7 +145,7 @@ class AttributesTest extends TestCase
             'location' => 'Melbourne',
         ]));
         Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
-            public function toAttributes(Request $request): array
+            public function toAttributes($request): array
             {
                 return [
                     'location' => fn () => $this->location,
@@ -182,7 +182,7 @@ class AttributesTest extends TestCase
             'id' => 'expected-id',
         ]));
         Route::get('test-route', static fn () => new class ($model) extends JsonApiResource {
-            public function toAttributes(Request $request): array
+            public function toAttributes($request): array
             {
                 return [
                     'location' => static fn () => throw new Exception('xxxx'),
@@ -389,7 +389,7 @@ class AttributesTest extends TestCase
             'address' => '123 fake street',
         ]);
         Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
-            public function toAttributes(Request $request): array
+            public function toAttributes($request): array
             {
                 return [
                     'name' => $this->when(false, fn () =>$this->name),
@@ -431,7 +431,7 @@ class AttributesTest extends TestCase
             'address' => '123 fake street',
         ]);
         Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
-            public function toAttributes(Request $request): array
+            public function toAttributes($request): array
             {
                 return [
                     'name' => $this->when(true, fn () => $this->name),
@@ -476,7 +476,7 @@ class AttributesTest extends TestCase
             'address' => '123 fake street',
         ]);
         Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
-            public function toAttributes(Request $request): array
+            public function toAttributes($request): array
             {
                 return [
                     'name' => $this->when(false, fn () => $this->name),

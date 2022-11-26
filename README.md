@@ -60,14 +60,14 @@ Nice. Well that was easy, so let's move onto...
 
 [JSON:API docs: Attributes](https://jsonapi.org/format/#document-resource-object-attributes)
 
-To provide a set of attributes for a resource, you can implement the `toAttributes(Request $request)` method...
+To provide a set of attributes for a resource, you can implement the `toAttributes($request)` method...
 
 ```php
 <?php
 
 class UserResource extends JsonApiResource
 {
-    protected function toAttributes(Request $request): array
+    protected function toAttributes($request): array
     {
         return [
             'name' => $this->name,
@@ -90,7 +90,7 @@ Just like we saw with attributes above, we can specify relationships that should
 
 class UserResource extends JsonApiResource
 {
-    protected function toRelationships(Request $request): array
+    public function toRelationships($request): array
     {
         return [
             'posts' => fn () => PostResource::collection($this->posts),
@@ -129,7 +129,7 @@ As previously mentioned, relationships are not included in the response unless t
 
 [JSON:API docs: Links](https://jsonapi.org/format/#document-resource-object-links)
 
-To provide links for a resource, you can implement the `toLinks(Request $request)` method...
+To provide links for a resource, you can implement the `toLinks($request)` method...
 
 ```php
 <?php
@@ -138,7 +138,7 @@ use TiMacDonald\JsonApi\Link;
 
 class UserResource extends JsonApiResource
 {
-    protected function toLinks(Request $request): array
+    public function toLinks($request): array
     {
         return [
             Link::self(route('users.show', $this->resource)),
@@ -152,14 +152,14 @@ class UserResource extends JsonApiResource
 
 [JSON:API docs: Meta](https://jsonapi.org/format/#document-meta)
 
-To provide meta information for a resource, you can implement the `toMeta(Request $request)` method...
+To provide meta information for a resource, you can implement the `toMeta($request)` method...
 
 ```php
 <?php
 
 class UserResource extends JsonApiResource
 {
-    protected function toMeta(Request $request): array
+    public function toMeta($request): array
     {
         return [
             'resourceDeprecated' => true,
@@ -179,7 +179,7 @@ From a relationship `Closure` you can return anything. If what you return is not
 
 class UserResource extends JsonApiResource
 {
-    protected function toRelationships(Request $request): array
+    public function toRelationships($request): array
     {
         return [
             'nonJsonApiResource' => fn (): JsonResource => LicenseResource::make($this->license),
@@ -272,7 +272,7 @@ Without any work, your response supports sparse fieldsets. If you are utilising 
 
 class UserResource extends JsonResource
 {
-    protected function toAttributes(Request $request): array
+    protected function toAttributes($request): array
     {
         return [
             'name' => $this->name,

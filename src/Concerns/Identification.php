@@ -54,7 +54,7 @@ trait Identification
      */
     public static function resolveIdUsing($resolver)
     {
-        static::$idResolver = $resolver;
+        self::$idResolver = $resolver;
     }
 
     /**
@@ -65,7 +65,7 @@ trait Identification
      */
     public static function resolveTypeUsing($resolver)
     {
-        static::$typeResolver = $resolver;
+        self::$typeResolver = $resolver;
     }
 
     /**
@@ -75,7 +75,7 @@ trait Identification
      */
     public static function resolveIdNormally()
     {
-        static::$idResolver = null;
+        self::$idResolver = null;
     }
 
     /**
@@ -85,7 +85,7 @@ trait Identification
      */
     public static function resolveTypeNormally()
     {
-        static::$typeResolver = null;
+        self::$typeResolver = null;
     }
 
     /**
@@ -128,7 +128,7 @@ trait Identification
      */
     private static function idResolver()
     {
-        return static::$idResolver ??= function ($resource): string {
+        return self::$idResolver ??= function ($resource): string {
             if (! $resource instanceof Model) {
                 throw ResourceIdentificationException::attemptingToDetermineIdFor($resource);
             }
@@ -147,7 +147,7 @@ trait Identification
      */
     private static function typeResolver()
     {
-        return static::$typeResolver ??= function ($resource): string {
+        return self::$typeResolver ??= function ($resource): string {
             if (! $resource instanceof Model) {
                 throw ResourceIdentificationException::attemptingToDetermineTypeFor($resource);
             }

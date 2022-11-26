@@ -60,7 +60,7 @@ trait Relationships
      * @internal
      *
      * @param Request $request
-     * @return Collection
+     * @return Collection<int, JsonApiResource>
      */
     public function included($request)
     {
@@ -106,7 +106,7 @@ trait Relationships
      * @internal
      *
      * @param Request $request
-     * @return Collection
+     * @return Collection<string, null|JsonApiResource|JsonApiResourceCollection>
      */
     private function requestedRelationships($request)
     {
@@ -131,7 +131,7 @@ trait Relationships
      * @internal
      *
      * @param Request $request
-     * @return Collection
+     * @return array<int, string>
      */
     private function requestedIncludes($request)
     {

@@ -53,7 +53,7 @@ abstract class JsonApiResource extends JsonResource
      * @api
      *
      * @param Request $request
-     * @return array<int|string, Link|string>
+     * @return array<int, Link>
      */
     public function toLinks($request)
     {
@@ -109,7 +109,7 @@ abstract class JsonApiResource extends JsonResource
             return RelationshipObject::toOne(null);
         }
 
-        return new RelationshipObject($this->resolveResourceIdentifier($request));
+        return RelationshipObject::toOne($this->resolveResourceIdentifier($request));
     }
 
     /**
@@ -145,7 +145,7 @@ abstract class JsonApiResource extends JsonResource
      * @api
      *
      * @param Request $request
-     * @return array{included: Collection, jsonapi: JsonApiServerImplementation}
+     * @return array{included: Collection<int, JsonApiResource>, jsonapi: JsonApiServerImplementation}
      */
     public function with($request)
     {
@@ -164,7 +164,7 @@ abstract class JsonApiResource extends JsonResource
      */
     public static function collection($resource)
     {
-        return tap($this->newCollection($resource), static function (JsonApiResourceCollection $collection): void {
+        return tap(static::newCollection($resource), static function (JsonApiResourceCollection $collection): void {
             if (property_exists(static::class, 'preserveKeys')) {
                 /** @phpstan-ignore-next-line */
                 $collection->preserveKeys = (new static([]))->preserveKeys === true;
@@ -178,7 +178,7 @@ abstract class JsonApiResource extends JsonResource
      * @param mixed $resource
      * @return JsonApiResourceCollection<mixed>
      */
-    public function newCollection($resource)
+    public static function newCollection($resource)
     {
         return new JsonApiResourceCollection($resource, static::class);
     }
@@ -192,6 +192,6 @@ abstract class JsonApiResource extends JsonResource
     public function toResponse($request)
     {
         // TODO: the flush call here is triggering repeated Includes::flush() cals, because of collection.s
-        return tap(parent::toResponse($request)->header('Content-type', 'application/vnd.api+json'), fn (): mixed => $this->flush($this));
+        return tap(parent::toResponse($request)->header('Content-type', 'application/vnd.api+json'), fn () => $this->flush());
     }
 }

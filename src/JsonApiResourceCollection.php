@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi;
 
+use Illuminate\Database\Eloquent\Factories\Relationship;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
@@ -46,22 +47,22 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
      * @api
      *
      * @param Request $request
-     * @return RelationshipCollectionLink
+     * @return RelationshipObject
      */
     public function toResourceLink($request)
     {
-        $resourceLinks = $this->collection
+        $resourceIdentifiers = $this->collection
             ->uniqueStrict(static fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request))
             ->map(static fn (JsonApiResource $resource): ResourceIdentifier => $resource->resolveResourceIdentifier($request));
 
-        return new RelationshipCollectionLink($resourceLinks->all());
+        return RelationshipObject::toMany($resourceIdentifiers->all());
     }
 
     /**
      * @api
      *
      * @param Request $request
-     * @return array{included: Collection, jsonapi: JsonApiResource}
+     * @return array{included: Collection<int, JsonApiResource>, jsonapi: JsonApiServerImplementation}
      */
     public function with($request)
     {
@@ -82,7 +83,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
      */
     public function toResponse($request)
     {
-        return tap(parent::toResponse($request)->header('Content-type', 'application/vnd.api+json'), fn (): mixed => $this->flush($this));
+        return tap(parent::toResponse($request)->header('Content-type', 'application/vnd.api+json'), fn () => $this->flush());
     }
 
     /**
@@ -117,7 +118,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
      * @internal
      *
      * @param Request $request
-     * @return Collection
+     * @return Collection<int, Collection<int, JsonApiResource>>
      */
     public function included($request)
     {
@@ -128,11 +129,11 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
      * @internal
      *
      * @param Request $request
-     * @return RelationshipCollectionLink
+     * @return RelationshipObject
      */
     public function resolveRelationshipLink($request)
     {
-        return tap($this->toResourceLink($request), function (RelationshipCollectionLink $link): void {
+        return tap($this->toResourceLink($request), function (RelationshipObject $link): void {
             foreach ($this->relationshipLinkCallbacks as $callback) {
                 $callback($link);
             }
@@ -142,7 +143,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     /**
      * @internal
      *
-     * @return Collection
+     * @return Collection<int, JsonApiResource>
      */
     public function includable()
     {
@@ -157,6 +158,6 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
      */
     public function flush()
     {
-        $this->collection->each(static fn (JsonApiResource $resource): void => $resource->flush());
+        $this->collection->each(static fn (JsonApiResource $resource) => $resource->flush());
     }
 }

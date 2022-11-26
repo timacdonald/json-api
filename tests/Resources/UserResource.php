@@ -12,14 +12,14 @@ use TiMacDonald\JsonApi\JsonApiResource;
  */
 class UserResource extends JsonApiResource
 {
-    public function toAttributes(Request $request): array
+    public function toAttributes($request): array
     {
         return [
             'name' => $this->name,
         ];
     }
 
-    protected function toRelationships(Request $request): array
+    public function toRelationships($request): array
     {
         return [
             'posts' => fn () => PostResource::collection($this->posts),

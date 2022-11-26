@@ -116,7 +116,7 @@ class JsonApiTest extends TestCase
     public function testItAddsMetaToIndividualResources(): void
     {
         Route::get('test-route', static fn () => new class ((new BasicModel(['id' => 'expected-id']))) extends JsonApiResource {
-            protected function toMeta(Request $request): array
+            public function toMeta($request): array
             {
                 return [
                     'meta-key' => 'meta-value',
@@ -150,7 +150,7 @@ class JsonApiTest extends TestCase
     public function testItAddsArbitraryLinksToIndividualResources(): void
     {
         Route::get('test-route', static fn () => new class ((new BasicModel(['id' => 'expected-id']))) extends JsonApiResource {
-            protected function toLinks(Request $request): array
+            public function toLinks($request): array
             {
                 return [
                     'links-key' => 'links-value',
@@ -187,7 +187,7 @@ class JsonApiTest extends TestCase
     public function testItHandlesSelfAndRelatedLinks(): void
     {
         Route::get('test-route', static fn () => new class ((new BasicModel(['id' => 'expected-id']))) extends JsonApiResource {
-            protected function toLinks(Request $request): array
+            public function toLinks($request): array
             {
                 return [
                     Link::self('https://example.test/self', [
@@ -458,25 +458,25 @@ class JsonApiTest extends TestCase
             (new BasicModel(['id' => 'post-id-2'])),
         ]);
         Route::get('test-route', fn () => (new class ($user) extends JsonApiResource {
-            protected function toMeta(Request $request): array
+            public function toMeta($request): array
             {
                 return [
                     'user-internal' => 'meta',
                 ];
             }
 
-            protected function toLinks(Request $request): array
+            public function toLinks($request): array
             {
                 return [
                     Link::self('user-internal.com')->withMeta(['user-internal.com' => 'meta']),
                 ];
             }
 
-            protected function toRelationships(Request $request): array
+            public function toRelationships($request): array
             {
                 return [
                     'profile' => fn () => (new class (null) extends JsonApiResource {
-                        protected function toLinks(Request $request): array
+                        public function toLinks($request): array
                         {
                             // This should not be present in the response.
                             return [
@@ -486,7 +486,7 @@ class JsonApiTest extends TestCase
                             ];
                         }
 
-                        protected function toMeta(Request $request): array
+                        public function toMeta($request): array
                         {
                             // This should not be present in the response.
                             return [
@@ -494,7 +494,7 @@ class JsonApiTest extends TestCase
                             ];
                         }
 
-                        public function toResourceIdentifier(Request $request): ResourceIdentifier
+                        public function toResourceIdentifier($request): ResourceIdentifier
                         {
                             // This should not be present in the response...
                             return parent::toResourceIdentifier($request)->withMeta([
@@ -502,7 +502,7 @@ class JsonApiTest extends TestCase
                             ]);
                         }
 
-                        public function toResourceLink(Request $request): RelationshipObject
+                        public function toResourceLink($request): RelationshipObject
                         {
                             return parent::toResourceLink($request)->withMeta([
                                 'profile-internal-resource-link' => 'meta',
@@ -535,7 +535,7 @@ class JsonApiTest extends TestCase
                         ])
                     ),
                     'avatar' => fn () => (new class ($this->resource->avatar) extends JsonApiResource {
-                        protected function toLinks(Request $request): array
+                        public function toLinks($request): array
                         {
                             return [
                                 Link::self('avatar-internal.com')->withMeta([
@@ -544,21 +544,21 @@ class JsonApiTest extends TestCase
                             ];
                         }
 
-                        protected function toMeta(Request $request): array
+                        public function toMeta($request): array
                         {
                             return [
                                 'avatar-internal' => 'meta',
                             ];
                         }
 
-                        public function toResourceIdentifier(Request $request): ResourceIdentifier
+                        public function toResourceIdentifier($request): ResourceIdentifier
                         {
                             return parent::toResourceIdentifier($request)->withMeta([
                                 'avatar-internal-resource-identifier' => 'meta',
                             ]);
                         }
 
-                        public function toResourceLink(Request $request): RelationshipObject
+                        public function toResourceLink($request): RelationshipObject
                         {
                             return parent::toResourceLink($request)->withMeta([
                                 'avatar-internal-resource-link' => 'meta',
@@ -588,14 +588,14 @@ class JsonApiTest extends TestCase
                         ])
                     ),
                     'posts' => fn () => (new class ($this->posts) extends JsonApiResource {
-                        protected function toMeta(Request $request): array
+                        public function toMeta($request): array
                         {
                             return [
                                 'posts-internal' => 'meta',
                             ];
                         }
 
-                        protected function toLinks(Request $request): array
+                        public function toLinks($request): array
                         {
                             return [
                                 Link::self('posts-internal.com')->withMeta([
@@ -604,14 +604,14 @@ class JsonApiTest extends TestCase
                             ];
                         }
 
-                        public function toResourceIdentifier(Request $request): ResourceIdentifier
+                        public function toResourceIdentifier($request): ResourceIdentifier
                         {
                             return parent::toResourceIdentifier($request)->withMeta([
                                 'posts-internal-resource-identifier' => 'meta',
                             ]);
                         }
 
-                        public function toResourceLink(Request $request): RelationshipObject
+                        public function toResourceLink($request): RelationshipObject
                         {
                             // should not be present in the response.
                             return parent::toResourceLink($request)->withMeta([

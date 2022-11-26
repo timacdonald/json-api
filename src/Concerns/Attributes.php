@@ -26,7 +26,7 @@ trait Attributes
      */
     public static function minimalAttributes($callback = null)
     {
-        static::$minimalAttributes = true;
+        self::$minimalAttributes = true;
 
         if ($callback === null) {
             return;
@@ -35,7 +35,7 @@ trait Attributes
         try {
             $callback();
         } finally {
-            static::$minimalAttributes = false;
+            self::$minimalAttributes = false;
         }
     }
 
@@ -47,7 +47,7 @@ trait Attributes
      */
     public static function maximalAttributes()
     {
-        static::$minimalAttributes = false;
+        self::$minimalAttributes = false;
     }
 
     /**
@@ -72,6 +72,6 @@ trait Attributes
      */
     private function requestedFields($request)
     {
-        return Fields::getInstance()->parse($request, $this->toType($request), static::$minimalAttributes);
+        return Fields::getInstance()->parse($request, $this->toType($request), self::$minimalAttributes);
     }
 }

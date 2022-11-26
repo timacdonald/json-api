@@ -23,7 +23,7 @@ trait Implementation
      */
     public static function resolveServerImplementationUsing($resolver)
     {
-        static::$serverImplementationResolver = $resolver;
+        self::$serverImplementationResolver = $resolver;
     }
 
     /**
@@ -33,7 +33,7 @@ trait Implementation
      */
     public static function resolveServerImplementationNormally()
     {
-        static::$serverImplementationResolver = null;
+        self::$serverImplementationResolver = null;
     }
 
     /**
@@ -43,6 +43,6 @@ trait Implementation
      */
     public static function serverImplementationResolver()
     {
-        return static::$serverImplementationResolver ?? fn (): JsonApiServerImplementation => new JsonApiServerImplementation('1.0');
+        return self::$serverImplementationResolver ?? fn (): JsonApiServerImplementation => new JsonApiServerImplementation('1.0');
     }
 }

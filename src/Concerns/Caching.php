@@ -29,7 +29,7 @@ trait Caching
     /**
      * @internal
      *
-     * @var Collection|null
+     * @var Collection<string, JsonApiResource|JsonApiResourceCollection>|null
      */
     private $requestedRelationshipsCache = null;
 
@@ -47,11 +47,13 @@ trait Caching
 
         if ($this->requestedRelationshipsCache !== null) {
             $this->requestedRelationshipsCache->each(
-                fn (JsonApiResource|JsonApiResourceCollection $relation): mixed => $relation->flush()
+                fn (JsonApiResource|JsonApiResourceCollection $relation) => $relation->flush()
             );
         }
 
         $this->requestedRelationshipsCache = null;
+
+        // TODO: this needs to be pulled out to "toResponse"
 
         Includes::getInstance()->flush();
 
@@ -87,7 +89,7 @@ trait Caching
      * @infection-ignore-all
      *
      * @param callable $closure
-     * @return Collection
+     * @return Collection<string, JsonApiResource|JsonApiResourceCollection>
      */
     private function rememberRequestRelationships($closure)
     {
@@ -97,7 +99,7 @@ trait Caching
     /**
      * @internal
      *
-     * @return Collection|null
+     * @return Collection<string, JsonApiResource|JsonApiResourceCollection>|null
      */
     public function requestedRelationshipsCache()
     {

@@ -98,7 +98,7 @@ class ResourceIdentificationTest extends TestCase
     {
         $array = [];
         Route::get('test-route', static fn () => new class ($array) extends BasicJsonApiResource {
-            protected function toId(Request $request): string
+            public function toId($request): string
             {
                 return 'id';
             }
@@ -114,7 +114,7 @@ class ResourceIdentificationTest extends TestCase
     {
         $object = new stdClass();
         Route::get('test-route', static fn () => new class ($object) extends BasicJsonApiResource {
-            protected function toId(Request $request): string
+            public function toId($request): string
             {
                 return 'id';
             }

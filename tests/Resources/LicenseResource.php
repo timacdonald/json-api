@@ -12,14 +12,14 @@ use TiMacDonald\JsonApi\JsonApiResource;
  */
 class LicenseResource extends JsonApiResource
 {
-    public function toAttributes(Request $request): array
+    public function toAttributes($request): array
     {
         return [
             'key' => $this->key,
         ];
     }
 
-    protected function toRelationships(Request $request): array
+    public function toRelationships($request): array
     {
         return [
             'user' => fn () => UserResource::make($this->user),

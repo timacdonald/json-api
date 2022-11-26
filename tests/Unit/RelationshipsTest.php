@@ -38,7 +38,7 @@ class RelationshipsTest extends TestCase
             'content' => 'post-content',
         ]));
         Route::get('test-route', static fn () => new class ($post) extends PostResource {
-            protected function toRelationships(Request $request): array
+            public function toRelationships($request): array
             {
                 return [
                     'author' => static fn () => throw new Exception('xxxx'),
@@ -266,11 +266,11 @@ class RelationshipsTest extends TestCase
             'id' => 'child-id-2',
         ]))));
         Route::get('test-route', fn () => new class ($parent) extends JsonApiResource {
-            protected function toRelationships(Request $request): array
+            public function toRelationships($request): array
             {
                 return [
                     'child' => fn () => new class ($this->child) extends JsonApiResource {
-                        public function toRelationships(Request $request): array
+                        public function toRelationships($request): array
                         {
                             return [
                                 'child' => fn () => BasicJsonApiResource::make($this->child),
@@ -350,11 +350,11 @@ class RelationshipsTest extends TestCase
             (new BasicModel(['id' => 'child-id-3'])),
         ]));
         Route::get('test-route', fn () => new class ($parent) extends JsonApiResource {
-            protected function toRelationships(Request $request): array
+            public function toRelationships($request): array
             {
                 return [
                     'child' => fn () => new class ($this->child) extends JsonApiResource {
-                        public function toRelationships(Request $request): array
+                        public function toRelationships($request): array
                         {
                             return [
                                 'child' => fn () => BasicJsonApiResource::collection($this->child),
@@ -935,21 +935,21 @@ class RelationshipsTest extends TestCase
             'content' => 'post-content',
         ]));
         Route::get('test-route', fn () => new class ($post) extends JsonApiResource {
-            protected function toRelationships(Request $request): array
+            public function toRelationships($request): array
             {
                 return [
                     'relation' => fn () => new class ($request) extends JsonApiResource {
-                        protected function toId(Request $request): string
+                        public function toId($request): string
                         {
                             return 'relation-id';
                         }
 
-                        protected function toType(Request $request): string
+                        public function toType($request): string
                         {
                             return 'relation-type';
                         }
 
-                        public function toAttributes(Request $request): array
+                        public function toAttributes($request): array
                         {
                             return [
                                 'name' => $this->resource->input('name'),
@@ -1314,7 +1314,7 @@ class RelationshipsTest extends TestCase
             'name' => 'user-name',
         ]);
         $resource = new class ($user) extends UserResource {
-            public function toRelationships(Request $request): array
+            public function toRelationships($request): array
             {
                 return [
                     'relation' => fn () => $this->when(false, static fn () => ['hello' => 'world']),
@@ -1353,7 +1353,7 @@ class RelationshipsTest extends TestCase
             'name' => 'user-name',
         ]);
         $resource = new class ($user) extends UserResource {
-            public function toRelationships(Request $request): array
+            public function toRelationships($request): array
             {
                 return [
                     'relation' => fn () => $this->when(true, static fn () => new class (new BasicModel([
@@ -1417,7 +1417,7 @@ class RelationshipsTest extends TestCase
             'name' => 'user-name',
         ]);
         $resource = new class ($user) extends UserResource {
-            public function toRelationships(Request $request): array
+            public function toRelationships($request): array
             {
                 return [
                     'relation_1' => fn () => $this->when(false, static fn () => ['hello' => 'world']),

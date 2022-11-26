@@ -66,7 +66,7 @@ trait Relationships
     {
         return $this->requestedRelationships($request)
             ->map(
-                fn (JsonApiResource|JsonApiResourceCollection $include): Collection|JsonApiResource => $include->includable()
+                fn (JsonApiResource|JsonApiResourceCollection $include): Collection|JsonApiResource => dump($include->includable())
             )
             ->merge($this->nestedIncluded($request))
             ->flatten()
@@ -92,13 +92,13 @@ trait Relationships
      * @internal
      *
      * @param Request $request
-     * @return Collection
+     * @return Collection<string, RelationshipObject>
      */
     private function requestedRelationshipsAsIdentifiers($request)
     {
         return $this->requestedRelationships($request)
             ->map(
-                fn (JsonApiResource|JsonApiResourceCollection $resource): RelationshipObject|RelationshipCollectionLink => $resource->resolveRelationshipLink($request)
+                fn (JsonApiResource|JsonApiResourceCollection $resource): RelationshipObject => $resource->resolveRelationshipLink($request)
             );
     }
 
@@ -106,7 +106,7 @@ trait Relationships
      * @internal
      *
      * @param Request $request
-     * @return Collection<string, null|JsonApiResource|JsonApiResourceCollection>
+     * @return Collection<string, JsonApiResource|JsonApiResourceCollection>
      */
     private function requestedRelationships($request)
     {

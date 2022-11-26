@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TiMacDonald\JsonApi;
 
 use JsonSerializable;
+use ReturnTypeWillChange;
 use stdClass;
 
 final class Link implements JsonSerializable
@@ -60,7 +61,7 @@ final class Link implements JsonSerializable
     /**
      * @return array{href: string, meta: stdClass}
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return [

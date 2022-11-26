@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi;
 
-use Illuminate\Database\Eloquent\Factories\Relationship;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
-use TiMacDonald\JsonApi\Support\Cache;
 
 class JsonApiResourceCollection extends AnonymousResourceCollection
 {

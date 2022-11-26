@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Tests\Models\BasicModel;
 use Tests\Resources\BasicJsonApiResource;
@@ -14,12 +13,10 @@ use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
 use TiMacDonald\JsonApi\JsonApiServerImplementation;
 use TiMacDonald\JsonApi\Link;
-use TiMacDonald\JsonApi\ResourceIdentifier;
 use TiMacDonald\JsonApi\RelationshipObject;
+use TiMacDonald\JsonApi\ResourceIdentifier;
 use TiMacDonald\JsonApi\Support\Fields;
 use TiMacDonald\JsonApi\Support\Includes;
-
-use function get_class;
 
 class JsonApiTest extends TestCase
 {
@@ -157,7 +154,7 @@ class JsonApiTest extends TestCase
                         'some' => 'meta',
                     ]),
                     Link::related('https://example.test/related'),
-                    new Link('home', 'https://example.test')
+                    new Link('home', 'https://example.test'),
                 ];
             }
         });
@@ -220,7 +217,7 @@ class JsonApiTest extends TestCase
 
     public function testItCanCustomiseTheTypeResolution(): void
     {
-        JsonApiResource::resolveTypeUsing(static fn (BasicModel $model): string => get_class($model));
+        JsonApiResource::resolveTypeUsing(static fn (BasicModel $model): string => $model::class);
         Route::get('test-route', static fn () => BasicJsonApiResource::make((new BasicModel(['id' => 'expected-id']))));
 
         $response = $this->get("test-route");

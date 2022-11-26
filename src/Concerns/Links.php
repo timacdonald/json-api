@@ -39,7 +39,7 @@ trait Links
     {
         return Collection::make($links)
             ->mapWithKeys(fn (Link $link): array => [
-                $link->type => $link
+                $link->type => $link,
             ])
             ->all();
     }

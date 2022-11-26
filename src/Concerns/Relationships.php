@@ -10,7 +10,6 @@ use Illuminate\Support\Collection;
 use TiMacDonald\JsonApi\Exceptions\UnknownRelationshipException;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
-use TiMacDonald\JsonApi\RelationshipCollectionLink;
 use TiMacDonald\JsonApi\RelationshipObject;
 use TiMacDonald\JsonApi\Support\Includes;
 

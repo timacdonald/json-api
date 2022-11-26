@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TiMacDonald\JsonApi;
 
 use JsonSerializable;
+use ReturnTypeWillChange;
 use stdClass;
 
 final class RelationshipObject implements JsonSerializable
@@ -57,7 +58,7 @@ final class RelationshipObject implements JsonSerializable
     /**
      * @return array{data: ResourceIdentifier|null|array<ResourceIdentifier>, meta: stdClass, links: stdClass}
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return [

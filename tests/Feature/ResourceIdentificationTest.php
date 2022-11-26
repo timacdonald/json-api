@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use stdClass;
 use Tests\Models\BasicModel;

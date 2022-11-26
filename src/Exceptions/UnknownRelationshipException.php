@@ -8,7 +8,6 @@ use Exception;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
 
-use function get_class;
 use function gettype;
 use function is_object;
 
@@ -23,7 +22,7 @@ final class UnknownRelationshipException extends Exception
      */
     public static function from($resource)
     {
-        return new static('Unknown relationship encoutered. Relationships should always return a class that extend '.JsonApiResource::class.' or '.JsonApiResourceCollection::class.'. Instead found ['.static::determineType($resource).'].');
+        return new static('Unknown relationship encountered. Relationships should always return a class that extends '.JsonApiResource::class.' or '.JsonApiResourceCollection::class.'. Instead found ['.static::determineType($resource).'].');
     }
 
     /**

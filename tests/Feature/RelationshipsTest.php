@@ -6,7 +6,6 @@ namespace Tests\Feature;
 
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Tests\Models\BasicModel;
 use Tests\Resources\BasicJsonApiResource;

@@ -6,7 +6,6 @@ namespace TiMacDonald\JsonApi\Exceptions;
 
 use RuntimeException;
 
-use function get_class;
 use function gettype;
 use function is_object;
 
@@ -21,7 +20,7 @@ final class ResourceIdentificationException extends RuntimeException
      */
     public static function attemptingToDetermineIdFor($model)
     {
-        return new static('Unable to resolve resource object id for '.static::determineType($model).'.');
+        return new static('Unable to resolve resource object id for ['.static::determineType($model).'].');
     }
 
     /**
@@ -30,7 +29,7 @@ final class ResourceIdentificationException extends RuntimeException
      */
     public static function attemptingToDetermineTypeFor($model)
     {
-        return new static('Unable to resolve resource object type for '.static::determineType($model).'.');
+        return new static('Unable to resolve resource object type for ['.static::determineType($model).'].');
     }
 
     /**

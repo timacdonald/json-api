@@ -6,8 +6,8 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use TiMacDonald\JsonApi\Link;
-use TiMacDonald\JsonApi\ResourceIdentifier;
 use TiMacDonald\JsonApi\RelationshipObject;
+use TiMacDonald\JsonApi\ResourceIdentifier;
 
 class RelationshipObjectTest extends TestCase
 {

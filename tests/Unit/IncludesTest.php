@@ -29,7 +29,7 @@ class IncludesTest extends TestCase
     {
         $request = Request::create('https://example.com?include=a');
 
-        $includes = Includes::getInstance()->parse($request, 'a.');
+        $includes = Includes::getInstance()->forPrefix($request, 'a.');
 
         $this->assertCount(0, $includes);
     }
@@ -38,7 +38,7 @@ class IncludesTest extends TestCase
     {
         $request = Request::create('https://example.com?include=a.b,a.b.c');
 
-        $includes = Includes::getInstance()->parse($request, 'a.');
+        $includes = Includes::getInstance()->forPrefix($request, 'a.');
 
         $this->assertCount(1, $includes);
     }
@@ -51,9 +51,9 @@ class IncludesTest extends TestCase
         ];
         $includes = [];
 
-        $includes[] = Includes::getInstance()->parse($requests[0], '');
+        $includes[] = Includes::getInstance()->forPrefix($requests[0], '');
         Includes::getInstance()->flush();
-        $includes[] = Includes::getInstance()->parse($requests[1], '');
+        $includes[] = Includes::getInstance()->forPrefix($requests[1], '');
 
         $this->assertSame($includes[0], ['a']);
         $this->assertSame($includes[1], ['b']);
@@ -65,7 +65,7 @@ class IncludesTest extends TestCase
         $request = Request::create('https://example.com?include[]=');
 
         try {
-            Includes::getInstance()->parse($request, '');
+            Includes::getInstance()->forPrefix($request, '');
             $this->fail('Exception should have been thrown');
         } catch (HttpException $e) {
             $this->assertSame('The include parameter must be a comma seperated list of relationship paths.', $e->getMessage());
@@ -73,5 +73,24 @@ class IncludesTest extends TestCase
         } catch (Throwable) {
             $this->fail('Http exception should have been thrown');
         }
+    }
+
+    public function testItCanClearTheCache(): void
+    {
+        $requests = [
+            Request::create('https://example.com?include=foo.a,bar.a'),
+            Request::create('https://example.com?include=foo.b'),
+        ];
+
+        Includes::getInstance()->forPrefix($requests[0], 'foo.');
+        Includes::getInstance()->forPrefix($requests[0], 'bar.');
+        $this->assertSame([
+            'foo.' => [
+                'a'
+            ],
+            'bar.' => [
+                'a'
+            ],
+        ], Includes::getInstance()->cache());
     }
 }

@@ -135,7 +135,7 @@ trait Relationships
      */
     private function requestedIncludes($request)
     {
-        return Includes::getInstance()->parse($request, $this->includePrefix);
+        return Includes::getInstance()->forPrefix($request, $this->includePrefix);
     }
 
     /**

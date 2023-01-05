@@ -74,23 +74,4 @@ class IncludesTest extends TestCase
             $this->fail('Http exception should have been thrown');
         }
     }
-
-    public function testItCanClearTheCache(): void
-    {
-        $requests = [
-            Request::create('https://example.com?include=foo.a,bar.a'),
-            Request::create('https://example.com?include=foo.b'),
-        ];
-
-        Includes::getInstance()->forPrefix($requests[0], 'foo.');
-        Includes::getInstance()->forPrefix($requests[0], 'bar.');
-        $this->assertSame([
-            'foo.' => [
-                'a'
-            ],
-            'bar.' => [
-                'a'
-            ],
-        ], Includes::getInstance()->cache());
-    }
 }

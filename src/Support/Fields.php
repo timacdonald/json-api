@@ -6,6 +6,7 @@ namespace TiMacDonald\JsonApi\Support;
 
 use Illuminate\Http\Request;
 
+use WeakMap;
 use function array_key_exists;
 use function explode;
 use function is_string;
@@ -21,13 +22,13 @@ final class Fields
     private static $instance = null;
 
     /**
-     * @var array<string, array<string>|null>
+     * @var WeakMap
      */
-    private $cache = [];
+    private $cache;
 
     private function __construct()
     {
-        //
+        $this->cache = new WeakMap;
     }
 
     /**
@@ -46,7 +47,7 @@ final class Fields
      */
     public function parse($request, $resourceType, $minimalAttributes)
     {
-        return $this->rememberResourceType("type:{$resourceType};minimal:{$minimalAttributes};", function () use ($request, $resourceType, $minimalAttributes): ?array {
+        return $this->rememberResourceType($request, "type:{$resourceType};minimal:{$minimalAttributes};", function () use ($request, $resourceType, $minimalAttributes): ?array {
             $typeFields = $request->query('fields') ?? [];
 
             abort_if(is_string($typeFields), 400, 'The fields parameter must be an array of resource types.');
@@ -68,13 +69,16 @@ final class Fields
     /**
      * @infection-ignore-all
      *
+     * @param Request $request
      * @param string $resourceType
      * @param callable $callback
      * @return array<string>|null
      */
-    private function rememberResourceType($resourceType, $callback)
+    private function rememberResourceType($request, $resourceType, $callback)
     {
-        return $this->cache[$resourceType] ??= $callback();
+        $this->cache[$request] ??= [];
+
+        return $this->cache[$request][$resourceType] ??= $callback();
     }
 
     /**
@@ -82,14 +86,6 @@ final class Fields
      */
     public function flush()
     {
-        $this->cache = [];
-    }
-
-    /**
-     * @return array<string, array<string>|null>
-     */
-    public function cache()
-    {
-        return $this->cache;
+        $this->cache = new WeakMap;
     }
 }

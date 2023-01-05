@@ -272,60 +272,6 @@ class JsonApiTest extends TestCase
         JsonApiResource::resolveIdNormally();
     }
 
-    public function testItClearsTheHelperCachesAfterPreparingResponseForASingleResource(): void
-    {
-        Route::get('test-route', static fn () => BasicJsonApiResource::make((new BasicModel(['id' => 'missing-id']))));
-
-        $response = $this->get("test-route?include=test&fields[basicModels]=a");
-
-        $response->assertExactJson([
-            'data' => [
-                'id' => 'missing-id',
-                'type' => 'basicModels',
-                'relationships' => [],
-                'attributes' => [],
-                'meta' => [],
-                'links' => [],
-            ],
-            'included' => [],
-            'jsonapi' => [
-                'version' => '1.0',
-                'meta' => [],
-            ],
-        ]);
-        $this->assertValidJsonApi($response);
-        $this->assertCount(0, Fields::getInstance()->cache());
-        $this->assertCount(0, Includes::getInstance()->cache());
-    }
-
-    public function testItClearsTheHelperCachesAfterPreparingResponseForACollectionOfResources(): void
-    {
-        Route::get('test-route', static fn () => BasicJsonApiResource::collection([ (new BasicModel(['id' => 'missing-id'])) ]));
-
-        $response = $this->get("test-route?include=test&fields[basicModels]=a");
-
-        $response->assertExactJson([
-            'data' => [
-                [
-                    'id' => 'missing-id',
-                    'type' => 'basicModels',
-                    'relationships' => [],
-                    'attributes' => [],
-                    'meta' => [],
-                    'links' => [],
-                ],
-            ],
-            'included' => [],
-            'jsonapi' => [
-                'version' => '1.0',
-                'meta' => [],
-            ],
-        ]);
-        $this->assertValidJsonApi($response);
-        $this->assertCount(0, Fields::getInstance()->cache());
-        $this->assertCount(0, Includes::getInstance()->cache());
-    }
-
     public function testItCastsEmptyResourceIdentifierMetaToObject(): void
     {
         $relationship = new ResourceIdentifier('users', '5');

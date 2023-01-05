@@ -25,7 +25,7 @@ final class Includes
     /**
      * @var WeakMap<Request, array<string>>
      */
-    private WeakMap $cache;
+    private $cache;
 
     private function __construct()
     {
@@ -48,14 +48,13 @@ final class Includes
     public function forPrefix($request, $prefix)
     {
         return $this->rememberIncludes($request, $prefix, function () use ($request, $prefix) {
-            dump('parsing '.$prefix);
            return $this->all($request)
-            ->when($prefix !== '', function (Collection $includes) use ($prefix): Collection {
-                return $includes->filter(fn (string $include): bool => str_starts_with($include, $prefix));
-            })
-            ->map(fn ($include): string => Str::of($include)->after($prefix)->before('.')->toString())
-            ->uniqueStrict()
-            ->values();
+                ->when($prefix !== '', function (Collection $includes) use ($prefix): Collection {
+                    return $includes->filter(fn (string $include): bool => str_starts_with($include, $prefix));
+                })
+                ->map(fn ($include): string => Str::of($include)->after($prefix)->before('.')->toString())
+                ->uniqueStrict()
+                ->values();
         })->all();
     }
 
@@ -66,8 +65,7 @@ final class Includes
      */
     private function all($request)
     {
-        return $this->rememberIncludes($request, '____all', function () use ($request) {
-            dump('parsing all');
+        return $this->rememberIncludes($request, '__all__', function () use ($request) {
             $includes = $request->query('include') ?? '';
 
             abort_if(is_array($includes), 400, 'The include parameter must be a comma seperated list of relationship paths.');
@@ -97,13 +95,5 @@ final class Includes
     public function flush()
     {
         $this->cache = new WeakMap();
-    }
-
-    /**
-     * @return array<string, array<string>>
-     */
-    public function cache()
-    {
-        return $this->cache;
     }
 }

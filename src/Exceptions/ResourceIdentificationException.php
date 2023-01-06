@@ -39,6 +39,6 @@ final class ResourceIdentificationException extends RuntimeException
      */
     private static function determineType($model)
     {
-        return is_object($model) ? get_class($model) : gettype($model);
+        return is_object($model) ? $model::class : gettype($model);
     }
 }

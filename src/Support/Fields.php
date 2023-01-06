@@ -22,7 +22,7 @@ final class Fields
     private static $instance = null;
 
     /**
-     * @var WeakMap
+     * @var WeakMap<Request, array<string, array<string>|null>>
      */
     private $cache;
 

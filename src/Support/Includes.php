@@ -60,8 +60,7 @@ final class Includes
 
     /**
      * @param Request $request
-     * @param string $prefix
-     * @return array<string>
+     * @return Collection<int, string>
      */
     private function all($request)
     {
@@ -80,7 +79,7 @@ final class Includes
      * @param Request $request
      * @param string $prefix
      * @param callable $callback
-     * @return Collection<string>
+     * @return Collection<int, string>
      */
     private function rememberIncludes($request, $prefix, $callback)
     {

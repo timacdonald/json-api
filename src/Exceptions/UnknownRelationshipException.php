@@ -32,6 +32,6 @@ final class UnknownRelationshipException extends Exception
      */
     private static function determineType($resource)
     {
-        return is_object($resource) ? get_class($resource) : gettype($resource);
+        return is_object($resource) ? $resource::class : gettype($resource);
     }
 }

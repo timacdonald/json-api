@@ -78,7 +78,7 @@ trait Relationships
      * @internal
      *
      * @param Request $request
-     * @return Collection
+     * @return Collection<int, JsonApiResource>
      */
     private function nestedIncluded($request)
     {

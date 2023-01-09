@@ -52,12 +52,6 @@ trait Caching
         }
 
         $this->requestedRelationshipsCache = null;
-
-        // TODO: this needs to be pulled out to "toResponse"
-
-        Includes::getInstance()->flush();
-
-        Fields::getInstance()->flush();
     }
 
     /**

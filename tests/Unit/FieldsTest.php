@@ -13,13 +13,6 @@ use TiMacDonald\JsonApi\Support\Fields;
 
 class FieldsTest extends TestCase
 {
-    protected function tearDown(): void
-    {
-        Fields::getInstance()->flush();
-
-        parent::tearDown();
-    }
-
     public function testItIsASingleton(): void
     {
         $this->assertSame(Fields::getInstance(), Fields::getInstance());

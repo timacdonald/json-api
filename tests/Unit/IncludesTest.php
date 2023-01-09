@@ -13,13 +13,6 @@ use TiMacDonald\JsonApi\Support\Includes;
 
 class IncludesTest extends TestCase
 {
-    protected function tearDown(): void
-    {
-        Includes::getInstance()->flush();
-
-        parent::tearDown();
-    }
-
     public function testItIsASingleton(): void
     {
         $this->assertSame(Includes::getInstance(), Includes::getInstance());
@@ -43,7 +36,7 @@ class IncludesTest extends TestCase
         $this->assertCount(1, $includes);
     }
 
-    public function testItHandlesMultipleRequestsWithCacheClearing(): void
+    public function testItHandlesMultipleRequests(): void
     {
         $requests = [
             Request::create('https://example.com?include=a'),
@@ -52,7 +45,6 @@ class IncludesTest extends TestCase
         $includes = [];
 
         $includes[] = Includes::getInstance()->forPrefix($requests[0], '');
-        Includes::getInstance()->flush();
         $includes[] = Includes::getInstance()->forPrefix($requests[1], '');
 
         $this->assertSame($includes[0], ['a']);

@@ -77,7 +77,7 @@ class ResourceIdentificationTest extends TestCase
         Route::get('test-route', static fn () => (new BasicJsonApiResource($array)));
 
         $this->expectException(ResourceIdentificationException::class);
-        $this->expectExceptionMessage('Unable to resolve resource object id for array.');
+        $this->expectExceptionMessage('Unable to resolve resource object id for [array].');
 
         $this->withoutExceptionHandling()->getJson('test-route');
     }
@@ -88,7 +88,7 @@ class ResourceIdentificationTest extends TestCase
         Route::get('test-route', static fn () => (new BasicJsonApiResource($array)));
 
         $this->expectException(ResourceIdentificationException::class);
-        $this->expectExceptionMessage('Unable to resolve resource object id for stdClass.');
+        $this->expectExceptionMessage('Unable to resolve resource object id for [stdClass].');
 
         $this->withoutExceptionHandling()->getJson('test-route');
     }
@@ -104,7 +104,7 @@ class ResourceIdentificationTest extends TestCase
         });
 
         $this->expectException(ResourceIdentificationException::class);
-        $this->expectExceptionMessage('Unable to resolve resource object type for array.');
+        $this->expectExceptionMessage('Unable to resolve resource object type for [array].');
 
         $this->withoutExceptionHandling()->getJson('test-route');
     }
@@ -120,7 +120,7 @@ class ResourceIdentificationTest extends TestCase
         });
 
         $this->expectException(ResourceIdentificationException::class);
-        $this->expectExceptionMessage('Unable to resolve resource object type for stdClass.');
+        $this->expectExceptionMessage('Unable to resolve resource object type for [stdClass].');
 
         $this->withoutExceptionHandling()->getJson('test-route');
     }

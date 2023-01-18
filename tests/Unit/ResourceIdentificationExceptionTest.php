@@ -13,7 +13,7 @@ class ResourceIdentificationExceptionTest extends TestCase
     public function testItHandlesScalarsForId(): void
     {
         $this->expectException(ResourceIdentificationException::class);
-        $this->expectExceptionMessage('Unable to resolve resource object id for string.');
+        $this->expectExceptionMessage('Unable to resolve resource object id for [string].');
 
         throw ResourceIdentificationException::attemptingToDetermineIdFor('foo');
     }
@@ -21,7 +21,7 @@ class ResourceIdentificationExceptionTest extends TestCase
     public function testItHandlesObjectsForId(): void
     {
         $this->expectException(ResourceIdentificationException::class);
-        $this->expectExceptionMessage('Unable to resolve resource object id for Tests\Unit\MyTestClass.');
+        $this->expectExceptionMessage('Unable to resolve resource object id for [Tests\Unit\MyTestClass].');
 
         throw ResourceIdentificationException::attemptingToDetermineIdFor(new MyTestClass);
     }
@@ -29,7 +29,7 @@ class ResourceIdentificationExceptionTest extends TestCase
     public function testItHandlesScalarsForType(): void
     {
         $this->expectException(ResourceIdentificationException::class);
-        $this->expectExceptionMessage('Unable to resolve resource object type for string.');
+        $this->expectExceptionMessage('Unable to resolve resource object type for [string].');
 
         throw ResourceIdentificationException::attemptingToDetermineTypeFor('foo');
     }
@@ -37,7 +37,7 @@ class ResourceIdentificationExceptionTest extends TestCase
     public function testItHandlesObjectsForType(): void
     {
         $this->expectException(ResourceIdentificationException::class);
-        $this->expectExceptionMessage('Unable to resolve resource object type for Tests\Unit\MyTestClass.');
+        $this->expectExceptionMessage('Unable to resolve resource object type for [Tests\Unit\MyTestClass].');
 
         throw ResourceIdentificationException::attemptingToDetermineTypeFor(new MyTestClass);
     }

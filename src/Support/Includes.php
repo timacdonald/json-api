@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi\Support;
 
-use WeakMap;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use WeakMap;
 
 use function explode;
 use function is_array;
@@ -17,7 +17,7 @@ use function is_array;
  */
 final class Includes
 {
-    private static Includes|null $instance = null;
+    private static Includes|null $instance;
 
     /**
      * @var WeakMap<Request, array<string>>
@@ -26,7 +26,7 @@ final class Includes
 
     private function __construct()
     {
-        $this->cache = new WeakMap;
+        $this->cache = new WeakMap();
     }
 
     /**
@@ -43,13 +43,13 @@ final class Includes
     public function forPrefix(Request $request, string $prefix)
     {
         return $this->rememberIncludes($request, $prefix, function () use ($request, $prefix) {
-           return $this->all($request)
-                ->when($prefix !== '', function (Collection $includes) use ($prefix): Collection {
-                    return $includes->filter(fn (string $include): bool => str_starts_with($include, $prefix));
-                })
-                ->map(fn ($include): string => Str::of($include)->after($prefix)->before('.')->toString())
-                ->uniqueStrict()
-                ->values();
+            return $this->all($request)
+                 ->when($prefix !== '', function (Collection $includes) use ($prefix): Collection {
+                     return $includes->filter(fn (string $include): bool => str_starts_with($include, $prefix));
+                 })
+                 ->map(fn ($include): string => Str::of($include)->after($prefix)->before('.')->toString())
+                 ->uniqueStrict()
+                 ->values();
         })->all();
     }
 

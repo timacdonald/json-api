@@ -14,38 +14,45 @@ final class RelationshipObject implements JsonSerializable
     use Concerns\Meta;
 
     /**
-     * @var ResourceIdentifier|null|array<ResourceIdentifier>
+     * @internal
+     *
+     * @var ResourceIdentifier|null|array<int, ResourceIdentifier>
      */
-    private $data;
+    private ResourceIdentifier|array|null $data;
 
     /**
-     * @param ResourceIdentifier|null $data
+     * @api
+     *
      * @param array<int, Link> $links
      * @param array<string, mixed> $meta
      * @return self
      */
-    public static function toOne($data, $links = [], $meta = [])
+    public static function toOne(ResourceIdentifier|null $data, array $links = [], array $meta = [])
     {
         return new self($data, $links, $meta);
     }
 
     /**
-     * @param array<ResourceIdentifier> $data
+     * @api
+     *
+     * @param array<int, ResourceIdentifier> $data
      * @param array<int, Link> $links
      * @param array<string, mixed> $meta
      * @return self
      */
-    public static function toMany($data, $links = [], $meta = [])
+    public static function toMany(array $data, array $links = [], array $meta = [])
     {
         return new self($data, $links, $meta);
     }
 
     /**
-     * @param ResourceIdentifier|null|array<ResourceIdentifier> $data
+     * @internal
+     *
+     * @param ResourceIdentifier|null|array<int, ResourceIdentifier> $data
      * @param array<int, Link> $links
      * @param array<string, mixed> $meta
      */
-    private function __construct($data, $links = [], $meta = [])
+    private function __construct(ResourceIdentifier|array|null $data, array $links = [], array $meta = [])
     {
         $this->data = $data;
 
@@ -56,7 +63,9 @@ final class RelationshipObject implements JsonSerializable
 
 
     /**
-     * @return array{data: ResourceIdentifier|null|array<ResourceIdentifier>, meta: stdClass, links: stdClass}
+     * @internal 
+     *
+     * @return array{data: ResourceIdentifier|null|array<int, ResourceIdentifier>, meta: stdClass, links: stdClass}
      */
     #[ReturnTypeWillChange]
     public function jsonSerialize()

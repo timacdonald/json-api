@@ -10,18 +10,15 @@ use Illuminate\Support\Collection;
 
 class JsonApiResourceCollection extends AnonymousResourceCollection
 {
-    /**
-     * @var array<callable(RelationshipObject): void>
-     */
-    private $relationshipLinkCallbacks = [];
+    use Concerns\RelationshipLinks;
 
     /**
      * @api
      *
-     * @param callable $callback
+     * @param (callable(JsonApiResource): JsonApiResource) $callback
      * @return $this
      */
-    public function map($callback)
+    public function map(callable $callback)
     {
         $this->collection = $this->collection->map($callback);
 
@@ -31,23 +28,9 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     /**
      * @api
      *
-     * @param callable $callback
-     * @return $this
-     */
-    public function withRelationshipLink($callback)
-    {
-        $this->relationshipLinkCallbacks[] = $callback;
-
-        return $this;
-    }
-
-    /**
-     * @api
-     *
-     * @param Request $request
      * @return RelationshipObject
      */
-    public function toResourceLink($request)
+    public function toResourceLink(Request $request)
     {
         $resourceIdentifiers = $this->collection
             ->uniqueStrict(static fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request))
@@ -102,10 +85,9 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     /**
      * @internal
      *
-     * @param string $prefix
      * @return $this
      */
-    public function withIncludePrefix($prefix)
+    public function withIncludePrefix(string $prefix)
     {
         return tap($this, static function (JsonApiResourceCollection $resource) use ($prefix): void {
             $resource->collection->each(static fn (JsonApiResource $resource): JsonApiResource => $resource->withIncludePrefix($prefix));
@@ -115,27 +97,11 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     /**
      * @internal
      *
-     * @param Request $request
      * @return Collection<int, Collection<int, JsonApiResource>>
      */
-    public function included($request)
+    public function included(Request $request)
     {
         return $this->collection->map(static fn (JsonApiResource $resource): Collection => $resource->included($request));
-    }
-
-    /**
-     * @internal
-     *
-     * @param Request $request
-     * @return RelationshipObject
-     */
-    public function resolveRelationshipLink($request)
-    {
-        return tap($this->toResourceLink($request), function (RelationshipObject $link): void {
-            foreach ($this->relationshipLinkCallbacks as $callback) {
-                $callback($link);
-            }
-        });
     }
 
     /**

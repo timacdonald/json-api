@@ -14,42 +14,42 @@ final class Link implements JsonSerializable
 
     /**
      * @internal
+     */
+    public string $type;
+
+    /**
+     * @internal
+     */
+    private string $href;
+
+    /**
+     * @api
      *
-     * @var string
-     */
-    public $type;
-
-    /**
-     * @var string
-     */
-    private $href;
-
-    /**
-     * @param string $href
      * @param array<string, mixed> $meta
      * @return self
      */
-    public static function self($href, $meta = [])
+    public static function self(string $href, array $meta = [])
     {
         return new self('self', $href, $meta);
     }
 
     /**
-     * @param string $href
+     * @api
+     *
      * @param array<string, mixed> $meta
      * @return self
      */
-    public static function related($href, $meta = [])
+    public static function related(string $href, array $meta = [])
     {
         return new self('related', $href, $meta);
     }
 
     /**
-     * @param string $type
-     * @param string $href
+     * @api
+     *
      * @param array<string, mixed> $meta
      */
-    public function __construct($type, $href, $meta = [])
+    public function __construct(string $type, string $href, array $meta = [])
     {
         $this->type = $type;
 
@@ -59,6 +59,8 @@ final class Link implements JsonSerializable
     }
 
     /**
+     * @internal
+     *
      * @return array{href: string, meta: stdClass}
      */
     #[ReturnTypeWillChange]

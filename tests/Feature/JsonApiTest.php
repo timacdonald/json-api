@@ -15,8 +15,6 @@ use TiMacDonald\JsonApi\JsonApiServerImplementation;
 use TiMacDonald\JsonApi\Link;
 use TiMacDonald\JsonApi\RelationshipObject;
 use TiMacDonald\JsonApi\ResourceIdentifier;
-use TiMacDonald\JsonApi\Support\Fields;
-use TiMacDonald\JsonApi\Support\Includes;
 
 class JsonApiTest extends TestCase
 {

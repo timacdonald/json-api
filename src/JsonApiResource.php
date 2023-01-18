@@ -20,6 +20,7 @@ abstract class JsonApiResource extends JsonResource
     use Concerns\Implementation;
     use Concerns\Links;
     use Concerns\Meta;
+    use Concerns\RelationshipLinks;
     use Concerns\Relationships;
 
     /**
@@ -151,7 +152,7 @@ abstract class JsonApiResource extends JsonResource
      * @api
      *
      * @param mixed $resource
-     * @return JsonApiResourceCollection<mixed>
+     * @return JsonApiResourceCollection<int, mixed>
      */
     public static function collection($resource)
     {
@@ -166,7 +167,7 @@ abstract class JsonApiResource extends JsonResource
     /**
      * @api
      *
-     * @return JsonApiResourceCollection<mixed>
+     * @return JsonApiResourceCollection<int, mixed>
      */
     public static function newCollection(mixed $resource)
     {

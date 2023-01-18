@@ -17,14 +17,14 @@ trait Identification
      *
      * @var  (callable(mixed): string)|null
      */
-    private static $idResolver = null;
+    private static $idResolver;
 
     /**
      * @internal
      *
      * @var  (callable(mixed): string)|null
      */
-    private static $typeResolver = null;
+    private static $typeResolver;
 
     /**
      * @internal

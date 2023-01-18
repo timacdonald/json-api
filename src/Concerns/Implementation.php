@@ -13,7 +13,7 @@ trait Implementation
      *
      * @var (callable(): JsonApiServerImplementation)|null
      */
-    private static $serverImplementationResolver = null;
+    private static $serverImplementationResolver;
 
     /**
      * @api

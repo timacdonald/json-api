@@ -39,7 +39,6 @@ trait Attributes
 
     /**
      * @api
-     *
      * @infection-ignore-all
      *
      * @return void

@@ -6,7 +6,6 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use TiMacDonald\JsonApi\Exceptions\ResourceIdentificationException;
-use TiMacDonald\JsonApi\ResourceIdentifier;
 
 class ResourceIdentificationExceptionTest extends TestCase
 {
@@ -23,7 +22,7 @@ class ResourceIdentificationExceptionTest extends TestCase
         $this->expectException(ResourceIdentificationException::class);
         $this->expectExceptionMessage('Unable to resolve resource object id for [Tests\Unit\MyTestClass].');
 
-        throw ResourceIdentificationException::attemptingToDetermineIdFor(new MyTestClass);
+        throw ResourceIdentificationException::attemptingToDetermineIdFor(new MyTestClass());
     }
 
     public function testItHandlesScalarsForType(): void
@@ -39,7 +38,7 @@ class ResourceIdentificationExceptionTest extends TestCase
         $this->expectException(ResourceIdentificationException::class);
         $this->expectExceptionMessage('Unable to resolve resource object type for [Tests\Unit\MyTestClass].');
 
-        throw ResourceIdentificationException::attemptingToDetermineTypeFor(new MyTestClass);
+        throw ResourceIdentificationException::attemptingToDetermineTypeFor(new MyTestClass());
     }
 }
 

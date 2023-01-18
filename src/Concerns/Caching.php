@@ -13,23 +13,22 @@ trait Caching
     /**
      * @internal
      */
-    private string|null $idCache = null;
+    private string|null $idCache;
 
     /**
      * @internal
      */
-    private string|null $typeCache = null;
+    private string|null $typeCache;
 
     /**
      * @internal
      *
      * @var Collection<string, JsonApiResource|JsonApiResourceCollection>|null
      */
-    private Collection|null $requestedRelationshipsCache = null;
+    private Collection|null $requestedRelationshipsCache;
 
     /**
      * @internal
-     *
      * @infection-ignore-all
      *
      * @return void
@@ -49,7 +48,6 @@ trait Caching
 
     /**
      * @internal
-     *
      * @infection-ignore-all
      *
      * @param  (callable(): string)  $callback
@@ -62,7 +60,6 @@ trait Caching
 
     /**
      * @internal
-     *
      * @infection-ignore-all
      *
      * @param  (callable(): string)  $callback
@@ -75,7 +72,6 @@ trait Caching
 
     /**
      * @internal
-     *
      * @infection-ignore-all
      *
      * @param  (callable(): Collection<string, JsonApiResource|JsonApiResourceCollection>)  $callback

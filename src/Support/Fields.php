@@ -7,6 +7,7 @@ namespace TiMacDonald\JsonApi\Support;
 use Illuminate\Http\Request;
 
 use WeakMap;
+
 use function array_key_exists;
 use function explode;
 use function is_string;
@@ -16,7 +17,7 @@ use function is_string;
  */
 final class Fields
 {
-    private static Fields|null $instance = null;
+    private static Fields|null $instance;
 
     /**
      * @var WeakMap<Request, array<string, array<string>|null>>
@@ -25,7 +26,7 @@ final class Fields
 
     private function __construct()
     {
-        $this->cache = new WeakMap;
+        $this->cache = new WeakMap();
     }
 
     /**
@@ -78,6 +79,6 @@ final class Fields
      */
     public function flush()
     {
-        $this->cache = new WeakMap;
+        $this->cache = new WeakMap();
     }
 }

@@ -13,18 +13,16 @@ trait Attributes
 {
     /**
      * @internal
-     *
-     * @var bool
      */
-    private static $minimalAttributes = false;
+    private static bool $minimalAttributes = false;
 
     /**
      * @api
      *
-     * @param ?callable $callback
+     * @param  (callable(): void)|null  $callback
      * @return void
      */
-    public static function minimalAttributes($callback = null)
+    public static function minimalAttributes(callable|null $callback = null)
     {
         self::$minimalAttributes = true;
 
@@ -41,6 +39,7 @@ trait Attributes
 
     /**
      * @api
+     *
      * @infection-ignore-all
      *
      * @return void
@@ -53,10 +52,9 @@ trait Attributes
     /**
      * @internal
      *
-     * @param Request $request
      * @return Collection<string, mixed>
      */
-    private function requestedAttributes($request)
+    private function requestedAttributes(Request $request)
     {
         return Collection::make($this->toAttributes($request))
             ->only($this->requestedFields($request))
@@ -67,10 +65,9 @@ trait Attributes
     /**
      * @internal
      *
-     * @param Request $request
-     * @return array<string>|null
+     * @return array<int, string>|null
      */
-    private function requestedFields($request)
+    private function requestedFields(Request $request)
     {
         return Fields::getInstance()->parse($request, $this->toType($request), self::$minimalAttributes);
     }

@@ -15,31 +15,31 @@ trait Identification
     /**
      * @internal
      *
-     * @var callable|null
+     * @var  (callable(mixed): string)|null
      */
     private static $idResolver = null;
 
     /**
      * @internal
      *
-     * @var callable|null
+     * @var  (callable(mixed): string)|null
      */
     private static $typeResolver = null;
 
     /**
      * @internal
      *
-     * @var array<callable(ResourceIdentifier): void>
+     * @var array<int, (callable(ResourceIdentifier): void)>
      */
-    private $resourceIdentifierCallbacks = [];
+    private array $resourceIdentifierCallbacks = [];
 
     /**
      * @api
      *
-     * @param callable(ResourceIdentifier): void $callback
+     * @param (callable(ResourceIdentifier): void) $callback
      * @return $this
      */
-    public function withResourceIdentifier($callback)
+    public function withResourceIdentifier(callable $callback)
     {
         $this->resourceIdentifierCallbacks[] = $callback;
 
@@ -49,10 +49,10 @@ trait Identification
     /**
      * @api
      *
-     * @param callable $resolver
+     * @param (callable(mixed): string) $resolver
      * @return void
      */
-    public static function resolveIdUsing($resolver)
+    public static function resolveIdUsing(callable $resolver)
     {
         self::$idResolver = $resolver;
     }
@@ -60,10 +60,10 @@ trait Identification
     /**
      * @api
      *
-     * @param callable $resolver
+     * @param (callable(mixed): string) $resolver
      * @return void
      */
-    public static function resolveTypeUsing($resolver)
+    public static function resolveTypeUsing(callable $resolver)
     {
         self::$typeResolver = $resolver;
     }
@@ -91,10 +91,9 @@ trait Identification
     /**
      * @internal
      *
-     * @param Request $request
      * @return string
      */
-    public function toUniqueResourceIdentifier($request)
+    public function toUniqueResourceIdentifier(Request $request)
     {
         return "type:{$this->resolveType($request)};id:{$this->resolveId($request)};";
     }
@@ -102,10 +101,9 @@ trait Identification
     /**
      * @internal
      *
-     * @param Request $request
      * @return string
      */
-    private function resolveId($request)
+    private function resolveId(Request $request)
     {
         return $this->rememberId(fn (): string => $this->toId($request));
     }
@@ -113,10 +111,9 @@ trait Identification
     /**
      * @internal
      *
-     * @param Request $request
      * @return string
      */
-    private function resolveType($request)
+    private function resolveType(Request $request)
     {
         return $this->rememberType(fn (): string => $this->toType($request));
     }
@@ -124,11 +121,11 @@ trait Identification
     /**
      * @internal
      *
-     * @return callable
+     * @return (callable(mixed): string)
      */
     private static function idResolver()
     {
-        return self::$idResolver ??= function ($resource): string {
+        return self::$idResolver ??= function (mixed $resource): string {
             if (! $resource instanceof Model) {
                 throw ResourceIdentificationException::attemptingToDetermineIdFor($resource);
             }
@@ -143,11 +140,11 @@ trait Identification
     /**
      * @internal
      *
-     * @return callable
+     * @return (callable(mixed): string)
      */
     private static function typeResolver()
     {
-        return self::$typeResolver ??= function ($resource): string {
+        return self::$typeResolver ??= function (mixed $resource): string {
             if (! $resource instanceof Model) {
                 throw ResourceIdentificationException::attemptingToDetermineTypeFor($resource);
             }
@@ -159,10 +156,9 @@ trait Identification
     /**
      * @internal
      *
-     * @param Request $request
      * @return ResourceIdentifier
      */
-    public function resolveResourceIdentifier($request)
+    public function resolveResourceIdentifier(Request $request)
     {
         return tap($this->toResourceIdentifier($request), function (ResourceIdentifier $identifier): void {
             foreach ($this->resourceIdentifierCallbacks as $callback) {

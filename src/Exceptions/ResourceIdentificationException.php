@@ -15,7 +15,7 @@ use function is_object;
 final class ResourceIdentificationException extends RuntimeException
 {
     /**
-     * @return static
+     * @return self
      */
     public static function attemptingToDetermineIdFor(mixed $resource)
     {
@@ -23,7 +23,7 @@ final class ResourceIdentificationException extends RuntimeException
     }
 
     /**
-     * @return static
+     * @return self
      */
     public static function attemptingToDetermineTypeFor(mixed $resource)
     {

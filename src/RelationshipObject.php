@@ -63,7 +63,7 @@ final class RelationshipObject implements JsonSerializable
 
 
     /**
-     * @internal 
+     * @internal
      *
      * @return array{data: ResourceIdentifier|null|array<int, ResourceIdentifier>, meta: stdClass, links: stdClass}
      */

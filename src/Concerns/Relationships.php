@@ -45,7 +45,7 @@ trait Relationships
             ->map(fn (JsonApiResource|JsonApiResourceCollection $include): Collection|JsonApiResource => $include->includable())
             ->merge($this->nestedIncluded($request))
             ->flatten()
-            ->filter(fn (JsonApiResource $resource): bool => $resource->shouldBePresentInIncludes())
+            ->filter(static fn (JsonApiResource $resource): bool => $resource->shouldBePresentInIncludes())
             ->values();
     }
 
@@ -57,7 +57,7 @@ trait Relationships
     private function nestedIncluded(Request $request)
     {
         return $this->requestedRelationships($request)
-            ->flatMap(fn (JsonApiResource|JsonApiResourceCollection $resource, string $key): Collection => $resource->included($request));
+            ->flatMap(static fn (JsonApiResource|JsonApiResourceCollection $resource, string $key): Collection => $resource->included($request));
     }
 
     /**
@@ -68,7 +68,7 @@ trait Relationships
     private function requestedRelationshipsAsIdentifiers(Request $request)
     {
         return $this->requestedRelationships($request)
-            ->map(fn (JsonApiResource|JsonApiResourceCollection $resource): RelationshipObject => $resource->resolveRelationshipLink($request));
+            ->map(static fn (JsonApiResource|JsonApiResourceCollection $resource): RelationshipObject => $resource->resolveRelationshipLink($request));
     }
 
     /**
@@ -80,7 +80,7 @@ trait Relationships
     {
         return $this->rememberRequestRelationships(fn (): Collection => Collection::make($this->toRelationships($request))
             ->only($this->requestedIncludes($request))
-            ->map(function (callable $value, string $prefix): null|JsonApiResource|JsonApiResourceCollection {
+            ->map(static function (callable $value, string $prefix): null|JsonApiResource|JsonApiResourceCollection {
                 $resource = $value();
 
                 if ($resource instanceof PotentiallyMissing && $resource->isMissing()) {
@@ -92,7 +92,7 @@ trait Relationships
                 }
 
                 throw UnknownRelationshipException::from($resource);
-            })->reject(fn (JsonApiResource|JsonApiResourceCollection|null $resource): bool => $resource === null));
+            })->reject(static fn (JsonApiResource|JsonApiResourceCollection|null $resource): bool => $resource === null));
     }
 
     /**

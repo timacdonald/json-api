@@ -17,11 +17,11 @@ use function is_object;
 final class UnknownRelationshipException extends Exception
 {
     /**
-     * @return static
+     * @return self
      */
     public static function from(mixed $resource)
     {
-        return new static('Unknown relationship encountered. Relationships should always return a class that extends '.JsonApiResource::class.' or '.JsonApiResourceCollection::class.'. Instead found ['.static::determineType($resource).'].');
+        return new self('Unknown relationship encountered. Relationships should always return a class that extends '.JsonApiResource::class.' or '.JsonApiResourceCollection::class.'. Instead found ['.static::determineType($resource).'].');
     }
 
     /**

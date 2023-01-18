@@ -38,7 +38,7 @@ trait Links
     private static function parseLinks(array $links)
     {
         return Collection::make($links)
-            ->mapWithKeys(fn (Link $link): array => [
+            ->mapWithKeys(static fn (Link $link): array => [
                 $link->type => $link,
             ])
             ->all();

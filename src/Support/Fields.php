@@ -34,7 +34,7 @@ final class Fields
      */
     public static function getInstance()
     {
-        return static::$instance ??= new static();
+        return self::$instance ??= new static();
     }
 
     /**
@@ -42,7 +42,7 @@ final class Fields
      */
     public function parse(Request $request, string $resourceType, bool $minimalAttributes)
     {
-        return $this->rememberResourceType($request, "type:{$resourceType};minimal:{$minimalAttributes};", function () use ($request, $resourceType, $minimalAttributes): ?array {
+        return $this->rememberResourceType($request, "type:{$resourceType};minimal:{$minimalAttributes};", static function () use ($request, $resourceType, $minimalAttributes): ?array {
             $typeFields = $request->query('fields') ?? [];
 
             abort_if(is_string($typeFields), 400, 'The fields parameter must be an array of resource types.');
@@ -57,7 +57,7 @@ final class Fields
 
             abort_if(! is_string($fields), 400, 'The fields parameter value must be a comma seperated list of attributes.');
 
-            return array_filter(explode(',', $fields), fn (string $value): bool => $value !== '');
+            return array_filter(explode(',', $fields), static fn (string $value): bool => $value !== '');
         });
     }
 

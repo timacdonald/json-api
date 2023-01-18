@@ -11,17 +11,17 @@ trait Implementation
     /**
      * @internal
      *
-     * @var callable|null
+     * @var (callable(): JsonApiServerImplementation)|null
      */
     private static $serverImplementationResolver = null;
 
     /**
      * @api
      *
-     * @param callable $resolver
+     * @param (callable(): JsonApiServerImplementation) $resolver
      * @return void
      */
-    public static function resolveServerImplementationUsing($resolver)
+    public static function resolveServerImplementationUsing(callable $resolver)
     {
         self::$serverImplementationResolver = $resolver;
     }
@@ -39,7 +39,7 @@ trait Implementation
     /**
      * @internal
      *
-     * @return callable
+     * @return (callable(): JsonApiServerImplementation)
      */
     public static function serverImplementationResolver()
     {

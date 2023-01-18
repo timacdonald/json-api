@@ -11,7 +11,7 @@ trait Meta
      *
      * @var array<string, mixed> $meta
      */
-    private $meta = [];
+    private array $meta = [];
 
     /**
      * @api
@@ -19,7 +19,7 @@ trait Meta
      * @param array<string, mixed> $meta
      * @return $this
      */
-    public function withMeta($meta)
+    public function withMeta(array $meta)
     {
         $this->meta = array_merge($this->meta, $meta);
 

@@ -341,3 +341,9 @@ Relationships can be resolved deeply and also multiple relationship paths can be
 And a special (vegi) thanks to [Caneco](https://twitter.com/caneco) for the logo ✨
 
 - Using "whenLoaded is an anti-pattern"
+
+# v1 todo
+- Server implementation rethink.
+- Relationships as properties.
+- Should array type hints be iterable
+- Rethink naming of objects and properties

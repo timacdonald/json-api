@@ -20,22 +20,22 @@ trait Relationships
      *
      * @var string
      */
-    private $includePrefix = '';
+    private string $includePrefix = '';
 
     /**
      * @internal
      *
-     * @var array<callable(RelationshipObject): void>
+     * @var array<int, (callable(RelationshipObject): void)>
      */
-    private $relationshipLinkCallbacks = [];
+    private array $relationshipLinkCallbacks = [];
 
     /**
      * @api
      *
-     * @param callable(RelationshipObject): void $callback
+     * @param (callable(RelationshipObject): void) $callback
      * @return $this
      */
-    public function withRelationshipLink($callback)
+    public function withRelationshipLink(callable $callback)
     {
         $this->relationshipLinkCallbacks[] = $callback;
 
@@ -45,10 +45,9 @@ trait Relationships
     /**
      * @internal
      *
-     * @param string $prefix
      * @return $this
      */
-    public function withIncludePrefix($prefix)
+    public function withIncludePrefix(string $prefix)
     {
         $this->includePrefix = "{$this->includePrefix}{$prefix}.";
 
@@ -58,15 +57,12 @@ trait Relationships
     /**
      * @internal
      *
-     * @param Request $request
      * @return Collection<int, JsonApiResource>
      */
-    public function included($request)
+    public function included(Request $request)
     {
         return $this->requestedRelationships($request)
-            ->map(
-                fn (JsonApiResource|JsonApiResourceCollection $include): Collection|JsonApiResource => $include->includable()
-            )
+            ->map(fn (JsonApiResource|JsonApiResourceCollection $include): Collection|JsonApiResource => $include->includable())
             ->merge($this->nestedIncluded($request))
             ->flatten()
             ->filter(fn (JsonApiResource $resource): bool => $resource->shouldBePresentInIncludes())
@@ -76,38 +72,31 @@ trait Relationships
     /**
      * @internal
      *
-     * @param Request $request
      * @return Collection<int, JsonApiResource>
      */
-    private function nestedIncluded($request)
+    private function nestedIncluded(Request $request)
     {
         return $this->requestedRelationships($request)
-            ->flatMap(
-                fn (JsonApiResource|JsonApiResourceCollection $resource, string $key): Collection => $resource->included($request)
-            );
+            ->flatMap(fn (JsonApiResource|JsonApiResourceCollection $resource, string $key): Collection => $resource->included($request));
     }
 
     /**
      * @internal
      *
-     * @param Request $request
      * @return Collection<string, RelationshipObject>
      */
-    private function requestedRelationshipsAsIdentifiers($request)
+    private function requestedRelationshipsAsIdentifiers(Request $request)
     {
         return $this->requestedRelationships($request)
-            ->map(
-                fn (JsonApiResource|JsonApiResourceCollection $resource): RelationshipObject => $resource->resolveRelationshipLink($request)
-            );
+            ->map(fn (JsonApiResource|JsonApiResourceCollection $resource): RelationshipObject => $resource->resolveRelationshipLink($request));
     }
 
     /**
      * @internal
      *
-     * @param Request $request
      * @return Collection<string, JsonApiResource|JsonApiResourceCollection>
      */
-    private function requestedRelationships($request)
+    private function requestedRelationships(Request $request)
     {
         return $this->rememberRequestRelationships(fn (): Collection => Collection::make($this->toRelationships($request))
             ->only($this->requestedIncludes($request))
@@ -129,10 +118,9 @@ trait Relationships
     /**
      * @internal
      *
-     * @param Request $request
      * @return array<int, string>
      */
-    private function requestedIncludes($request)
+    private function requestedIncludes(Request $request)
     {
         return Includes::getInstance()->forPrefix($request, $this->includePrefix);
     }
@@ -140,10 +128,9 @@ trait Relationships
     /**
      * @internal
      *
-     * @param Request $request
      * @return RelationshipObject
      */
-    public function resolveRelationshipLink($request)
+    public function resolveRelationshipLink(Request $request)
     {
         return tap($this->toResourceLink($request), function (RelationshipObject $link): void {
             foreach ($this->relationshipLinkCallbacks as $callback) {

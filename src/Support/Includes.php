@@ -17,15 +17,12 @@ use function is_array;
  */
 final class Includes
 {
-    /**
-     * @var static|null
-     */
-    private static $instance = null;
+    private static Includes|null $instance = null;
 
     /**
      * @var WeakMap<Request, array<string>>
      */
-    private $cache;
+    private WeakMap $cache;
 
     private function __construct()
     {
@@ -41,11 +38,9 @@ final class Includes
     }
 
     /**
-     * @param Request $request
-     * @param string $prefix
      * @return array<string>
      */
-    public function forPrefix($request, $prefix)
+    public function forPrefix(Request $request, string $prefix)
     {
         return $this->rememberIncludes($request, $prefix, function () use ($request, $prefix) {
            return $this->all($request)
@@ -59,10 +54,9 @@ final class Includes
     }
 
     /**
-     * @param Request $request
      * @return Collection<int, string>
      */
-    private function all($request)
+    private function all(Request $request)
     {
         return $this->rememberIncludes($request, '__all__', function () use ($request) {
             $includes = $request->query('include') ?? '';
@@ -76,12 +70,10 @@ final class Includes
     /**
      * @infection-ignore-all
      *
-     * @param Request $request
-     * @param string $prefix
-     * @param callable $callback
+     * @param (callable(): Collection<int, string>) $callback
      * @return Collection<int, string>
      */
-    private function rememberIncludes($request, $prefix, $callback)
+    private function rememberIncludes(Request $request, string $prefix, callable $callback)
     {
         $this->cache[$request] ??= [];
 

@@ -16,15 +16,12 @@ use function is_string;
  */
 final class Fields
 {
-    /**
-     * @var static|null
-     */
-    private static $instance = null;
+    private static Fields|null $instance = null;
 
     /**
      * @var WeakMap<Request, array<string, array<string>|null>>
      */
-    private $cache;
+    private WeakMap $cache;
 
     private function __construct()
     {
@@ -40,12 +37,9 @@ final class Fields
     }
 
     /**
-     * @param Request $request
-     * @param string $resourceType
-     * @param bool $minimalAttributes
      * @return array<string>|null
      */
-    public function parse($request, $resourceType, $minimalAttributes)
+    public function parse(Request $request, string $resourceType, bool $minimalAttributes)
     {
         return $this->rememberResourceType($request, "type:{$resourceType};minimal:{$minimalAttributes};", function () use ($request, $resourceType, $minimalAttributes): ?array {
             $typeFields = $request->query('fields') ?? [];
@@ -69,12 +63,10 @@ final class Fields
     /**
      * @infection-ignore-all
      *
-     * @param Request $request
-     * @param string $resourceType
-     * @param callable $callback
-     * @return array<string>|null
+     * @param (callable(): array<int, string>|null) $callback
+     * @return array<int, string>|null
      */
-    private function rememberResourceType($request, $resourceType, $callback)
+    private function rememberResourceType(Request $request, string $resourceType, callable $callback)
     {
         $this->cache[$request] ??= [];
 

@@ -14,7 +14,7 @@ trait Links
      *
      * @var array<int, Link>
      */
-    private $links = [];
+    private array $links = [];
 
     /**
      * @api
@@ -22,7 +22,7 @@ trait Links
      * @param array<int, Link> $links
      * @return $this
      */
-    public function withLinks($links)
+    public function withLinks(array $links)
     {
         $this->links = array_merge($this->links, $links);
 
@@ -35,7 +35,7 @@ trait Links
      * @param array<int, Link> $links
      * @return array<string, Link>
      */
-    private static function parseLinks($links)
+    private static function parseLinks(array $links)
     {
         return Collection::make($links)
             ->mapWithKeys(fn (Link $link): array => [

@@ -25,23 +25,21 @@ abstract class JsonApiResource extends JsonResource
     /**
      * @api
      *
-     * @param Request $request
      * @return array<string, mixed>
      */
-    public function toAttributes($request)
+    public function toAttributes(Request $request)
     {
         return [
-            // TODO: return arrayable
+            //
         ];
     }
 
     /**
      * @api
      *
-     * @param Request $request
      * @return array<string, callable>
      */
-    public function toRelationships($request)
+    public function toRelationships(Request $request)
     {
         return [
             //
@@ -51,10 +49,9 @@ abstract class JsonApiResource extends JsonResource
     /**
      * @api
      *
-     * @param Request $request
      * @return array<int, Link>
      */
-    public function toLinks($request)
+    public function toLinks(Request $request)
     {
         return [
             //
@@ -64,10 +61,9 @@ abstract class JsonApiResource extends JsonResource
     /**
      * @api
      *
-     * @param Request $request
      * @return array<string, mixed>
      */
-    public function toMeta($request)
+    public function toMeta(Request $request)
     {
         return [
             //
@@ -77,10 +73,9 @@ abstract class JsonApiResource extends JsonResource
     /**
      * @api
      *
-     * @param Request $request
      * @return string
      */
-    public function toId($request)
+    public function toId(Request $request)
     {
         return self::idResolver()($this->resource, $request);
     }
@@ -88,10 +83,9 @@ abstract class JsonApiResource extends JsonResource
     /**
     * @api
      *
-     * @param Request $request
      * @return string
      */
-    public function toType($request)
+    public function toType(Request $request)
     {
         return self::typeResolver()($this->resource, $request);
     }
@@ -99,10 +93,9 @@ abstract class JsonApiResource extends JsonResource
     /**
      * @api
      *
-     * @param Request $request
      * @return RelationshipObject
      */
-    public function toResourceLink($request)
+    public function toResourceLink(Request $request)
     {
         if ($this->resource === null) {
             return RelationshipObject::toOne(null);
@@ -114,10 +107,9 @@ abstract class JsonApiResource extends JsonResource
     /**
      * @api
      *
-     * @param Request $request
      * @return ResourceIdentifier
      */
-    public function toResourceIdentifier($request)
+    public function toResourceIdentifier(Request $request)
     {
         return new ResourceIdentifier($this->resolveType($request), $this->resolveId($request));
     }
@@ -174,10 +166,9 @@ abstract class JsonApiResource extends JsonResource
     /**
      * @api
      *
-     * @param mixed $resource
      * @return JsonApiResourceCollection<mixed>
      */
-    public static function newCollection($resource)
+    public static function newCollection(mixed $resource)
     {
         return new JsonApiResourceCollection($resource, static::class);
     }

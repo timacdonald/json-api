@@ -49,23 +49,23 @@ trait Identification
     /**
      * @api
      *
-     * @param (callable(mixed): string) $resolver
+     * @param (callable(mixed): string) $callback
      * @return void
      */
-    public static function resolveIdUsing(callable $resolver)
+    public static function resolveIdUsing(callable $callback)
     {
-        self::$idResolver = $resolver;
+        self::$idResolver = $callback;
     }
 
     /**
      * @api
      *
-     * @param (callable(mixed): string) $resolver
+     * @param (callable(mixed): string) $callback
      * @return void
      */
-    public static function resolveTypeUsing(callable $resolver)
+    public static function resolveTypeUsing(callable $callback)
     {
-        self::$typeResolver = $resolver;
+        self::$typeResolver = $callback;
     }
 
     /**

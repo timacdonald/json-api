@@ -17,8 +17,6 @@ trait Relationships
 {
     /**
      * @internal
-     *
-     * @var string
      */
     private string $includePrefix = '';
 

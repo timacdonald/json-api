@@ -18,12 +18,12 @@ trait Implementation
     /**
      * @api
      *
-     * @param (callable(): JsonApiServerImplementation) $resolver
+     * @param (callable(): JsonApiServerImplementation) $callback
      * @return void
      */
-    public static function resolveServerImplementationUsing(callable $resolver)
+    public static function resolveServerImplementationUsing(callable $callback)
     {
-        self::$serverImplementationResolver = $resolver;
+        self::$serverImplementationResolver = $callback;
     }
 
     /**

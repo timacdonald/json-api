@@ -17,7 +17,7 @@ use function is_array;
  */
 final class Includes
 {
-    private static Includes|null $instance;
+    private static self|null $instance;
 
     /**
      * @var WeakMap<Request, array<string>>
@@ -30,7 +30,7 @@ final class Includes
     }
 
     /**
-     * @return static
+     * @return self
      */
     public static function getInstance()
     {

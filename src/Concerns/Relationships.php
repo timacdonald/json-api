@@ -81,15 +81,11 @@ trait Relationships
             ->map(static function (callable $value, string $prefix): null|JsonApiResource|JsonApiResourceCollection {
                 $resource = $value();
 
-                if ($resource instanceof PotentiallyMissing && $resource->isMissing()) {
-                    return null;
-                }
-
-                if ($resource instanceof JsonApiResource || $resource instanceof JsonApiResourceCollection) {
-                    return $resource->withIncludePrefix($prefix);
-                }
-
-                throw UnknownRelationshipException::from($resource);
+                return match (true) {
+                    $resource instanceof PotentiallyMissing && $resource->isMissing() => null,
+                    $resource instanceof JsonApiResource || $resource instanceof JsonApiResourceCollection => $resource->withIncludePrefix($prefix),
+                    default => throw UnknownRelationshipException::from($resource),
+                };
             })->reject(static fn (JsonApiResource|JsonApiResourceCollection|null $resource): bool => $resource === null));
     }
 

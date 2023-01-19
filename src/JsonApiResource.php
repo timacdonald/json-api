@@ -98,11 +98,9 @@ abstract class JsonApiResource extends JsonResource
      */
     public function toResourceLink(Request $request)
     {
-        if ($this->resource === null) {
-            return RelationshipObject::toOne(null);
-        }
-
-        return RelationshipObject::toOne($this->resolveResourceIdentifier($request));
+        return $this->resource === null 
+            ? RelationshipObject::toOne(null)
+            : RelationshipObject::toOne($this->resolveResourceIdentifier($request));
     }
 
     /**

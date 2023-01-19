@@ -9,12 +9,11 @@ use RuntimeException;
 use function gettype;
 use function is_object;
 
-/**
- * @internal
- */
 final class ResourceIdentificationException extends RuntimeException
 {
     /**
+     * @internal
+     *
      * @return self
      */
     public static function attemptingToDetermineIdFor(mixed $resource)
@@ -23,6 +22,8 @@ final class ResourceIdentificationException extends RuntimeException
     }
 
     /**
+     * @internal
+     *
      * @return self
      */
     public static function attemptingToDetermineTypeFor(mixed $resource)
@@ -31,6 +32,8 @@ final class ResourceIdentificationException extends RuntimeException
     }
 
     /**
+     * @internal
+     *
      * @return string
      */
     private static function determineType(mixed $resource)

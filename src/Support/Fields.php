@@ -17,7 +17,7 @@ use function is_string;
  */
 final class Fields
 {
-    private static Fields|null $instance;
+    private static self|null $instance;
 
     /**
      * @var WeakMap<Request, array<string, array<string>|null>>
@@ -30,7 +30,7 @@ final class Fields
     }
 
     /**
-     * @return Fields
+     * @return self
      */
     public static function getInstance()
     {

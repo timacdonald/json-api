@@ -57,8 +57,8 @@ trait Attributes
     {
         return Collection::make($this->toAttributes($request))
             ->only($this->requestedFields($request))
-            ->map(static fn (mixed $value): mixed => value($value))
-            ->reject(static fn (mixed $value): bool => $value instanceof PotentiallyMissing && $value->isMissing());
+            ->map(fn (mixed $value): mixed => value($value))
+            ->reject(fn (mixed $value): bool => $value instanceof PotentiallyMissing && $value->isMissing());
     }
 
     /**

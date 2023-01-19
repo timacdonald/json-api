@@ -6,6 +6,7 @@ namespace TiMacDonald\JsonApi;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 class JsonApiResourceCollection extends AnonymousResourceCollection
@@ -32,11 +33,19 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
      */
     public function toResourceLink(Request $request)
     {
-        $resourceIdentifiers = $this->collection
-            ->uniqueStrict(static fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request))
-            ->map(static fn (JsonApiResource $resource): ResourceIdentifier => $resource->resolveResourceIdentifier($request));
+        return RelationshipObject::toMany($this->resolveResourceIdentifiers($request)->all());
+    }
 
-        return RelationshipObject::toMany($resourceIdentifiers->all());
+    /**
+     * @internal
+     *
+     * @return Collection<ResourceIdentifier>
+     */
+    public function resolveResourceIdentifiers(Request $request)
+    {
+        return $this->collection
+            ->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request))
+            ->map(fn (JsonApiResource $resource): ResourceIdentifier => $resource->resolveResourceIdentifier($request));
     }
 
     /**
@@ -49,9 +58,9 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     {
         return [
             'included' => $this->collection
-                ->map(static fn (JsonApiResource $resource): Collection => $resource->included($request))
+                ->map(fn (JsonApiResource $resource): Collection => $resource->included($request))
                 ->flatten()
-                ->uniqueStrict(static fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request)),
+                ->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request)),
             'jsonapi' => JsonApiResource::serverImplementationResolver()($request),
         ];
     }
@@ -77,9 +86,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
      */
     public function paginationInformation($request, $paginated, $default)
     {
-        $default['links'] = array_filter($default['links'], static fn (?string $link): bool => $link !== null);
-
-        return $default;
+        return Arr::set($default, 'links', array_filter($default['links'], fn (?string $link): bool => $link !== null));
     }
 
     /**
@@ -89,8 +96,8 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
      */
     public function withIncludePrefix(string $prefix)
     {
-        return tap($this, static function (JsonApiResourceCollection $resource) use ($prefix): void {
-            $resource->collection->each(static fn (JsonApiResource $resource): JsonApiResource => $resource->withIncludePrefix($prefix));
+        return tap($this, function (JsonApiResourceCollection $resource) use ($prefix): void {
+            $resource->collection->each(fn (JsonApiResource $resource): JsonApiResource => $resource->withIncludePrefix($prefix));
         });
     }
 
@@ -101,7 +108,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
      */
     public function included(Request $request)
     {
-        return $this->collection->map(static fn (JsonApiResource $resource): Collection => $resource->included($request));
+        return $this->collection->map(fn (JsonApiResource $resource): Collection => $resource->included($request));
     }
 
     /**
@@ -122,6 +129,6 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
      */
     public function flush()
     {
-        $this->collection->each(static fn (JsonApiResource $resource) => $resource->flush());
+        $this->collection->each(fn (JsonApiResource $resource) => $resource->flush());
     }
 }

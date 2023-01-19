@@ -44,12 +44,11 @@ final class Includes
     {
         return $this->rememberIncludes($request, $prefix, function () use ($request, $prefix) {
             return $this->all($request)
-                 ->when($prefix !== '', static function (Collection $includes) use ($prefix): Collection {
-                     return $includes->filter(static fn (string $include): bool => str_starts_with($include, $prefix));
-                 })
-                 ->map(static fn ($include): string => Str::of($include)->after($prefix)->before('.')->toString())
-                 ->uniqueStrict()
-                 ->values();
+                ->when($prefix !== '')
+                ->filter(fn (string $include): bool => str_starts_with($include, $prefix))
+                ->map(fn ($include): string => Str::of($include)->after($prefix)->before('.')->toString())
+                ->uniqueStrict()
+                ->values();
         })->all();
     }
 
@@ -58,12 +57,12 @@ final class Includes
      */
     private function all(Request $request)
     {
-        return $this->rememberIncludes($request, '__all__', static function () use ($request) {
+        return $this->rememberIncludes($request, '__all__', function () use ($request) {
             $includes = $request->query('include') ?? '';
 
             abort_if(is_array($includes), 400, 'The include parameter must be a comma seperated list of relationship paths.');
 
-            return Collection::make(explode(',', $includes))->filter(static fn (string $include): bool => $include !== '');
+            return Collection::make(explode(',', $includes))->filter(fn (string $include): bool => $include !== '');
         });
     }
 

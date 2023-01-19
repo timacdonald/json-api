@@ -22,7 +22,7 @@ $types = [
     'f',
 ];
 
-$query = collect($types)->map(static function ($type) {
+$query = collect($types)->map(function ($type) {
     return "fields[{$type}]=a,b,c,d,e,f";
 })->implode('&');
 

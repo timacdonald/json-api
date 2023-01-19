@@ -180,11 +180,11 @@ class AttributesTest extends TestCase
         $model = (new BasicModel([
             'id' => 'expected-id',
         ]));
-        Route::get('test-route', static fn () => new class ($model) extends JsonApiResource {
+        Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
             public function toAttributes($request): array
             {
                 return [
-                    'location' => static fn () => throw new Exception('xxxx'),
+                    'location' => fn () => throw new Exception('xxxx'),
                 ];
             }
         });
@@ -213,7 +213,7 @@ class AttributesTest extends TestCase
     public function testItThrowsWhenFieldsParameterIsNotAnArray(): void
     {
         $user = (new BasicModel(['id' => 'expected-id']));
-        Route::get('test-route', static fn () => UserResource::make($user));
+        Route::get('test-route', fn () => UserResource::make($user));
 
         $response = $this->withExceptionHandling()->getJson('test-route?fields=name');
 
@@ -226,7 +226,7 @@ class AttributesTest extends TestCase
     public function testItThrowsWhenFieldsParameterIsNotAStringValue(): void
     {
         $user = (new BasicModel(['id' => 'expected-id']));
-        Route::get('test-route', static fn () => UserResource::make($user));
+        Route::get('test-route', fn () => UserResource::make($user));
 
         $response = $this->withExceptionHandling()->getJson('test-route?fields[basicModels][foo]=name');
 
@@ -243,7 +243,7 @@ class AttributesTest extends TestCase
                 'id' => 'user-id',
                 'name' => 'user-name',
             ]));
-            Route::get('test-route', static fn () => UserResource::make($user));
+            Route::get('test-route', fn () => UserResource::make($user));
 
             $response = $this->getJson('test-route');
 
@@ -275,7 +275,7 @@ class AttributesTest extends TestCase
                 'name' => 'user-name',
                 'location' => 'Melbourne',
             ]));
-            Route::get('test-route', static fn () => UserResource::make($user));
+            Route::get('test-route', fn () => UserResource::make($user));
 
             $response = $this->getJson('test-route?fields[basicModels]=name');
 
@@ -318,7 +318,7 @@ class AttributesTest extends TestCase
                 'content' => 'post-content-2',
             ])),
         ]);
-        Route::get('test-route', static fn () => UserResource::make($user));
+        Route::get('test-route', fn () => UserResource::make($user));
 
         $response = $this->getJson('test-route?include=posts&fields[basicModels]=title');
 

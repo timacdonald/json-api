@@ -98,7 +98,7 @@ abstract class JsonApiResource extends JsonResource
      */
     public function toResourceLink(Request $request)
     {
-        return $this->resource === null 
+        return $this->resource === null
             ? RelationshipObject::toOne(null)
             : RelationshipObject::toOne($this->resolveResourceIdentifier($request));
     }
@@ -141,7 +141,7 @@ abstract class JsonApiResource extends JsonResource
     {
         return [
             'included' => $this->included($request)
-                ->uniqueStrict(static fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request)),
+                ->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request)),
             'jsonapi' => self::serverImplementationResolver()($request),
         ];
     }
@@ -154,7 +154,7 @@ abstract class JsonApiResource extends JsonResource
      */
     public static function collection($resource)
     {
-        return tap(static::newCollection($resource), static function (JsonApiResourceCollection $collection): void {
+        return tap(static::newCollection($resource), function (JsonApiResourceCollection $collection): void {
             if (property_exists(static::class, 'preserveKeys')) {
                 /** @phpstan-ignore-next-line */
                 $collection->preserveKeys = (new static([]))->preserveKeys === true;

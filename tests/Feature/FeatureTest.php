@@ -29,7 +29,7 @@ class FeatureTest extends TestCase
                 'name' => 'name-'.$i,
             ]);
         }
-        Route::get('test-route', static fn () => UserResource::collection(BasicModel::paginate(2)));
+        Route::get('test-route', fn () => UserResource::collection(BasicModel::paginate(2)));
 
         $response = $this->withoutExceptionHandling()->getJson('test-route');
 

@@ -43,6 +43,6 @@ trait Implementation
      */
     public static function serverImplementationResolver()
     {
-        return self::$serverImplementationResolver ?? static fn (): JsonApiServerImplementation => new JsonApiServerImplementation('1.0');
+        return self::$serverImplementationResolver ?? fn (): JsonApiServerImplementation => new JsonApiServerImplementation('1.0');
     }
 }

@@ -14,7 +14,7 @@ use Tests\Models\BasicModel;
 use Tests\Resources\UserResource;
 
 $numberOfResourcesReturned = 500;
-$modelFactory = static fn () => new BasicModel(['id' => Str::random()]);
+$modelFactory = fn () => new BasicModel(['id' => Str::random()]);
 Container::getInstance()->bind(ResponseFactory::class, fn () => new class () {
     public function json(array $data): object
     {
@@ -54,7 +54,7 @@ for ($i = 0; $i < $numberOfResourcesReturned; $i++) {
         ]);
 }
 $request = Request::create("https://example.com/users?include=posts.author.avatar,comments.author.avatar", 'GET');
-Container::getInstance()->bind('request', static fn () => $request);
+Container::getInstance()->bind('request', fn () => $request);
 $resource = UserResource::collection($users);
 
 $start = microtime(true);

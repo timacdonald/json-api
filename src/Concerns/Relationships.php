@@ -43,7 +43,7 @@ trait Relationships
             ->map(fn (JsonApiResource|JsonApiResourceCollection $include): Collection|JsonApiResource => $include->includable())
             ->merge($this->nestedIncluded($request))
             ->flatten()
-            ->filter(static fn (JsonApiResource $resource): bool => $resource->shouldBePresentInIncludes())
+            ->filter(fn (JsonApiResource $resource): bool => $resource->shouldBePresentInIncludes())
             ->values();
     }
 
@@ -55,7 +55,7 @@ trait Relationships
     private function nestedIncluded(Request $request)
     {
         return $this->requestedRelationships($request)
-            ->flatMap(static fn (JsonApiResource|JsonApiResourceCollection $resource, string $key): Collection => $resource->included($request));
+            ->flatMap(fn (JsonApiResource|JsonApiResourceCollection $resource, string $key): Collection => $resource->included($request));
     }
 
     /**
@@ -66,7 +66,7 @@ trait Relationships
     private function requestedRelationshipsAsIdentifiers(Request $request)
     {
         return $this->requestedRelationships($request)
-            ->map(static fn (JsonApiResource|JsonApiResourceCollection $resource): RelationshipObject => $resource->resolveRelationshipLink($request));
+            ->map(fn (JsonApiResource|JsonApiResourceCollection $resource): RelationshipObject => $resource->resolveRelationshipLink($request));
     }
 
     /**
@@ -78,15 +78,12 @@ trait Relationships
     {
         return $this->rememberRequestRelationships(fn (): Collection => Collection::make($this->toRelationships($request))
             ->only($this->requestedIncludes($request))
-            ->map(static function (callable $value, string $prefix): null|JsonApiResource|JsonApiResourceCollection {
-                $resource = $value();
-
-                return match (true) {
-                    $resource instanceof PotentiallyMissing && $resource->isMissing() => null,
-                    $resource instanceof JsonApiResource || $resource instanceof JsonApiResourceCollection => $resource->withIncludePrefix($prefix),
-                    default => throw UnknownRelationshipException::from($resource),
-                };
-            })->reject(static fn (JsonApiResource|JsonApiResourceCollection|null $resource): bool => $resource === null));
+            ->map(fn (callable $value, string $prefix): null|JsonApiResource|JsonApiResourceCollection => with($value(), fn ($resource) => match (true) {
+                $resource instanceof PotentiallyMissing && $resource->isMissing() => null,
+                $resource instanceof JsonApiResource || $resource instanceof JsonApiResourceCollection => $resource->withIncludePrefix($prefix),
+                default => throw UnknownRelationshipException::from($resource),
+            }))
+            ->reject(fn (JsonApiResource|JsonApiResourceCollection|null $resource): bool => $resource === null));
     }
 
     /**

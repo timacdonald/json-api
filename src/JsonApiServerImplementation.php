@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace TiMacDonald\JsonApi;
 
 use JsonSerializable;
-use ReturnTypeWillChange;
 use stdClass;
 
 final class JsonApiServerImplementation implements JsonSerializable
@@ -29,8 +28,7 @@ final class JsonApiServerImplementation implements JsonSerializable
      *
      * @return array{version: string, meta: stdClass}
      */
-    #[ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'version' => $this->version,

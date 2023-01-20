@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace TiMacDonald\JsonApi;
 
 use JsonSerializable;
-use ReturnTypeWillChange;
 use stdClass;
 
 final class ResourceIdentifier implements JsonSerializable
@@ -41,8 +40,7 @@ final class ResourceIdentifier implements JsonSerializable
      *
      * @return array{type: string, id: string, meta: stdClass}
      */
-    #[ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'type' => $this->type,

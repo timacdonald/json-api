@@ -345,5 +345,6 @@ And a special (vegi) thanks to [Caneco](https://twitter.com/caneco) for the logo
 # v1 todo
 - Server implementation rethink.
 - Relationships as properties.
+- Attributes as properties.
 - Should array type hints be iterable
 - Rethink naming of objects and properties

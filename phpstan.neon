@@ -2,10 +2,14 @@ parameters:
     level: 8
     paths:
         - src
-    checkInternalClassCaseSensitivity: true
-    checkGenericClassInNonGenericObjectType: true
     checkTooWideReturnTypesInProtectedAndPublicMethods: true
     checkUninitializedProperties: true
-    checkMissingIterableValueType: true
+    checkImplicitMixed: true
+    checkBenevolentUnionTypes: true
+    exceptions:
+        check:
+            tooWideThrowType: true
+            missingCheckedExceptionInThrows: true
 includes:
     - vendor-bin/dev/vendor/nunomaduro/larastan/extension.neon
+    - vendor-bin/dev/vendor/phpstan/phpstan-strict-rules/rules.neon

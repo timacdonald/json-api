@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi\Concerns;
 
+use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use TiMacDonald\JsonApi\Exceptions\UnknownRelationshipException;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
@@ -76,7 +78,7 @@ trait Relationships
      */
     private function requestedRelationships(Request $request)
     {
-        return $this->rememberRequestRelationships(fn (): Collection => Collection::make($this->toRelationships($request))
+        return $this->rememberRequestRelationships(fn (): Collection => $this->resolveRelationships($request)
             ->only($this->requestedIncludes($request))
             ->map(fn (callable $value, string $prefix): null|JsonApiResource|JsonApiResourceCollection => with($value(), fn ($resource) => match (true) {
                 $resource instanceof PotentiallyMissing && $resource->isMissing() => null,
@@ -84,6 +86,18 @@ trait Relationships
                 default => throw UnknownRelationshipException::from($resource),
             }))
             ->reject(fn (JsonApiResource|JsonApiResourceCollection|null $resource): bool => $resource === null));
+    }
+
+    /**
+     * Resolve the possible relationships.
+     *
+     * @return Collection<string, Closure(): JsonApiResource|JsonApiResourceCollection>
+     */
+    private function resolveRelationships(Request $request)
+    {
+        return Collection::make($this->toRelationships($request))
+            ->merge(Collection::make($this->relationships)
+                ->map(fn (string $class, string $relation): Closure => fn () => new $class($this->resource->{$relation})));
     }
 
     /**

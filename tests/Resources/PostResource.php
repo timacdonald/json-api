@@ -12,7 +12,7 @@ use TiMacDonald\JsonApi\JsonApiResourceCollection;
  */
 class PostResource extends JsonApiResource
 {
-    public function toAttributes($request): array
+    public function toAttributes($request)
     {
         return [
             'title' => $this->title,
@@ -20,7 +20,7 @@ class PostResource extends JsonApiResource
         ];
     }
 
-    public function toRelationships($request): array
+    public function toRelationships($request)
     {
         return [
             'author' => fn () => UserResource::make($this->author),
@@ -29,7 +29,7 @@ class PostResource extends JsonApiResource
         ];
     }
 
-    public static function collection($resource): JsonApiResourceCollection
+    public static function collection($resource)
     {
         return parent::collection($resource);
     }

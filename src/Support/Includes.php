@@ -42,7 +42,7 @@ final class Includes
      */
     public function forPrefix(Request $request, string $prefix)
     {
-        return $this->rememberIncludes($request, $prefix, function () use ($request, $prefix) {
+        return $this->rememberIncludes($request, $prefix, function () use ($request, $prefix): Collection {
             return $this->all($request)
                 ->when($prefix !== '')
                 ->filter(fn (string $include): bool => str_starts_with($include, $prefix))

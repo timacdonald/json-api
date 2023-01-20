@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi\Concerns;
 
+use Illuminate\Http\Request;
 use TiMacDonald\JsonApi\JsonApiServerImplementation;
 
 trait Implementation
@@ -39,10 +40,10 @@ trait Implementation
     /**
      * @internal
      *
-     * @return (callable(): JsonApiServerImplementation)
+     * @return (callable(Request): JsonApiServerImplementation)
      */
     public static function serverImplementationResolver()
     {
-        return self::$serverImplementationResolver ?? fn (): JsonApiServerImplementation => new JsonApiServerImplementation('1.0');
+        return self::$serverImplementationResolver ?? fn (Request $request): JsonApiServerImplementation => new JsonApiServerImplementation('1.0');
     }
 }

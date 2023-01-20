@@ -7,6 +7,7 @@ namespace TiMacDonald\JsonApi;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;
 use stdClass;
 
@@ -38,7 +39,8 @@ abstract class JsonApiResource extends JsonResource
     /**
      * @api
      *
-     * @return array<string, callable>
+     * @TODO: callable needs type information
+     * @return array<string, (callable(): JsonApiResource|JsonApiResourceCollection|PotentiallyMissing)>
      */
     public function toRelationships(Request $request)
     {

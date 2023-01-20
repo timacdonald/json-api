@@ -15,14 +15,14 @@ trait Identification
     /**
      * @internal
      *
-     * @var  (callable(mixed): string)|null
+     * @var  (callable(mixed, Request): string)|null
      */
     private static $idResolver;
 
     /**
      * @internal
      *
-     * @var  (callable(mixed): string)|null
+     * @var  (callable(mixed, Request): string)|null
      */
     private static $typeResolver;
 
@@ -121,11 +121,11 @@ trait Identification
     /**
      * @internal
      *
-     * @return (callable(mixed): string)
+     * @return (callable(mixed, Request): string)
      */
     private static function idResolver()
     {
-        return self::$idResolver ??= function (mixed $resource): string {
+        return self::$idResolver ??= function (mixed $resource, Request $request): string {
             if (! $resource instanceof Model) {
                 throw ResourceIdentificationException::attemptingToDetermineIdFor($resource);
             }
@@ -140,11 +140,11 @@ trait Identification
     /**
      * @internal
      *
-     * @return (callable(mixed): string)
+     * @return (callable(mixed, Request): string)
      */
     private static function typeResolver()
     {
-        return self::$typeResolver ??= function (mixed $resource): string {
+        return self::$typeResolver ??= function (mixed $resource, Request $request): string {
             if (! $resource instanceof Model) {
                 throw ResourceIdentificationException::attemptingToDetermineTypeFor($resource);
             }

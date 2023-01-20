@@ -20,7 +20,7 @@ final class Includes
     private static self|null $instance;
 
     /**
-     * @var WeakMap<Request, array<string>>
+     * @var WeakMap<Request, array<string, Collection<int, non-empty-string>>>
      */
     private WeakMap $cache;
 
@@ -38,7 +38,7 @@ final class Includes
     }
 
     /**
-     * @return array<string>
+     * @return array<int, string>
      */
     public function forPrefix(Request $request, string $prefix)
     {
@@ -53,7 +53,7 @@ final class Includes
     }
 
     /**
-     * @return Collection<int, string>
+     * @return Collection<int, non-empty-string>
      */
     private function all(Request $request)
     {
@@ -69,8 +69,8 @@ final class Includes
     /**
      * @infection-ignore-all
      *
-     * @param (callable(): Collection<int, string>) $callback
-     * @return Collection<int, string>
+     * @param (callable(): Collection<int, non-empty-string>) $callback
+     * @return Collection<int, non-empty-string>
      */
     private function rememberIncludes(Request $request, string $prefix, callable $callback)
     {

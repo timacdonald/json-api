@@ -13,19 +13,19 @@ trait Caching
     /**
      * @internal
      */
-    private string|null $idCache;
+    private string|null $idCache = null;
 
     /**
      * @internal
      */
-    private string|null $typeCache;
+    private string|null $typeCache = null;
 
     /**
      * @internal
      *
      * @var Collection<string, JsonApiResource|JsonApiResourceCollection>|null
      */
-    private Collection|null $requestedRelationshipsCache;
+    private Collection|null $requestedRelationshipsCache = null;
 
     /**
      * @internal

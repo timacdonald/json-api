@@ -39,7 +39,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     /**
      * @internal
      *
-     * @return Collection<ResourceIdentifier>
+     * @return Collection<int, ResourceIdentifier>
      */
     public function resolveResourceIdentifiers(Request $request)
     {

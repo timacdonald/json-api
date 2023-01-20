@@ -20,7 +20,7 @@ final class Fields
     private static self|null $instance;
 
     /**
-     * @var WeakMap<Request, array<string, array<string>|null>>
+     * @var WeakMap<Request, array<string, array<int, string>|null>>
      */
     private WeakMap $cache;
 
@@ -38,7 +38,7 @@ final class Fields
     }
 
     /**
-     * @return array<string>|null
+     * @return array<int, string>|null
      */
     public function parse(Request $request, string $resourceType, bool $minimalAttributes)
     {
@@ -64,7 +64,7 @@ final class Fields
     /**
      * @infection-ignore-all
      *
-     * @param (callable(): array<int, string>|null) $callback
+     * @param (callable(): (array<int, string>|null)) $callback
      * @return array<int, string>|null
      */
     private function rememberResourceType(Request $request, string $resourceType, callable $callback)

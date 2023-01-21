@@ -25,17 +25,58 @@ This JSON Resource classes contained in this package are a specialisation of Lar
 
 ## Writing your first resource
 
-To get started, let's create a `UserResource` that contains a few attributes. We will assume the underlying resource, perhaps an Eloquent model, has a `$user->name` and `$user->email` property.
+To get started, let's create a `UserResource` that includes a few attributes. We will assume the underlying resource, perhaps an Eloquent model, has a `$user->name`, `$user->website`, and `$user->twitterHandle` attribute.
 
 ```php
 <?php
+
+namespace App\Http\Resources;
 
 class UserResource
 {
     protected $attributes = [
         'name',
-        'email',
+        'website',
+        'twitterHandle',
     ];
+}
+```
+
+Just like you can with Laravel's standard `JsonResource` classes, you may return this class directly from your controller.
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Resources\UserResource;
+
+class UserController
+{
+    public function show(User $user)
+    {
+        return UserResource::make($user);
+    }
+}
+```
+
+The following JSON:API formatted data will be returned.
+
+```json
+{
+    "data": {
+        "type": "users",
+        "id": "d1e57be0-f213-42c5-bef3-7e26e733caa1",
+        "attributes": {
+            "name": "Tim",
+            "website": "https://timacdonald.me",
+            "twitterHandle": "@timacdonald87"
+        },
+        "relationships": {},
+        "meta": {},
+        "links": {}
+    },
+    "included": []
 }
 ```
 

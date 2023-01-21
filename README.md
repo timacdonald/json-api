@@ -19,9 +19,9 @@ You can install using [composer](https://getcomposer.org/) from [Packagist](http
 composer require timacdonald/json-api
 ```
 
-# Basic usage
+# Getting started
 
-This JSON Resource classes contained in this package are a specialisation of Laravel's `JsonResource` class. All the underlying API's are still there, thus in your controller you can still interact with `JsonApiResource` classes as you would with the base `JsonResource` class.
+The `JsonApiResource` class provided by this package is a specialisation of Laravel's `JsonResource` class. All the underlying API's are still there, thus in your controller you can still interact with `JsonApiResource` classes as you would with the base `JsonResource` class. However, you will notice that we introduce new API for interacting with the class internally, e.g. you no longer implement the `toArray` method.
 
 ## Writing your first resource
 
@@ -32,7 +32,9 @@ To get started, let's create a `UserResource` that includes a few attributes. We
 
 namespace App\Http\Resources;
 
-class UserResource
+use TiMacDonald\JsonApi\JsonApiResource;
+
+class UserResource extends JsonApiResource
 {
     protected $attributes = [
         'name',

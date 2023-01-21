@@ -13,6 +13,7 @@ use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
 use TiMacDonald\JsonApi\RelationshipObject;
 use TiMacDonald\JsonApi\Support\Includes;
+use Traversable;
 
 trait Relationships
 {
@@ -96,9 +97,13 @@ trait Relationships
     {
         return Collection::make($this->relationships ?? [])
             ->map(fn (string $class, string $relation): Closure => function () use ($class, $relation): JsonApiResource|JsonApiResourceCollection {
-                return with($this->resource->{$relation}, fn ($resource): JsonApiResource|JsonApiResourceCollection => is_iterable($resource)
-                    ? $class::collection($this->resource->{$relation})
-                    : $class::make($resource));
+                return with($this->resource->{$relation}, function ($resource) use ($class): JsonApiResource|JsonApiResourceCollection {
+                    if ($resource instanceof Traversable || (is_array($resource) && array_is_list($resource))) {
+                        return $class::collection($resource);
+                    }
+
+                    return $class::make($resource);
+                });
             })->merge($this->toRelationships($request));
     }
 

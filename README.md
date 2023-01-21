@@ -23,7 +23,7 @@ composer require timacdonald/json-api
 
 The `JsonApiResource` class provided by this package is a specialisation of Laravel's `JsonResource` class. All the underlying API's are still there, thus in your controller you can still interact with `JsonApiResource` classes as you would with the base `JsonResource` class. However, you will notice that we introduce new APIs for interacting with the class internally, e.g. you no longer implement the `toArray` method.
 
-## Creating your first resource
+## Creating your first JSON:API resource
 
 To get started, let's create a `UserResource` that includes a few attributes. We will assume the underlying resource, perhaps an Eloquent model, has `$user->name`, `$user->website`, and `$user->twitterHandle` attributes.
 
@@ -44,7 +44,7 @@ class UserResource extends JsonApiResource
 }
 ```
 
-Just like you can with Laravel's standard `JsonResource` classes, you may return this class directly from your controller.
+Just like Laravel's standard `JsonResource` class, you may return the resource directly from your controller.
 
 ```php
 <?php
@@ -82,8 +82,43 @@ The following JSON:API formatted data will be returned.
 }
 ```
 
-The internal developer facing API however has changed in that you no longer interact with the `toArray($request)` method, instead this package exposes some new methods to interact with. More on those shortly.
+We will cover more complex attribute usages later on.
 
+You have just created your first JSON:API resource. There are plenty of other features available, so let's augment this resource to explore them.
+
+## Adding relationships
+
+Similar to the `$attributes` property seen above, relationships may be specified in a `$relationships` property. The key should reference the underlying resource relationship property and the value should be the `JsonApiResource` class to use for that relationship.
+
+We will specify two relationships: a "toOne" relationship of `$user->license` and a "toMany" relationship of `$user->posts`.
+
+```php
+<?php
+
+namespace App\Http\Resources;
+
+use TiMacDonald\JsonApi\JsonApiResource;
+
+class UserResource extends JsonApiResource
+{
+    protected $attributes = [ /* ... */ ];
+
+    protected $relationships = [
+        'license' => LicenseResource::class,
+        'posts' => PostResource::class,
+    ];
+}
+```
+
+<details>
+<summary>Response example</summary>
+
+```json5
+{
+    // TODO
+}
+```
+</details>
 ## Resource Identification
 
 [JSON:API docs: Identification](https://jsonapi.org/format/#document-resource-object-identification)

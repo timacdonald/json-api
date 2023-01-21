@@ -31,7 +31,6 @@ class AttributesAsPropertiesTest extends TestCase
 
         $response = $class->toResponse(Request::create('https://timacdonald.me'));
 
-        dd($response->content());
         $this->assertValidJsonApi($response->content());
         $this->assertSame([
             'id' => 'post-id',

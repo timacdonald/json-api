@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit;
 
 use Illuminate\Http\Request;
@@ -9,7 +11,6 @@ use Tests\Resources\LicenseResource;
 use Tests\Resources\PostResource;
 use Tests\Resources\UserResource;
 use Tests\TestCase;
-use TiMacDonald\JsonApi\JsonApiResource;
 
 class RelationshipsAsPropertiesTest extends TestCase
 {
@@ -160,6 +161,5 @@ class RelationshipsAsPropertiesTest extends TestCase
                 'links' => [],
             ],
         ], $response->getData(true)['included']);
-
     }
 }

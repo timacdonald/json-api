@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit;
 
 use Illuminate\Http\Request;
 use Tests\Models\BasicModel;
-use Tests\Resources\CommentResource;
 use Tests\Resources\PostResource;
 use Tests\TestCase;
 

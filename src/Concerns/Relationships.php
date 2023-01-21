@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace TiMacDonald\JsonApi\Concerns;
 
 use Closure;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 use TiMacDonald\JsonApi\Exceptions\UnknownRelationshipException;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;

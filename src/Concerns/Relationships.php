@@ -96,17 +96,11 @@ trait Relationships
      */
     private function resolveRelationships(Request $request)
     {
-        return Collection::make($this->relationships)
-            ->mapWithKeys(function (string $class, string $relation): array {
-                if (! Str::endsWith($relation, '[]')) {
-                    return [
-                        $relation => fn (): JsonApiResource|JsonApiResourceCollection => $class::make($this->resource->{$relation}),
-                    ];
-                }
-
-                return with(Str::beforeLast($relation, '[]'), fn ($relation) => [
-                    $relation => fn (): JsonApiResource|JsonApiResourceCollection => $class::collection($this->resource->{$relation}),
-                ]);
+        return Collection::make($this->relationships ?? [])
+            ->map(fn (string $class, string $relation): Closure => function () use ($class, $relation) {
+                return with($this->resource->{$relation}, fn ($resource) => is_iterable($resource)
+                    ? $class::collection($this->resource->{$relation})
+                    : $class::make($resource));
             })->merge($this->toRelationships($request));
     }
 

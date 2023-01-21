@@ -55,10 +55,24 @@ trait Attributes
      */
     private function requestedAttributes(Request $request)
     {
-        return Collection::make($this->toAttributes($request))
+        return Collection::make($this->resolveAttributes($request))
             ->only($this->requestedFields($request))
             ->map(fn (mixed $value): mixed => value($value))
             ->reject(fn (mixed $value): bool => $value instanceof PotentiallyMissing && $value->isMissing());
+    }
+
+    /**
+     * @internal
+     *
+     * @return Collection<string, mixed>
+     */
+    private function resolveAttributes(Request $request)
+    {
+        return Collection::make($this->attributes)
+            ->mapWithKeys(fn (string $attribute): array => [
+                $attribute => fn () => $this->resource->{$attribute},
+            ])
+            ->merge($this->toAttributes($request));
     }
 
     /**

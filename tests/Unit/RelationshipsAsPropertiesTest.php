@@ -74,7 +74,7 @@ class RelationshipsAsPropertiesTest extends TestCase
         ])]);
         $class = new class ($post) extends PostResource {
             protected array $relationships = [
-                'comments[]' => CommentResource::class,
+                'comments' => CommentResource::class,
             ];
 
             public function toRelationships($request)

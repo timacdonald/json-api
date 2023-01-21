@@ -97,8 +97,8 @@ trait Relationships
     private function resolveRelationships(Request $request)
     {
         return Collection::make($this->relationships ?? [])
-            ->map(fn (string $class, string $relation): Closure => function () use ($class, $relation) {
-                return with($this->resource->{$relation}, fn ($resource) => is_iterable($resource)
+            ->map(fn (string $class, string $relation): Closure => function () use ($class, $relation): JsonApiResource|JsonApiResourceCollection {
+                return with($this->resource->{$relation}, fn ($resource): JsonApiResource|JsonApiResourceCollection => is_iterable($resource)
                     ? $class::collection($this->resource->{$relation})
                     : $class::make($resource));
             })->merge($this->toRelationships($request));

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TiMacDonald\JsonApi\Concerns;
 
 use Closure;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;
@@ -89,15 +90,24 @@ trait Relationships
     }
 
     /**
-     * Resolve the possible relationships.
+     * @internal
      *
      * @return Collection<string, Closure(): JsonApiResource|JsonApiResourceCollection>
      */
     private function resolveRelationships(Request $request)
     {
-        return Collection::make($this->toRelationships($request))
-            ->merge(Collection::make($this->relationships)
-                ->map(fn (string $class, string $relation): Closure => fn () => new $class($this->resource->{$relation})));
+        return Collection::make($this->relationships)
+            ->mapWithKeys(function (string $class, string $relation): array {
+                if (! Str::endsWith($relation, '[]')) {
+                    return [
+                        $relation => fn (): JsonApiResource|JsonApiResourceCollection => $class::make($this->resource->{$relation}),
+                    ];
+                }
+
+                return with(Str::beforeLast($relation, '[]'), fn ($relation) => [
+                    $relation => fn (): JsonApiResource|JsonApiResourceCollection => $class::collection($this->resource->{$relation}),
+                ]);
+            })->merge($this->toRelationships($request));
     }
 
     /**

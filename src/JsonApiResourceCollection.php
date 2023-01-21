@@ -41,7 +41,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
      *
      * @return Collection<int, ResourceIdentifier>
      */
-    public function resolveResourceIdentifiers(Request $request)
+    private function resolveResourceIdentifiers(Request $request)
     {
         return $this->collection
             ->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request))

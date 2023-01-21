@@ -27,7 +27,7 @@ abstract class JsonApiResource extends JsonResource
     /**
      * @api
      *
-     * @return array<string, class-string>
+     * @return array<string, class-string<JsonApiResource|JsonApiResourceCollection>
      */
     protected array $relationships = [
         //

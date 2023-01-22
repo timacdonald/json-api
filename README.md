@@ -55,6 +55,11 @@ use App\Http\Resources\UserResource;
 
 class UserController
 {
+    public function index()
+    {
+        return UserResource::collection(User::all());
+    }
+
     public function show(User $user)
     {
         return UserResource::make($user);

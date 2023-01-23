@@ -34,7 +34,9 @@ class UserController
 {
     public function index()
     {
-        return UserResource::collection(User::all());
+        $users = User::with(/* ... */)->get();
+
+        return UserResource::collection($users);
     }
 
     public function show(User $user)

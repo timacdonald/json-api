@@ -120,7 +120,9 @@ class UserResource extends JsonApiResource
 ```
 
 <details>
-<summary>Response example</summary>
+<summary>
+#### Example response payload
+</summary>
 
 ```json
 {

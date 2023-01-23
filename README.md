@@ -21,7 +21,30 @@ composer require timacdonald/json-api
 
 # Getting started
 
-The `JsonApiResource` class provided by this package is a specialisation of Laravel's `JsonResource` class. All the underlying API's are still there and from an outside perspective, such as in your controller, you interact with `JsonApiResource` classes as you would with the base `JsonResource` class. However, you will notice that we introduce new APIs for interacting with the class internally, e.g. you no longer implement the `toArray` method.
+The `JsonApiResource` class provided by this package is a specialisation of Laravel's `JsonResource` class. All the underlying API's are still there and from an outside perspective, such as in your controller, you interact with `JsonApiResource` classes as you would with the base `JsonResource` class.
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Resources\UserResource;
+
+class UserController
+{
+    public function index()
+    {
+        return UserResource::collection(User::all());
+    }
+
+    public function show(User $user)
+    {
+        return UserResource::make($user);
+    }
+}
+```
+
+However, as we make our way through the examples you will notice that we introduce new APIs for interacting with the class internally, e.g. you no longer implement the `toArray` method.
 
 ## Creating your first JSON:API resource
 
@@ -44,28 +67,7 @@ class UserResource extends JsonApiResource
 }
 ```
 
-Just like Laravel's standard `JsonResource` class, you may return the resource directly from your controller.
 
-```php
-<?php
-
-namespace App\Http\Controllers;
-
-use App\Http\Resources\UserResource;
-
-class UserController
-{
-    public function index()
-    {
-        return UserResource::collection(User::all());
-    }
-
-    public function show(User $user)
-    {
-        return UserResource::make($user);
-    }
-}
-```
 
 When making a `GET` request to your `/users/74812` endpoint, the following JSON:API formatted data will be returned.
 

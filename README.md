@@ -102,7 +102,7 @@ We will now dive into returning relationships for your `UserResource`, but if yo
 
 ## Specifying available relationships
 
-Similar to the `$attributes` property seen above, relationships may be specified in a `$relationships` property. We will specify two relationships: a "toOne" relationship of `$user->license` and a "toMany" relationship of `$user->posts`.
+Similar to the [`$attributes` property](#creating-your-first-jsonapi-resource) seen above, relationships may be specified in a `$relationships` property. We will specify two relationships: a "toOne" relationship of `$user->license` and a "toMany" relationship of `$user->posts`.
 
 ```php
 <?php
@@ -113,7 +113,7 @@ use TiMacDonald\JsonApi\JsonApiResource;
 
 class UserResource extends JsonApiResource
 {
-    protected $attributes = [ /* ... */ ];
+    protected $attributes = [/* ... */];
 
     protected $relationships = [
         'license' => LicenseResource::class,

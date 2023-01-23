@@ -80,12 +80,22 @@ trait Relationships
     {
         return $this->rememberRequestRelationships(fn (): Collection => $this->resolveRelationships($request)
             ->only($this->requestedIncludes($request))
-            ->map(fn (callable $value, string $prefix): null|JsonApiResource|JsonApiResourceCollection => with($value(), fn ($resource) => match (true) {
-                $resource instanceof PotentiallyMissing && $resource->isMissing() => null,
-                $resource instanceof JsonApiResource || $resource instanceof JsonApiResourceCollection => $resource->withIncludePrefix($prefix),
-                default => throw UnknownRelationshipException::from($resource),
-            }))
+            ->map(fn (callable $value, string $prefix): null|JsonApiResource|JsonApiResourceCollection => $this->resolveInclude($value(), $prefix))
             ->reject(fn (JsonApiResource|JsonApiResourceCollection|null $resource): bool => $resource === null));
+    }
+
+    /**
+     * @internal
+     *
+     * @return JsonApiResource|JsonApiResourceCollection|null
+     */
+    private function resolveInclude(mixed $resource, string $prefix)
+    {
+        return match (true) {
+            $resource instanceof PotentiallyMissing && $resource->isMissing() => null,
+            $resource instanceof JsonApiResource || $resource instanceof JsonApiResourceCollection => $resource->withIncludePrefix($prefix),
+            default => throw UnknownRelationshipException::from($resource),
+        };
     }
 
     /**

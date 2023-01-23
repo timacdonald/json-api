@@ -25,7 +25,7 @@ The `JsonApiResource` class provided by this package is a specialisation of Lara
 
 ## Creating your first JSON:API resource
 
-To get started, let's create a `UserResource` that includes a few attributes. We will assume the underlying resource, perhaps an Eloquent model, has `$user->name`, `$user->website`, and `$user->twitterHandle` attributes.
+To get started, let's create a `UserResource` that includes a few attributes. We will assume the underlying resource, perhaps an Eloquent model, has `$user->name`, `$user->website`, and `$user->twitterHandle` attributes that we wish to provide in the response.
 
 ```php
 <?php
@@ -87,7 +87,13 @@ The following JSON:API formatted data will be returned.
 }
 ```
 
-We will cover more complex attribute usages later on.
+> **Note** If this JSON format seems unexpected, I recommend reading up the [JSON:API specification](https:/jsonapi.org) to learn _why_ this format is useful.
+
+To learn more about handling more complex attribute requirements, check out:
+
+- [toAttributes](#toAttributes)
+- [Sparse fieldsets](#sparse-fieldsets)
+- [Minimal attributes](#minimal-attributes)
 
 You have just created your first JSON:API resource. There are plenty of other features available, so let's augment this resource to explore them.
 
@@ -132,7 +138,7 @@ We have defined a sensible default for you so you can hit the ground running wit
 
 The `"id"` and `"type"` of a resource is automatically resolved for you under-the-hood if you are using resources solely with Eloquent models.
 
-`"id"` is resolved by calling the `$model->getKey()` method and the `"type"` is resolved by using a camel case of the model's table name, e.g. `blog_posts` becomes `blogPosts`. 
+`"id"` is resolved by calling the `$model->getKey()` method and the `"type"` is resolved by using a camel case of the model's table name, e.g. `blog_posts` becomes `blogPosts`.
 
 You can customise how this works to support other types of objects and behaviours, but that will follow in the [advanced usage](#advanced-usage) section.
 
@@ -178,7 +184,7 @@ class UserResource extends JsonApiResource
             'posts' => fn () => PostResource::collection($this->posts),
             'subscription' => fn () => SubscriptionResource::make($this->subscription),
             'profileImage' => fn () => optional($this->profileImage, fn (ProfileImage $profileImage) => ProfileImageResource::make($profileImage)),
-            // if the relationship has been loaded and is null, can we not just return the resource still and have a nice default? That way you never have to handle any of this 
+            // if the relationship has been loaded and is null, can we not just return the resource still and have a nice default? That way you never have to handle any of this
             // optional noise?
             // also is there a usecase for returning a resource linkage right from here and not a full resource?
         ];
@@ -281,7 +287,7 @@ Here is what that response might look like. Notice that the resource is "inlined
         "attributes": {},
         "relationships": {
             "nonJsonApiResource": {
-                "id": "5", 
+                "id": "5",
                 "key": "4h29kaKlWja)99ja72kafj&&jalkfh",
                 "created_at": "2020-01-04 12:44:12"
             }

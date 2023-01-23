@@ -1,0 +1,16 @@
+{
+    "data": {
+        "type": "users",
+        "id": "d1e57be0-f213-42c5-bef3-7e26e733caa1",
+        "attributes": {
+            "name": "Tim",
+            "website": "https://timacdonald.me",
+            "twitterHandle": "@timacdonald87"
+        },
+        "relationships": {},
+        "meta": {},
+        "links": {}
+    },
+    "included": []
+}
+

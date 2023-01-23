@@ -73,7 +73,7 @@ The following JSON:API formatted data will be returned.
 {
     "data": {
         "type": "users",
-        "id": "d1e57be0-f213-42c5-bef3-7e26e733caa1",
+        "id": "74812",
         "attributes": {
             "name": "Tim",
             "website": "https://timacdonald.me",
@@ -97,11 +97,9 @@ If you would like to explore more complex attribute configurations, check out th
 
 🎉 You have just created your first JSON:API resource. There are plenty of other features available, so let's augment this resource to explore them.
 
-## Adding relationships
+## Specifying available relationships
 
-Similar to the `$attributes` property seen above, relationships may be specified in a `$relationships` property. The key should reference the underlying resource relationship property and the value should be the `JsonApiResource` class to use for that relationship.
-
-We will specify two relationships: a "toOne" relationship of `$user->license` and a "toMany" relationship of `$user->posts`.
+Similar to the `$attributes` property seen above, relationships may be specified in a `$relationships` property. We will specify two relationships: a "toOne" relationship of `$user->license` and a "toMany" relationship of `$user->posts`.
 
 ```php
 <?php
@@ -124,9 +122,80 @@ class UserResource extends JsonApiResource
 <details>
 <summary>Response example</summary>
 
-```json5
+```json
 {
-    // TODO
+    "data": {
+        "id": "74812",
+        "type": "users",
+        "attributes": {
+            "name": "Tim",
+            "website": "https://timacdonald.me",
+            "twitterHandle": "@timacdonald87"
+        },
+        "relationships": {
+            "posts": {
+                "data": [
+                    {
+                        "type": "posts",
+                        "id": "25240",
+                        "meta": {}
+                    },
+                    {
+                        "type": "posts",
+                        "id": "39974",
+                        "meta": {}
+                    }
+                ],
+                "meta": {},
+                "links": {}
+            },
+            "license": {
+                "data": {
+                    "type": "licenses",
+                    "id": "18986",
+                    "meta": {}
+                },
+                "meta": {},
+                "links": {}
+            }
+        },
+        "meta": {},
+        "links": {}
+    },
+    "included": [
+        {
+            "id": "25240",
+            "type": "posts",
+            "attributes": {
+                "title": "So what is JSON:API all about anyway?",
+                "content": "..."
+            },
+            "relationships": {},
+            "meta": {},
+            "links": {}
+        },
+        {
+            "id": "39974",
+            "type": "posts",
+            "attributes": {
+                "title": "Building an API with Laravel, using the JSON:API specification.",
+                "content": "..."
+            },
+            "relationships": {},
+            "meta": {},
+            "links": {}
+        },
+        {
+            "id": "18986",
+            "type": "licenses",
+            "attributes": {
+                "key": "lic_CNlpZVVrsLlChLBSgS1GK7zJR8EFdupW"
+            },
+            "relationships": {},
+            "meta": {},
+            "links": {}
+        }
+    ]
 }
 ```
 </details>

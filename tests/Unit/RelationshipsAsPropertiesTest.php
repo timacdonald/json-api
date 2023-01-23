@@ -16,17 +16,22 @@ class RelationshipsAsPropertiesTest extends TestCase
 {
     public function testItCanSpecifyRelationshipsAsProperties()
     {
-        $post = BasicModel::make([
-            'id' => 'post-id',
-            'title' => 'post-title',
-            'content' => 'post-content',
-        ])->setRelation('author', BasicModel::make([
+        $user = BasicModel::make([
             'id' => 'author-id',
             'name' => 'author-name',
+        ])->setRelation('posts', [
+            BasicModel::make([
+                'id' => 'post-id',
+                'title' => 'post-title',
+                'content' => 'post-content',
+            ])
+        ])->setRelation('license', BasicModel::make([
+            'key' => 'license-key',
         ]));
-        $class = new class ($post) extends PostResource {
+        $class = new class ($user) extends UserResource {
             protected array $relationships = [
-                'author' => UserResource::class,
+                'posts' => PostResource::class,
+                'license' => LicenseResource::class,
             ];
 
             public function toRelationships($request)
@@ -35,9 +40,9 @@ class RelationshipsAsPropertiesTest extends TestCase
             }
         };
 
-        $response = $class->toResponse(Request::create('https://timacdonald.me?include=author'));
+        $response = $class->toResponse(Request::create('https://timacdonald.me?include=license,posts'));
 
-        $this->assertValidJsonApi($response->content());
+        $this->assertValidJsonApi(dd($response->content()));
         $this->assertSame([
             'author' => [
                 'data' => [

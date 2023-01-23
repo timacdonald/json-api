@@ -4,7 +4,7 @@
 
 A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API standard with support for sparse fieldsets, compound documents, and more.
 
-> **Note** These docs are not designed to introduce you to the JSON:API specification and the associated concepts, instead you should [head over and read the spec](https:/jsonapi.org) if you are not familiar with it. The documentation that follows only contains information on _how_ to implement the specification via the package.
+> **Note** These docs are not designed to introduce you to the JSON:API specification and the associated concepts, instead you should [head over and read the specification](https:/jsonapi.org) if you are not yet familiar with it. The documentation that follows only contains information on _how_ to implement the specification via the package.
 
 # Version support
 
@@ -21,7 +21,7 @@ composer require timacdonald/json-api
 
 # Getting started
 
-The `JsonApiResource` class provided by this package is a specialisation of Laravel's `JsonResource` class. All the underlying API's are still there and from an outside perspective, such as in your controller, you can still interact with `JsonApiResource` classes as you would with the base `JsonResource` class. However, you will notice that we introduce new APIs for interacting with the class internally, e.g. you no longer implement the `toArray` method.
+The `JsonApiResource` class provided by this package is a specialisation of Laravel's `JsonResource` class. All the underlying API's are still there and from an outside perspective, such as in your controller, you interact with `JsonApiResource` classes as you would with the base `JsonResource` class. However, you will notice that we introduce new APIs for interacting with the class internally, e.g. you no longer implement the `toArray` method.
 
 ## Creating your first JSON:API resource
 

@@ -125,40 +125,6 @@ class UserResource extends JsonApiResource
 <details>
 <summary>Example request / response</summary>
 
-And there you have it: you officially support "compound documents".
-
-## A note on eager loading
-
-This package does not concern itself eager loading your Eloquent relationships. It is expected that all relationships requested by the user have been preloaded in your controller. I **highly** recommend using [Spatie's query builder](https://spatie.be/docs/laravel-query-builder/) which is built for this purpose. Spatie provide comprehensive documentation on how to use the package, but I will briefly give an example of how you might use this in your controller.
-
-```php
-<?php
-
-namespace App\Http\Controllers;
-
-use App\Http\Resources\UserResource;
-use Spatie\QueryBuilder\QueryBuilder;
-
-class UserController
-{
-    public function index()
-    {
-        $users = QueryBuilder::for(User::class)
-            ->allowedIncludes(['license', 'posts'])
-            ->paginate();
-
-        return UserResource::collection($users);
-    }
-
-    public function show(User $user)
-    {
-        // TODO
-
-        return UserResource::make($user);
-    }
-}
-```
-
 #### Request
 
 `GET /users/74812?include=posts,license`
@@ -242,6 +208,41 @@ class UserController
 }
 ```
 </details>
+
+And there you have it: you officially support "compound documents".
+
+## A note on eager loading
+
+This package does not concern itself eager loading your Eloquent relationships. It is expected that all relationships requested by the user have been preloaded in your controller. I **highly** recommend using [Spatie's query builder](https://spatie.be/docs/laravel-query-builder/) which is built for this purpose. Spatie provide comprehensive documentation on how to use the package, but I will briefly give an example of how you might use this in your controller.
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Resources\UserResource;
+use Spatie\QueryBuilder\QueryBuilder;
+
+class UserController
+{
+    public function index()
+    {
+        $users = QueryBuilder::for(User::class)
+            ->allowedIncludes(['license', 'posts'])
+            ->paginate();
+
+        return UserResource::collection($users);
+    }
+
+    public function show(User $user)
+    {
+        // TODO
+
+        return UserResource::make($user);
+    }
+}
+```
+
 ## Resource Identification
 
 [JSON:API docs: Identification](https://jsonapi.org/format/#document-resource-object-identification)

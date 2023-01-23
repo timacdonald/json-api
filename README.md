@@ -91,7 +91,7 @@ The following JSON:API formatted data will be returned.
 
 If you would like to explore more complex attribute configurations, check out the following:
 
-- `[toAttributes()](#toAttributes)`
+- [`toAttributes($request)`](#toAttributes)
 - [Sparse fieldsets](#sparse-fieldsets)
 - [Minimal attributes](#minimal-attributes)
 

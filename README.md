@@ -67,7 +67,7 @@ class UserController
 }
 ```
 
-The following JSON:API formatted data will be returned.
+When making a `GET` request to your `/users/74812` endpoint, the following JSON:API formatted data will be returned.
 
 ```json
 {
@@ -121,6 +121,8 @@ class UserResource extends JsonApiResource
 
 <details>
 <summary>Example response payload</summary>
+
+`GET /users/74812?include=posts,license`
 
 ```json
 {

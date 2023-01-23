@@ -93,7 +93,7 @@ When making a `GET` request to your `/users/74812` endpoint, the following JSON:
 
 🎉 You have just created your first JSON:API resource. Congratulations!
 
-We will now dive into returning relationships for you `UserResource`, but if you would like to explore more complex attribute configurations, you may jump ahead check out the following more advanced features:
+We will now dive into returning relationships for your `UserResource`, but if you would like to explore more complex attribute configurations, you may jump ahead check out the following more advanced features:
 
 - [Mapping `$attributes` to new keys](#mapping-attributes-to-new-keys)
 - [`toAttributes($request)`](#toAttributes)

@@ -513,3 +513,5 @@ And a special (vegi) thanks to [Caneco](https://twitter.com/caneco) for the logo
 - Server implementation rethink.
 - Rethink naming of objects and properties
 - Guess relationship class for relationships.
+- Support mapping `$attributes` values to different keys.
+- Support dot notation of both the key and value of `$attributes`.

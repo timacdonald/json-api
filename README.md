@@ -121,7 +121,7 @@ class UserResource extends JsonApiResource
 
 <details>
 <summary>
-#### Example response payload
+**Example response payload**
 </summary>
 
 ```json

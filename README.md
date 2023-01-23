@@ -71,19 +71,19 @@ The following JSON:API formatted data will be returned.
 
 ```json
 {
-    "data": {
-        "type": "users",
-        "id": "74812",
-        "attributes": {
-            "name": "Tim",
-            "website": "https://timacdonald.me",
-            "twitterHandle": "@timacdonald87"
-        },
-        "relationships": {},
-        "meta": {},
-        "links": {}
+  "data": {
+    "type": "users",
+    "id": "74812",
+    "attributes": {
+      "name": "Tim",
+      "website": "https://timacdonald.me",
+      "twitterHandle": "@timacdonald87"
     },
-    "included": []
+    "relationships": {},
+    "meta": {},
+    "links": {}
+  },
+  "included": []
 }
 ```
 
@@ -120,82 +120,82 @@ class UserResource extends JsonApiResource
 ```
 
 <details>
-<summary>**Example response payload**</summary>
+<summary>Example response payload</summary>
 
 ```json
 {
-    "data": {
-        "id": "74812",
-        "type": "users",
-        "attributes": {
-            "name": "Tim",
-            "website": "https://timacdonald.me",
-            "twitterHandle": "@timacdonald87"
-        },
-        "relationships": {
-            "posts": {
-                "data": [
-                    {
-                        "type": "posts",
-                        "id": "25240",
-                        "meta": {}
-                    },
-                    {
-                        "type": "posts",
-                        "id": "39974",
-                        "meta": {}
-                    }
-                ],
-                "meta": {},
-                "links": {}
-            },
-            "license": {
-                "data": {
-                    "type": "licenses",
-                    "id": "18986",
-                    "meta": {}
-                },
-                "meta": {},
-                "links": {}
-            }
+  "data": {
+    "id": "74812",
+    "type": "users",
+    "attributes": {
+      "name": "Tim",
+      "website": "https://timacdonald.me",
+      "twitterHandle": "@timacdonald87"
+    },
+    "relationships": {
+      "posts": {
+        "data": [
+          {
+            "type": "posts",
+            "id": "25240",
+            "meta": {}
+          },
+          {
+            "type": "posts",
+            "id": "39974",
+            "meta": {}
+          }
+        ],
+        "meta": {},
+        "links": {}
+      },
+      "license": {
+        "data": {
+          "type": "licenses",
+          "id": "18986",
+          "meta": {}
         },
         "meta": {},
         "links": {}
+      }
     },
-    "included": [
-        {
-            "id": "25240",
-            "type": "posts",
-            "attributes": {
-                "title": "So what is JSON:API all about anyway?",
-                "content": "..."
-            },
-            "relationships": {},
-            "meta": {},
-            "links": {}
-        },
-        {
-            "id": "39974",
-            "type": "posts",
-            "attributes": {
-                "title": "Building an API with Laravel, using the JSON:API specification.",
-                "content": "..."
-            },
-            "relationships": {},
-            "meta": {},
-            "links": {}
-        },
-        {
-            "id": "18986",
-            "type": "licenses",
-            "attributes": {
-                "key": "lic_CNlpZVVrsLlChLBSgS1GK7zJR8EFdupW"
-            },
-            "relationships": {},
-            "meta": {},
-            "links": {}
-        }
-    ]
+    "meta": {},
+    "links": {}
+  },
+  "included": [
+    {
+      "id": "25240",
+      "type": "posts",
+      "attributes": {
+        "title": "So what is JSON:API all about anyway?",
+        "content": "..."
+      },
+      "relationships": {},
+      "meta": {},
+      "links": {}
+    },
+    {
+      "id": "39974",
+      "type": "posts",
+      "attributes": {
+        "title": "Building an API with Laravel, using the JSON:API specification.",
+        "content": "..."
+      },
+      "relationships": {},
+      "meta": {},
+      "links": {}
+    },
+    {
+      "id": "18986",
+      "type": "licenses",
+      "attributes": {
+        "key": "lic_CNlpZVVrsLlChLBSgS1GK7zJR8EFdupW"
+      },
+      "relationships": {},
+      "meta": {},
+      "links": {}
+    }
+  ]
 }
 ```
 </details>

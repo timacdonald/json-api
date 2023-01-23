@@ -34,7 +34,7 @@ class UserController
 {
     public function index()
     {
-        $users = User::with([/* ... */])->get();
+        $users = User::with([/* ... */])->paginate();
 
         return UserResource::collection($users);
     }

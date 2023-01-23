@@ -91,13 +91,13 @@ When making a `GET` request to your `/users/74812` endpoint, the following JSON:
 
 > **Note** If this JSON format seems unexpected, I recommend reading up the [JSON:API specification](https:/jsonapi.org) to learn _why_ this format is useful.
 
+🎉 You have just created your first JSON:API resource. Congratulations!
+
 If you would like to explore more complex attribute configurations, check out the following:
 
 - [`toAttributes($request)`](#toAttributes)
 - [Sparse fieldsets](#sparse-fieldsets)
 - [Minimal attributes](#minimal-attributes)
-
-🎉 You have just created your first JSON:API resource. There are plenty of other features available, so let's augment this resource to explore them.
 
 ## Specifying available relationships
 

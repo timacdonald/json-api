@@ -95,7 +95,7 @@ If you would like to explore more complex attribute configurations, check out th
 - [Sparse fieldsets](#sparse-fieldsets)
 - [Minimal attributes](#minimal-attributes)
 
-Congratulations 🎉 You have just created your first JSON:API resource. There are plenty of other features available, so let's augment this resource to explore them.
+🎉 You have just created your first JSON:API resource. There are plenty of other features available, so let's augment this resource to explore them.
 
 ## Adding relationships
 

@@ -100,9 +100,9 @@ We will now dive into returning relationships for your `UserResource`, but if yo
 - [Sparse fieldsets](#sparse-fieldsets)
 - [Minimal attributes](#minimal-attributes)
 
-## Specifying available relationships
+## Specifying relationships
 
-Similar to the [`$attributes` property](#creating-your-first-jsonapi-resource) seen above, relationships may be specified in a `$relationships` property. We will specify two relationships: a "toOne" relationship of `$user->license` and a "toMany" relationship of `$user->posts`.
+Similar to the [`$attributes` property](#creating-your-first-jsonapi-resource) seen above, available relationships may be specified in a `$relationships` property. We will specify two relationships: a "toOne" relationship of `$user->license` and a "toMany" relationship of `$user->posts`.
 
 ```php
 <?php

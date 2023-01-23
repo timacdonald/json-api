@@ -122,9 +122,11 @@ class UserResource extends JsonApiResource
 <details>
 <summary>Example request / response</summary>
 
-Request: `GET /users/74812?include=posts,license`
+#### Request
 
-Response:
+`GET /users/74812?include=posts,license`
+
+#### Response
 
 ```json
 {

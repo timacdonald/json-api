@@ -89,13 +89,13 @@ The following JSON:API formatted data will be returned.
 
 > **Note** If this JSON format seems unexpected, I recommend reading up the [JSON:API specification](https:/jsonapi.org) to learn _why_ this format is useful.
 
-To learn more about handling more complex attribute requirements, check out:
+If you would like to explore more complex attribute configurations, check out the following:
 
 - [toAttributes](#toAttributes)
 - [Sparse fieldsets](#sparse-fieldsets)
 - [Minimal attributes](#minimal-attributes)
 
-You have just created your first JSON:API resource. There are plenty of other features available, so let's augment this resource to explore them.
+Congratulations 🎉 You have just created your first JSON:API resource. There are plenty of other features available, so let's augment this resource to explore them.
 
 ## Adding relationships
 

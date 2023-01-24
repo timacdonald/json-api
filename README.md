@@ -54,6 +54,8 @@ However, as we make our way through the examples you will notice that we have in
 
 To get started, let's create a `UserResource` that includes a few attributes. We will assume the underlying resource, perhaps an Eloquent model, has `$user->name`, `$user->website`, and `$user->twitterHandle` attributes that we wish to provide in the response.
 
+To achieve this, we will specify an `$attributes` array with the included attributes as values.
+
 ```php
 <?php
 

@@ -101,7 +101,7 @@ GET /users/74812`
 
 🎉 You have just created your first JSON:API resource. Congratulations...and what. a. rush!
 
-Want to know what else is awesome? Spare fieldsets is now also available for you user resource. Only want to retrieve the `website` and `twitterHandle`? No sweat!
+Want to know what else is awesome? Sparse fieldsets are also available to your user resource without lifting a finger. If you only want to retrieve the `website` and `twitterHandle`? No sweat!
 
 Append the appropriate spare fieldsets query parameter to the request:
 

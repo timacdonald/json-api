@@ -179,7 +179,7 @@ class UserResource extends JsonApiResource
 > **Note** Whether to return a `toOne` or `toMany` relationship is be handled automatically based on the resolved relationship type 🧠
 
 <details>
-<summary>Example request / response</summary>
+<summary>Request / response example</summary>
 
 #### Request
 
@@ -265,7 +265,89 @@ class UserResource extends JsonApiResource
 ```
 </details>
 
-And there you have it: you officially support "compound documents".
+There you have it: you officially support "compound documents". As you might expect, sparse fieldsets also work included relationships out of the box.
+
+<details>
+<summary>Compound documents with sparse fieldsets example</summary>
+
+#### Request
+
+`GET /users/74812?include=posts,license&fields[users]=name&fields[posts]=title&fields[licenses]=`
+
+#### Response
+
+```json
+{
+  "data": {
+    "id": "74812",
+    "type": "users",
+    "attributes": {
+      "name": "Tim"
+    },
+    "relationships": {
+      "posts": {
+        "data": [
+          {
+            "type": "posts",
+            "id": "25240",
+            "meta": {}
+          },
+          {
+            "type": "posts",
+            "id": "39974",
+            "meta": {}
+          }
+        ],
+        "meta": {},
+        "links": {}
+      },
+      "license": {
+        "data": {
+          "type": "licenses",
+          "id": "18986",
+          "meta": {}
+        },
+        "meta": {},
+        "links": {}
+      }
+    },
+    "meta": {},
+    "links": {}
+  },
+  "included": [
+    {
+      "id": "25240",
+      "type": "posts",
+      "attributes": {
+        "title": "So what is JSON:API all about anyway?"
+      },
+      "relationships": {},
+      "meta": {},
+      "links": {}
+    },
+    {
+      "id": "39974",
+      "type": "posts",
+      "attributes": {
+        "title": "Building an API with Laravel, using the JSON:API specification."
+      },
+      "relationships": {},
+      "meta": {},
+      "links": {}
+    },
+    {
+      "id": "18986",
+      "type": "licenses",
+      "attributes": {},
+      "relationships": {},
+      "meta": {},
+      "links": {}
+    }
+  ]
+}
+```
+</details>
+
 
 ## A note on eager loading
 

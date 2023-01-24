@@ -103,16 +103,10 @@ GET /users/74812
 
 Want to know what else is awesome? Sparse fieldsets are also available to your user resource without lifting a finger. If you only want to retrieve the `website` and `twitterHandle`, but exclude the `name`? No sweat!
 
-Append the appropriate spare fieldsets query parameter to the request:
+Append the appropriate spare fieldsets query parameter to the request and the attributes will be filtered as expected.
 
-```
-GET /users/74812?fields[users]=website,twitterHandle
-```
-
-
-and the attributes will be filtered as expected.
-
-```json
+```json5
+// GET /users/74812?fields[users]=website,twitterHandle
 {
   "data": {
     "type": "users",

@@ -130,8 +130,8 @@ Append the appropriate query parameter to the request and the attributes will be
 
 We will now dive into returning relationships for your `UserResource`, but if you would like to explore more complex attribute features, you may like to jump ahead:
 
-- [Mapping `$attributes` to new keys](#mapping-attributes-to-new-keys)
-- [`toAttributes($request)`](#toAttributes)
+- [Remapping `$attributes`](#remapping-attributes)
+- [`toAttributes()`](#toAttributes)
 - [Sparse fieldsets](#sparse-fieldsets)
 - [Minimal attributes](#minimal-attributes)
 

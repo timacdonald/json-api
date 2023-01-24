@@ -52,7 +52,7 @@ However, as we make our way through the examples you will notice that we have in
 
 ## Creating your first JSON:API resource
 
-To get started, let's create a `UserResource` that includes a few attributes. We will assume the underlying resource, perhaps an Eloquent model, has `$user->name`, `$user->website`, and `$user->twitterHandle` attributes that we wish to provide in the response.
+To get started, let's create a `UserResource` that includes a few attributes. We will assume the underlying resource, perhaps an Eloquent model, has `$user->name`, `$user->website`, and `$user->twitterHandle` attributes that we wish to expose in the response.
 
 To achieve this, we will create an `$attributes` property on the resource.
 
@@ -142,7 +142,7 @@ We will now dive into returning relationships for your `UserResource`, but if yo
 
 ## Adding relationships
 
-Available relationships may be specified in a `$relationships` property, similar to the [`$attributes` property](#creating-your-first-jsonapi-resource). We will allow two relationships on our `UserResource`: a "toOne" relationship of `$user->license` and a "toMany" relationship of `$user->posts`.
+Available relationships may be specified in a `$relationships` property, similar to the [`$attributes` property](#creating-your-first-jsonapi-resource). We will expose two relationships on our `UserResource`: a "toOne" relationship of `$user->license` and a "toMany" relationship of `$user->posts`.
 
 ```php
 <?php

@@ -103,7 +103,7 @@ GET /users/74812
 
 Want to know what else is awesome? Sparse fieldsets are also available to your user resource without lifting a finger. If you only want to retrieve the `website` and `twitterHandle`, but exclude the `name`? No sweat!
 
-Append the appropriate spare fieldsets query parameter to the request and the attributes will be filtered as expected.
+Append the appropriate sparse fieldsets query parameter to the request and the attributes will be filtered as expected.
 
 #### Request
 
@@ -534,7 +534,7 @@ The `Closure` is only resolved when the attribute is going to be included in the
 
 ### Minimal Resource Attributes
 
-Out of the box the resource provides a maximal attribute payload when sparse fieldsets are not used i.e. all declared attributes in the resource are returned. If you prefer to instead make it that spare fieldsets are required in order to retrieve any attributes, you can specify the use of minimal attributes in your applications service provider.
+Out of the box the resource provides a maximal attribute payload when sparse fieldsets are not used i.e. all declared attributes in the resource are returned. If you prefer to instead make it that sparse fieldsets are required in order to retrieve any attributes, you can specify the use of minimal attributes in your applications service provider.
 
 ```php
 <?php

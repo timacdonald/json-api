@@ -41,6 +41,8 @@ class UserController
 
     public function show(User $user)
     {
+        $user->load([/* ... */]);
+
         return UserResource::make($user);
     }
 }

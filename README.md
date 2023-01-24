@@ -103,7 +103,7 @@ GET /users/74812
 
 Want to know what else is awesome? Sparse fieldsets are also available to your user resource without lifting a finger. If you only want to retrieve the `website` and `twitterHandle`, but exclude the `name`? No sweat!
 
-Append the appropriate sparse fieldsets query parameter to the request and the attributes will be filtered as expected.
+Append the appropriate query parameter to the request and the attributes will be filtered as expected.
 
 #### Request
 

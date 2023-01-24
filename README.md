@@ -272,7 +272,7 @@ There you have it: you officially support "compound documents". As you might exp
 
 #### Request
 
-`GET /users/74812?include=posts,license&fields[users]=name&fields[posts]=title&fields[licenses]=`
+`GET /users/74812?include=posts,license&fields[users]=name&fields[posts]=title&fields[licensess]=`
 
 #### Response
 
@@ -351,7 +351,7 @@ There you have it: you officially support "compound documents". As you might exp
 
 ## A note on eager loading
 
-This package does not concern itself eager loading your Eloquent relationships. It is expected that all relationships requested by the user have been preloaded in your controller. I **highly** recommend using [Spatie's query builder](https://spatie.be/docs/laravel-query-builder/) which is built for this purpose. Spatie provide comprehensive documentation on how to use the package, but I will briefly give an example of how you might use this in your controller.
+This package does not concern itself eager loading your Eloquent relationships. It is expected that all relationships requested by the user have been preloaded in your controller. I **highly** recommend using [Spatie's query builder](https://spatie.be/docs/laravel-query-builder/) which is built for this purpose and works with the JSON:API standard. Spatie provide comprehensive documentation on how to use the package, but I will briefly give an example of how you might use this in your controller.
 
 ```php
 <?php
@@ -372,9 +372,11 @@ class UserController
         return UserResource::collection($users);
     }
 
-    public function show(User $user)
+    public function show(int $id)
     {
-        // TODO
+        $user = QueryBuilder::for(User::class)
+            ->allowedIncludes(['license', 'posts'])
+            ->firstOrFail($id);
 
         return UserResource::make($user);
     }

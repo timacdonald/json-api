@@ -105,8 +105,13 @@ Want to know what else is awesome? Sparse fieldsets are also available to your u
 
 Append the appropriate spare fieldsets query parameter to the request and the attributes will be filtered as expected.
 
-```json5
-// GET /users/74812?fields[users]=website,twitterHandle
+#### Request
+
+`GET /users/74812?fields[users]=website,twitterHandle`
+
+#### Response
+
+```json
 {
   "data": {
     "type": "users",

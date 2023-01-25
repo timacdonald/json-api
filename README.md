@@ -195,6 +195,8 @@ There you have it: you officially support "compound documents". As you might exp
 
 `GET /users/74812?include=posts,license`
 
+Relationships are not included in the response unless the calling client specifically requests them via the `include` query parameter. This is intended and is part of the JSON:API specification.
+
 #### Response
 
 ```json

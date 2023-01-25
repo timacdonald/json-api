@@ -176,10 +176,12 @@ class UserResource extends JsonApiResource
 }
 ```
 
-> **Note** Whether to return a `toOne` or `toMany` relationship is be handled automatically based on the resolved relationship type 🧠
+> **Note** Whether to return a `toOne` or `toMany` relationship is be handled automatically based on the resolved relationship type 🤖
+
+There you have it: you officially support "compound documents". As you might expect, sparse fieldsets also work included relationships out of the box.
 
 <details>
-<summary>Request / response example</summary>
+<summary>Example: Compound document request + response</summary>
 
 #### Request
 
@@ -265,10 +267,8 @@ class UserResource extends JsonApiResource
 ```
 </details>
 
-There you have it: you officially support "compound documents". As you might expect, sparse fieldsets also work included relationships out of the box.
-
 <details>
-<summary>Compound documents with sparse fieldsets example</summary>
+<summary>Example: compound documents with sparse fieldsets</summary>
 
 #### Request
 

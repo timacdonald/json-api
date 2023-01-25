@@ -181,7 +181,7 @@ class UserResource extends JsonApiResource
 There you have it: you officially support "compound documents". As you might expect, sparse fieldsets also work included relationships out of the box.
 
 <details>
-<summary>Example: Compound document request + response</summary>
+<summary>Example: Compound document</summary>
 
 #### Request
 
@@ -268,7 +268,7 @@ There you have it: you officially support "compound documents". As you might exp
 </details>
 
 <details>
-<summary>Example: compound documents with sparse fieldsets</summary>
+<summary>Example: Compound document with sparse fieldsets</summary>
 
 #### Request
 

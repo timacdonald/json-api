@@ -474,6 +474,7 @@ class UserResource extends JsonApiResource
     public function toAttributes($request)
     {
         return [
+            // add example using request info
             'name' => $this->name,
             'website' => $this->website,
             'handle' => $this->twitterHandle,
@@ -485,6 +486,8 @@ class UserResource extends JsonApiResource
     }
 }
 ```
+
+// use of when() etc.
 
 <details>
 <summary>Example payload</summary>

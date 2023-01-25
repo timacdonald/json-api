@@ -15,7 +15,7 @@ A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API st
 - [A note on eager loading](#a-note-on-eager-loading)
 - [Attributes](#attributes)
     - [Remapping `$attributes`](#remapping-attributes)
-    - [toAttributes()](#toAttributes)
+    - [`toAttributes()`](#toAttributes)
 
 ## Version support
 

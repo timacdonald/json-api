@@ -419,7 +419,7 @@ class UserResource extends JsonApiResource
     /**
      * The available attributes.
      *
-     * @var array<int, string>
+     * @var array<int|string, string>
      */
     protected $attributes = [
         'name',

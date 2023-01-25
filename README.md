@@ -81,7 +81,7 @@ class UserResource extends JsonApiResource
      *
      * @var array<int, string>
      */
-    protected $attributes = [
+    public $attributes = [
         'name',
         'website',
         'twitterHandle',
@@ -169,7 +169,7 @@ class UserResource extends JsonApiResource
      *
      * @var array<int, string>
      */
-    protected $attributes = [
+    public $attributes = [
         'name',
         'website',
         'twitterHandle',
@@ -180,7 +180,7 @@ class UserResource extends JsonApiResource
      *
      * @var array<string, class-string<JsonApiResource>>
      */
-    protected $relationships = [
+    public $relationships = [
         'license' => LicenseResource::class,
         'posts' => PostResource::class,
     ];
@@ -192,7 +192,7 @@ class UserResource extends JsonApiResource
 There you have it: you officially support "compound documents". As you might expect, [sparse fieldsets](#sparse-fieldsets) also work included relationships out of the box.
 
 <details>
-<summary>Example: Compound document</summary>
+<summary>Example payload</summary>
 
 #### Request
 
@@ -281,7 +281,7 @@ There you have it: you officially support "compound documents". As you might exp
 </details>
 
 <details>
-<summary>Example: Compound document with sparse fieldsets</summary>
+<summary>Example payload with sparse fieldsets</summary>
 
 #### Request
 
@@ -422,7 +422,7 @@ class UserResource extends JsonApiResource
      *
      * @var array<int|string, string>
      */
-    protected $attributes = [
+    public $attributes = [
         'name',
         'website',
         'twitterHandle' => 'handle',
@@ -452,7 +452,71 @@ The `$user->twitterHandle` attribute will now be exposed in the response as `han
 
 ### `toAttributes()`
 
-// WIP
+In some scenarios you may want more control over the attributes you expose for your resources. If that is the case, you may implement the `toAttributes()` method.
+
+```php
+<?php
+
+namespace App\Http\Resources;
+
+use TiMacDonald\JsonApi\JsonApiResource;
+
+class UserResource extends JsonApiResource
+{
+    /**
+     * The available attributes.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array<string, mixed>
+     */
+    public function toAttributes($request)
+    {
+        return [
+            'name' => $this->name,
+            'website' => $this->website,
+            'handle' => $this->twitterHandle,
+            'address' => [
+                'city' => $this->address('city'),
+                'country' => $this->address('country'),
+            ],
+        ];
+    }
+}
+```
+
+<details>
+<summary>Example payload</summary>
+
+#### Request
+
+`GET /users/74812`
+
+#### Response
+
+```json
+{
+  "data": {
+    "id": "74812",
+    "type": "users",
+    "attributes": {
+      "name": "Tim",
+      "website": "https://timacdonald.me",
+      "handle": "@timacdonald87",
+      "address": {
+        "city": "Melbourne",
+        "country": "Australia"
+      }
+    },
+    "relationships": {},
+    "meta": {},
+    "links": {}
+  },
+  "included": []
+}
+```
+</details>
+
+The [advanced usage](#advanced-usage) section covers [sparse fieldsets and handling expensive attribute calculation](#sparse-fieldsets) and [minimal attribute](#minimal-attributes) payloads, but you can ignore those advanced features for now and continue on with...
 
 ## Resource Identification
 
@@ -468,28 +532,6 @@ You can customise how this works to support other types of objects and behaviour
 
 Nice. Well that was easy, so let's move onto...
 
-## Resource Attributes
-
-[JSON:API docs: Attributes](https://jsonapi.org/format/#document-resource-object-attributes)
-
-To provide a set of attributes for a resource, you can implement the `toAttributes($request)` method...
-
-```php
-<?php
-
-class UserResource extends JsonApiResource
-{
-    protected function toAttributes($request): array
-    {
-        return [
-            'name' => $this->name,
-            'email' => $this->email,
-        ];
-    }
-}
-```
-
-The [advanced usage](#advanced-usage) section covers [sparse fieldsets and handling expensive attribute calculation](#sparse-fieldsets) and [minimal attribute](#minimal-attributes) payloads, but you can ignore those advanced features for now and continue on with...
 
 ## Resource Relationships
 

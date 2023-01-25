@@ -52,7 +52,7 @@ However, as we make our way through the examples you will notice that we have in
 
 ## Creating your first JSON:API resource
 
-To get started, let's create a `UserResource` that includes a few attributes. We will assume the underlying resource, perhaps an Eloquent model, has `$user->name`, `$user->website`, and `$user->twitterHandle` attributes that we wish to expose in the response.
+To get started, let's create a `UserResource` that includes a few attributes. We will assume the underlying resource, in this example an Eloquent user model, has `$user->name`, `$user->website`, and `$user->twitterHandle` attributes that we want to expose.
 
 To achieve this, we will create an `$attributes` property on the resource.
 
@@ -78,13 +78,13 @@ class UserResource extends JsonApiResource
 }
 ```
 
-When making the following request to your endpoint:
+When making a request to an endpoint that return the `UserResource`, for example:
 
 ```
 GET /users/74812
 ```
 
-...the following JSON:API formatted data will be returned.
+the following JSON:API formatted data will be returned.
 
 ```json
 {
@@ -106,7 +106,7 @@ GET /users/74812
 
 🎉 You have just created your first JSON:API resource. Congratulations...and what. a. rush!
 
-Want to know what else is awesome? Sparse fieldsets are also available to your user resource without lifting a finger. Want to retrieve the `website` and `twitterHandle`, but exclude the `name`? No sweat!
+Want to know what else is awesome? Sparse fieldsets are also available to the `UserResource` without lifting a finger. Want to retrieve the `website` and `twitterHandle`, but exclude the `name`? No sweat!
 
 Append the appropriate query parameter to the request and the attributes will be filtered as expected.
 

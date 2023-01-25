@@ -1,6 +1,6 @@
 <p align="center"><img src="/art/header.png" alt="JSON:API Resource: a Laravel package by Tim MacDonald"></p>
 
-Table of contents
+**Table of contents**
 - [Version support](#version-support)
 - [Installation](#installation)
 - [Getting started](#getting-started)

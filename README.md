@@ -450,7 +450,7 @@ The `$user->twitterHandle` attribute will now be exposed in the response as `han
 }
 ```
 
-
+### `toAttributes()`
 
 // WIP
 

@@ -542,7 +542,9 @@ class UserResource extends JsonApiResource
     {
         return [
             /* ... */
-            'avatar' => base64_encode(Http::get('https://www.gravatar.com/avatar/'.md5($this->email))->body()),
+            'avatar' => base64_encode(
+                Http::get('https://www.gravatar.com/avatar/'.md5($this->email))->body()
+            ),
         ];
     }
 }

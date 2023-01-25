@@ -1,17 +1,25 @@
 <p align="center"><img src="/art/header.png" alt="JSON:API Resource: a Laravel package by Tim MacDonald"></p>
 
+Table of contents
+- [Version support](#version-support)
+- [Installation](#installation)
+- [Getting started](#getting-started)
+    - [Creating your first JSON:API resource](#creating-your-first-jsonapi-resource)
+    - [Adding relationships](#adding-relationships)
+- [A note on eager loading](#a-note-on-eager-loading)
+
 # JSON:API Resource for Laravel
 
 A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API standard with support for sparse fieldsets, compound documents, and more.
 
 > **Note** These docs are not designed to introduce you to the JSON:API specification and the associated concepts, instead you should [head over and read the specification](https://jsonapi.org) if you are not yet familiar with it. The documentation that follows only contains information on _how_ to implement the specification via the package.
 
-# Version support
+## Version support
 
 - **PHP**: 7.4, 8.0, 8.1
 - **Laravel**: 8.0
 
-# Installation
+## Installation
 
 You can install using [composer](https://getcomposer.org/) from [Packagist](https://packagist.org/packages/timacdonald/json-api).
 
@@ -19,7 +27,7 @@ You can install using [composer](https://getcomposer.org/) from [Packagist](http
 composer require timacdonald/json-api
 ```
 
-# Getting started
+## Getting started
 
 The `JsonApiResource` class provided by this package is a specialisation of Laravel's `JsonResource` class. All the public facing APIs are still accessible. In a controller, for example, you interact with `JsonApiResource` classes as you would with the base `JsonResource` class.
 
@@ -50,7 +58,7 @@ class UserController
 
 However, as we make our way through the examples you will notice that we have introduce new APIs for interacting with the class internally, e.g. you no longer implement the `toArray` method.
 
-## Creating your first JSON:API resource
+### Creating your first JSON:API resource
 
 To get started, let's create a `UserResource` that includes a few attributes. We will assume the underlying resource, in this example an Eloquent user model, has `$user->name`, `$user->website`, and `$user->twitterHandle` attributes that we want to expose.
 
@@ -140,7 +148,7 @@ We will now dive into returning relationships for your `UserResource`, but if yo
 - [Sparse fieldsets](#sparse-fieldsets)
 - [Minimal attributes](#minimal-attributes)
 
-## Adding relationships
+### Adding relationships
 
 Available relationships may be specified in a `$relationships` property, similar to the [`$attributes` property](#creating-your-first-jsonapi-resource). We will expose two relationships on our `UserResource`: a "toOne" relationship of `$user->license` and a "toMany" relationship of `$user->posts`. In this example, these are standard Eloquent relationships.
 

@@ -13,6 +13,8 @@ A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API st
     - [Creating your first JSON:API resource](#creating-your-first-jsonapi-resource)
     - [Adding relationships](#adding-relationships)
 - [A note on eager loading](#a-note-on-eager-loading)
+- [Attributes](#attributes)
+    - [Remapping `$attributes`](#remapping-attributes)
 
 ## Version support
 
@@ -396,6 +398,14 @@ class UserController
     }
 }
 ```
+
+## Attributes
+
+As we saw in the [Creating your first JSON:API resource](#creating-your-first-jsonapi-resource) section, the `$attributes` property is the fastest way to expose resource attributes. However, in some scenarios more complex configurations are required.
+
+### Remapping `$attributes`
+
+// WIP
 
 ## Resource Identification
 

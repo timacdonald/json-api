@@ -405,6 +405,48 @@ As we saw in the [Creating your first JSON:API resource](#creating-your-first-js
 
 ### Remapping `$attributes`
 
+You may remap the response key of an attribute by creating a hashmap in the `$attributes` array. The key should be the attribute on the underlying resource, such as the user model, and the value is what will be used for the response.
+
+```php
+<?php
+
+namespace App\Http\Resources;
+
+use TiMacDonald\JsonApi\JsonApiResource;
+
+class UserResource extends JsonApiResource
+{
+    /**
+     * The available attributes.
+     *
+     * @var array<int, string>
+     */
+    protected $attributes = [
+        'twitterHandle' => 'twitter',
+    ];
+}
+```
+
+The `$user->twitterHandle` attribute will now be exposed in the response as `twitter`
+
+```json
+{
+  "data": {
+    "type": "users",
+    "id": "74812",
+    "attributes": {
+      "twitter": "@timacdonald87"
+    },
+    "relationships": {},
+    "meta": {},
+    "links": {}
+  },
+  "included": []
+}
+```
+
+
+
 // WIP
 
 ## Resource Identification

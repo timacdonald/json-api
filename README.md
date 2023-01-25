@@ -16,6 +16,7 @@ A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API st
 - [Attributes](#attributes)
     - [Remapping `$attributes`](#remapping-attributes)
     - [`toAttributes()`](#toAttributes)
+    - [Lazy attribute evaluation](#lazy-attribute-evaluation)
 
 ## Version support
 
@@ -148,6 +149,7 @@ We will now dive into returning relationships for your `UserResource`, but if yo
 
 - [Remapping `$attributes`](#remapping-attributes)
 - [`toAttributes()`](#toAttributes)
+- [Lazy attribute evaluation](#lazy-attribute-evaluation)
 - [Sparse fieldsets](#sparse-fieldsets)
 - [Minimal attributes](#minimal-attributes)
 
@@ -515,6 +517,61 @@ class UserResource extends JsonApiResource
 }
 ```
 </details>
+
+### Lazy attribute evaluation
+
+To help improve performance for attributes that are expensive to calculate, it is possible to have attributes lazy evaluated only when they are requested by the client. As an example, let's imagine that we provide a profile image for each user, but our system requires us to download the profile picture and base64 encode it within the response.
+
+```php
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Support\Facades\Http;
+use TiMacDonald\JsonApi\JsonApiResource;
+
+class UserResource extends JsonApiResource
+{
+    /**
+     * The available attributes.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array<string, mixed>
+     */
+    public function toAttributes($request)
+    {
+        return [
+            /* ... */
+            'avatar' => base64_encode(Http::get('https://www.gravatar.com/avatar/'.md5($this->email))->body()),
+        ];
+    }
+}
+```
+
+
+
+
+
+
+//----- WIP------- //
+<?php
+
+class UserResource extends JsonApiResource
+{
+    public function toRelationships($request): array
+    {
+        return [
+            'posts' => fn () => PostResource::collection($this->posts),
+            'subscription' => fn () => SubscriptionResource::make($this->subscription),
+            'profileImage' => fn () => optional($this->profileImage, fn (ProfileImage $profileImage) => ProfileImageResource::make($profileImage)),
+            // if the relationship has been loaded and is null, can we not just return the resource still and have a nice default? That way you never have to handle any of this
+            // optional noise?
+            // also is there a usecase for returning a resource linkage right from here and not a full resource?
+        ];
+    }
+}
+```
+
 
 The [advanced usage](#advanced-usage) section covers [sparse fieldsets and handling expensive attribute calculation](#sparse-fieldsets) and [minimal attribute](#minimal-attributes) payloads, but you can ignore those advanced features for now and continue on with...
 

@@ -1,5 +1,11 @@
 <p align="center"><img src="/art/header.png" alt="JSON:API Resource: a Laravel package by Tim MacDonald"></p>
 
+# JSON:API Resource for Laravel
+
+A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API standard with support for sparse fieldsets, compound documents, and more.
+
+> **Note** These docs are not designed to introduce you to the JSON:API specification and the associated concepts, instead you should [head over and read the specification](https://jsonapi.org) if you are not yet familiar with it. The documentation that follows only contains information on _how_ to implement the specification via the package.
+
 **Table of contents**
 - [Version support](#version-support)
 - [Installation](#installation)
@@ -7,12 +13,6 @@
     - [Creating your first JSON:API resource](#creating-your-first-jsonapi-resource)
     - [Adding relationships](#adding-relationships)
 - [A note on eager loading](#a-note-on-eager-loading)
-
-# JSON:API Resource for Laravel
-
-A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API standard with support for sparse fieldsets, compound documents, and more.
-
-> **Note** These docs are not designed to introduce you to the JSON:API specification and the associated concepts, instead you should [head over and read the specification](https://jsonapi.org) if you are not yet familiar with it. The documentation that follows only contains information on _how_ to implement the specification via the package.
 
 ## Version support
 

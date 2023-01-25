@@ -587,6 +587,7 @@ class UserResource extends JsonApiResource
 > **Note** When using the `$attributes` property all attributes are lazy evaluated.
 
 //----- WIP------- //
+```
 <?php
 
 class UserResource extends JsonApiResource

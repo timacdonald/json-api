@@ -69,8 +69,8 @@ trait Attributes
     private function resolveAttributes(Request $request)
     {
         return Collection::make($this->attributes)
-            ->mapWithKeys(fn (string $attribute): array => [
-                $attribute => fn () => $this->resource->{$attribute},
+            ->mapWithKeys(fn (string $attribute, int|string $key): array => [
+                $attribute => fn () => $this->resource->{(is_string($key) ? $key : $attribute)},
             ])
             ->merge($this->toAttributes($request));
     }

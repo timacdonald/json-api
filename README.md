@@ -520,7 +520,9 @@ class UserResource extends JsonApiResource
 
 ### Lazy attribute evaluation
 
-To help improve performance for attributes that are expensive to calculate, it is possible to have attributes lazy evaluated only when they are requested by the client. As an example, let's imagine that we provide a profile image for each user, but our system requires us to download the profile picture and base64 encode it within the response.
+To help improve performance for attributes that are expensive to calculate, it is possible to have attributes lazy evaluated only when they are requested by the client. This is useful if you are making requests to the database or even HTTP requests in your resource.
+
+As an example, let's imagine that we expose a base64 encoded avatar for each user. Our implementation downloads the avatar from our microservice, base64 encodes the avatar, and provides it as an attribute.
 
 ```php
 <?php
@@ -543,17 +545,46 @@ class UserResource extends JsonApiResource
         return [
             /* ... */
             'avatar' => base64_encode(
-                Http::get('https://www.gravatar.com/avatar/'.md5($this->email))->body()
+                Http::get('https://avatar.acme.com/'.md5($this->email))->body()
             ),
         ];
     }
 }
 ```
 
+The above implementation would make a HTTP request to our microservice even when the client is exluding the `avatar` attribute via [sparse fieldsets](#sparse-fieldsets).
 
+If we wrap this attribute in a Closure, it will only be evaluated when the `avatar` is to be returned in the response. This means we can remove the need for a HTTP request and improve performance in some cases.
 
+```php
+<?php
 
+namespace App\Http\Resources;
 
+use Illuminate\Support\Facades\Http;
+use TiMacDonald\JsonApi\JsonApiResource;
+
+class UserResource extends JsonApiResource
+{
+    /**
+     * The available attributes.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array<string, mixed>
+     */
+    public function toAttributes($request)
+    {
+        return [
+            /* ... */
+            'avatar' => fn () => base64_encode(
+                Http::get('https://avatar.acme.com/'.md5($this->email))->body()
+            ),
+        ];
+    }
+}
+```
+
+> **Note** When using the `$attributes` property all attributes are lazy evaluated.
 
 //----- WIP------- //
 <?php

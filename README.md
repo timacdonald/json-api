@@ -376,7 +376,7 @@ class UserController
     {
         $user = QueryBuilder::for(User::class)
             ->allowedIncludes(['license', 'posts'])
-            ->firstOrFail($id);
+            ->findOrFail($id);
 
         return UserResource::make($user);
     }

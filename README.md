@@ -405,7 +405,7 @@ As we saw in the [Creating your first JSON:API resource](#creating-your-first-js
 
 ### Remapping `$attributes`
 
-You may remap the response key of an attribute by creating a hashmap in the `$attributes` array. The key should be the attribute on the underlying resource, such as the user model, and the value is what will be used for the response.
+You may remap the response key of an attribute by creating a key / value pair in the `$attributes` array. The key should be the attribute on the underlying resource, such as the user model, and the value is what will be used for the response.
 
 ```php
 <?php
@@ -422,12 +422,14 @@ class UserResource extends JsonApiResource
      * @var array<int, string>
      */
     protected $attributes = [
-        'twitterHandle' => 'twitter',
+        'name',
+        'website',
+        'twitterHandle' => 'handle',
     ];
 }
 ```
 
-The `$user->twitterHandle` attribute will now be exposed in the response as `twitter`
+The `$user->twitterHandle` attribute will now be exposed in the response as `handle`.
 
 ```json
 {
@@ -435,7 +437,9 @@ The `$user->twitterHandle` attribute will now be exposed in the response as `twi
     "type": "users",
     "id": "74812",
     "attributes": {
-      "twitter": "@timacdonald87"
+      "name": "Tim",
+      "website": "https://timacdonald.me",
+      "handle": "@timacdonald87"
     },
     "relationships": {},
     "meta": {},

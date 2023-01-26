@@ -25,14 +25,19 @@
         "symfony/http-kernel": "^6.0"
     },
     "require-dev": {
-        "bamarni/composer-bin-plugin": "^1.4",
-        "phpunit/php-invoker": "^3.1"
+        "bamarni/composer-bin-plugin": "^1.4"
     },
     "config": {
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
             "bamarni/composer-bin-plugin": true
+        }
+    },
+    "extra": {
+        "bamarni-bin": {
+            "bin-links": true,
+            "forward-command": true
         }
     },
     "autoload": {
@@ -47,15 +52,6 @@
     },
     "minimum-stability": "stable",
     "prefer-stable": true,
-    "scripts": {
-        "bin": "echo 'bin not installed'",
-        "post-install-cmd": [
-            "@composer bin all install --ansi"
-        ],
-        "post-update-cmd": [
-            "@composer bin all update --ansi"
-        ]
-    },
     "support": {
         "issues": "https://github.com/timacdonald/json-api/issues",
         "source": "https://github.com/timacdonald/json-api/releases/latest",

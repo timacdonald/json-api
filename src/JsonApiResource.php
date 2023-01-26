@@ -4,181 +4,160 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi;
 
-use Closure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;
 use stdClass;
-use TiMacDonald\JsonApi\Contracts\Flushable;
-use TiMacDonald\JsonApi\Support\Cache;
+
 use function property_exists;
 
-abstract class JsonApiResource extends JsonResource implements Flushable
+abstract class JsonApiResource extends JsonResource
 {
     use Concerns\Attributes;
     use Concerns\Caching;
     use Concerns\Identification;
     use Concerns\Implementation;
     use Concerns\Links;
+    use Concerns\Meta;
+    use Concerns\RelationshipLinks;
     use Concerns\Relationships;
 
     /**
-     * @see https://github.com/timacdonald/json-api#customising-the-resource-id
-     * @see https://jsonapi.org/format/#document-resource-object-identification
-     */
-    public static function resolveIdUsing(Closure $resolver): void
-    {
-        self::$idResolver = $resolver;
-    }
-
-    /**
-     * @see https://github.com/timacdonald/json-api#customising-the-resource-type
-     * @see https://jsonapi.org/format/#document-resource-object-identification
-     */
-    public static function resolveTypeUsing(Closure $resolver): void
-    {
-        self::$typeResolver = $resolver;
-    }
-
-    /**
-     * TODO see local-docs
-     * @see https://jsonapi.org/format/#document-jsonapi-object
-     */
-    public static function resolveServerImplementationUsing(Closure $resolver): void
-    {
-        self::$serverImplementationResolver = $resolver;
-    }
-
-    /**
-     * @see https://github.com/timacdonald/json-api#minimal-resource-attributes
-     */
-    public static function minimalAttributes(): void
-    {
-        self::$minimalAttributes = true;
-    }
-
-    /**
-     * @see https://github.com/timacdonald/json-api#resource-attributes
-     * @see https://jsonapi.org/format/#document-resource-object-attributes
+     * @api
+     *
      * @return array<string, mixed>
      */
-    protected function toAttributes(Request $request): array
+    public function toAttributes(Request $request)
     {
         return [
-            // 'name' => $this->name,
             //
-            // or with lazy evaluation...
+        ];
+    }
+
+    /**
+     * @api
+     *
+     * @TODO: callable needs type information
+     * @return array<string, (callable(): JsonApiResource|JsonApiResourceCollection|PotentiallyMissing)>
+     */
+    public function toRelationships(Request $request)
+    {
+        return [
             //
-            // 'address' => fn () => new Address($this->address),
         ];
     }
 
     /**
-     * @see https://github.com/timacdonald/json-api#resource-relationships
-     * @see https://jsonapi.org/format/#document-resource-object-relationships
-     * @return array<string, Closure>
+     * @api
+     *
+     * @return array<int, Link>
      */
-    protected function toRelationships(Request $request): array
+    public function toLinks(Request $request)
     {
         return [
-            // 'posts' => fn () => PostResource::collection($this->posts),
-            // 'avatar' => fn () => AvatarResource::make($this->avatar),
+            //
         ];
     }
 
     /**
-     * @see https://github.com/timacdonald/json-api#resource-links
-     * @see https://jsonapi.org/format/#document-resource-object-links
-     * @return array<int|string, Link|string>
-     */
-    protected function toLinks(Request $request): array
-    {
-        return [
-            // Link::self(route('users.show'), $this->resource),
-            // Link::related(/** ... */),
-            // 'whatever' => 'Something'
-            // 'whateverElse' => new Link('whatever')
-        ];
-    }
-
-    /**
-     * @see https://github.com/timacdonald/json-api#resource-meta
-     * @see https://jsonapi.org/format/#document-meta
+     * @api
+     *
      * @return array<string, mixed>
      */
-    protected function toMeta(Request $request): array
+    public function toMeta(Request $request)
     {
         return [
-            // 'resourceDeprecated' => false,
+            //
         ];
     }
 
     /**
-     * @see https://github.com/timacdonald/json-api#customising-the-resource-id
-     * @see https://jsonapi.org/format/#document-resource-object-identification
+     * @api
+     *
+     * @return string
      */
-    protected function toId(Request $request): string
+    public function toId(Request $request)
     {
         return self::idResolver()($this->resource, $request);
     }
 
     /**
-     * @see https://github.com/timacdonald/json-api#customising-the-resource-type
-     * @see https://jsonapi.org/format/#document-resource-object-identification
+    * @api
+     *
+     * @return string
      */
-    protected function toType(Request $request): string
+    public function toType(Request $request)
     {
         return self::typeResolver()($this->resource, $request);
     }
 
     /**
-     * TODO: @see docs-link
-     * @see https://jsonapi.org/format/#document-resource-object-linkage
+     * @api
+     *
+     * @return RelationshipObject
      */
-    public function toResourceLink(Request $request): RelationshipLink
+    public function toResourceLink(Request $request)
     {
-        return new RelationshipLink(
-            new ResourceIdentifier($this->resolveId($request), $this->resolveType($request))
-        );
+        return $this->resource === null
+            ? RelationshipObject::toOne(null)
+            : RelationshipObject::toOne($this->resolveResourceIdentifier($request));
     }
 
     /**
+     * @api
+     *
+     * @return ResourceIdentifier
+     */
+    public function toResourceIdentifier(Request $request)
+    {
+        return new ResourceIdentifier($this->resolveType($request), $this->resolveId($request));
+    }
+
+    /**
+     * @api
+     *
      * @param Request $request
      * @return array{id: string, type: string, attributes: stdClass, relationships: stdClass, meta: stdClass, links: stdClass}
      */
-    public function toArray($request): array
+    public function toArray($request)
     {
         return [
             'id' => $this->resolveId($request),
             'type' => $this->resolveType($request),
             'attributes' => (object) $this->requestedAttributes($request)->all(),
             'relationships' => (object) $this->requestedRelationshipsAsIdentifiers($request)->all(),
-            'meta' => (object) $this->toMeta($request),
-            'links' => (object) $this->resolveLinks($request),
+            'meta' => (object) array_merge($this->toMeta($request), $this->meta),
+            'links' => (object) self::parseLinks(array_merge($this->toLinks($request), $this->links)),
         ];
     }
 
     /**
+     * @api
+     *
      * @param Request $request
-     * @return array{included: Collection, jsonapi: JsonApiServerImplementation}
+     * @return array{included: Collection<int, JsonApiResource>, jsonapi: JsonApiServerImplementation}
      */
-    public function with($request): array
+    public function with($request)
     {
         return [
             'included' => $this->included($request)
-                ->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request)),
+                ->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request))
+                ->values(),
             'jsonapi' => self::serverImplementationResolver()($request),
         ];
     }
 
     /**
+     * @api
+     *
      * @param mixed $resource
-     * @return JsonApiResourceCollection<mixed>
+     * @return JsonApiResourceCollection<int, mixed>
      */
-    public static function collection($resource): JsonApiResourceCollection
+    public static function collection($resource)
     {
-        return tap(new JsonApiResourceCollection($resource, static::class), function (JsonApiResourceCollection $collection): void {
+        return tap(static::newCollection($resource), function (JsonApiResourceCollection $collection): void {
             if (property_exists(static::class, 'preserveKeys')) {
                 /** @phpstan-ignore-next-line */
                 $collection->preserveKeys = (new static([]))->preserveKeys === true;
@@ -187,10 +166,24 @@ abstract class JsonApiResource extends JsonResource implements Flushable
     }
 
     /**
-     * @param Request $request
+     * @api
+     *
+     * @return JsonApiResourceCollection<int, mixed>
      */
-    public function toResponse($request): JsonResponse
+    public static function newCollection(mixed $resource)
     {
-        return tap(parent::toResponse($request)->header('Content-type', 'application/vnd.api+json'), fn () => Cache::flush($this));
+        return new JsonApiResourceCollection($resource, static::class);
+    }
+
+    /**
+     * @api
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function toResponse($request)
+    {
+        // TODO: the flush call here is triggering repeated Includes::flush() cals, because of collection.s
+        return tap(parent::toResponse($request)->header('Content-type', 'application/vnd.api+json'), fn () => $this->flush());
     }
 }

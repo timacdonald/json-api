@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi\Support;
 
-use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use TiMacDonald\JsonApi\Contracts\Flushable;
+use WeakMap;
 
 use function explode;
 use function is_array;
@@ -16,62 +15,75 @@ use function is_array;
 /**
  * @internal
  */
-final class Includes implements Flushable
+final class Includes
 {
-    private static ?Includes $instance;
+    private static self|null $instance;
 
     /**
-     * @var array<string, Collection>
+     * @var WeakMap<Request, array<string, Collection<int, non-empty-string>>>
      */
-    private array $cache = [];
+    private WeakMap $cache;
 
     private function __construct()
     {
-        //
+        $this->cache = new WeakMap();
     }
 
-    public static function getInstance(): self
+    /**
+     * @return self
+     */
+    public static function getInstance()
     {
-        return self::$instance ??= new self();
+        return self::$instance ??= new static();
     }
 
-    public function parse(Request $request, string $prefix): Collection
+    /**
+     * @return array<int, string>
+     */
+    public function forPrefix(Request $request, string $prefix)
     {
-        return $this->rememberIncludes($prefix, function () use ($request, $prefix): Collection {
+        return $this->rememberIncludes($request, $prefix, function () use ($request, $prefix): Collection {
+            return $this->all($request)
+                ->when($prefix !== '')
+                ->filter(fn (string $include): bool => str_starts_with($include, $prefix))
+                ->map(fn ($include): string => Str::of($include)->after($prefix)->before('.')->toString())
+                ->uniqueStrict()
+                ->values();
+        })->all();
+    }
+
+    /**
+     * @return Collection<int, non-empty-string>
+     */
+    private function all(Request $request)
+    {
+        return $this->rememberIncludes($request, '__all__', function () use ($request) {
             $includes = $request->query('include') ?? '';
 
             abort_if(is_array($includes), 400, 'The include parameter must be a comma seperated list of relationship paths.');
 
-            /** @var Collection */
-            $includes = Collection::make(explode(',', $includes))
-                ->when($prefix !== '', function (Collection $includes) use ($prefix): Collection {
-                    return $includes->filter(fn (string $include): bool => Str::startsWith($include, $prefix));
-                });
-
-            return $includes->map(fn ($include): string => Str::before(Str::after($include, $prefix), '.'))
-                ->uniqueStrict()
-                ->filter(fn (string $include): bool => $include !== '');
+            return Collection::make(explode(',', $includes))->filter(fn (string $include): bool => $include !== '');
         });
     }
 
     /**
      * @infection-ignore-all
+     *
+     * @param (callable(): Collection<int, non-empty-string>) $callback
+     * @return Collection<int, non-empty-string>
      */
-    private function rememberIncludes(string $prefix, Closure $callback): Collection
+    private function rememberIncludes(Request $request, string $prefix, callable $callback)
     {
-        return $this->cache[$prefix] ??= $callback();
-    }
+        $this->cache[$request] ??= [];
 
-    public function flush(): void
-    {
-        $this->cache = [];
+        return $this->cache[$request][$prefix] ??= $callback();
     }
 
     /**
-     * @return array<string, Collection>
+     * @return void
      */
-    public function cache(): array
+    public function flush()
     {
-        return $this->cache;
+        $this->cache = new WeakMap();
     }
 }

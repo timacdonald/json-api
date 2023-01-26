@@ -7,48 +7,59 @@ namespace TiMacDonald\JsonApi;
 use JsonSerializable;
 use stdClass;
 
-/**
- * @see https://jsonapi.org/format/#document-resource-object-links
- */
 final class Link implements JsonSerializable
 {
-    private string $href;
-
-    /**
-     * @var array<string, mixed>
-     */
-    private array $meta;
-
-    private string $key = 'unknown';
-
-    /**
-     * @param array<string, mixed> $meta
-     */
-    public static function self(string $href, array $meta = []): self
-    {
-        return tap(new self($href, $meta), fn (self $instance): string => $instance->key = 'self');
-    }
-
-    /**
-     * @param array<string, mixed> $meta
-     */
-    public static function related(string $href, array $meta = []): self
-    {
-        return tap(new self($href, $meta), fn (self $instance): string => $instance->key = 'related');
-    }
+    use Concerns\Meta;
 
     /**
      * @internal
+     */
+    public string $type;
+
+    /**
+     * @internal
+     */
+    private string $href;
+
+    /**
+     * @api
+     *
+     * @param array<string, mixed> $meta
+     * @return self
+     */
+    public static function self(string $href, array $meta = [])
+    {
+        return new self('self', $href, $meta);
+    }
+
+    /**
+     * @api
+     *
+     * @param array<string, mixed> $meta
+     * @return self
+     */
+    public static function related(string $href, array $meta = [])
+    {
+        return new self('related', $href, $meta);
+    }
+
+    /**
+     * @api
+     *
      * @param array<string, mixed> $meta
      */
-    public function __construct(string $href, array $meta = [])
+    public function __construct(string $type, string $href, array $meta = [])
     {
+        $this->type = $type;
+
         $this->href = $href;
 
         $this->meta = $meta;
     }
 
     /**
+     * @internal
+     *
      * @return array{href: string, meta: stdClass}
      */
     public function jsonSerialize(): array
@@ -57,13 +68,5 @@ final class Link implements JsonSerializable
             'href' => $this->href,
             'meta' => (object) $this->meta,
         ];
-    }
-
-    /**
-     * @internal
-     */
-    public function key(): string
-    {
-        return $this->key;
     }
 }

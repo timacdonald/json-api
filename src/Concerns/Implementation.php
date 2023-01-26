@@ -4,32 +4,46 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi\Concerns;
 
-use Closure;
-use TiMacDonald\JsonApi\JsonApiServerImplementation as ServerImplementation;
+use Illuminate\Http\Request;
+use TiMacDonald\JsonApi\JsonApiServerImplementation;
 
-/**
- * @internal
- */
 trait Implementation
 {
     /**
      * @internal
+     *
+     * @var (callable(): JsonApiServerImplementation)|null
      */
-    private static ?Closure $serverImplementationResolver = null;
+    private static $serverImplementationResolver;
+
+    /**
+     * @api
+     *
+     * @param (callable(): JsonApiServerImplementation) $callback
+     * @return void
+     */
+    public static function resolveServerImplementationUsing(callable $callback)
+    {
+        self::$serverImplementationResolver = $callback;
+    }
 
     /**
      * @internal
+     *
+     * @return void
      */
-    public static function resolveServerImplementationNormally(): void
+    public static function resolveServerImplementationNormally()
     {
         self::$serverImplementationResolver = null;
     }
 
     /**
      * @internal
+     *
+     * @return (callable(Request): JsonApiServerImplementation)
      */
-    public static function serverImplementationResolver(): Closure
+    public static function serverImplementationResolver()
     {
-        return self::$serverImplementationResolver ?? fn (): ServerImplementation => new ServerImplementation('1.0');
+        return self::$serverImplementationResolver ?? fn (Request $request): JsonApiServerImplementation => new JsonApiServerImplementation('1.0');
     }
 }

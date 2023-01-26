@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
-use Tests\TestCase;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Throwable;
 use TiMacDonald\JsonApi\Support\Fields;
 
 class FieldsTest extends TestCase
@@ -38,10 +41,62 @@ class FieldsTest extends TestCase
         $this->assertSame([], Fields::getInstance()->parse($request, 'a', true));
     }
 
-    public function testItProvidesMinimalAttributesWhenNoFieldsAreSpecified(): void
+    public function testItAbortsWhenFieldsIsNotAnArray(): void
     {
-        $request = Request::create('https://example.com');
+        Application::getInstance();
+        $request = Request::create('https://example.com?fields=as');
 
-        $this->assertSame([], Fields::getInstance()->parse($request, 'a', true));
+        try {
+            Fields::getInstance()->parse($request, 'a', true);
+            $this->fail('Exception should have been thrown');
+        } catch (HttpException $e) {
+            $this->assertSame('The fields parameter must be an array of resource types.', $e->getMessage());
+            $this->assertSame(400, $e->getStatusCode());
+        } catch (Throwable) {
+            $this->fail('Http exception should have been thrown');
+        }
+    }
+
+    public function testItMustProvideStringForFields(): void
+    {
+        Application::getInstance();
+        $request = Request::create('https://example.com?fields[foo][bar]=1');
+
+        try {
+            Fields::getInstance()->parse($request, 'foo', true);
+            $this->fail('Exception should have been thrown');
+        } catch (HttpException $e) {
+            $this->assertSame('The fields parameter value must be a comma seperated list of attributes.', $e->getMessage());
+            $this->assertSame(400, $e->getStatusCode());
+        } catch (Throwable) {
+            $this->fail('Http exception should have been thrown');
+        }
+    }
+
+    public function testWhenRequestingEmptyListItReturnsEmptyArray()
+    {
+        $request = Request::create('https://example.com?fields[foo]=');
+
+        $includes = Fields::getInstance()->parse($request, 'foo', true);
+
+        $this->assertSame([], $includes);
+    }
+
+    public function testWhenNotSpecifyingResourceFieldsReturnsNull()
+    {
+        $request = Request::create('https://example.com?fields[foo]=bar');
+
+        $includes = Fields::getInstance()->parse($request, 'baz', false);
+
+        $this->assertNull($includes);
+    }
+
+    public function testWhenNotSpecifyingResourceFieldsReturnsEmptyArrayForMinimalFields()
+    {
+        $request = Request::create('https://example.com?fields[foo]=bar');
+
+        $includes = Fields::getInstance()->parse($request, 'baz', true);
+
+        $this->assertSame([], $includes);
     }
 }

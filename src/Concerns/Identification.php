@@ -4,79 +4,133 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi\Concerns;
 
-use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use TiMacDonald\JsonApi\Exceptions\ResourceIdentificationException;
+use TiMacDonald\JsonApi\ResourceIdentifier;
 
-/**
- * @internal
- */
 trait Identification
 {
     /**
      * @internal
+     *
+     * @var  (callable(mixed, Request): string)|null
      */
-    private static ?Closure $idResolver;
+    private static $idResolver;
 
     /**
      * @internal
+     *
+     * @var  (callable(mixed, Request): string)|null
      */
-    private static ?Closure $typeResolver;
+    private static $typeResolver;
 
     /**
      * @internal
+     *
+     * @var array<int, (callable(ResourceIdentifier): void)>
      */
-    public static function resolveIdNormally(): void
+    private array $resourceIdentifierCallbacks = [];
+
+    /**
+     * @api
+     *
+     * @param (callable(ResourceIdentifier): void) $callback
+     * @return $this
+     */
+    public function withResourceIdentifier(callable $callback)
+    {
+        $this->resourceIdentifierCallbacks[] = $callback;
+
+        return $this;
+    }
+
+    /**
+     * @api
+     *
+     * @param (callable(mixed): string) $callback
+     * @return void
+     */
+    public static function resolveIdUsing(callable $callback)
+    {
+        self::$idResolver = $callback;
+    }
+
+    /**
+     * @api
+     *
+     * @param (callable(mixed): string) $callback
+     * @return void
+     */
+    public static function resolveTypeUsing(callable $callback)
+    {
+        self::$typeResolver = $callback;
+    }
+
+    /**
+     * @internal
+     *
+     * @return void
+     */
+    public static function resolveIdNormally()
     {
         self::$idResolver = null;
     }
 
     /**
      * @internal
+     *
+     * @return void
      */
-    public static function resolveTypeNormally(): void
+    public static function resolveTypeNormally()
     {
         self::$typeResolver = null;
     }
 
     /**
      * @internal
+     *
+     * @return string
      */
-    public function toUniqueResourceIdentifier(Request $request): string
+    public function toUniqueResourceIdentifier(Request $request)
     {
         return "type:{$this->resolveType($request)};id:{$this->resolveId($request)};";
     }
 
     /**
      * @internal
+     *
+     * @return string
      */
-    private function resolveId(Request $request): string
+    private function resolveId(Request $request)
     {
         return $this->rememberId(fn (): string => $this->toId($request));
     }
 
     /**
      * @internal
+     *
+     * @return string
      */
-    private function resolveType(Request $request): string
+    private function resolveType(Request $request)
     {
         return $this->rememberType(fn (): string => $this->toType($request));
     }
 
     /**
      * @internal
+     *
+     * @return (callable(mixed, Request): string)
      */
-    private static function idResolver(): Closure
+    private static function idResolver()
     {
-        return self::$idResolver ??= static function ($resource): string {
+        return self::$idResolver ??= function (mixed $resource, Request $request): string {
             if (! $resource instanceof Model) {
                 throw ResourceIdentificationException::attemptingToDetermineIdFor($resource);
             }
 
             /**
-             * @see https://github.com/timacdonald/json-api#customising-the-resource-id
              * @phpstan-ignore-next-line
              */
             return (string) $resource->getKey();
@@ -85,15 +139,31 @@ trait Identification
 
     /**
      * @internal
+     *
+     * @return (callable(mixed, Request): string)
      */
-    private static function typeResolver(): Closure
+    private static function typeResolver()
     {
-        return self::$typeResolver ??= static function ($resource): string {
+        return self::$typeResolver ??= function (mixed $resource, Request $request): string {
             if (! $resource instanceof Model) {
                 throw ResourceIdentificationException::attemptingToDetermineTypeFor($resource);
             }
 
             return Str::camel($resource->getTable());
         };
+    }
+
+    /**
+     * @internal
+     *
+     * @return ResourceIdentifier
+     */
+    public function resolveResourceIdentifier(Request $request)
+    {
+        return tap($this->toResourceIdentifier($request), function (ResourceIdentifier $identifier): void {
+            foreach ($this->resourceIdentifierCallbacks as $callback) {
+                $callback($identifier);
+            }
+        });
     }
 }

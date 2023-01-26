@@ -33,7 +33,8 @@ class FeatureTest extends TestCase
 
         $response = $this->withoutExceptionHandling()->getJson('test-route');
 
-        $response->assertJson([
+        $response->assertOk();
+        $response->assertExactJson([
             'data' => [
                 [
                     'id' => '1',
@@ -61,7 +62,10 @@ class FeatureTest extends TestCase
                 'first' => 'http://localhost/test-route?page=1',
                 'last' => 'http://localhost/test-route?page=3',
                 'next' => 'http://localhost/test-route?page=2',
-                'prev' => null,
+                // This is invalid in JSON:API, so we exlcude any links that
+                // are `null`. These are still available in the "meta" key
+                // links.
+                // 'prev' => null,
             ],
             'meta' => [
                 'current_page' => 1,
@@ -71,7 +75,39 @@ class FeatureTest extends TestCase
                 'last_page' => 3,
                 'total' => 5,
                 'path' => 'http://localhost/test-route',
+                "links" => [
+                    [
+                        "active" => false,
+                        "label" => "&laquo; Previous",
+                        "url" => null,
+                    ],
+                    [
+                        "active" => true,
+                        "label" => "1",
+                        "url" => "http://localhost/test-route?page=1",
+                    ],
+                    [
+                        "active" => false,
+                        "label" => "2",
+                        "url" => "http://localhost/test-route?page=2",
+                    ],
+                    [
+                        "active" => false,
+                        "label" => "3",
+                        "url" => "http://localhost/test-route?page=3",
+                    ],
+                    [
+                        "active" => false,
+                        "label" => "Next &raquo;",
+                        "url" => "http://localhost/test-route?page=2",
+                    ],
+                ],
+            ],
+            'jsonapi' => [
+                'meta' => [],
+                'version' => '1.0',
             ],
         ]);
+        $this->assertValidJsonApi($response);
     }
 }

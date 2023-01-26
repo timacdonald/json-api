@@ -1,17 +1,29 @@
-<p align="center"><img src="/art/header.png" alt="JSON:API Resource: a Laravel package by Tim MacDonald"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/timacdonald/json-api/main/art/header.png" alt="JSON:API Resource: a Laravel package by Tim MacDonald"></p>
 
 # JSON:API Resource for Laravel
 
-A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API standard and also implements features such as sparse fieldsets and compound documents.
+A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API standard with support for sparse fieldsets, compound documents, and more.
 
-These docs are not designed to introduce you to the JSON:API spec and the associated concepts, instead you should [head over and read the spec](https:/jsonapi.org) if you are not familiar with it. The documentation that follows only contains information on _how_ to implement the specification via the package.
+> **Note** These docs are not designed to introduce you to the JSON:API specification and the associated concepts, instead you should [head over and read the specification](https://jsonapi.org) if you are not yet familiar with it. The documentation that follows only contains information on _how_ to implement the specification via the package.
 
-# Version support
+**Table of contents**
+- [Version support](#version-support)
+- [Installation](#installation)
+- [Getting started](#getting-started)
+    - [Creating your first JSON:API resource](#creating-your-first-jsonapi-resource)
+    - [Adding relationships](#adding-relationships)
+- [A note on eager loading](#a-note-on-eager-loading)
+- [Attributes](#attributes)
+    - [Remapping `$attributes`](#remapping-attributes)
+    - [`toAttributes()`](#toAttributes)
+    - [Lazy attribute evaluation](#lazy-attribute-evaluation)
+
+## Version support
 
 - **PHP**: 7.4, 8.0, 8.1
 - **Laravel**: 8.0
 
-# Installation
+## Installation
 
 You can install using [composer](https://getcomposer.org/) from [Packagist](https://packagist.org/packages/timacdonald/json-api).
 
@@ -19,28 +31,586 @@ You can install using [composer](https://getcomposer.org/) from [Packagist](http
 composer require timacdonald/json-api
 ```
 
-# Basic usage
+## Getting started
 
-This package is an specialisation of Laravel's `JsonResource` class. All the underlying API's are still there, thus in your controller you can still interact with `JsonApiResource` classes as you would with the base `JsonResource` class, e.g.
+The `JsonApiResource` class provided by this package is a specialisation of Laravel's `JsonResource` class. All the public facing APIs are still accessible. In a controller, for example, you interact with `JsonApiResource` classes as you would with Laravel's standard `JsonResource` class.
 
 ```php
 <?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Resources\UserResource;
 
 class UserController
 {
     public function index()
     {
-        return UserResource::collection(User::paginate());
+        $users = User::with([/* ... */])->paginate();
+
+        return UserResource::collection($users);
     }
 
     public function show(User $user)
     {
+        $user->load([/* ... */]);
+
         return UserResource::make($user);
     }
 }
 ```
 
-The internal developer facing API however has changed in that you no longer interact with the `toArray($request)` method, instead this package exposes some new methods to interact with. More on those shortly.
+As we make our way through the examples you will notice that we have introduce new APIs for interacting with the class _internally_, e.g. you no longer implement the `toArray()` method.
+
+### Creating your first JSON:API resource
+
+To get started, let's create a `UserResource` that includes a few attributes. We will assume the underlying resource, in this example an Eloquent user model, has `$user->name`, `$user->website`, and `$user->twitterHandle` attributes that we want to expose.
+
+To achieve this, we will create an `$attributes` property on the resource.
+
+```php
+<?php
+
+namespace App\Http\Resources;
+
+use TiMacDonald\JsonApi\JsonApiResource;
+
+class UserResource extends JsonApiResource
+{
+    /**
+     * The available attributes.
+     *
+     * @var array<int, string>
+     */
+    public $attributes = [
+        'name',
+        'website',
+        'twitterHandle',
+    ];
+}
+```
+
+When making a request to an endpoint that returns the `UserResource`, for example:
+
+```
+GET /users/74812
+```
+
+the following JSON:API formatted data will be returned.
+
+```json
+{
+  "data": {
+    "type": "users",
+    "id": "74812",
+    "attributes": {
+      "name": "Tim",
+      "website": "https://timacdonald.me",
+      "twitterHandle": "@timacdonald87"
+    },
+    "relationships": {},
+    "meta": {},
+    "links": {}
+  },
+  "included": []
+}
+```
+
+🎉 You have just created your first JSON:API resource. Congratulations...and what. a. rush!
+
+Want to know what else is awesome? Sparse fieldsets are also available to the `UserResource` without lifting a finger. Want to retrieve the `website` and `twitterHandl`, but exclude the `name`? No sweat!
+
+Append the appropriate query parameter to the request and the attributes will be filtered as expected.
+
+#### Request
+
+`GET /users/74812?fields[users]=website,twitterHandle`
+
+#### Response
+
+```json
+{
+  "data": {
+    "type": "users",
+    "id": "74812",
+    "attributes": {
+      "website": "https://timacdonald.me",
+      "twitterHandle": "@timacdonald87"
+    },
+    "relationships": {},
+    "meta": {},
+    "links": {}
+  },
+  "included": []
+}
+```
+
+We will now dive into returning relationships for your `UserResource`, but if you would like to explore more complex attribute features, you may like to jump ahead:
+
+- [Remapping `$attributes`](#remapping-attributes)
+- [`toAttributes()`](#toAttributes)
+- [Lazy attribute evaluation](#lazy-attribute-evaluation)
+- [Sparse fieldsets](#sparse-fieldsets)
+- [Minimal attributes](#minimal-attributes)
+
+### Adding relationships
+
+Available relationships may be specified in a `$relationships` property, similar to the [`$attributes` property](#creating-your-first-jsonapi-resource). We will expose two relationships on our `UserResource`: a "toOne" relationship of `$user->license` and a "toMany" relationship of `$user->posts`. In this example, these are standard Eloquent relationships.
+
+```php
+<?php
+
+namespace App\Http\Resources;
+
+use TiMacDonald\JsonApi\JsonApiResource;
+
+class UserResource extends JsonApiResource
+{
+    /**
+     * The available attributes.
+     *
+     * @var array<int, string>
+     */
+    public $attributes = [
+        'name',
+        'website',
+        'twitterHandle',
+    ];
+
+    /**
+     * The available relationships.
+     *
+     * @var array<string, class-string<JsonApiResource>>
+     */
+    public $relationships = [
+        'license' => LicenseResource::class,
+        'posts' => PostResource::class,
+    ];
+}
+```
+
+> **Note** Whether to return a `toOne` or `toMany` relationship is be handled automatically based on the resolved relationship type 🤖
+
+There you have it: you officially support "compound documents". As you might expect, [sparse fieldsets](#sparse-fieldsets) also work included relationships out of the box.
+
+<details>
+<summary>Example payload</summary>
+
+#### Request
+
+`GET /users/74812?include=posts,license`
+
+> **Note** Relationships are not included in the response unless the calling client specifically requests them via the `include` query parameter. This is intended and is part of the JSON:API specification.
+
+#### Response
+
+```json
+{
+  "data": {
+    "id": "74812",
+    "type": "users",
+    "attributes": {
+      "name": "Tim",
+      "website": "https://timacdonald.me",
+      "twitterHandle": "@timacdonald87"
+    },
+    "relationships": {
+      "posts": {
+        "data": [
+          {
+            "type": "posts",
+            "id": "25240",
+            "meta": {}
+          },
+          {
+            "type": "posts",
+            "id": "39974",
+            "meta": {}
+          }
+        ],
+        "meta": {},
+        "links": {}
+      },
+      "license": {
+        "data": {
+          "type": "licenses",
+          "id": "18986",
+          "meta": {}
+        },
+        "meta": {},
+        "links": {}
+      }
+    },
+    "meta": {},
+    "links": {}
+  },
+  "included": [
+    {
+      "id": "25240",
+      "type": "posts",
+      "attributes": {
+        "title": "So what is JSON:API all about anyway?",
+        "content": "..."
+      },
+      "relationships": {},
+      "meta": {},
+      "links": {}
+    },
+    {
+      "id": "39974",
+      "type": "posts",
+      "attributes": {
+        "title": "Building an API with Laravel, using the JSON:API specification.",
+        "content": "..."
+      },
+      "relationships": {},
+      "meta": {},
+      "links": {}
+    },
+    {
+      "id": "18986",
+      "type": "licenses",
+      "attributes": {
+        "key": "lic_CNlpZVVrsLlChLBSgS1GK7zJR8EFdupW"
+      },
+      "relationships": {},
+      "meta": {},
+      "links": {}
+    }
+  ]
+}
+```
+</details>
+
+<details>
+<summary>Example payload with sparse fieldsets</summary>
+
+#### Request
+
+`GET /users/74812?include=posts,license&fields[users]=name&fields[posts]=title&fields[licensess]=`
+
+#### Response
+
+```json
+{
+  "data": {
+    "id": "74812",
+    "type": "users",
+    "attributes": {
+      "name": "Tim"
+    },
+    "relationships": {
+      "posts": {
+        "data": [
+          {
+            "type": "posts",
+            "id": "25240",
+            "meta": {}
+          },
+          {
+            "type": "posts",
+            "id": "39974",
+            "meta": {}
+          }
+        ],
+        "meta": {},
+        "links": {}
+      },
+      "license": {
+        "data": {
+          "type": "licenses",
+          "id": "18986",
+          "meta": {}
+        },
+        "meta": {},
+        "links": {}
+      }
+    },
+    "meta": {},
+    "links": {}
+  },
+  "included": [
+    {
+      "id": "25240",
+      "type": "posts",
+      "attributes": {
+        "title": "So what is JSON:API all about anyway?"
+      },
+      "relationships": {},
+      "meta": {},
+      "links": {}
+    },
+    {
+      "id": "39974",
+      "type": "posts",
+      "attributes": {
+        "title": "Building an API with Laravel, using the JSON:API specification."
+      },
+      "relationships": {},
+      "meta": {},
+      "links": {}
+    },
+    {
+      "id": "18986",
+      "type": "licenses",
+      "attributes": {},
+      "relationships": {},
+      "meta": {},
+      "links": {}
+    }
+  ]
+}
+```
+</details>
+
+To learn about more complex relationship features, you may like to jump ahead:
+
+- [Remapping `$relationships`](#remapping-relationships)
+- [`toRelationships()`](#toRelationships)
+
+## A note on eager loading
+
+This package does not concern itself eager loading your Eloquent relationships. If a relationship is not eagerly loaded, the package will lazy load the relationship on the fly. I _highly_ recommend using [Spatie's query builder](https://spatie.be/docs/laravel-query-builder/) which is built for eager loading against the JSON:API query parameter standards. Spatie provide comprehensive documentation on how to use the package, but I will briefly give an example of how you might use this in your controller.
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Resources\UserResource;
+use Spatie\QueryBuilder\QueryBuilder;
+
+class UserController
+{
+    public function index()
+    {
+        $users = QueryBuilder::for(User::class)
+            ->allowedIncludes(['license', 'posts'])
+            ->paginate();
+
+        return UserResource::collection($users);
+    }
+
+    public function show(int $id)
+    {
+        $user = QueryBuilder::for(User::class)
+            ->allowedIncludes(['license', 'posts'])
+            ->findOrFail($id);
+
+        return UserResource::make($user);
+    }
+}
+```
+
+## Attributes
+
+As we saw in the [Creating your first JSON:API resource](#creating-your-first-jsonapi-resource) section, the `$attributes` property is the fastest way to expose resource attributes. However, in some scenarios more complex configurations are required.
+
+### Remapping `$attributes`
+
+You may remap the response key of an attribute by creating a key / value pair in the `$attributes` array. The key should be the attribute on the underlying resource, such as the user model, and the value is what will be used for the response.
+
+```php
+<?php
+
+namespace App\Http\Resources;
+
+use TiMacDonald\JsonApi\JsonApiResource;
+
+class UserResource extends JsonApiResource
+{
+    /**
+     * The available attributes.
+     *
+     * @var array<int|string, string>
+     */
+    public $attributes = [
+        'name',
+        'website',
+        'twitterHandle' => 'handle',
+    ];
+}
+```
+
+The `$user->twitterHandle` attribute will now be exposed in the response as `handle`.
+
+```json
+{
+  "data": {
+    "type": "users",
+    "id": "74812",
+    "attributes": {
+      "name": "Tim",
+      "website": "https://timacdonald.me",
+      "handle": "@timacdonald87"
+    },
+    "relationships": {},
+    "meta": {},
+    "links": {}
+  },
+  "included": []
+}
+```
+
+### `toAttributes()`
+
+In some scenarios you may want more control over the attributes you expose for your resources. If that is the case, you may implement the `toAttributes()` method.
+
+```php
+<?php
+
+namespace App\Http\Resources;
+
+use TiMacDonald\JsonApi\JsonApiResource;
+
+class UserResource extends JsonApiResource
+{
+    /**
+     * The available attributes.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array<string, mixed>
+     */
+    public function toAttributes($request)
+    {
+        return [
+            // add example using request info
+            'name' => $this->name,
+            'website' => $this->website,
+            'handle' => $this->twitterHandle,
+            'address' => [
+                'city' => $this->address('city'),
+                'country' => $this->address('country'),
+            ],
+        ];
+    }
+}
+```
+
+// use of when() etc.
+
+<details>
+<summary>Example payload</summary>
+
+#### Request
+
+`GET /users/74812`
+
+#### Response
+
+```json
+{
+  "data": {
+    "id": "74812",
+    "type": "users",
+    "attributes": {
+      "name": "Tim",
+      "website": "https://timacdonald.me",
+      "handle": "@timacdonald87",
+      "address": {
+        "city": "Melbourne",
+        "country": "Australia"
+      }
+    },
+    "relationships": {},
+    "meta": {},
+    "links": {}
+  },
+  "included": []
+}
+```
+</details>
+
+### Lazy attribute evaluation
+
+To help improve performance for attributes that are expensive to calculate, it is possible to have attributes lazy evaluated only when they are requested by the client. This is useful if you are making requests to the database or even HTTP requests in your resource.
+
+As an example, let's imagine that we expose a base64 encoded avatar for each user. Our implementation downloads the avatar from our microservice, base64 encodes the avatar, and provides it as an attribute.
+
+```php
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Support\Facades\Http;
+use TiMacDonald\JsonApi\JsonApiResource;
+
+class UserResource extends JsonApiResource
+{
+    /**
+     * The available attributes.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array<string, mixed>
+     */
+    public function toAttributes($request)
+    {
+        return [
+            /* ... */
+            'avatar' => base64_encode(
+                Http::get('https://avatar.acme.com/'.md5($this->email))->body()
+            ),
+        ];
+    }
+}
+```
+
+The above implementation would make a HTTP request to our microservice even when the client is exluding the `avatar` attribute via [sparse fieldsets](#sparse-fieldsets).
+
+If we wrap this attribute in a Closure, it will only be evaluated when the `avatar` is to be returned in the response. This means we can remove the need for a HTTP request and improve performance in some cases.
+
+```php
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Support\Facades\Http;
+use TiMacDonald\JsonApi\JsonApiResource;
+
+class UserResource extends JsonApiResource
+{
+    /**
+     * The available attributes.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array<string, mixed>
+     */
+    public function toAttributes($request)
+    {
+        return [
+            /* ... */
+            'avatar' => fn () => base64_encode(
+                Http::get('https://avatar.acme.com/'.md5($this->email))->body()
+            ),
+        ];
+    }
+}
+```
+
+> **Note** When using the `$attributes` property all attributes are lazy evaluated.
+
+//----- WIP------- //
+```
+<?php
+
+class UserResource extends JsonApiResource
+{
+    public function toRelationships($request): array
+    {
+        return [
+            'posts' => fn () => PostResource::collection($this->posts),
+            'subscription' => fn () => SubscriptionResource::make($this->subscription),
+            'profileImage' => fn () => optional($this->profileImage, fn (ProfileImage $profileImage) => ProfileImageResource::make($profileImage)),
+            // if the relationship has been loaded and is null, can we not just return the resource still and have a nice default? That way you never have to handle any of this
+            // optional noise?
+            // also is there a usecase for returning a resource linkage right from here and not a full resource?
+        ];
+    }
+}
+```
+
+
+The [advanced usage](#advanced-usage) section covers [sparse fieldsets and handling expensive attribute calculation](#sparse-fieldsets) and [minimal attribute](#minimal-attributes) payloads, but you can ignore those advanced features for now and continue on with...
 
 ## Resource Identification
 
@@ -50,34 +620,12 @@ We have defined a sensible default for you so you can hit the ground running wit
 
 The `"id"` and `"type"` of a resource is automatically resolved for you under-the-hood if you are using resources solely with Eloquent models.
 
-`"id"` is resolved by calling the `$model->getKey()` method and the `"type"` is resolved by using a camel case of the model's table name, e.g. `blog_posts` becomes `blogPosts`. 
+`"id"` is resolved by calling the `$model->getKey()` method and the `"type"` is resolved by using a camel case of the model's table name, e.g. `blog_posts` becomes `blogPosts`.
 
 You can customise how this works to support other types of objects and behaviours, but that will follow in the [advanced usage](#advanced-usage) section.
 
 Nice. Well that was easy, so let's move onto...
 
-## Resource Attributes
-
-[JSON:API docs: Attributes](https://jsonapi.org/format/#document-resource-object-attributes)
-
-To provide a set of attributes for a resource, you can implement the `toAttributes(Request $request)` method...
-
-```php
-<?php
-
-class UserResource extends JsonApiResource
-{
-    protected function toAttributes(Request $request): array
-    {
-        return [
-            'name' => $this->name,
-            'email' => $this->email,
-        ];
-    }
-}
-```
-
-The [advanced usage](#advanced-usage) section covers [sparse fieldsets and handling expensive attribute calculation](#sparse-fieldsets) and [minimal attribute](#minimal-attributes) payloads, but you can ignore those advanced features for now and continue on with...
 
 ## Resource Relationships
 
@@ -90,13 +638,13 @@ Just like we saw with attributes above, we can specify relationships that should
 
 class UserResource extends JsonApiResource
 {
-    protected function toRelationships(Request $request): array
+    public function toRelationships($request): array
     {
         return [
             'posts' => fn () => PostResource::collection($this->posts),
             'subscription' => fn () => SubscriptionResource::make($this->subscription),
             'profileImage' => fn () => optional($this->profileImage, fn (ProfileImage $profileImage) => ProfileImageResource::make($profileImage)),
-            // if the relationship has been loaded and is null, can we not just return the resource still and have a nice default? That way you never have to handle any of this 
+            // if the relationship has been loaded and is null, can we not just return the resource still and have a nice default? That way you never have to handle any of this
             // optional noise?
             // also is there a usecase for returning a resource linkage right from here and not a full resource?
         ];
@@ -129,7 +677,7 @@ As previously mentioned, relationships are not included in the response unless t
 
 [JSON:API docs: Links](https://jsonapi.org/format/#document-resource-object-links)
 
-To provide links for a resource, you can implement the `toLinks(Request $request)` method...
+To provide links for a resource, you can implement the `toLinks($request)` method...
 
 ```php
 <?php
@@ -138,7 +686,7 @@ use TiMacDonald\JsonApi\Link;
 
 class UserResource extends JsonApiResource
 {
-    protected function toLinks(Request $request): array
+    public function toLinks($request): array
     {
         return [
             Link::self(route('users.show', $this->resource)),
@@ -152,14 +700,14 @@ class UserResource extends JsonApiResource
 
 [JSON:API docs: Meta](https://jsonapi.org/format/#document-meta)
 
-To provide meta information for a resource, you can implement the `toMeta(Request $request)` method...
+To provide meta information for a resource, you can implement the `toMeta($request)` method...
 
 ```php
 <?php
 
 class UserResource extends JsonApiResource
 {
-    protected function toMeta(Request $request): array
+    public function toMeta($request): array
     {
         return [
             'resourceDeprecated' => true,
@@ -179,7 +727,7 @@ From a relationship `Closure` you can return anything. If what you return is not
 
 class UserResource extends JsonApiResource
 {
-    protected function toRelationships(Request $request): array
+    public function toRelationships($request): array
     {
         return [
             'nonJsonApiResource' => fn (): JsonResource => LicenseResource::make($this->license),
@@ -199,7 +747,7 @@ Here is what that response might look like. Notice that the resource is "inlined
         "attributes": {},
         "relationships": {
             "nonJsonApiResource": {
-                "id": "5", 
+                "id": "5",
                 "key": "4h29kaKlWja)99ja72kafj&&jalkfh",
                 "created_at": "2020-01-04 12:44:12"
             }
@@ -272,7 +820,7 @@ Without any work, your response supports sparse fieldsets. If you are utilising 
 
 class UserResource extends JsonResource
 {
-    protected function toAttributes(Request $request): array
+    protected function toAttributes($request): array
     {
         return [
             'name' => $this->name,
@@ -298,7 +846,7 @@ The `Closure` is only resolved when the attribute is going to be included in the
 
 ### Minimal Resource Attributes
 
-Out of the box the resource provides a maximal attribute payload when sparse fieldsets are not used i.e. all declared attributes in the resource are returned. If you prefer to instead make it that spare fieldsets are required in order to retrieve any attributes, you can specify the use of minimal attributes in your applications service provider.
+Out of the box the resource provides a maximal attribute payload when sparse fieldsets are not used i.e. all declared attributes in the resource are returned. If you prefer to instead make it that sparse fieldsets are required in order to retrieve any attributes, you can specify the use of minimal attributes in your applications service provider.
 
 ```php
 <?php
@@ -328,10 +876,11 @@ Relationships can be resolved deeply and also multiple relationship paths can be
 /api/posts/8?include=comments,author.comments
 ```
 
+## Naming
+
 # Support
 
 - We do not promise named parameter support.
-- If a method is not documented in these docs, you should assume it is an internal API that can change at any time.
 
 ## Credits
 
@@ -341,28 +890,11 @@ Relationships can be resolved deeply and also multiple relationship paths can be
 
 And a special (vegi) thanks to [Caneco](https://twitter.com/caneco) for the logo ✨
 
-# Coming soon...
+- Using "whenLoaded is an anti-pattern"
 
-- [ ] Handle loading relations on a already in memory object with Spatie Query builder (PR)
-- [ ] Investigate collection count support
-- [ ] a contract that other classes can implement to support the JSON:API spec as relationships? Can we have it work at a top level as well? Would that even make sense? Maybe be providing a toResponse implementation?
-
-# To document
-
-- [ ] Document loading things via Spatie Query Builder
-- [ ] `->when()` stuff for attributes and relationships
-- [ ] document how you could handle type mapping in config file class > type
-- [ ] caching
- - [ ] flushing the cache
- - [ ] caching id and type
- - [ ] caching includes and fields
- - [ ] how it clears itself on toResponse
- - [ ] that the goal is to have a consistent output at all levels, hence the maximal dataset for empty values
- - [ ] Link object and meta
-
-# Not yet supported
-- [ ] Top level links & meta - how would you modify this for a collection? Top level links need to merge with pagination links
-  - [ ] decide how to handle top level keys for single and collections (static? should collections have to be extended to specify the values? or can there be static methods on the single resource for the collection?)
-- [ ] returning a resource as `null` as the Laravel resource does not support this. Is possible to support locally, but it might be unexpected. Perhaps a PR to Laravel is best?
-- [ ] Responses that contain only resource identifiers (related)
-- [ ] `400` when requesting relationships that are not present.
+# v1 todo
+- Server implementation rethink.
+- Rethink naming of objects and properties
+- Guess relationship class for relationships.
+- Support mapping `$attributes` values to different keys.
+- Support dot notation of both the key and value of `$attributes`.

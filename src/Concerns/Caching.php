@@ -4,46 +4,43 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi\Concerns;
 
-use Closure;
 use Illuminate\Support\Collection;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
-use TiMacDonald\JsonApi\Support\UnknownRelationship;
 
 trait Caching
 {
     /**
      * @internal
      */
-    private ?string $idCache = null;
+    private string|null $idCache = null;
 
     /**
      * @internal
      */
-    private ?string $typeCache = null;
+    private string|null $typeCache = null;
 
     /**
      * @internal
+     *
+     * @var Collection<string, JsonApiResource|JsonApiResourceCollection>|null
      */
-    private ?Collection $requestedRelationshipsCache = null;
+    private Collection|null $requestedRelationshipsCache = null;
 
     /**
      * @internal
      * @infection-ignore-all
+     *
+     * @return void
      */
-    public function flush(): void
+    public function flush()
     {
         $this->idCache = null;
 
         $this->typeCache = null;
 
         if ($this->requestedRelationshipsCache !== null) {
-            $this->requestedRelationshipsCache->each(
-                /**
-                 * @param JsonApiResource|JsonApiResourceCollection|UnknownRelationship $resource
-                 */
-                fn ($resource) => $resource->flush()
-            );
+            $this->requestedRelationshipsCache->each(fn (JsonApiResource|JsonApiResourceCollection $relation) => $relation->flush());
         }
 
         $this->requestedRelationshipsCache = null;
@@ -52,35 +49,45 @@ trait Caching
     /**
      * @internal
      * @infection-ignore-all
+     *
+     * @param  (callable(): string)  $callback
+     * @return string
      */
-    private function rememberId(Closure $closure): string
+    private function rememberId(callable $callback)
     {
-        return $this->idCache ??= $closure();
-    }
-
-
-    /**
-     * @internal
-     * @infection-ignore-all
-     */
-    private function rememberType(Closure $closure): string
-    {
-        return $this->typeCache ??= $closure();
+        return $this->idCache ??= $callback();
     }
 
     /**
      * @internal
      * @infection-ignore-all
+     *
+     * @param  (callable(): string)  $callback
+     * @return string
      */
-    private function rememberRequestRelationships(Closure $closure): Collection
+    private function rememberType(callable $callback)
     {
-        return $this->requestedRelationshipsCache ??= $closure();
+        return $this->typeCache ??= $callback();
     }
 
     /**
      * @internal
+     * @infection-ignore-all
+     *
+     * @param  (callable(): Collection<string, JsonApiResource|JsonApiResourceCollection>)  $callback
+     * @return Collection<string, JsonApiResource|JsonApiResourceCollection>
      */
-    public function requestedRelationshipsCache(): ?Collection
+    private function rememberRequestRelationships(callable $callback)
+    {
+        return $this->requestedRelationshipsCache ??= $callback();
+    }
+
+    /**
+     * @internal
+     *
+     * @return Collection<string, JsonApiResource|JsonApiResourceCollection>|null
+     */
+    public function requestedRelationshipsCache()
     {
         return $this->requestedRelationshipsCache;
     }

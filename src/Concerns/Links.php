@@ -4,31 +4,43 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi\Concerns;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use TiMacDonald\JsonApi\Link;
 
-/**
- * @internal
- */
 trait Links
 {
     /**
      * @internal
+     *
+     * @var array<int, Link>
+     */
+    private array $links = [];
+
+    /**
+     * @api
+     *
+     * @param array<int, Link> $links
+     * @return $this
+     */
+    public function withLinks(array $links)
+    {
+        $this->links = array_merge($this->links, $links);
+
+        return $this;
+    }
+
+    /**
+     * @internal
+     *
+     * @param array<int, Link> $links
      * @return array<string, Link>
      */
-    private function resolveLinks(Request $request): array
+    private static function parseLinks(array $links)
     {
-        return Collection::make($this->toLinks($request))
-            ->mapWithKeys(
-                /**
-                 * @param string|Link $value
-                 * @param string|int $key
-                 */
-                fn ($value, $key): array => $value instanceof Link
-                    ? [$value->key() => $value]
-                    : [$key => new Link($value)]
-            )
+        return Collection::make($links)
+            ->mapWithKeys(fn (Link $link): array => [
+                $link->type => $link,
+            ])
             ->all();
     }
 }

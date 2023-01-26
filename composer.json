@@ -3,9 +3,10 @@
     "description": "A Lightweight JSON:API Resource for Laravel",
     "keywords": [
         "laravel",
-        "json-api",
-        "jsonapi",
-        "Json API"
+        "json",
+        "api",
+        "resource",
+        "JSON-API"
     ],
     "license": "MIT",
     "authors": [
@@ -16,13 +17,14 @@
         }
     ],
     "require": {
-        "php": "^7.4 || ^8.0",
-        "illuminate/database": "^8.0 || ^9.0",
-        "illuminate/http": "^8.0 || ^9.0",
-        "illuminate/support": "^8.0 || ^9.0"
+        "php": "^8.0",
+        "illuminate/database": "^9.0",
+        "illuminate/http": "^9.0",
+        "illuminate/support": "^9.0"
     },
     "require-dev": {
-        "bamarni/composer-bin-plugin": "^1.4"
+        "bamarni/composer-bin-plugin": "^1.4",
+        "phpunit/php-invoker": "^3.1"
     },
     "config": {
         "preferred-install": "dist",
@@ -50,23 +52,6 @@
         ],
         "post-update-cmd": [
             "@composer bin all update --ansi"
-        ],
-        "fix": [
-            "clear",
-            "@composer normalize",
-            "./vendor/bin/php-cs-fixer fix"
-        ],
-        "lint": [
-            "clear",
-            "@composer normalize --dry-run",
-            "./vendor/bin/php-cs-fixer fix --dry-run",
-            "./vendor/bin/psalm --threads=8",
-            "./vendor/bin/phpstan analyse"
-        ],
-        "test": [
-            "clear",
-            "./vendor/bin/phpunit",
-            "./vendor/bin/infection --threads=8"
         ]
     },
     "support": {

@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit;
+namespace Tests\Feature;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use stdClass;
 use Tests\Models\BasicModel;
@@ -39,6 +38,7 @@ class ResourceIdentificationTest extends TestCase
             ],
             'included' => [],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItCastsAModelsIntegerIdToAString(): void
@@ -68,6 +68,7 @@ class ResourceIdentificationTest extends TestCase
             ],
             'included' => [],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItThrowsWhenUnableToAutomaticallyResolveTheIdOfANonObject(): void
@@ -76,7 +77,7 @@ class ResourceIdentificationTest extends TestCase
         Route::get('test-route', fn () => (new BasicJsonApiResource($array)));
 
         $this->expectException(ResourceIdentificationException::class);
-        $this->expectExceptionMessage('Unable to resolve resource object id for array.');
+        $this->expectExceptionMessage('Unable to resolve resource object id for [array].');
 
         $this->withoutExceptionHandling()->getJson('test-route');
     }
@@ -87,7 +88,7 @@ class ResourceIdentificationTest extends TestCase
         Route::get('test-route', fn () => (new BasicJsonApiResource($array)));
 
         $this->expectException(ResourceIdentificationException::class);
-        $this->expectExceptionMessage('Unable to resolve resource object id for stdClass.');
+        $this->expectExceptionMessage('Unable to resolve resource object id for [stdClass].');
 
         $this->withoutExceptionHandling()->getJson('test-route');
     }
@@ -96,14 +97,14 @@ class ResourceIdentificationTest extends TestCase
     {
         $array = [];
         Route::get('test-route', fn () => new class ($array) extends BasicJsonApiResource {
-            protected function toId(Request $request): string
+            public function toId($request): string
             {
                 return 'id';
             }
         });
 
         $this->expectException(ResourceIdentificationException::class);
-        $this->expectExceptionMessage('Unable to resolve resource object type for array.');
+        $this->expectExceptionMessage('Unable to resolve resource object type for [array].');
 
         $this->withoutExceptionHandling()->getJson('test-route');
     }
@@ -112,14 +113,14 @@ class ResourceIdentificationTest extends TestCase
     {
         $object = new stdClass();
         Route::get('test-route', fn () => new class ($object) extends BasicJsonApiResource {
-            protected function toId(Request $request): string
+            public function toId($request): string
             {
                 return 'id';
             }
         });
 
         $this->expectException(ResourceIdentificationException::class);
-        $this->expectExceptionMessage('Unable to resolve resource object type for stdClass.');
+        $this->expectExceptionMessage('Unable to resolve resource object type for [stdClass].');
 
         $this->withoutExceptionHandling()->getJson('test-route');
     }

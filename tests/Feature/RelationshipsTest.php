@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit;
+namespace Tests\Feature;
 
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Tests\Models\BasicModel;
 use Tests\Resources\BasicJsonApiResource;
@@ -38,12 +37,10 @@ class RelationshipsTest extends TestCase
             'content' => 'post-content',
         ]));
         Route::get('test-route', fn () => new class ($post) extends PostResource {
-            protected function toRelationships(Request $request): array
+            public function toRelationships($request): array
             {
                 return [
-                    'author' => function () {
-                        throw new Exception('xxxx');
-                    },
+                    'author' => fn () => throw new Exception('xxxx'),
                 ];
             }
         });
@@ -69,6 +66,7 @@ class RelationshipsTest extends TestCase
                 'meta' => [],
             ],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItCanIncludeASingleToOneResourceForASingleResource(): void
@@ -126,6 +124,7 @@ class RelationshipsTest extends TestCase
                 ],
             ],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItCanIncludeNestedToOneResourcesForASingleResource(): void
@@ -253,6 +252,7 @@ class RelationshipsTest extends TestCase
                 ],
             ],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItCanIncludeNestedResourcesWhenTheirKeyIsTheSame(): void
@@ -265,11 +265,11 @@ class RelationshipsTest extends TestCase
             'id' => 'child-id-2',
         ]))));
         Route::get('test-route', fn () => new class ($parent) extends JsonApiResource {
-            protected function toRelationships(Request $request): array
+            public function toRelationships($request): array
             {
                 return [
                     'child' => fn () => new class ($this->child) extends JsonApiResource {
-                        public function toRelationships(Request $request): array
+                        public function toRelationships($request): array
                         {
                             return [
                                 'child' => fn () => BasicJsonApiResource::make($this->child),
@@ -335,6 +335,7 @@ class RelationshipsTest extends TestCase
                 ],
             ],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItCanIncludeANestedCollectionOfResourcesWhenTheirKeyIsTheSame(): void
@@ -348,11 +349,11 @@ class RelationshipsTest extends TestCase
             (new BasicModel(['id' => 'child-id-3'])),
         ]));
         Route::get('test-route', fn () => new class ($parent) extends JsonApiResource {
-            protected function toRelationships(Request $request): array
+            public function toRelationships($request): array
             {
                 return [
                     'child' => fn () => new class ($this->child) extends JsonApiResource {
-                        public function toRelationships(Request $request): array
+                        public function toRelationships($request): array
                         {
                             return [
                                 'child' => fn () => BasicJsonApiResource::collection($this->child),
@@ -396,24 +397,20 @@ class RelationshipsTest extends TestCase
                     'attributes' => [],
                     'relationships' => [
                         'child' => [
-                            [
-                                'data' => [
+                            'data' => [
+                                [
                                     'id' => 'child-id-2',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
-                            ],
-                            [
-                                'data' => [
+                                [
                                     'id' => 'child-id-3',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
                             ],
+                            'links' => [],
+                            'meta' => [],
                         ],
                     ],
                     'meta' => [],
@@ -437,6 +434,7 @@ class RelationshipsTest extends TestCase
                 ],
             ],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItCanIncludeToOneResourcesForACollectionOfResources(): void
@@ -536,6 +534,7 @@ class RelationshipsTest extends TestCase
                 ],
             ],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItCanIncludeACollectionOfResourcesForASingleResource(): void
@@ -570,24 +569,20 @@ class RelationshipsTest extends TestCase
                 ],
                 'relationships' => [
                     'posts' => [
-                        [
-                            'data' => [
+                        'data' => [
+                            [
                                 'id' => 'post-id-1',
                                 'type' => 'basicModels',
                                 'meta' => [],
                             ],
-                            'links' => [],
-                            'meta' => [],
-                        ],
-                        [
-                            'data' => [
+                            [
                                 'id' => 'post-id-2',
                                 'type' => 'basicModels',
                                 'meta' => [],
                             ],
-                            'links' => [],
-                            'meta' => [],
                         ],
+                        'links' => [],
+                        'meta' => [],
                     ],
                 ],
                 'meta' => [],
@@ -622,6 +617,7 @@ class RelationshipsTest extends TestCase
                 ],
             ],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItCanIncludeAManyManyManyRelationship(): void
@@ -700,24 +696,20 @@ class RelationshipsTest extends TestCase
                     ],
                     'relationships' => [
                         'comments' => [
-                            [
-                                'data' => [
+                            'data' => [
+                                [
                                     'id' => 'comment-id-1',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
-                            ],
-                            [
-                                'data' => [
+                                [
                                     'id' => 'comment-id-2',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
                             ],
+                            'links' => [],
+                            'meta' => [],
                         ],
                     ],
                     'meta' => [],
@@ -732,24 +724,20 @@ class RelationshipsTest extends TestCase
                     ],
                     'relationships' => [
                         'comments' => [
-                            [
-                                'data' => [
+                            'data' => [
+                                [
                                     'id' => 'comment-id-3',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
-                            ],
-                            [
-                                'data' => [
+                                [
                                     'id' => 'comment-id-4',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
                             ],
+                            'links' => [],
+                            'meta' => [],
                         ],
                     ],
                     'meta' => [],
@@ -769,24 +757,20 @@ class RelationshipsTest extends TestCase
                     ],
                     'relationships' => [
                         'likes' => [
-                            [
-                                'data' => [
+                            'data' => [
+                                [
                                     'id' => 'like-id-1',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
-                            ],
-                            [
-                                'data' => [
+                                [
                                     'id' => 'like-id-2',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
                             ],
+                            'links' => [],
+                            'meta' => [],
                         ],
                     ],
                     'meta' => [],
@@ -800,24 +784,20 @@ class RelationshipsTest extends TestCase
                     ],
                     'relationships' => [
                         'likes' => [
-                            [
-                                'data' => [
+                            'data' => [
+                                [
                                     'id' => 'like-id-3',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
-                            ],
-                            [
-                                'data' => [
+                                [
                                     'id' => 'like-id-4',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
                             ],
+                            'links' => [],
+                            'meta' => [],
                         ],
                     ],
                     'meta' => [],
@@ -863,24 +843,20 @@ class RelationshipsTest extends TestCase
                     ],
                     'relationships' => [
                         'likes' => [
-                            [
-                                'data' => [
+                            'data' => [
+                                [
                                     'id' => 'like-id-5',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
-                            ],
-                            [
-                                'data' => [
+                                [
                                     'id' => 'like-id-6',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
                             ],
+                            'links' => [],
+                            'meta' => [],
                         ],
                     ],
                     'links' => [],
@@ -894,24 +870,20 @@ class RelationshipsTest extends TestCase
                     ],
                     'relationships' => [
                         'likes' => [
-                            [
-                                'data' => [
+                            'data' => [
+                                [
                                     'id' => 'like-id-7',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
-                            ],
-                            [
-                                'data' => [
+                                [
                                     'id' => 'like-id-8',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'links' => [],
-                                'meta' => [],
                             ],
+                            'links' => [],
+                            'meta' => [],
                         ],
                     ],
                     'links' => [],
@@ -951,6 +923,7 @@ class RelationshipsTest extends TestCase
                 ],
             ],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testRelationshipsClosuresGetTheRequestAsAnArgument(): void
@@ -961,24 +934,24 @@ class RelationshipsTest extends TestCase
             'content' => 'post-content',
         ]));
         Route::get('test-route', fn () => new class ($post) extends JsonApiResource {
-            protected function toRelationships(Request $request): array
+            public function toRelationships($request): array
             {
                 return [
                     'relation' => fn () => new class ($request) extends JsonApiResource {
-                        protected function toId(Request $request): string
+                        public function toId($request): string
                         {
                             return 'relation-id';
                         }
 
-                        protected function toType(Request $request): string
+                        public function toType($request): string
                         {
                             return 'relation-type';
                         }
 
-                        protected function toAttributes(Request $request): array
+                        public function toAttributes($request): array
                         {
                             return [
-                                'name' => $this->name,
+                                'name' => $this->resource->input('name'),
                             ];
                         }
                     },
@@ -1025,6 +998,7 @@ class RelationshipsTest extends TestCase
                 ],
             ],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItFiltersOutDuplicateIncludesForACollectionOfResources(): void
@@ -1110,6 +1084,7 @@ class RelationshipsTest extends TestCase
                 ],
             ],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItFiltersOutDuplicateResourceObjectsIncludesForASingleResource(): void
@@ -1143,24 +1118,15 @@ class RelationshipsTest extends TestCase
                 ],
                 'relationships' => [
                     'posts' => [
-                        [
-                            'data' => [
+                        'data' => [
+                            [
                                 'id' => 'post-id',
                                 'type' => 'basicModels',
                                 'meta' => [],
                             ],
-                            'links' => [],
-                            'meta' => [],
                         ],
-                        [
-                            'data' => [
-                                'id' => 'post-id',
-                                'type' => 'basicModels',
-                                'meta' => [],
-                            ],
-                            'links' => [],
-                            'meta' => [],
-                        ],
+                        'links' => [],
+                        'meta' => [],
                     ],
                 ],
                 'meta' => [],
@@ -1184,6 +1150,7 @@ class RelationshipsTest extends TestCase
                 ],
             ],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItHasIncludedArrayWhenIncludeParameterIsPresentForASingleResource(): void
@@ -1216,6 +1183,7 @@ class RelationshipsTest extends TestCase
             ],
             'included' => [],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItHasIncludedArrayWhenIncludeParameterIsPresentForACollectionOfResources(): void
@@ -1250,6 +1218,7 @@ class RelationshipsTest extends TestCase
             ],
             'included' => [],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItCanReturnNullForEmptyToOneRelationships(): void
@@ -1270,7 +1239,11 @@ class RelationshipsTest extends TestCase
                     'name' => 'user-name',
                 ],
                 'relationships' => [
-                    'avatar' => null,
+                    'avatar' => [
+                        'data' => null,
+                        'links' => [],
+                        'meta' => [],
+                    ],
                 ],
                 'meta' => [],
                 'links' => [],
@@ -1281,6 +1254,7 @@ class RelationshipsTest extends TestCase
             ],
             'included' => [],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItCanReturnAnEmptyArrayForEmptyToManyRelationships(): void
@@ -1301,7 +1275,11 @@ class RelationshipsTest extends TestCase
                     'name' => 'user-name',
                 ],
                 'relationships' => [
-                    'posts' => [],
+                    'posts' => [
+                        "data" => [],
+                        "links" => [],
+                        "meta" => [],
+                    ],
                 ],
                 'meta' => [],
                 'links' => [],
@@ -1312,6 +1290,7 @@ class RelationshipsTest extends TestCase
             ],
             'included' => [],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItFlushesTheRelationshipCache(): void
@@ -1323,59 +1302,102 @@ class RelationshipsTest extends TestCase
         $response = $this->get("test-route?include=posts");
 
         $response->assertOk();
+        $this->assertValidJsonApi($response);
         $this->assertNull($resource->requestedRelationshipsCache());
     }
 
-    public function testItCanHaveANonJsonApiRelationship(): void
+    public function testCollectionIncludesDoesntBecomeNumericKeyedObjectAfterFilteringDuplicateRecords(): void
     {
-        $user = (new BasicModel([
-            'id' => '1',
-            'name' => 'user-name',
-        ]));
-        $resource = new class ($user) extends UserResource {
-            public function toRelationships(Request $request): array
-            {
-                return [
-                    'relation' => fn () => ['hello' => 'world'],
-                    'nested_relation' => fn () => new class (new BasicModel(['id' => '2', 'name' => 'nested-user'])) extends UserResource {
-                        public function toRelationships(Request $request): array
-                        {
-                            return [
-                                'relation' => fn () => 123,
-                            ];
-                        }
-                    },
-                ];
-            }
-        };
-        Route::get('test-route', fn () => $resource);
+        $users = [
+            BasicModel::make([
+                'id' => 'user-id-1',
+                'name' => 'user-name-1',
+            ])->setRelation('avatar', BasicModel::make([
+                'id' => 1,
+                'url' => 'https://example.com/avatar1.png',
+            ])),
+            BasicModel::make([
+                'id' => 'user-id-2',
+                'name' => 'user-name-2',
+            ])->setRelation('avatar', BasicModel::make([
+                'id' => 1,
+                'url' => 'https://example.com/avatar1.png',
+            ])),
+            BasicModel::make([
+                'id' => 'user-id-3',
+                'name' => 'user-name-3',
+            ])->setRelation('avatar', BasicModel::make([
+                'id' => 2,
+                'url' => 'https://example.com/avatar2.png',
+            ])),
+        ];
+        Route::get('test-route', fn () => UserResource::collection($users));
 
-        $response = $this->get('test-route?include=relation,nested_relation.relation');
+        $response = $this->getJson('test-route?include=avatar');
 
         $response->assertOk();
         $response->assertExactJson([
             'data' => [
-                'id' => '1',
-                'type' => 'basicModels',
-                'attributes' => [
-                    'name' => 'user-name',
-                ],
-                'relationships' => [
-                    'relation' => [
-                        'hello' => 'world',
+                [
+                    'id' => 'user-id-1',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'name' => 'user-name-1',
                     ],
-                    'nested_relation' => [
-                        'data' => [
-                            'id' => '2',
-                            'type' => 'basicModels',
+                    'relationships' => [
+                        'avatar' => [
+                            'data' => [
+                                'id' => '1',
+                                'type' => 'basicModels',
+                                'meta' => [],
+                            ],
+                            'links' => [],
                             'meta' => [],
                         ],
-                        'links' => [],
-                        'meta' => [],
                     ],
+                    'meta' => [],
+                    'links' => [],
                 ],
-                'meta' => [],
-                'links' => [],
+                [
+                    'id' => 'user-id-2',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'name' => 'user-name-2',
+                    ],
+                    'relationships' => [
+                        'avatar' => [
+                            'data' => [
+                                'id' => '1',
+                                'type' => 'basicModels',
+                                'meta' => [],
+                            ],
+                            'links' => [],
+                            'meta' => [],
+                        ],
+                    ],
+                    'meta' => [],
+                    'links' => [],
+                ],
+                [
+                    'id' => 'user-id-3',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'name' => 'user-name-3',
+                    ],
+                    'relationships' => [
+                        'avatar' => [
+                            'data' => [
+                                'id' => '2',
+                                'type' => 'basicModels',
+                                'meta' => [],
+                            ],
+                            'links' => [],
+                            'meta' => [],
+                        ],
+                    ],
+                    'meta' => [],
+                    'links' => [],
+                ],
             ],
             'jsonapi' => [
                 'version' => '1.0',
@@ -1383,19 +1405,125 @@ class RelationshipsTest extends TestCase
             ],
             'included' => [
                 [
+                    'id' => '1',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'url' => 'https://example.com/avatar1.png',
+                    ],
+                    'relationships' => [],
+                    'links' => [],
+                    'meta' => [],
+                ],
+                [
                     'id' => '2',
                     'type' => 'basicModels',
                     'attributes' => [
-                        'name' => 'nested-user',
+                        'url' => 'https://example.com/avatar2.png',
+                    ],
+                    'relationships' => [],
+                    'links' => [],
+                    'meta' => [],
+                ],
+            ],
+        ]);
+    }
+
+    public function testSingleResourceIncludesDoesntBecomeNumericKeyedObjectAfterFilteringDuplicateRecords(): void
+    {
+        $user = BasicModel::make([
+            'id' => 1,
+            'name' => 'user-name-1',
+        ])->setRelation('posts', [
+            BasicModel::make([
+                'id' => 2,
+                'title' => 'Title 1',
+                'content' => 'Content 1',
+            ])->setRelation('comments', [
+                BasicModel::make([
+                    'id' => 3,
+                    'content' => 'Comment 1',
+                ])->setRelation('author', BasicModel::make([
+                    'id' => 1,
+                    'name' => 'user-name-1',
+                ])),
+            ]),
+            BasicModel::make([
+                'id' => 2,
+                'title' => 'Title 2',
+                'content' => 'Content 2',
+            ])->setRelation('comments', new Collection()),
+        ]);
+
+        Route::get('test-route', fn () => UserResource::make($user));
+
+        $response = $this->getJson('test-route?include=posts,posts.comments,posts.comments.author');
+
+        $response->assertOk();
+        $response->assertExactJson(
+            [
+                'data' => [
+                    'id' => '1',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'name' => 'user-name-1',
                     ],
                     'relationships' => [
-                        'relation' => 123,
+                        'posts' => [
+                            'data' => [
+                                [
+                                    'id' => '2',
+                                    'type' => 'basicModels',
+                                    'meta' => [],
+                                ],
+                            ],
+                            'meta' => [],
+                            'links' => [],
+                        ],
                     ],
                     'meta' => [],
                     'links' => [],
                 ],
-            ],
-        ]);
+                'included' => [
+                    [
+                        'id' => '2',
+                        'type' => 'basicModels',
+                        'attributes' => [
+                            'title' => 'Title 1',
+                            'content' => 'Content 1',
+                        ],
+                        'relationships' => [
+                            'comments' => [
+                                'data' => [
+                                    [
+                                        'id' => '3',
+                                        'type' => 'basicModels',
+                                        'meta' => [],
+                                    ],
+                                ],
+                                'meta' => [],
+                                'links' => [],
+                            ],
+                        ],
+                        'meta' => [],
+                        'links' => [],
+                    ],
+                    [
+                        'id' => '3',
+                        'type' => 'basicModels',
+                        'attributes' => [
+                            'content' => 'Comment 1',
+                        ],
+                        'relationships' => [],
+                        'meta' => [],
+                        'links' => [],
+                    ],
+                ],
+                'jsonapi' => [
+                    'version' => '1.0',
+                    'meta' => [],
+                ],
+            ]
+        );
     }
 
     public function testItRemovesPotentiallyMissingRelationships(): void
@@ -1405,7 +1533,7 @@ class RelationshipsTest extends TestCase
             'name' => 'user-name',
         ]);
         $resource = new class ($user) extends UserResource {
-            public function toRelationships(Request $request): array
+            public function toRelationships($request): array
             {
                 return [
                     'relation' => fn () => $this->when(false, fn () => ['hello' => 'world']),
@@ -1434,6 +1562,7 @@ class RelationshipsTest extends TestCase
             ],
             'included' => [],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItShowsPotentiallyMissingRelationships(): void
@@ -1443,10 +1572,14 @@ class RelationshipsTest extends TestCase
             'name' => 'user-name',
         ]);
         $resource = new class ($user) extends UserResource {
-            public function toRelationships(Request $request): array
+            public function toRelationships($request): array
             {
                 return [
-                    'relation' => fn () => $this->when(true, fn () => ['hello' => 'world']),
+                    'relation' => fn () => $this->when(true, fn () => new class (new BasicModel([
+                        'id' => '2',
+                        'name' => 'relation-name',
+                    ])) extends UserResource {
+                    }),
                 ];
             }
         };
@@ -1463,7 +1596,15 @@ class RelationshipsTest extends TestCase
                     'name' => 'user-name',
                 ],
                 'relationships' => [
-                    'relation' => ['hello' => 'world'],
+                    'relation' => [
+                        'data' => [
+                            'type' => 'basicModels',
+                            'id' => '2',
+                            'meta' => [],
+                        ],
+                        'links' => [],
+                        'meta' => [],
+                    ],
                 ],
                 'meta' => [],
                 'links' => [],
@@ -1472,7 +1613,84 @@ class RelationshipsTest extends TestCase
                 'version' => '1.0',
                 'meta' => [],
             ],
-            'included' => [],
+            'included' => [
+                [
+                    'id' => '2',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'name' => 'relation-name',
+                    ],
+                    'relationships' => [],
+                    'links' => [],
+                    'meta' => [],
+                ],
+            ],
         ]);
+        $this->assertValidJsonApi($response);
+    }
+
+    public function testPotentiallyMissingValuesAreRespectedOverSparseFieldsets()
+    {
+        $user = new BasicModel([
+            'id' => '1',
+            'name' => 'user-name',
+        ]);
+        $resource = new class ($user) extends UserResource {
+            public function toRelationships($request): array
+            {
+                return [
+                    'relation_1' => fn () => $this->when(false, fn () => ['hello' => 'world']),
+                    'relation_2' => fn () => $this->when(true, fn () => new class (new BasicModel([
+                        'id' => '2',
+                        'name' => 'relation-name',
+                    ])) extends UserResource {
+                    }),
+                ];
+            }
+        };
+        Route::get('test-route', fn () => $resource);
+
+        $response = $this->get('test-route?include=relation_1,relation_2');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                'id' => '1',
+                'type' => 'basicModels',
+                'attributes' => [
+                    'name' => 'user-name',
+                ],
+                'relationships' => [
+                    'relation_2' => [
+                        'data' => [
+                            'type' => 'basicModels',
+                            'id' => '2',
+                            'meta' => [],
+                        ],
+                        'links' => [],
+                        'meta' => [],
+                    ],
+                ],
+                'meta' => [],
+                'links' => [],
+            ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
+            ],
+            'included' => [
+                [
+                    'id' => '2',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'name' => 'relation-name',
+                    ],
+                    'relationships' => [],
+                    'links' => [],
+                    'meta' => [],
+                ],
+            ],
+        ]);
+        $this->assertValidJsonApi($response);
     }
 }

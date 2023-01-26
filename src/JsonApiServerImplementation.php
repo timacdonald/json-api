@@ -9,12 +9,9 @@ use stdClass;
 
 final class JsonApiServerImplementation implements JsonSerializable
 {
-    private string $version;
+    use Concerns\Meta;
 
-    /**
-     * @var array<string, mixed>
-     */
-    private array $meta;
+    private string $version;
 
     /**
      * @param array<string, mixed> $meta
@@ -27,6 +24,8 @@ final class JsonApiServerImplementation implements JsonSerializable
     }
 
     /**
+     * @internal
+     *
      * @return array{version: string, meta: stdClass}
      */
     public function jsonSerialize(): array

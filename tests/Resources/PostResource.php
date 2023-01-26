@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Resources;
 
-use Illuminate\Http\Request;
 use TiMacDonald\JsonApi\JsonApiResource;
 
 /**
@@ -12,7 +11,7 @@ use TiMacDonald\JsonApi\JsonApiResource;
  */
 class PostResource extends JsonApiResource
 {
-    protected function toAttributes(Request $request): array
+    public function toAttributes($request)
     {
         return [
             'title' => $this->title,
@@ -20,12 +19,17 @@ class PostResource extends JsonApiResource
         ];
     }
 
-    protected function toRelationships(Request $request): array
+    public function toRelationships($request)
     {
         return [
             'author' => fn () => UserResource::make($this->author),
             'featureImage' => fn () => ImageResource::make($this->feature_image),
             'comments' => fn () => CommentResource::collection($this->comments),
         ];
+    }
+
+    public static function collection($resource)
+    {
+        return parent::collection($resource);
     }
 }

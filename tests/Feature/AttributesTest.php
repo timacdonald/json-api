@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit;
+namespace Tests\Feature;
 
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Tests\Models\BasicModel;
 use Tests\Resources\UserResource;
@@ -22,7 +21,7 @@ class AttributesTest extends TestCase
             'email' => 'tim@example.com',
         ]));
         Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
-            protected function toAttributes(Request $request): array
+            public function toAttributes($request): array
             {
                 return [
                     'name' => $this->name,
@@ -52,6 +51,7 @@ class AttributesTest extends TestCase
             ],
             'included' => [],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItExcludesAttributesWhenUsingSparseFieldsets(): void
@@ -63,7 +63,7 @@ class AttributesTest extends TestCase
             'location' => 'Melbourne',
         ]));
         Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
-            protected function toAttributes(Request $request): array
+            public function toAttributes($request): array
             {
                 return [
                     'name' => $this->name,
@@ -94,6 +94,7 @@ class AttributesTest extends TestCase
             ],
             'included' => [],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItExcludesAllAttributesWhenNoneExplicitlyRequested(): void
@@ -105,7 +106,7 @@ class AttributesTest extends TestCase
             'location' => 'Melbourne',
         ]));
         Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
-            protected function toAttributes(Request $request): array
+            public function toAttributes($request): array
             {
                 return [
                     'name' => $this->name,
@@ -133,6 +134,7 @@ class AttributesTest extends TestCase
             ],
             'included' => [],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItResolvesClosureWrappedAttributes(): void
@@ -142,7 +144,7 @@ class AttributesTest extends TestCase
             'location' => 'Melbourne',
         ]));
         Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
-            protected function toAttributes(Request $request): array
+            public function toAttributes($request): array
             {
                 return [
                     'location' => fn () => $this->location,
@@ -170,6 +172,7 @@ class AttributesTest extends TestCase
             ],
             'included' => [],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItDoesntResolveClosureWrappedAttributesWhenNotRequested(): void
@@ -178,12 +181,10 @@ class AttributesTest extends TestCase
             'id' => 'expected-id',
         ]));
         Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
-            protected function toAttributes(Request $request): array
+            public function toAttributes($request): array
             {
                 return [
-                    'location' => function () {
-                        throw new Exception('xxxx');
-                    },
+                    'location' => fn () => throw new Exception('xxxx'),
                 ];
             }
         });
@@ -206,8 +207,8 @@ class AttributesTest extends TestCase
             ],
             'included' => [],
         ]);
+        $this->assertValidJsonApi($response);
     }
-
 
     public function testItThrowsWhenFieldsParameterIsNotAnArray(): void
     {
@@ -237,33 +238,67 @@ class AttributesTest extends TestCase
 
     public function testItCanSpecifyMinimalAttributes(): void
     {
-        JsonApiResource::minimalAttributes();
-        $user = (new BasicModel([
-            'id' => 'user-id',
-            'name' => 'user-name',
-        ]));
-        Route::get('test-route', fn () => UserResource::make($user));
-
-        $response = $this->getJson('test-route');
-
-        $response->assertOk();
-        $response->assertExactJson([
-            'data' => [
-                'type' => 'basicModels',
+        JsonApiResource::minimalAttributes(function () {
+            $user = (new BasicModel([
                 'id' => 'user-id',
-                'attributes' => [],
-                'relationships' => [],
-                'meta' => [],
-                'links' => [],
-            ],
-            'jsonapi' => [
-                'version' => '1.0',
-                'meta' => [],
-            ],
-            'included' => [],
-        ]);
+                'name' => 'user-name',
+            ]));
+            Route::get('test-route', fn () => UserResource::make($user));
 
-        JsonApiResource::maximalAttributes();
+            $response = $this->getJson('test-route');
+
+            $response->assertOk();
+            $response->assertExactJson([
+                'data' => [
+                    'type' => 'basicModels',
+                    'id' => 'user-id',
+                    'attributes' => [],
+                    'relationships' => [],
+                    'meta' => [],
+                    'links' => [],
+                ],
+                'jsonapi' => [
+                    'version' => '1.0',
+                    'meta' => [],
+                ],
+                'included' => [],
+            ]);
+            $this->assertValidJsonApi($response);
+        });
+    }
+
+    public function testItCanRequestAttributesWhenUsingMinimalAttributes()
+    {
+        JsonApiResource::minimalAttributes(function () {
+            $user = (new BasicModel([
+                'id' => 'user-id',
+                'name' => 'user-name',
+                'location' => 'Melbourne',
+            ]));
+            Route::get('test-route', fn () => UserResource::make($user));
+
+            $response = $this->getJson('test-route?fields[basicModels]=name');
+
+            $response->assertOk();
+            $response->assertExactJson([
+                'data' => [
+                    'type' => 'basicModels',
+                    'id' => 'user-id',
+                    'attributes' => [
+                        'name' => 'user-name',
+                    ],
+                    'relationships' => [],
+                    'meta' => [],
+                    'links' => [],
+                ],
+                'jsonapi' => [
+                    'version' => '1.0',
+                    'meta' => [],
+                ],
+                'included' => [],
+            ]);
+            $this->assertValidJsonApi($response);
+        });
     }
 
     public function testItCanUseSparseFieldsetsWithIncludedCollections(): void
@@ -292,27 +327,23 @@ class AttributesTest extends TestCase
             'data' => [
                 'id' => 'user-id',
                 'type' => 'basicModels',
-                'attributes' => [],
+                'attributes' =>  [],
                 'relationships' => [
                     'posts' => [
-                        [
-                            'data' => [
+                        'data' => [
+                            [
                                 'id' => 'post-id-1',
-                                'type' => 'basicModels',
                                 'meta' => [],
+                                'type' => 'basicModels',
                             ],
-                            'links' => [],
-                            'meta' => [],
-                        ],
-                        [
-                            'data' => [
+                            [
                                 'id' => 'post-id-2',
-                                'type' => 'basicModels',
                                 'meta' => [],
+                                'type' => 'basicModels',
                             ],
-                            'links' => [],
-                            'meta' => [],
                         ],
+                        'links' => [],
+                        'meta' => [],
                     ],
                 ],
                 'meta' => [],
@@ -345,6 +376,7 @@ class AttributesTest extends TestCase
                 ],
             ],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItRemovesPotentiallyMissingAttributes(): void
@@ -356,7 +388,7 @@ class AttributesTest extends TestCase
             'address' => '123 fake street',
         ]);
         Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
-            protected function toAttributes(Request $request): array
+            public function toAttributes($request): array
             {
                 return [
                     'name' => $this->when(false, fn () =>$this->name),
@@ -386,6 +418,7 @@ class AttributesTest extends TestCase
             ],
             'included' => [],
         ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItCanIncludePotentiallyMissingValues(): void
@@ -397,7 +430,7 @@ class AttributesTest extends TestCase
             'address' => '123 fake street',
         ]);
         Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
-            protected function toAttributes(Request $request): array
+            public function toAttributes($request): array
             {
                 return [
                     'name' => $this->when(true, fn () => $this->name),
@@ -429,5 +462,51 @@ class AttributesTest extends TestCase
             ],
             'included' => [],
         ]);
+        $this->assertValidJsonApi($response);
+    }
+
+    public function testPotentiallyMissingValuesAreRespectedOverSparseFieldsets()
+    {
+        $model = new BasicModel([
+            'id' => 'expected-id',
+            'name' => 'Tim',
+            'phone' => '123456',
+            'email' => 'tim@example.com',
+            'address' => '123 fake street',
+        ]);
+        Route::get('test-route', fn () => new class ($model) extends JsonApiResource {
+            public function toAttributes($request): array
+            {
+                return [
+                    'name' => $this->when(false, fn () => $this->name),
+                    'phone' => fn () => $this->when(false, $this->phone),
+                    'address' => $this->when(true, fn () => $this->address),
+                    'email' => fn () => $this->when(true, $this->email),
+                ];
+            }
+        });
+
+        $response = $this->getJson('test-route?fields[basicModels]=name,phone,address,email');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                'id' => 'expected-id',
+                'type' => 'basicModels',
+                'attributes' => [
+                    'email' => 'tim@example.com',
+                    'address' => '123 fake street',
+                ],
+                'relationships' => [],
+                'meta' => [],
+                'links' => [],
+            ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
+            ],
+            'included' => [],
+        ]);
+        $this->assertValidJsonApi($response);
     }
 }

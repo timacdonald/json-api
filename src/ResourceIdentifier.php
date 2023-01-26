@@ -9,35 +9,42 @@ use stdClass;
 
 final class ResourceIdentifier implements JsonSerializable
 {
-    private string $id;
+    use Concerns\Meta;
 
+    /**
+     * @internal
+     */
     private string $type;
 
     /**
-     * @var array<string, mixed>
+     * @internal
      */
-    private array $meta;
+    private string $id;
 
     /**
+     * @api
+     *
      * @param array<string, mixed> $meta
      */
-    public function __construct(string $id, string $type, array $meta = [])
+    public function __construct(string $type, string $id, array $meta = [])
     {
-        $this->id = $id;
-
         $this->type = $type;
+
+        $this->id = $id;
 
         $this->meta = $meta;
     }
 
     /**
-     * @return array{id: string, type: string, meta: stdClass}
+     * @internal
+     *
+     * @return array{type: string, id: string, meta: stdClass}
      */
     public function jsonSerialize(): array
     {
         return [
-            'id' => $this->id,
             'type' => $this->type,
+            'id' => $this->id,
             'meta' => (object) $this->meta,
         ];
     }

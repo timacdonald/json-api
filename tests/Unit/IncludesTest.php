@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
-use Tests\TestCase;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Throwable;
 use TiMacDonald\JsonApi\Support\Includes;
 
 class IncludesTest extends TestCase
@@ -19,21 +22,21 @@ class IncludesTest extends TestCase
     {
         $request = Request::create('https://example.com?include=a');
 
-        $includes = Includes::getInstance()->parse($request, 'a.');
+        $includes = Includes::getInstance()->forPrefix($request, 'a.');
 
-        $this->assertTrue($includes->isEmpty());
+        $this->assertCount(0, $includes);
     }
 
     public function testItRemovesDuplicates(): void
     {
         $request = Request::create('https://example.com?include=a.b,a.b.c');
 
-        $includes = Includes::getInstance()->parse($request, 'a.');
+        $includes = Includes::getInstance()->forPrefix($request, 'a.');
 
         $this->assertCount(1, $includes);
     }
 
-    public function testItHandlesMultipleRequestsWithCacheClearing(): void
+    public function testItHandlesMultipleRequests(): void
     {
         $requests = [
             Request::create('https://example.com?include=a'),
@@ -41,11 +44,26 @@ class IncludesTest extends TestCase
         ];
         $includes = [];
 
-        $includes[] = Includes::getInstance()->parse($requests[0], '');
-        Includes::getInstance()->flush();
-        $includes[] = Includes::getInstance()->parse($requests[1], '');
+        $includes[] = Includes::getInstance()->forPrefix($requests[0], '');
+        $includes[] = Includes::getInstance()->forPrefix($requests[1], '');
 
-        $this->assertSame($includes[0]->all(), ['a']);
-        $this->assertSame($includes[1]->all(), ['b']);
+        $this->assertSame($includes[0], ['a']);
+        $this->assertSame($includes[1], ['b']);
+    }
+
+    public function testItAbortsWhenIncludesIsNotAString(): void
+    {
+        Application::getInstance();
+        $request = Request::create('https://example.com?include[]=');
+
+        try {
+            Includes::getInstance()->forPrefix($request, '');
+            $this->fail('Exception should have been thrown');
+        } catch (HttpException $e) {
+            $this->assertSame('The include parameter must be a comma seperated list of relationship paths.', $e->getMessage());
+            $this->assertSame(400, $e->getStatusCode());
+        } catch (Throwable) {
+            $this->fail('Http exception should have been thrown');
+        }
     }
 }

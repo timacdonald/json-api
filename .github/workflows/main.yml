@@ -24,10 +24,13 @@ jobs:
               uses: actions/cache@v1
               with:
                   path: ~/.composer/cache/files
-                  key: dependencies-composer-${{ hashFiles('composer.json') }}-v3
+                  key: dependencies-composer-${{ hashFiles('composer.json') }}-lint
 
             - name: Install dependencies
-              run: composer update --no-interaction --verbose
+              run: |
+                  composer update --no-interaction --verbose
+                  composer bin dev update --no-interaction --verbose
+
 
             - name: Check platform requirements
               run: composer check-platform-reqs --verbose
@@ -81,12 +84,12 @@ jobs:
               uses: actions/cache@v1
               with:
                   path: ~/.composer/cache/files
-                  key: dependencies-${{ matrix.dependency-version }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}-v3
+                  key: dependencies-${{ matrix.dependency-version }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
 
             - name: Install dependencies
               run: |
                   composer update --${{ matrix.dependency-version }} --no-interaction --verbose
-                  composer bin update --no-interaction --verbose
+                  composer bin dev update --no-interaction --verbose
 
             # - name: Support prefer-lowest in PHP 8.1
             #   if: ${{ matrix.php == 8.1 && matrix.dependency-version == 'prefer-lowest' }}

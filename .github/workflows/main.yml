@@ -85,7 +85,8 @@ jobs:
 
             - name: Install dependencies
               run: |
-                  composer update --${{ matrix.dependency-version }} --no-suggest --no-interaction --verbose
+                  composer update --${{ matrix.dependency-version }} --no-interaction --verbose
+                  composer bin update --no-interaction --verbose
 
             # - name: Support prefer-lowest in PHP 8.1
             #   if: ${{ matrix.php == 8.1 && matrix.dependency-version == 'prefer-lowest' }}

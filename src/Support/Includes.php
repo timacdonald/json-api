@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi\Support;
 
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use WeakMap;
 
 use function explode;
@@ -60,7 +62,9 @@ final class Includes
         return $this->rememberIncludes($request, '__all__', function () use ($request) {
             $includes = $request->query('include') ?? '';
 
-            abort_if(is_array($includes), 400, 'The include parameter must be a comma seperated list of relationship paths.');
+            if (is_array($includes)) {
+                throw new HttpException(400,  'The include parameter must be a comma seperated list of relationship paths.');
+            }
 
             return Collection::make(explode(',', $includes))->filter(fn (string $include): bool => $include !== '');
         });

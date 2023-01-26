@@ -6,6 +6,7 @@ namespace TiMacDonald\JsonApi\Support;
 
 use Illuminate\Http\Request;
 
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use WeakMap;
 
 use function array_key_exists;
@@ -45,7 +46,9 @@ final class Fields
         return $this->rememberResourceType($request, "type:{$resourceType};minimal:{$minimalAttributes};", function () use ($request, $resourceType, $minimalAttributes): ?array {
             $typeFields = $request->query('fields') ?? [];
 
-            abort_if(is_string($typeFields), 400, 'The fields parameter must be an array of resource types.');
+            if (is_string($typeFields)) {
+                throw new HttpException(400,  'The fields parameter must be an array of resource types.');
+            }
 
             if (! array_key_exists($resourceType, $typeFields)) {
                 return $minimalAttributes
@@ -55,7 +58,9 @@ final class Fields
 
             $fields = $typeFields[$resourceType] ?? '';
 
-            abort_if(! is_string($fields), 400, 'The fields parameter value must be a comma seperated list of attributes.');
+            if (! is_string($fields)) {
+                throw new HttpException(400, 'The fields parameter value must be a comma seperated list of attributes.');
+            }
 
             return array_filter(explode(',', $fields), fn (string $value): bool => $value !== '');
         });

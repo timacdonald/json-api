@@ -18,9 +18,11 @@
     ],
     "require": {
         "php": "^8.0",
+        "illuminate/collections": "^9.0",
         "illuminate/database": "^9.0",
         "illuminate/http": "^9.0",
-        "illuminate/support": "^9.0"
+        "illuminate/support": "^9.0",
+        "symfony/http-kernel": "^6.0"
     },
     "require-dev": {
         "bamarni/composer-bin-plugin": "^1.4",

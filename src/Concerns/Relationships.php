@@ -15,6 +15,8 @@ use TiMacDonald\JsonApi\RelationshipObject;
 use TiMacDonald\JsonApi\Support\Includes;
 use Traversable;
 
+use function is_array;
+
 trait Relationships
 {
     /**

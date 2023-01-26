@@ -110,6 +110,5 @@ class AttributesAsPropertiesTest extends TestCase
             'meta' => [],
             'links' => [],
         ], $response->getData(true)['data']);
-
     }
 }

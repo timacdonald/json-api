@@ -9,6 +9,8 @@ use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;
 use TiMacDonald\JsonApi\Support\Fields;
 
+use function is_string;
+
 trait Attributes
 {
     /**

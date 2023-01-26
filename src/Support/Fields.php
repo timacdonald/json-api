@@ -47,7 +47,7 @@ final class Fields
             $typeFields = $request->query('fields') ?? [];
 
             if (is_string($typeFields)) {
-                throw new HttpException(400,  'The fields parameter must be an array of resource types.');
+                throw new HttpException(400, 'The fields parameter must be an array of resource types.');
             }
 
             if (! array_key_exists($resourceType, $typeFields)) {

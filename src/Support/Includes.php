@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace TiMacDonald\JsonApi\Support;
 
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -63,7 +62,7 @@ final class Includes
             $includes = $request->query('include') ?? '';
 
             if (is_array($includes)) {
-                throw new HttpException(400,  'The include parameter must be a comma seperated list of relationship paths.');
+                throw new HttpException(400, 'The include parameter must be a comma seperated list of relationship paths.');
             }
 
             return Collection::make(explode(',', $includes))->filter(fn (string $include): bool => $include !== '');

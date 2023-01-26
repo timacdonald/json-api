@@ -36,7 +36,7 @@
     },
     "extra": {
         "bamarni-bin": {
-            "bin-links": true,
+            "bin-links": false,
             "forward-command": true
         }
     },
@@ -49,6 +49,10 @@
         "psr-4": {
             "Tests\\": "tests/"
         }
+    },
+    "scripts": {
+        "test": "./vendor-bin/dev/vendor/bin/phpunit",
+        "fix": "./vendor-bin/dev/vendor/bin/php-cs-fixer fix"
     },
     "minimum-stability": "stable",
     "prefer-stable": true,

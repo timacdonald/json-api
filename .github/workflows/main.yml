@@ -27,14 +27,13 @@ jobs:
                   key: dependencies-composer-${{ hashFiles('composer.json') }}-v3
 
             - name: Install dependencies
-              run: |
-                composer update --no-suggest --no-interaction --verbose
+              run: composer update --no-interaction --verbose
 
             - name: Check platform requirements
               run: composer check-platform-reqs --verbose
 
             - name: PHP-CS-Fixer
-              run: ./vendor/bin/php-cs-fixer fix --dry-run --no-interaction --verbose
+              run: composer fix -- --dry-run --verbose
 
             # - name: composer normalize
             #   run: composer normalize --dry-run --no-interaction --verbose
@@ -96,4 +95,4 @@ jobs:
               run: composer check-platform-reqs --verbose
 
             - name: Run tests
-              run: ./vendor/bin/phpunit --debug --verbose
+              run: composer test

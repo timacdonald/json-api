@@ -60,7 +60,8 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
             'included' => $this->collection
                 ->map(fn (JsonApiResource $resource): Collection => $resource->included($request))
                 ->flatten()
-                ->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request)),
+                ->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request))
+                ->values(),
             'jsonapi' => JsonApiResource::serverImplementationResolver()($request),
         ];
     }

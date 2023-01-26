@@ -1306,184 +1306,153 @@ class RelationshipsTest extends TestCase
         $this->assertNull($resource->requestedRelationshipsCache());
     }
 
-    public function testItHasArrayOfIncludesForACollectionOfResourcesWhenHasNumericKeys(): void
+    public function testCollectionIncludesDoesntBecomeNumericKeyedObjectAfterFilteringDuplicateRecords(): void
     {
         $users = [
-            (new BasicModel(
-                [
-                    'id' => 'user-id-1',
-                    'name' => 'user-name-1',
-                ]
-            ))->setRelation('avatar',
-                (new BasicModel(
-                    [
-                        'id' => 1,
-                        'url' => 'https://example.com/avatar1.png',
-                    ]
-                ))
-            ),
-            (new BasicModel(
-                [
-                    'id' => 'user-id-2',
-                    'name' => 'user-name-2',
-                ]
-            ))->setRelation('avatar',
-                (new BasicModel(
-                    [
-                        'id' => 1,
-                        'url' => 'https://example.com/avatar1.png',
-                    ]
-                ))
-            ),
-            (new BasicModel(
-                [
-                    'id' => 'user-id-3',
-                    'name' => 'user-name-3',
-                ]
-            ))->setRelation('avatar',
-                (new BasicModel(
-                    [
-                        'id' => 2,
-                        'url' => 'https://example.com/avatar2.png',
-                    ]
-                ))
-            ),
+            BasicModel::make([
+                'id' => 'user-id-1',
+                'name' => 'user-name-1',
+            ])->setRelation('avatar', BasicModel::make([
+                'id' => 1,
+                'url' => 'https://example.com/avatar1.png',
+            ])),
+            BasicModel::make([
+                'id' => 'user-id-2',
+                'name' => 'user-name-2',
+            ])->setRelation('avatar', BasicModel::make([
+                'id' => 1,
+                'url' => 'https://example.com/avatar1.png',
+            ])),
+            BasicModel::make([
+                'id' => 'user-id-3',
+                'name' => 'user-name-3',
+            ])->setRelation('avatar', BasicModel::make([
+                'id' => 2,
+                'url' => 'https://example.com/avatar2.png',
+            ])),
         ];
         Route::get('test-route', fn () => UserResource::collection($users));
 
         $response = $this->getJson('test-route?include=avatar');
 
         $response->assertOk();
-        $response->assertExactJson(
-            [
-                'data' => [
-                    [
-                        'id' => 'user-id-1',
-                        'type' => 'basicModels',
-                        'attributes' => [
-                            'name' => 'user-name-1',
-                        ],
-                        'relationships' => [
-                            'avatar' => [
-                                'data' => [
-                                    'id' => '1',
-                                    'type' => 'basicModels',
-                                    'meta' => [],
-                                ],
-                                'links' => [],
+        $response->assertExactJson([
+            'data' => [
+                [
+                    'id' => 'user-id-1',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'name' => 'user-name-1',
+                    ],
+                    'relationships' => [
+                        'avatar' => [
+                            'data' => [
+                                'id' => '1',
+                                'type' => 'basicModels',
                                 'meta' => [],
                             ],
+                            'links' => [],
+                            'meta' => [],
                         ],
-                        'meta' => [],
-                        'links' => [],
                     ],
-                    [
-                        'id' => 'user-id-2',
-                        'type' => 'basicModels',
-                        'attributes' => [
-                            'name' => 'user-name-2',
-                        ],
-                        'relationships' => [
-                            'avatar' => [
-                                'data' => [
-                                    'id' => '1',
-                                    'type' => 'basicModels',
-                                    'meta' => [],
-                                ],
-                                'links' => [],
-                                'meta' => [],
-                            ],
-                        ],
-                        'meta' => [],
-                        'links' => [],
-                    ],
-                    [
-                        'id' => 'user-id-3',
-                        'type' => 'basicModels',
-                        'attributes' => [
-                            'name' => 'user-name-3',
-                        ],
-                        'relationships' => [
-                            'avatar' => [
-                                'data' => [
-                                    'id' => '2',
-                                    'type' => 'basicModels',
-                                    'meta' => [],
-                                ],
-                                'links' => [],
-                                'meta' => [],
-                            ],
-                        ],
-                        'meta' => [],
-                        'links' => [],
-                    ],
+                    'meta' => [],
+                    'links' => [],
                 ],
-                'jsonapi' => [
-                    'version' => '1.0',
+                [
+                    'id' => 'user-id-2',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'name' => 'user-name-2',
+                    ],
+                    'relationships' => [
+                        'avatar' => [
+                            'data' => [
+                                'id' => '1',
+                                'type' => 'basicModels',
+                                'meta' => [],
+                            ],
+                            'links' => [],
+                            'meta' => [],
+                        ],
+                    ],
+                    'meta' => [],
+                    'links' => [],
+                ],
+                [
+                    'id' => 'user-id-3',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'name' => 'user-name-3',
+                    ],
+                    'relationships' => [
+                        'avatar' => [
+                            'data' => [
+                                'id' => '2',
+                                'type' => 'basicModels',
+                                'meta' => [],
+                            ],
+                            'links' => [],
+                            'meta' => [],
+                        ],
+                    ],
+                    'meta' => [],
+                    'links' => [],
+                ],
+            ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
+            ],
+            'included' => [
+                [
+                    'id' => '1',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'url' => 'https://example.com/avatar1.png',
+                    ],
+                    'relationships' => [],
+                    'links' => [],
                     'meta' => [],
                 ],
-                'included' => [
-                    [
-                        'id' => '1',
-                        'type' => 'basicModels',
-                        'attributes' => [
-                            'url' => 'https://example.com/avatar1.png',
-                        ],
-                        'relationships' => [],
-                        'links' => [],
-                        'meta' => [],
+                [
+                    'id' => '2',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'url' => 'https://example.com/avatar2.png',
                     ],
-                    [
-                        'id' => '2',
-                        'type' => 'basicModels',
-                        'attributes' => [
-                            'url' => 'https://example.com/avatar2.png',
-                        ],
-                        'relationships' => [],
-                        'links' => [],
-                        'meta' => [],
-                    ],
+                    'relationships' => [],
+                    'links' => [],
+                    'meta' => [],
                 ],
-            ]
-        );
+            ],
+        ]);
     }
 
-    public function testItHasArrayOfIncludesForASingleResourceWhenHasNumericKeys(): void
+    public function testSingleResourceIncludesDoesntBecomeNumericKeyedObjectAfterFilteringDuplicateRecords(): void
     {
-        $user = (new BasicModel(
-            [
-                'id' => 1,
-                'name' => 'user-name-1',
-            ]
-        ));
-        $user->posts = [
-            (new BasicModel(
-                [
-                    'id' => 2,
-                    'title' => 'Title 1',
-                    'content' => 'Content 1',
-                ]
-            ))->setRelation('comments', [
-                (new BasicModel(
-                    [
-                        'id' => 3,
-                        'content' => 'Comment 1',
-                    ]
-                ))->setRelation('author', (new BasicModel(
-                    [
-                        'id' => 1,
-                        'name' => 'user-name-1',
-                    ]
-                ))),
+        $user = BasicModel::make([
+            'id' => 1,
+            'name' => 'user-name-1',
+        ])->setRelation('posts', [
+            BasicModel::make([
+                'id' => 2,
+                'title' => 'Title 1',
+                'content' => 'Content 1',
+            ])->setRelation('comments', [
+                BasicModel::make([
+                    'id' => 3,
+                    'content' => 'Comment 1',
+                ])->setRelation('author', BasicModel::make([
+                    'id' => 1,
+                    'name' => 'user-name-1',
+                ])),
             ]),
-            (new BasicModel(
-                [
-                    'id' => 2,
-                    'title' => 'Title 2',
-                    'content' => 'Content 2',
-                ]
-            ))->setRelation('comments', new Collection()),
-        ];
+            BasicModel::make([
+                'id' => 2,
+                'title' => 'Title 2',
+                'content' => 'Content 2',
+            ])->setRelation('comments', new Collection()),
+        ]);
 
         Route::get('test-route', fn () => UserResource::make($user));
 
@@ -1500,24 +1469,15 @@ class RelationshipsTest extends TestCase
                     ],
                     'relationships' => [
                         'posts' => [
-                            [
-                                'data' => [
+                            'data' => [
+                                [
                                     'id' => '2',
                                     'type' => 'basicModels',
                                     'meta' => [],
                                 ],
-                                'meta' => [],
-                                'links' => [],
                             ],
-                            [
-                                'data' => [
-                                    'id' => '2',
-                                    'type' => 'basicModels',
-                                    'meta' => [],
-                                ],
-                                'meta' => [],
-                                'links' => [],
-                            ],
+                            'meta' => [],
+                            'links' => [],
                         ],
                     ],
                     'meta' => [],
@@ -1533,15 +1493,15 @@ class RelationshipsTest extends TestCase
                         ],
                         'relationships' => [
                             'comments' => [
-                                [
-                                    'data' => [
+                                'data' => [
+                                    [
                                         'id' => '3',
                                         'type' => 'basicModels',
                                         'meta' => [],
                                     ],
-                                    'meta' => [],
-                                    'links' => [],
                                 ],
+                                'meta' => [],
+                                'links' => [],
                             ],
                         ],
                         'meta' => [],

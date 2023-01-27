@@ -63,7 +63,6 @@ class FeatureTest extends TestCase
                 'first' => 'http://localhost/test-route?page=1',
                 'last' => 'http://localhost/test-route?page=3',
                 'next' => 'http://localhost/test-route?page=2',
-                'prev' => null,
             ],
             'meta' => [
                 'current_page' => 1,
@@ -81,17 +80,17 @@ class FeatureTest extends TestCase
                     ],
                     [
                         "active" => true,
-                        "label" => version_compare(Application::VERSION, '9.0.0', '>=') ? "1" : 1,
+                        "label" => "1",
                         "url" => "http://localhost/test-route?page=1",
                     ],
                     [
                         "active" => false,
-                        "label" => version_compare(Application::VERSION, '9.0.0', '>=') ? "2" : 2,
+                        "label" => "2",
                         "url" => "http://localhost/test-route?page=2",
                     ],
                     [
                         "active" => false,
-                        "label" => version_compare(Application::VERSION, '9.0.0', '>=') ? "3" : 3,
+                        "label" => "3",
                         "url" => "http://localhost/test-route?page=3",
                     ],
                     [

@@ -28,7 +28,7 @@
         "bamarni/composer-bin-plugin": "^1.4",
         "laravel/framework": "^8.12 || ^9.0",
         "opis/json-schema": "^2.0",
-        "orchestra/testbench": "^7.0"
+        "orchestra/testbench": "^6.0 || ^7.0"
     },
     "config": {
         "preferred-install": "dist",

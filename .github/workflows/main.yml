@@ -102,7 +102,7 @@ jobs:
 
             - name: Remove dev packages
               run: |
-                  composer remove --no-install --no-interaction --verbose \
+                  composer remove --dev --no-update --no-interaction --verbose \
                       friendsofphp/php-cs-fixer \
                       infection/infection \
                       nunomaduro/larastan \
@@ -111,11 +111,11 @@ jobs:
 
             - name: Support prefer-lowest in PHP 8.2
               if: ${{ matrix.php == 8.2 && matrix.dependency-version == 'prefer-lowest' }}
-              run: composer require nesbot/carbon:"^2.62.1" --no-install
+              run: composer require nesbot/carbon:"^2.62.1" --no-update
 
             - name: Require Laravel and testbench version
               run: |
-                  composer require laravel/framework:"${{ matrix.laravel }}" illuminate/collections:"${{ matrix.laravel }}" illuminate/database:"${{ matrix.laravel }}" illuminate/http:"${{ matrix.laravel }}" illuminate/support:"${{ matrix.laravel }}" orchestra/testbench:"${{ matrix.testbench }}"  --no-install --no-interaction --verbose --with-all-dependencies
+                  composer require laravel/framework:"${{ matrix.laravel }}" illuminate/collections:"${{ matrix.laravel }}" illuminate/database:"${{ matrix.laravel }}" illuminate/http:"${{ matrix.laravel }}" illuminate/support:"${{ matrix.laravel }}" orchestra/testbench:"${{ matrix.testbench }}"  --no-update --no-interaction --verbose --with-all-dependencies
 
             - name: Install dependencies
               run: |

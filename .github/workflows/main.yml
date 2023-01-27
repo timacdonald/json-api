@@ -17,7 +17,7 @@ jobs:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: '8.1'
+                  php-version: '8.2'
                   coverage: pcov
 
             - name: Get composer cache directory
@@ -94,6 +94,10 @@ jobs:
                 path: ${{ steps.composer-cache.outputs.dir }}
                 key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
                 restore-keys: ${{ runner.os }}-composer-
+
+            - name: Support prefer-lowest in PHP 8.2
+              if: ${{ matrix.php == 8.2 && matrix.dependency-version == 'prefer-lowest' }}
+              run: composer require carbon/carbon:"^2.62.1"
 
             - name: Install dependencies
               run: |

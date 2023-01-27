@@ -7,6 +7,7 @@ namespace TiMacDonald\JsonApi\Concerns;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\PotentiallyMissing;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use TiMacDonald\JsonApi\Exceptions\UnknownRelationshipException;
 use TiMacDonald\JsonApi\JsonApiResource;
@@ -110,7 +111,7 @@ trait Relationships
         return Collection::make($this->relationships ?? [])
             ->map(fn (string $class, string $relation): Closure => function () use ($class, $relation): JsonApiResource|JsonApiResourceCollection {
                 return with($this->resource->{$relation}, function ($resource) use ($class): JsonApiResource|JsonApiResourceCollection {
-                    if ($resource instanceof Traversable || (is_array($resource) && array_is_list($resource))) {
+                    if ($resource instanceof Traversable || (is_array($resource) && ! Arr::isAssoc($resource))) {
                         return $class::collection($resource);
                     }
 

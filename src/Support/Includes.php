@@ -47,7 +47,7 @@ final class Includes
             return $this->all($request)
                 ->when($prefix !== '')
                 ->filter(fn (string $include): bool => str_starts_with($include, $prefix))
-                ->map(fn ($include): string => Str::of($include)->after($prefix)->before('.')->toString())
+                ->map(fn ($include): string => (string) Str::of($include)->after($prefix)->before('.'))
                 ->uniqueStrict()
                 ->values();
         })->all();

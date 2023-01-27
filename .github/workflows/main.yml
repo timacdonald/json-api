@@ -34,7 +34,6 @@ jobs:
             - name: Install dependencies
               run: |
                   composer update --no-interaction --verbose
-                  composer bin dev update --no-interaction --verbose
 
             - name: Check platform requirements
               run: composer check-platform-reqs --verbose
@@ -101,6 +100,15 @@ jobs:
                 key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
                 restore-keys: ${{ runner.os }}-composer-
 
+            - name: Remove dev packages
+              run: |
+                  composer remove --no-install --no-interaction --verbose \
+                      friendsofphp/php-cs-fixer \
+                      infection/infection \
+                      nunomaduro/larastan \
+                      phpstan/phpstan-strict-rules
+
+
             - name: Support prefer-lowest in PHP 8.2
               if: ${{ matrix.php == 8.2 && matrix.dependency-version == 'prefer-lowest' }}
               run: composer require nesbot/carbon:"^2.62.1" --no-install
@@ -112,7 +120,6 @@ jobs:
             - name: Install dependencies
               run: |
                   composer update --${{ matrix.dependency-version }} --no-interaction --verbose
-                  composer bin dev update --no-interaction --verbose
 
             - name: Check platform requirements
               run: composer check-platform-reqs --verbose

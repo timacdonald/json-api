@@ -87,11 +87,11 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
      */
     public function paginationInformation($request, $paginated, $default)
     {
-        if (Arr::has($default, 'links')) {
+        if (isset($default['links'])) {
             $default['links'] = array_filter($default['links'], fn (?string $link): bool => $link !== null);
         }
 
-        if (Arr::has($default, 'meta.links')) {
+        if (isset($default['meta']['links'])) {
             $default['meta']['links'] = array_map(
                 fn (array $link): array => Arr::set($link, 'label', (string) $link['label']),
                 $default['meta']['links']

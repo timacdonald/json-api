@@ -72,7 +72,6 @@ jobs:
         strategy:
             matrix:
                 php: ['8.0', '8.1', '8.2']
-                laravel: ['^8.0', '^9.0']
                 dependency-version: ['prefer-lowest', 'prefer-stable']
 
         steps:
@@ -99,9 +98,6 @@ jobs:
             - name: Support prefer-lowest in PHP 8.2
               if: ${{ matrix.php == 8.2 && matrix.dependency-version == 'prefer-lowest' }}
               run: composer require nesbot/carbon:"^2.62.1" --no-install
-
-            - name: Require Laravel version
-              run: composer require illuminate/collections:"${{ matrix.laravel }}" illuminate/database:"${{ matrix.laravel }}" illuminate/http:"${{ matrix.laravel }}" illuminate/support:"${{ matrix.laravel }}" --no-install --no-interaction --verbose
 
             - name: Install dependencies
               run: |

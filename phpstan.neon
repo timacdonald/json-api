@@ -11,5 +11,5 @@ parameters:
             tooWideThrowType: true
             missingCheckedExceptionInThrows: true
 includes:
-    - vendor-bin/dev/vendor/nunomaduro/larastan/extension.neon
-    - vendor-bin/dev/vendor/phpstan/phpstan-strict-rules/rules.neon
+    - ./vendor/nunomaduro/larastan/extension.neon
+    - ./vendor/phpstan/phpstan-strict-rules/rules.neon

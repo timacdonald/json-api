@@ -87,8 +87,8 @@ jobs:
 
             - name: Install dependencies
               run: |
-                  composer update --${{ matrix.dependency-version }} --no-interaction --verbose
                   composer require laravel/framework:"^9.0" --${{ matrix.dependency-version }} --no-interaction --verbose
+                  composer update --${{ matrix.dependency-version }} --no-interaction --verbose
                   composer bin dev update --no-interaction --verbose
 
             # - name: Support prefer-lowest in PHP 8.1

@@ -12,7 +12,7 @@ jobs:
         name: 'Lint'
         steps:
             - name: Checkout code
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
 
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
@@ -20,11 +20,16 @@ jobs:
                   php-version: '8.1'
                   coverage: pcov
 
+            - name: Get composer cache directory
+              id: composer-cache
+              run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
             - name: Cache dependencies
-              uses: actions/cache@v1
+              uses: actions/cache@v3
               with:
-                  path: ~/.composer/cache/files
-                  key: dependencies-composer-${{ hashFiles('composer.json') }}-lint
+                path: ${{ steps.composer-cache.outputs.dir }}
+                key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+                restore-keys: ${{ runner.os }}-composer-
 
             - name: Install dependencies
               run: |
@@ -71,7 +76,7 @@ jobs:
 
         steps:
             - name: checkout code
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
 
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
@@ -79,11 +84,16 @@ jobs:
                   php-version: ${{ matrix.php }}
                   coverage: none
 
+            - name: Get composer cache directory
+              id: composer-cache
+              run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
             - name: Cache dependencies
-              uses: actions/cache@v1
+              uses: actions/cache@v3
               with:
-                  path: ~/.composer/cache/files
-                  key: dependencies-${{ matrix.dependency-version }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+                path: ${{ steps.composer-cache.outputs.dir }}
+                key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+                restore-keys: ${{ runner.os }}-composer-
 
             - name: Install dependencies
               run: |

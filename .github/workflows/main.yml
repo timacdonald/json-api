@@ -71,13 +71,18 @@ jobs:
         strategy:
             matrix:
                 php: ['8.0', '8.1', '8.2']
-                laravel: ['^8.73.2', '^9.0']
+                laravel: ['^8.73.2', '^9.0', '10.x-dev']
                 dependency-version: ['prefer-lowest', 'prefer-stable']
                 include:
                     - testbench: '^6.0'
                       laravel: '^8.73.2'
                     - testbench: '^7.0'
                       laravel: '^9.0'
+                    - testbench: '8.x-dev'
+                      laravel: '10.x-dev'
+                exclude:
+                    - php: '8.0'
+                    - laravel: '10.x-dev'
 
         steps:
             - name: checkout code

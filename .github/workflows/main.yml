@@ -107,8 +107,8 @@ jobs:
 
             - name: Require Laravel and testbench version
               run: |
-                  composer require --dev laravel/framework:"${{ matrix.laravel }}" --no-install --no-interaction --verbose
                   composer require illuminate/collections:"${{ matrix.laravel }}" illuminate/database:"${{ matrix.laravel }}" illuminate/http:"${{ matrix.laravel }}" illuminate/support:"${{ matrix.laravel }}" orchestra/testbench:"${{ matrix.testbench }}"  --no-install --no-interaction --verbose
+                  composer require --dev laravel/framework:"${{ matrix.laravel }}" --no-install --no-interaction --verbose
 
             - name: Install dependencies
               run: |

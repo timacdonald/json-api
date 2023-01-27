@@ -97,7 +97,7 @@ jobs:
 
             - name: Support prefer-lowest in PHP 8.2
               if: ${{ matrix.php == 8.2 && matrix.dependency-version == 'prefer-lowest' }}
-              run: composer require carbon/carbon:"^2.62.1"
+              run: composer require nesbot/carbon:"^2.62.1"
 
             - name: Install dependencies
               run: |

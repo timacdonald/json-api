@@ -18,10 +18,10 @@
     ],
     "require": {
         "php": "^8.0 || ^8.1 || ^8.2",
-        "illuminate/collections": "^8.12 || ^9.0",
-        "illuminate/database": "^8.12 || ^9.0",
-        "illuminate/http": "^8.12 || ^9.0",
-        "illuminate/support": "^8.12 || ^9.0",
+        "illuminate/collections": "^8.73 || ^9.0",
+        "illuminate/database": "^8.73 || ^9.0",
+        "illuminate/http": "^8.73 || ^9.0",
+        "illuminate/support": "^8.73 || ^9.0",
         "symfony/http-kernel": "^5.0 || ^6.0"
     },
     "require-dev": {

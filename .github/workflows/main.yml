@@ -75,7 +75,7 @@ jobs:
                 dependency-version: ['prefer-lowest', 'prefer-stable']
                 include:
                     - testbench: '^6.0'
-                      laravel: '^8.12'
+                      laravel: '^8.73'
                     - testbench: '^7.0'
                       laravel: '^9.0'
 

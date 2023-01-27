@@ -21,7 +21,7 @@ A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API st
 ## Version support
 
 - **PHP**: `^8.0`, `^8.1`, `^8.2`
-- **Laravel**: `^8.12`, `^9.0`
+- **Laravel**: `^8.73`, `^9.0`
 
 ## Installation
 

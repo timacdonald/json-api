@@ -2,7 +2,6 @@
     "require": {
         "friendsofphp/php-cs-fixer": "^3.3",
         "infection/infection": "^0.26.0",
-        "mockery/mockery": "^1.0",
         "nunomaduro/larastan": "^2.0",
         "phpstan/phpstan-strict-rules": "^1.0",
         "phpunit/phpunit": "^9.0"

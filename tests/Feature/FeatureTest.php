@@ -63,7 +63,7 @@ class FeatureTest extends TestCase
                 'first' => 'http://localhost/test-route?page=1',
                 'last' => 'http://localhost/test-route?page=3',
                 'next' => 'http://localhost/test-route?page=2',
-                // 'prev' => null,
+                'prev' => null,
             ],
             'meta' => [
                 'current_page' => 1,

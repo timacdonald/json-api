@@ -82,7 +82,7 @@ jobs:
                       laravel: '10.x-dev'
                 exclude:
                     - php: '8.0'
-                    - laravel: '10.x-dev'
+                      laravel: '10.x-dev'
 
         steps:
             - name: checkout code

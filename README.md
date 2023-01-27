@@ -20,8 +20,8 @@ A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API st
 
 ## Version support
 
-- **PHP**: 7.4, 8.0, 8.1
-- **Laravel**: 8.0
+- **PHP**: `^8.0`, `^8.1`, `^8.2`
+- **Laravel**: `^8.12`, `^9.0`
 
 ## Installation
 

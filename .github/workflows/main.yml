@@ -108,9 +108,8 @@ jobs:
                       nunomaduro/larastan \
                       phpstan/phpstan-strict-rules
 
-            - name: Require Laravel and testbench version
+            - name: Require Laravel and Testbench version
               run: composer require laravel/framework:"${{ matrix.laravel }}" illuminate/collections:"${{ matrix.laravel }}" illuminate/database:"${{ matrix.laravel }}" illuminate/http:"${{ matrix.laravel }}" illuminate/support:"${{ matrix.laravel }}" orchestra/testbench:"${{ matrix.testbench }}"  --no-update --no-interaction --verbose --with-all-dependencies
-
 
             - name: Support prefer-lowest in PHP 8.0
               if: ${{ matrix.php == 8.0 && matrix.dependency-version == 'prefer-lowest' }}
@@ -123,8 +122,6 @@ jobs:
             - name: Support prefer-lowest in PHP 8.2
               if: ${{ matrix.php == 8.2 && matrix.dependency-version == 'prefer-lowest' }}
               run: composer require nesbot/carbon:"^2.62.1" --no-update
-
-
 
             - name: Install dependencies
               run: composer update --${{ matrix.dependency-version }} --no-interaction --verbose

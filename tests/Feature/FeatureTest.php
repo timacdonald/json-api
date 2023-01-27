@@ -62,9 +62,6 @@ class FeatureTest extends TestCase
                 'first' => 'http://localhost/test-route?page=1',
                 'last' => 'http://localhost/test-route?page=3',
                 'next' => 'http://localhost/test-route?page=2',
-                // This is invalid in JSON:API, so we exlcude any links that
-                // are `null`. These are still available in the "meta" key
-                // links.
                 // 'prev' => null,
             ],
             'meta' => [

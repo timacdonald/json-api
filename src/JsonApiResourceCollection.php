@@ -6,7 +6,6 @@ namespace TiMacDonald\JsonApi;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 class JsonApiResourceCollection extends AnonymousResourceCollection
@@ -93,7 +92,11 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
 
         if (isset($default['meta']['links'])) {
             $default['meta']['links'] = array_map(
-                fn (array $link): array => Arr::set($link, 'label', (string) $link['label']),
+                function (array $link): array {
+                    $link['label'] = (string) $link['label'];
+
+                    return $link;
+                },
                 $default['meta']['links']
             );
         }

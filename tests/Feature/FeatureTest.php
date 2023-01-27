@@ -19,13 +19,10 @@ class FeatureTest extends TestCase
         parent::setUp();
 
         $this->loadMigrationsFrom(__DIR__ . '/../database');
-
-        dd('here');
     }
 
     public function testItCanPaginate(): void
     {
-        dd('here');
         $users = [];
         for ($i = 0; $i < 5; $i++) {
             $users[] = BasicModel::create([

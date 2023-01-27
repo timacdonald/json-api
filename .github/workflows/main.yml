@@ -108,26 +108,26 @@ jobs:
                       nunomaduro/larastan \
                       phpstan/phpstan-strict-rules
 
+            - name: Require Laravel and testbench version
+              run: composer require laravel/framework:"${{ matrix.laravel }}" illuminate/collections:"${{ matrix.laravel }}" illuminate/database:"${{ matrix.laravel }}" illuminate/http:"${{ matrix.laravel }}" illuminate/support:"${{ matrix.laravel }}" orchestra/testbench:"${{ matrix.testbench }}"  --no-update --no-interaction --verbose --with-all-dependencies
+
+
             - name: Support prefer-lowest in PHP 8.0
               if: ${{ matrix.php == 8.0 && matrix.dependency-version == 'prefer-lowest' }}
               run: composer require mockery/mockery:"^1.3.3" --no-update
 
             - name: Support prefer-lowest in PHP 8.1
               if: ${{ matrix.php == 8.2 && matrix.dependency-version == 'prefer-lowest' }}
-              run: composer require symfony/http-foundation:"^5.3.7 || ^6.0" --no-update
+              run: composer require symfony/http-foundation:"^5.3.7 || ^6.0" laravel/framework:"^8.53 || ^9.0" --no-update
 
             - name: Support prefer-lowest in PHP 8.2
               if: ${{ matrix.php == 8.2 && matrix.dependency-version == 'prefer-lowest' }}
               run: composer require nesbot/carbon:"^2.62.1" --no-update
 
 
-            - name: Require Laravel and testbench version
-              run: |
-                  composer require laravel/framework:"${{ matrix.laravel }}" illuminate/collections:"${{ matrix.laravel }}" illuminate/database:"${{ matrix.laravel }}" illuminate/http:"${{ matrix.laravel }}" illuminate/support:"${{ matrix.laravel }}" orchestra/testbench:"${{ matrix.testbench }}"  --no-update --no-interaction --verbose --with-all-dependencies
 
             - name: Install dependencies
-              run: |
-                  composer update --${{ matrix.dependency-version }} --no-interaction --verbose
+              run: composer update --${{ matrix.dependency-version }} --no-interaction --verbose
 
             - name: Check platform requirements
               run: composer check-platform-reqs --verbose

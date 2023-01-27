@@ -13,6 +13,8 @@ use function is_string;
 
 class TestCase extends BaseTestCase
 {
+    public static $latestResponse;
+
     public const JSON_API_SCHEMA_URL = 'http://jsonapi.org/schema';
 
     public function setUp(): void

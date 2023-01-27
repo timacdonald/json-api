@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
 use Tests\Models\BasicModel;
@@ -80,17 +81,17 @@ class FeatureTest extends TestCase
                     ],
                     [
                         "active" => true,
-                        "label" => "1",
+                        "label" => version_compare(Application::VERSION, '9.0.0', '>=') ? "1" : 1,
                         "url" => "http://localhost/test-route?page=1",
                     ],
                     [
                         "active" => false,
-                        "label" => "2",
+                        "label" => version_compare(Application::VERSION, '9.0.0', '>=') ? "2" : 2,
                         "url" => "http://localhost/test-route?page=2",
                     ],
                     [
                         "active" => false,
-                        "label" => "3",
+                        "label" => version_compare(Application::VERSION, '9.0.0', '>=') ? "3" : 3,
                         "url" => "http://localhost/test-route?page=3",
                     ],
                     [

@@ -39,7 +39,7 @@
     },
     "extra": {
         "bamarni-bin": {
-            "bin-links": true,
+            "bin-links": false,
             "forward-command": false
         }
     },
@@ -54,8 +54,8 @@
         }
     },
     "scripts": {
-        "test": "./vendor/bin/phpunit",
-        "fix": "./vendor/bin/php-cs-fixer fix"
+        "test": "./vendor-bin/dev/vendor/bin/phpunit",
+        "fix": "./vendor-bin/dev/vendor/bin/php-cs-fixer fix"
     },
     "minimum-stability": "stable",
     "prefer-stable": true,

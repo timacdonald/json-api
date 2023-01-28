@@ -427,12 +427,12 @@ class UserResource extends JsonApiResource
     public $attributes = [
         'name',
         'website',
-        'twitter_handle' => 'handle',
+        'twitter_handle' => 'twitterHandle',
     ];
 }
 ```
 
-The `$user->twitter_handle` attribute will now be exposed in the response as `handle`.
+The `twitter_handle` attribute will now be exposed as camel case, i.e. `twitterHandle`, instead of snake case.
 
 ```json
 {
@@ -442,7 +442,7 @@ The `$user->twitter_handle` attribute will now be exposed in the response as `ha
     "attributes": {
       "name": "Tim",
       "website": "https://timacdonald.me",
-      "handle": "@timacdonald87"
+      "twitterHandle": "@timacdonald87"
     },
     "relationships": {},
     "meta": {},
@@ -476,13 +476,13 @@ class UserResource extends JsonApiResource
         return [
             'name' => $this->name,
             'website' => $this->website,
-            'handle' => $this->twitter_handle,
+            'twitterHandle' => $this->twitter_handle,
             'email' => $this->when($this->emailIsPublic, $this->email, '<private>'),
             'address' => [
                 'city' => $this->address('city'),
                 'country' => $this->address('country'),
             ],
-            'is_me' => $request->user()->is($this->resource),
+            'isMe' => $request->user()->is($this->resource),
         ];
     }
 }
@@ -505,13 +505,13 @@ class UserResource extends JsonApiResource
     "attributes": {
       "name": "Tim",
       "website": "https://timacdonald.me",
-      "handle": "@timacdonald87",
+      "twitterHandle": "@timacdonald87",
       "email": "<private>",
       "address": {
         "city": "Melbourne",
         "country": "Australia"
       },
-      "is_me": false
+      "isMe": false
     },
     "relationships": {},
     "meta": {},
@@ -549,7 +549,7 @@ class UserResource extends JsonApiResource
         return [
             'name' => $this->name,
             'website' => $this->website,
-            'handle' => $this->twitter_handle,
+            'twitterHandle' => $this->twitter_handle,
             'avatar' => Http::get('https://avatar.example.com', [
                 'email' => $this->email,
             ])->body(),
@@ -902,3 +902,4 @@ ad
 - Guess relationship class for relationships.
 - Support mapping `$attributes` values to different keys.
 - Support dot notation of both the key and value of `$attributes`.
+- Camel case everything

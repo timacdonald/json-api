@@ -480,7 +480,6 @@ class UserResource extends JsonApiResource
                 'city' => $this->address('city'),
                 'country' => $this->address('country'),
             ],
-            'isMe' => $request->user()->is($this->resource),
         ];
     }
 }

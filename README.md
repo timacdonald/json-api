@@ -290,7 +290,7 @@ class UserController
         return UserResource::collection($users);
     }
 
-    public function show(int $id)
+    public function show($id)
     {
         $user = QueryBuilder::for(User::class)
             ->allowedIncludes(['license', 'posts'])

@@ -99,7 +99,7 @@ When making a request to an endpoint that returns the `UserResource`, for exampl
 GET /users/74812
 ```
 
-the following JSON:API formatted data will be returned.
+the following JSON:API formatted data will be returned:
 
 ```json
 {
@@ -119,7 +119,9 @@ the following JSON:API formatted data will be returned.
 }
 ```
 
-🎉 You have just created your first JSON:API resource. Congratulations...and what. a. rush!
+🎉 You have just created your first JSON:API resource 🎉
+
+Congratulations...and what. a. rush!
 
 We will now dive into returning relationships for your `UserResource`, but if you would like to explore more complex attribute features, you may like to jump ahead:
 

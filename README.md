@@ -345,7 +345,7 @@ The `twitter_handle` attribute will now be exposed as camel case, i.e. `twitterH
 
 ### `toAttributes()`
 
-In some scenarios you may want more control over the attributes you are exposing or access to the current request. If that is the case, you may implement the `toAttributes()` method.
+In some scenarios you may need complete control over the attributes you are exposing or access to the current request. If that is the case, you may implement the `toAttributes()` method.
 
 ```php
 <?php

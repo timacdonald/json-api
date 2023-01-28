@@ -564,6 +564,23 @@ class UserResource extends JsonApiResource
 }
 ```
 
+#### Minimal attributes
+
+Out of the box resources expose a maximal attribute payload when [sparse fieldsets](#sparse-fieldsets) are not used i.e. all declared attributes in the resource are returned. If you prefer to instead make it that sparse fieldsets are required in order to retrieve any attributes, you can specify the use of minimal attributes in your applications service provider.
+
+```php
+<?php
+
+class AppServiceProvider extends ServiceProvider
+{
+    public function boot()
+    {
+        JsonApiResource::minimalAttributes();
+
+        // ...
+    }
+}
+```
 
 //----- WIP------- //
 
@@ -764,58 +781,6 @@ Although it is not recommended, you can also override the `toType(Request $reque
 
 ## Resource Attributes
 
-### Sparse fieldsets
-
-[JSON:API docs: Sparse fieldsets](https://jsonapi.org/format/#fetching-sparse-fieldsets)
-
-Without any work, your response supports sparse fieldsets. If you are utilising sparse fieldsets and have some attributes that are expensive to create, it is a good idea to wrap them in a `Closure`. Under the hood, we only resolve the `Closure` if the attribute is to be included in the response.
-
-```php
-<?php
-
-class UserResource extends JsonResource
-{
-    protected function toAttributes($request): array
-    {
-        return [
-            'name' => $this->name,
-            'email' => $this->email,
-            'profile_image' => fn () => base64_encode(
-                // don't really download a file like this. It's just an example of a slow operation...
-                file_get_contents('https://www.gravatar.com/avatar/'.md5($this->email)),
-            ),
-        ];
-    }
-}
-```
-
-The `Closure` is only resolved when the attribute is going to be included in the response, which can improve performance of requests that don't require the returned value.
-
-```sh
-# The Closure is not resolved...
-/api/users/8?fields[users]=name,email
-
-# The Closure is resolved...
-/api/users/8?fields[users]=name,profile_image
-```
-
-### Minimal Resource Attributes
-
-Out of the box the resource provides a maximal attribute payload when sparse fieldsets are not used i.e. all declared attributes in the resource are returned. If you prefer to instead make it that sparse fieldsets are required in order to retrieve any attributes, you can specify the use of minimal attributes in your applications service provider.
-
-```php
-<?php
-
-class AppServiceProvider extends ServiceProvider
-{
-    public function boot()
-    {
-        JsonApiResource::minimalAttributes();
-
-        // ...
-    }
-}
-```
 
 ## Resource Relationships
 

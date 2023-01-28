@@ -163,10 +163,8 @@ class UserResource extends JsonApiResource
 }
 ```
 
-> **Note** Whether to return a `toOne` or `toMany` relationship is be handled automatically based on the resolved relationship type 🤖
-
 <details>
-<summary>Example payload</summary>
+<summary>Example response</summary>
 
 #### Request
 
@@ -253,6 +251,8 @@ class UserResource extends JsonApiResource
 }
 ```
 </details>
+
+> **Note** Whether to return a `toOne` or `toMany` relationship is be handled automatically based on the resolved relationship type 🤖
 
 To learn about more complex relationship features, you may like to jump ahead:
 

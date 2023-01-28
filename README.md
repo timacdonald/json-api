@@ -497,7 +497,8 @@ GET /posts?include=author&fields[posts]=title,excerpt&fields[users]=name
 
 You will notice that the include query parameter is `author` while the sparse fieldset parameter is `users`. This is because authors _are_ users, e.g. the Eloquent `author()` relationship returns a `User` model.
 
-##### Response
+<details>
+<summary>Example response</summary>
 
 ```json
 {
@@ -559,11 +560,9 @@ You will notice that the include query parameter is `author` while the sparse fi
   ]
 }
 ```
+</details>
 
-
-This also works for included resources. In our application every post author is a user. We could send the following request to only get the comment author's `name` and `email`. The comment attributes would not be limited.
-
-This allows clients to receive deterministic responses while also improving server-side performance and reducing payload sizes.
+Sparse fieldsets allows clients to receive deterministic responses while also improving server-side performance and reducing payload sizes.
 
 //----- WIP------- //
 

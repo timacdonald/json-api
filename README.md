@@ -491,8 +491,6 @@ As an example, say we are building out an index page for our blog posts where we
 
 To achieve this we will send the following request.
 
-##### Request
-
 ```
 GET /posts?include=author&fields[posts]=title,excerpt&fields[users]=name
 ```

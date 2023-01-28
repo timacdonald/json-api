@@ -17,6 +17,7 @@ A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API st
     - [Remapping `$attributes`](#remapping-attributes)
     - [`toAttributes()`](#toAttributes)
     - [Lazy attribute evaluation](#lazy-attribute-evaluation)
+    - [Sparse fieldsets](#sparse-fieldsets)
 
 ## Version support
 
@@ -118,33 +119,6 @@ the following JSON:API formatted data will be returned.
 
 🎉 You have just created your first JSON:API resource. Congratulations...and what. a. rush!
 
-Want to know what else is awesome? Sparse fieldsets are also available to the `UserResource` without lifting a finger. Want to retrieve the `website` and `twitter_handle`, but exclude the `name`? No sweat!
-
-Append the appropriate query parameter to the request and the attributes will be filtered as expected.
-
-#### Request
-
-`GET /users/74812?fields[users]=website,twitter_handle`
-
-#### Response
-
-```json
-{
-  "data": {
-    "type": "users",
-    "id": "74812",
-    "attributes": {
-      "website": "https://timacdonald.me",
-      "twitter_handle": "@timacdonald87"
-    },
-    "relationships": {},
-    "meta": {},
-    "links": {}
-  },
-  "included": []
-}
-```
-
 We will now dive into returning relationships for your `UserResource`, but if you would like to explore more complex attribute features, you may like to jump ahead:
 
 - [Remapping `$attributes`](#remapping-attributes)
@@ -190,8 +164,6 @@ class UserResource extends JsonApiResource
 ```
 
 > **Note** Whether to return a `toOne` or `toMany` relationship is be handled automatically based on the resolved relationship type 🤖
-
-There you have it: you officially support "compound documents". As you might expect, [sparse fieldsets](#sparse-fieldsets) also work included relationships out of the box.
 
 <details>
 <summary>Example payload</summary>
@@ -273,87 +245,6 @@ There you have it: you officially support "compound documents". As you might exp
       "attributes": {
         "key": "lic_CNlpZVVrsLlChLBSgS1GK7zJR8EFdupW"
       },
-      "relationships": {},
-      "meta": {},
-      "links": {}
-    }
-  ]
-}
-```
-</details>
-
-<details>
-<summary>Example payload with sparse fieldsets</summary>
-
-#### Request
-
-`GET /users/74812?include=posts,license&fields[users]=name&fields[posts]=title&fields[licensess]=`
-
-#### Response
-
-```json
-{
-  "data": {
-    "id": "74812",
-    "type": "users",
-    "attributes": {
-      "name": "Tim"
-    },
-    "relationships": {
-      "posts": {
-        "data": [
-          {
-            "type": "posts",
-            "id": "25240",
-            "meta": {}
-          },
-          {
-            "type": "posts",
-            "id": "39974",
-            "meta": {}
-          }
-        ],
-        "meta": {},
-        "links": {}
-      },
-      "license": {
-        "data": {
-          "type": "licenses",
-          "id": "18986",
-          "meta": {}
-        },
-        "meta": {},
-        "links": {}
-      }
-    },
-    "meta": {},
-    "links": {}
-  },
-  "included": [
-    {
-      "id": "25240",
-      "type": "posts",
-      "attributes": {
-        "title": "So what is JSON:API all about anyway?"
-      },
-      "relationships": {},
-      "meta": {},
-      "links": {}
-    },
-    {
-      "id": "39974",
-      "type": "posts",
-      "attributes": {
-        "title": "Building an API with Laravel, using the JSON:API specification."
-      },
-      "relationships": {},
-      "meta": {},
-      "links": {}
-    },
-    {
-      "id": "18986",
-      "type": "licenses",
-      "attributes": {},
       "relationships": {},
       "meta": {},
       "links": {}
@@ -588,7 +479,7 @@ class UserResource extends JsonApiResource
 
 ### Sparse fieldsets
 
-Spare fieldsets allows clients to specify the attributes they would like for a given resource type. As this is part of the JSON:API specification, we won't go into great detail here, but I will mention that sparse fieldsets works out of the box.
+Sparse fieldsets allows clients to specify the attributes they would like for a given resource type. As this is part of the JSON:API specification, we won't go into great detail here, but I will mention that sparse fieldsets works out of the box.
 
 Say a client only wanted access to the `name` and `email` attribute of every user in a response. The client could send the following request.
 

@@ -509,8 +509,7 @@ class UserResource extends JsonApiResource
       "address": {
         "city": "Melbourne",
         "country": "Australia"
-      },
-      "isMe": false
+      }
     },
     "relationships": {},
     "meta": {},

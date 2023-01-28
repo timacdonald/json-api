@@ -737,10 +737,6 @@ Here is what that response might look like. Notice that the resource is "inlined
 }
 ```
 
-## Rationale behind inclusion of all top level object keys
-
-`// TODO`
-
 # Advanced usage
 
 ## Resource Identification
@@ -785,9 +781,6 @@ class AppServiceProvider extends ServiceProvider
 
 Although it is not recommended, you can also override the `toType(Request $request): string` method on a resource by resource basis.
 
-## Resource Attributes
-
-
 ## Resource Relationships
 
 [JSON:API docs: Inclusion of Related Resources](https://jsonapi.org/format/#fetching-includes)
@@ -802,11 +795,7 @@ Relationships can be resolved deeply and also multiple relationship paths can be
 /api/posts/8?include=comments,author.comments
 ```
 
-## Naming
-
-# Support
-
-- We do not promise named parameter support.
+- Using "whenLoaded is an anti-pattern"
 
 ## Credits
 
@@ -816,9 +805,6 @@ Relationships can be resolved deeply and also multiple relationship paths can be
 
 And a special (vegi) thanks to [Caneco](https://twitter.com/caneco) for the logo ✨
 
-- Using "whenLoaded is an anti-pattern"
-
-ad
 # v1 todo
 - Server implementation rethink.
 - Rethink naming of objects and properties

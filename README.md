@@ -489,7 +489,9 @@ Sparse fieldsets allow clients to limit the attributes returned for a given reso
 
 As an example, say we are building out an index page for our blog posts. Each blog post has an "author", which is represented as a user. For this particular page design, we need access to all the post's attributes, but we only need the authors name.
 
-To achieve this we will send the following request that uses sparse fieldsets to limit the attributes returned for the author.
+To achieve this we will send the following request that include the author relationship and then uses sparse fieldsets to limit the attributes returned for the post and the author. The post will only contain the `title` and `excerpt` attributes, while the author will only contain the `name` attribute.
+
+
 
 ```
 GET /posts?include=author&fields[posts]=title,excerpt&fields[users]=name

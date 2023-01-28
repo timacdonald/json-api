@@ -511,7 +511,16 @@ You will notice that the include query parameter is `author` while the sparse fi
         "title": "So what is JSON:API all about anyway?",
         "excerpt": "..."
       },
-      "relationships": {},
+      "relationships": {
+        "author": {
+          "data": {
+            "type": "users",
+            "id": "74812",
+            "meta": {}
+          },
+          "meta": {},
+          "links": {}
+        }
       "meta": {},
       "links": {}
     },

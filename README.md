@@ -20,6 +20,7 @@ A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API st
         - [Sparse fieldsets](#sparse-fieldsets)
         - [Lazy attribute evaluation](#lazy-attribute-evaluation)
         - [Minimal attributes](#minimal-attributes)
+    - [Relationships](#relationships)
 
 ## Version support
 
@@ -587,6 +588,8 @@ class AppServiceProvider extends ServiceProvider
     }
 }
 ```
+
+### Relationships
 
 //----- WIP------- //
 

@@ -222,7 +222,8 @@ class UserResource extends JsonApiResource
       "type": "posts",
       "attributes": {
         "title": "So what is JSON:API all about anyway?",
-        "content": "..."
+        "content": "...",
+        "excerpt": "..."
       },
       "relationships": {},
       "meta": {},
@@ -233,7 +234,8 @@ class UserResource extends JsonApiResource
       "type": "posts",
       "attributes": {
         "title": "Building an API with Laravel, using the JSON:API specification.",
-        "content": "..."
+        "content": "...",
+        "excerpt": "..."
       },
       "relationships": {},
       "meta": {},
@@ -485,17 +487,67 @@ class UserResource extends JsonApiResource
 
 Sparse fieldsets allow clients to limit the attributes returned for a given resource type. Sparse fieldsets are part of the JSON:API specification and work out of the box for your resources.
 
-As an example, say a client only needed access to the `name` and `email` attribute of users. The client could send the following request and only those two attributes would be returned, no matter how many other attributes are defined in the resource class.
+As an example, say we are building out an index page for our blog posts. Each blog post has an "author", which is represented as a user. For this particular page design, we need access to all the post's attributes, but we only need the authors name.
+
+To achieve this we will send the following request that uses sparse fieldsets to limit the attributes returned for the author.
 
 ```
-GET /users/74812?fields[users]=name,email
+GET /posts?include=author&fields[posts]=title,excerpt&fields[users]=name
 ```
 
-This works for included resources as well. Every comment author is also a user, so we could send the following request to only get the comment authors name.
+```json
+{
+  "data": [
+    {
+      "id": "25240",
+      "type": "posts",
+      "attributes": {
+        "title": "So what is JSON:API all about anyway?",
+        "excerpt": "..."
+      },
+      "relationships": {},
+      "meta": {},
+      "links": {}
+    },
+    {
+      "id": "39974",
+      "type": "posts",
+      "attributes": {
+        "title": "Building an API with Laravel, using the JSON:API specification.",
+        "excerpt": "..."
+      },
+      "relationships": {
+        "author": {
+          "data": {
+            "type": "users",
+            "id": "74812",
+            "meta": {}
+          },
+          "meta": {},
+          "links": {}
+        }
+      },
+      "meta": {},
+      "links": {}
+    }
+  ],
+  "included": [
+    {
+      "type": "users",
+      "id": "74812",
+      "attributes": {
+        "name": "Tim"
+      },
+      "relationships": {},
+      "meta": {},
+      "links": {}
+    }
+  ]
+}
+```
 
-```
-GET /posts/2601/comments?include=author&fields[users]=name,email
-```
+
+This also works for included resources. In our application every post author is a user. We could send the following request to only get the comment author's `name` and `email`. The comment attributes would not be limited.
 
 This allows clients to receive deterministic responses while also improving server-side performance and reducing payload sizes.
 

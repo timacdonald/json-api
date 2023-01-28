@@ -7,9 +7,17 @@
         "title": "So what is JSON:API all about anyway?",
         "excerpt": "..."
       },
-      "relationships": {},
-      "meta": {},
-      "links": {}
+      "relationships": {
+        "author": {
+          "data": {
+            "type": "users",
+            "id": "74812",
+            "meta": {}
+          },
+          "meta": {},
+          "links": {}
+        }
+      }
     },
     {
       "id": "39974",
@@ -28,21 +36,19 @@
           "meta": {},
           "links": {}
         }
-      },
-      "meta": {},
-      "links": {}
+      }
     }
-  ],
-  "included": [
-    {
-      "type": "users",
-      "id": "74812",
-      "attributes": {
-        "name": "Tim"
-      },
-      "relationships": {},
-      "meta": {},
-      "links": {}
-    }
-  ]
+],
+"included": [
+{
+  "type": "users",
+  "id": "74812",
+  "attributes": {
+    "name": "Tim"
+  },
+  "relationships": {},
+  "meta": {},
+  "links": {}
 }
+]
+  }

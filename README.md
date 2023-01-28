@@ -488,13 +488,13 @@ Sparse fieldsets allows clients to specify the attributes they would like for a 
 As an example, say a client only wanted access to the `name` and `email` attribute of every user in a response. The client could send the following request.
 
 ```
-`GET /users/74812?fields[users]=name,email
+GET /users/74812?fields[users]=name,email
 ```
 
 This works for included resources as well. Every comment author is also a user, so we could send the following request to only get the comment authors name.
 
 ```
-`GET /posts/2601/comments?include=author&fields[users]=name,email
+GET /posts/2601/comments?include=author&fields[users]=name,email
 ```
 
 This allows clients to receive deterministic responses while also improving server-side performance and reducing payload sizes.

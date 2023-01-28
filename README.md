@@ -19,6 +19,7 @@ A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API st
         - [`toAttributes()`](#toAttributes)
         - [Lazy attribute evaluation](#lazy-attribute-evaluation)
         - [Sparse fieldsets](#sparse-fieldsets)
+        - [Minimal attributes](#minimal-attributes)
 
 ## Version support
 
@@ -479,8 +480,6 @@ class UserResource extends JsonApiResource
     }
 }
 ```
-
-> **Note** When using the `$attributes` property all attributes are lazy evaluated.
 
 #### Sparse fieldsets
 

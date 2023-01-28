@@ -17,8 +17,8 @@ A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API st
     - [Attributes](#attributes)
         - [Remapping `$attributes`](#remapping-attributes)
         - [`toAttributes()`](#toAttributes)
-        - [Lazy attribute evaluation](#lazy-attribute-evaluation)
         - [Sparse fieldsets](#sparse-fieldsets)
+        - [Lazy attribute evaluation](#lazy-attribute-evaluation)
         - [Minimal attributes](#minimal-attributes)
 
 ## Version support
@@ -125,8 +125,8 @@ We will now dive into returning relationships for your `UserResource`, but if yo
 
 - [Remapping `$attributes`](#remapping-attributes)
 - [`toAttributes()`](#toAttributes)
-- [Lazy attribute evaluation](#lazy-attribute-evaluation)
 - [Sparse fieldsets](#sparse-fieldsets)
+- [Lazy attribute evaluation](#lazy-attribute-evaluation)
 - [Minimal attributes](#minimal-attributes)
 
 ### Adding relationships
@@ -419,73 +419,9 @@ class UserResource extends JsonApiResource
 ```
 </details>
 
-#### Lazy attribute evaluation
-
-To help improve performance for attributes that are expensive to calculate, it is possible to specify attributes that should be lazily evaluated. This is useful if you are making requests to the database or making HTTP requests in your resource.
-
-As an example, let's imagine that we expose a base64 encoded avatar for each user. Our implementation downloads the avatar from our avatar microservice.
-
-```php
-<?php
-
-namespace App\Http\Resources;
-
-use Illuminate\Support\Facades\Http;
-use TiMacDonald\JsonApi\JsonApiResource;
-
-class UserResource extends JsonApiResource
-{
-    /**
-     * The available attributes.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array<string, mixed>
-     */
-    public function toAttributes($request)
-    {
-        return [
-            /* ... */
-            'avatar' => Http::get('https://avatar.example.com', [
-                'email' => $this->email,
-            ])->body(),
-        ];
-    }
-}
-```
-
-This implementation would make a HTTP request to our microservice even when the client is excluding the `avatar` attribute via [sparse fieldsets](#sparse-fieldsets), however if we wrap this attribute in a Closure it will only be evaluated when the `avatar` is to be returned in the response. This means we can remove the need for a HTTP request and improve performance.
-
-```php
-<?php
-
-namespace App\Http\Resources;
-
-use Illuminate\Support\Facades\Http;
-use TiMacDonald\JsonApi\JsonApiResource;
-
-class UserResource extends JsonApiResource
-{
-    /**
-     * The available attributes.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array<string, mixed>
-     */
-    public function toAttributes($request)
-    {
-        return [
-            /* ... */
-            'avatar' => fn () => Http::get('https://avatar.example.com', [
-                'email' => $this->email,
-            ])->body(),
-        ];
-    }
-}
-```
-
 #### Sparse fieldsets
 
-Sparse fieldsets allow clients to limit the attributes returned for a given resource type. Sparse fieldsets are part of the JSON:API specification and work out of the box for your resources.
+Sparse fieldsets allow clients to limit the attributes returned for a given resource type. Sparse fieldsets are part of the JSON:API specification and work out of the box for your resources. We will cover them briefly here, but we recommend reading the specification to learn more.
 
 As an example, say we are building out an index page for our blog posts where we show the post title, excerpt, and the authors name. If the client wishes, they may limit the response to only include these attributes for the returned resources.
 
@@ -564,9 +500,72 @@ You will notice that the include query parameter is `author` while the sparse fi
 
 Sparse fieldsets allows clients to receive deterministic responses while also improving server-side performance and reducing payload sizes.
 
-//----- WIP------- //
+#### Lazy attribute evaluation
 
-The [advanced usage](#advanced-usage) section covers [sparse fieldsets and handling expensive attribute calculation](#sparse-fieldsets) and [minimal attribute](#minimal-attributes) payloads, but you can ignore those advanced features for now and continue on with...
+To help improve performance for attributes that are expensive to calculate, it is possible to specify attributes that should be lazily evaluated. This is useful if you are making requests to the database or making HTTP requests in your resource.
+
+As an example, let's imagine that we expose a base64 encoded avatar for each user. Our implementation downloads the avatar from our avatar microservice.
+
+```php
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Support\Facades\Http;
+use TiMacDonald\JsonApi\JsonApiResource;
+
+class UserResource extends JsonApiResource
+{
+    /**
+     * The available attributes.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array<string, mixed>
+     */
+    public function toAttributes($request)
+    {
+        return [
+            /* ... */
+            'avatar' => Http::get('https://avatar.example.com', [
+                'email' => $this->email,
+            ])->body(),
+        ];
+    }
+}
+```
+
+This implementation would make a HTTP request to our microservice even when the client is excluding the `avatar` attribute via [sparse fieldsets](#sparse-fieldsets), however if we wrap this attribute in a Closure it will only be evaluated when the `avatar` is to be returned in the response. This means we can remove the need for a HTTP request and improve performance.
+
+```php
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Support\Facades\Http;
+use TiMacDonald\JsonApi\JsonApiResource;
+
+class UserResource extends JsonApiResource
+{
+    /**
+     * The available attributes.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array<string, mixed>
+     */
+    public function toAttributes($request)
+    {
+        return [
+            /* ... */
+            'avatar' => fn () => Http::get('https://avatar.example.com', [
+                'email' => $this->email,
+            ])->body(),
+        ];
+    }
+}
+```
+
+
+//----- WIP------- //
 
 ## Resource Identification
 

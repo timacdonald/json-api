@@ -425,7 +425,7 @@ class UserResource extends JsonApiResource
 
 #### Sparse fieldsets
 
-Sparse fieldsets allow clients to limit the attributes returned for a given resource type. Sparse fieldsets are part of the JSON:API specification and work out of the box for your resources. We will cover them briefly here, but we recommend reading the specification to learn more.
+Sparse fieldsets allows clients to receive deterministic responses while also improving server-side performance and reducing payload sizes. They do this by enabling the client to limit the attributes returned for a given resource type. Sparse fieldsets are part of the JSON:API specification and work out of the box for your resources. We will cover them briefly here, but we recommend reading the specification to learn more.
 
 As an example, say we are building out an index page for our blog posts where we show the post title, excerpt, and the authors name. If the client wishes, they may limit the response to only include these attributes for the returned resources.
 
@@ -501,8 +501,6 @@ You will notice that the include query parameter is `author` while the sparse fi
 }
 ```
 </details>
-
-Sparse fieldsets allows clients to receive deterministic responses while also improving server-side performance and reducing payload sizes.
 
 #### Lazy attribute evaluation
 

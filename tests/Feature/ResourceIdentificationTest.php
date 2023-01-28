@@ -13,6 +13,11 @@ use TiMacDonald\JsonApi\Exceptions\ResourceIdentificationException;
 
 class ResourceIdentificationTest extends TestCase
 {
+    public function testIt()
+    {
+        $this->assertValidJsonApi(<<<'JSON'
+JSON);
+    }
     public function testItResolvesTheIdAndTypeOfAModel(): void
     {
         $user = (new BasicModel([

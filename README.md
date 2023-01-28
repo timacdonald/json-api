@@ -491,11 +491,15 @@ As an example, say we are building out an index page for our blog posts. Each bl
 
 To achieve this we will send the following request that will include the author relationship and then we will use sparse fieldsets to limit the attributes returned for each resource type. The post will only contain the `title` and `excerpt` attributes, while the author will only contain the `name` attribute.
 
+You will notice that the include is `author`, while the resource type used in the sparse fieldset parameter is `users`. This is because internally in our application our "author" relationship returns a `User` model.
+
+##### Request
+
 ```
 GET /posts?include=author&fields[posts]=title,excerpt&fields[users]=name
 ```
 
-You will notice that the include is `author`, while the resource type used in the sparse fieldset parameter is `users`. This is because internally in our application our "author" relationship returns a `User` model.
+##### Response
 
 ```json
 {

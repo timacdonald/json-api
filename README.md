@@ -474,7 +474,7 @@ class UserResource extends JsonApiResource
     public function toAttributes($request)
     {
         return [
-            /* ... */
+            'name' => $this->name,
             'isMe' => $request->user()->is($this->resource),
             'email' => $this->when($this->email_is_public, $this->email, '<private>'),
             'address' => [

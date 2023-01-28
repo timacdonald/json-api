@@ -571,6 +571,10 @@ Out of the box resources expose a maximal attribute payload when [sparse fieldse
 ```php
 <?php
 
+namespace App\Providers;
+
+use TiMacDonald\JsonApi\JsonApiResource;
+
 class AppServiceProvider extends ServiceProvider
 {
     public function boot()

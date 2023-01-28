@@ -13,11 +13,12 @@ A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API st
     - [Creating your first JSON:API resource](#creating-your-first-jsonapi-resource)
     - [Adding relationships](#adding-relationships)
 - [A note on eager loading](#a-note-on-eager-loading)
-- [Attributes](#attributes)
-    - [Remapping `$attributes`](#remapping-attributes)
-    - [`toAttributes()`](#toAttributes)
-    - [Lazy attribute evaluation](#lazy-attribute-evaluation)
-    - [Sparse fieldsets](#sparse-fieldsets)
+- [Digging deeper](#digging-deeper)
+    - [Attributes](#attributes)
+        - [Remapping `$attributes`](#remapping-attributes)
+        - [`toAttributes()`](#toAttributes)
+        - [Lazy attribute evaluation](#lazy-attribute-evaluation)
+        - [Sparse fieldsets](#sparse-fieldsets)
 
 ## Version support
 
@@ -293,11 +294,13 @@ class UserController
 }
 ```
 
-## Attributes
+## Digging deeper
+
+### Attributes
 
 As we saw in the [Creating your first JSON:API resource](#creating-your-first-jsonapi-resource) section, the `$attributes` property is the fastest way to expose resource attributes. However, in some scenarios more complex configurations are required.
 
-### Remapping `$attributes`
+#### Remapping `$attributes`
 
 You may remap the response key of an attribute by creating a key / value pair in the `$attributes` array. The key should be the attribute on the underlying resource, such as the user model, and the value is what will be used for the response.
 
@@ -343,7 +346,7 @@ The `twitter_handle` attribute will now be exposed as camel case, i.e. `twitterH
 }
 ```
 
-### `toAttributes()`
+#### `toAttributes()`
 
 In some scenarios you may need complete control over the attributes you are exposing or access to the current request. If that is the case, you may implement the `toAttributes()` method.
 
@@ -379,13 +382,13 @@ class UserResource extends JsonApiResource
 ```
 
 <details>
-<summary>Example payload</summary>
+<summary>Example response</summary>
 
-#### Request
+##### Request
 
 `GET /users/74812`
 
-#### Response
+##### Response
 
 ```json
 {
@@ -411,7 +414,7 @@ class UserResource extends JsonApiResource
 ```
 </details>
 
-### Lazy attribute evaluation
+#### Lazy attribute evaluation
 
 To help improve performance for attributes that are expensive to calculate, it is possible to specify attributes that should be lazily evaluated. This is useful if you are making requests to the database or making HTTP requests in your resource.
 
@@ -477,7 +480,7 @@ class UserResource extends JsonApiResource
 
 > **Note** When using the `$attributes` property all attributes are lazy evaluated.
 
-### Sparse fieldsets
+#### Sparse fieldsets
 
 Sparse fieldsets allows clients to specify the attributes they would like for a given resource type. As this is part of the JSON:API specification, we won't go into great detail here, but I will mention that sparse fieldsets works out of the box.
 

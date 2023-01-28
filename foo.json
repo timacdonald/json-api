@@ -38,17 +38,17 @@
         }
       }
     }
-],
-"included": [
-{
-  "type": "users",
-  "id": "74812",
-  "attributes": {
-    "name": "Tim"
-  },
-  "relationships": {},
-  "meta": {},
-  "links": {}
+  ],
+  "included": [
+    {
+      "type": "users",
+      "id": "74812",
+      "attributes": {
+        "name": "Tim"
+      },
+      "relationships": {},
+      "meta": {},
+      "links": {}
+    }
+  ]
 }
-]
-  }

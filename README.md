@@ -477,12 +477,12 @@ class UserResource extends JsonApiResource
             'name' => $this->name,
             'website' => $this->website,
             'twitterHandle' => $this->twitter_handle,
-            'email' => $this->when($this->emailIsPublic, $this->email, '<private>'),
+            'isMe' => $request->user()->is($this->resource),
+            'email' => $this->when($this->email_is_public, $this->email, '<private>'),
             'address' => [
                 'city' => $this->address('city'),
                 'country' => $this->address('country'),
             ],
-            'isMe' => $request->user()->is($this->resource),
         ];
     }
 }

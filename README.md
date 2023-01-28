@@ -521,7 +521,9 @@ You will notice that the include query parameter is `author` while the sparse fi
           "meta": {},
           "links": {}
         }
-      }
+      },
+      "meta": {},
+      "links": {}
     },
     {
       "id": "39974",
@@ -540,7 +542,9 @@ You will notice that the include query parameter is `author` while the sparse fi
           "meta": {},
           "links": {}
         }
-      }
+      },
+      "meta": {},
+      "links": {}
     }
   ],
   "included": [

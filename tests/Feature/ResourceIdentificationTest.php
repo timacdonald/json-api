@@ -35,7 +35,7 @@ class ResourceIdentificationTest extends TestCase
           "meta": {},
           "links": {}
         }
-      }
+      },
       "meta": {},
       "links": {}
     },
@@ -56,7 +56,7 @@ class ResourceIdentificationTest extends TestCase
           "meta": {},
           "links": {}
         }
-      }
+      },
       "meta": {},
       "links": {}
     }

@@ -475,6 +475,8 @@ class UserResource extends JsonApiResource
     {
         return [
             'name' => $this->name,
+            'website' => $this->website,
+            'twitterHandle' => $this->twitter_handle,
             'email' => $this->when($this->email_is_public, $this->email, '<private>'),
             'address' => [
                 'city' => $this->address('city'),

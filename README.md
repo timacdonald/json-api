@@ -591,7 +591,7 @@ class AppServiceProvider extends ServiceProvider
 
 ### Relationships
 
-//----- WIP------- //
+//----- Everything that follows is WIP and should be ignored ------- //
 
 ## Resource Identification
 

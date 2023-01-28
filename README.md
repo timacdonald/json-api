@@ -586,26 +586,25 @@ class UserResource extends JsonApiResource
 
 > **Note** When using the `$attributes` property all attributes are lazy evaluated.
 
+### Sparse fieldsets
+
+Spare fieldsets allows clients to specify the attributes they would like for a given resource type. As this is part of the JSON:API specification, we won't go into great detail here, but I will mention that sparse fieldsets works out of the box.
+
+Say a client only wanted access to the `name` and `email` attribute of every user in a response. The client could send the following request.
+
+```
+`GET /users/74812?fields[users]=name,email
+```
+
+This works for included resources as well. Every comment author is also a user, so we could send the following request to only get the comment authors name.
+
+```
+`GET /posts/2601/comments?include=author&fields[users]=name,email
+```
+
+This allows clients to receive deterministic responses while also improving server-side performance and reducing payload sizes.
+
 //----- WIP------- //
-```
-<?php
-
-class UserResource extends JsonApiResource
-{
-    public function toRelationships($request): array
-    {
-        return [
-            'posts' => fn () => PostResource::collection($this->posts),
-            'subscription' => fn () => SubscriptionResource::make($this->subscription),
-            'profileImage' => fn () => optional($this->profileImage, fn (ProfileImage $profileImage) => ProfileImageResource::make($profileImage)),
-            // if the relationship has been loaded and is null, can we not just return the resource still and have a nice default? That way you never have to handle any of this
-            // optional noise?
-            // also is there a usecase for returning a resource linkage right from here and not a full resource?
-        ];
-    }
-}
-```
-
 
 The [advanced usage](#advanced-usage) section covers [sparse fieldsets and handling expensive attribute calculation](#sparse-fieldsets) and [minimal attribute](#minimal-attributes) payloads, but you can ignore those advanced features for now and continue on with...
 

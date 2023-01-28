@@ -487,15 +487,15 @@ class UserResource extends JsonApiResource
 
 Sparse fieldsets allow clients to limit the attributes returned for a given resource type. Sparse fieldsets are part of the JSON:API specification and work out of the box for your resources.
 
-As an example, say we are building out an index page for our blog posts. Each blog post has an "author", which is represented as a user. For this particular page design, we need access to all the post's attributes, but we only need the authors name.
+As an example, say we are building out an index page for our blog posts. Each blog post has an "author" relationship. For this particular index page, we only need to access each post's `title` and `excerpt`. For the author of the post we only need their `name`.
 
-To achieve this we will send the following request that include the author relationship and then uses sparse fieldsets to limit the attributes returned for the post and the author. The post will only contain the `title` and `excerpt` attributes, while the author will only contain the `name` attribute.
-
-
+To achieve this we will send the following request that will include the author relationship and then we will use sparse fieldsets to limit the attributes returned for each resource type. The post will only contain the `title` and `excerpt` attributes, while the author will only contain the `name` attribute.
 
 ```
 GET /posts?include=author&fields[posts]=title,excerpt&fields[users]=name
 ```
+
+You will notice that the include is `author`, while the resource type used in the sparse fieldset parameter is `users`. This is because internally in our application our "author" relationship returns a `User` model.
 
 ```json
 {

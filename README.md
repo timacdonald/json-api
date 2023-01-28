@@ -64,7 +64,7 @@ As we make our way through the examples you will notice that we have introduce n
 
 ### Creating your first JSON:API resource
 
-To get started, let's create a `UserResource` that includes a few attributes. We will assume the underlying resource, in this example an Eloquent user model, has `$user->name`, `$user->website`, and `$user->twitterHandle` attributes that we want to expose.
+To get started, let's create a `UserResource` that includes a few attributes. We will assume the underlying resource, in this example an Eloquent user model, has `$user->name`, `$user->website`, and `$user->twitter_handle` attributes that we want to expose.
 
 To achieve this, we will create an `$attributes` property on the resource.
 
@@ -85,7 +85,7 @@ class UserResource extends JsonApiResource
     public $attributes = [
         'name',
         'website',
-        'twitterHandle',
+        'twitter_handle',
     ];
 }
 ```
@@ -106,7 +106,7 @@ the following JSON:API formatted data will be returned.
     "attributes": {
       "name": "Tim",
       "website": "https://timacdonald.me",
-      "twitterHandle": "@timacdonald87"
+      "twitter_handle": "@timacdonald87"
     },
     "relationships": {},
     "meta": {},
@@ -118,13 +118,13 @@ the following JSON:API formatted data will be returned.
 
 🎉 You have just created your first JSON:API resource. Congratulations...and what. a. rush!
 
-Want to know what else is awesome? Sparse fieldsets are also available to the `UserResource` without lifting a finger. Want to retrieve the `website` and `twitterHandl`, but exclude the `name`? No sweat!
+Want to know what else is awesome? Sparse fieldsets are also available to the `UserResource` without lifting a finger. Want to retrieve the `website` and `twitter_handle`, but exclude the `name`? No sweat!
 
 Append the appropriate query parameter to the request and the attributes will be filtered as expected.
 
 #### Request
 
-`GET /users/74812?fields[users]=website,twitterHandle`
+`GET /users/74812?fields[users]=website,twitter_handle`
 
 #### Response
 
@@ -135,7 +135,7 @@ Append the appropriate query parameter to the request and the attributes will be
     "id": "74812",
     "attributes": {
       "website": "https://timacdonald.me",
-      "twitterHandle": "@timacdonald87"
+      "twitter_handle": "@timacdonald87"
     },
     "relationships": {},
     "meta": {},
@@ -174,7 +174,7 @@ class UserResource extends JsonApiResource
     public $attributes = [
         'name',
         'website',
-        'twitterHandle',
+        'twitter_handle',
     ];
 
     /**
@@ -212,7 +212,7 @@ There you have it: you officially support "compound documents". As you might exp
     "attributes": {
       "name": "Tim",
       "website": "https://timacdonald.me",
-      "twitterHandle": "@timacdonald87"
+      "twitter_handle": "@timacdonald87"
     },
     "relationships": {
       "posts": {
@@ -427,12 +427,12 @@ class UserResource extends JsonApiResource
     public $attributes = [
         'name',
         'website',
-        'twitterHandle' => 'handle',
+        'twitter_handle' => 'handle',
     ];
 }
 ```
 
-The `$user->twitterHandle` attribute will now be exposed in the response as `handle`.
+The `$user->twitter_handle` attribute will now be exposed in the response as `handle`.
 
 ```json
 {
@@ -454,7 +454,7 @@ The `$user->twitterHandle` attribute will now be exposed in the response as `han
 
 ### `toAttributes()`
 
-In some scenarios you may want more control over the attributes you expose for your resources. If that is the case, you may implement the `toAttributes()` method.
+In some scenarios you may want more control over the attributes you are exposing or access to the current request. If that is the case, you may implement the `toAttributes()` method.
 
 ```php
 <?php
@@ -474,20 +474,19 @@ class UserResource extends JsonApiResource
     public function toAttributes($request)
     {
         return [
-            // add example using request info
             'name' => $this->name,
             'website' => $this->website,
-            'handle' => $this->twitterHandle,
+            'handle' => $this->twitter_handle,
+            'email' => $this->when($this->emailIsPublic, $this->email, '<private>'),
             'address' => [
                 'city' => $this->address('city'),
                 'country' => $this->address('country'),
             ],
+            'is_me' => $request->user()->is($this->resource),
         ];
     }
 }
 ```
-
-// use of when() etc.
 
 <details>
 <summary>Example payload</summary>
@@ -507,10 +506,12 @@ class UserResource extends JsonApiResource
       "name": "Tim",
       "website": "https://timacdonald.me",
       "handle": "@timacdonald87",
+      "email": "<private>",
       "address": {
         "city": "Melbourne",
         "country": "Australia"
-      }
+      },
+      "is_me": false
     },
     "relationships": {},
     "meta": {},
@@ -525,7 +526,7 @@ class UserResource extends JsonApiResource
 
 To help improve performance for attributes that are expensive to calculate, it is possible to have attributes lazy evaluated only when they are requested by the client. This is useful if you are making requests to the database or even HTTP requests in your resource.
 
-As an example, let's imagine that we expose a base64 encoded avatar for each user. Our implementation downloads the avatar from our microservice, base64 encodes the avatar, and provides it as an attribute.
+As an example, let's imagine that we expose a base64 encoded avatar for each user. Our implementation downloads the avatar from our avatar microservice and exposes it as an attribute.
 
 ```php
 <?php
@@ -546,10 +547,12 @@ class UserResource extends JsonApiResource
     public function toAttributes($request)
     {
         return [
-            /* ... */
-            'avatar' => base64_encode(
-                Http::get('https://avatar.acme.com/'.md5($this->email))->body()
-            ),
+            'name' => $this->name,
+            'website' => $this->website,
+            'handle' => $this->twitter_handle,
+            'avatar' => Http::get('https://avatar.example.com', [
+                'email' => $this->email,
+            ])->body(),
         ];
     }
 }

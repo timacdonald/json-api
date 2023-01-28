@@ -16,6 +16,64 @@ class ResourceIdentificationTest extends TestCase
     public function testIt()
     {
         $this->assertValidJsonApi(<<<'JSON'
+{
+  "data": [
+    {
+      "id": "25240",
+      "type": "posts",
+      "attributes": {
+        "title": "So what is JSON:API all about anyway?",
+        "excerpt": "..."
+      },
+      "relationships": {
+        "author": {
+          "data": {
+            "type": "users",
+            "id": "74812",
+            "meta": {}
+          },
+          "meta": {},
+          "links": {}
+        }
+      }
+      "meta": {},
+      "links": {}
+    },
+    {
+      "id": "39974",
+      "type": "posts",
+      "attributes": {
+        "title": "Building an API with Laravel, using the JSON:API specification.",
+        "excerpt": "..."
+      },
+      "relationships": {
+        "author": {
+          "data": {
+            "type": "users",
+            "id": "74812",
+            "meta": {}
+          },
+          "meta": {},
+          "links": {}
+        }
+      }
+      "meta": {},
+      "links": {}
+    }
+  ],
+  "included": [
+    {
+      "type": "users",
+      "id": "74812",
+      "attributes": {
+        "name": "Tim"
+      },
+      "relationships": {},
+      "meta": {},
+      "links": {}
+    }
+  ]
+}
 JSON);
     }
     public function testItResolvesTheIdAndTypeOfAModel(): void

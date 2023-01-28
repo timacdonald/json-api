@@ -522,43 +522,9 @@ class UserResource extends JsonApiResource
 
 ### Lazy attribute evaluation
 
-To help improve performance for attributes that are expensive to calculate, it is possible to have attributes lazy evaluated only when they are requested by the client. This is useful if you are making requests to the database or even HTTP requests in your resource.
+To help improve performance for attributes that are expensive to calculate, it is possible to specify attributes that should be lazily evaluated. This is useful if you are making requests to the database or making HTTP requests in your resource.
 
-As an example, let's imagine that we expose a base64 encoded avatar for each user. Our implementation downloads the avatar from our avatar microservice and exposes it as an attribute.
-
-```php
-<?php
-
-namespace App\Http\Resources;
-
-use Illuminate\Support\Facades\Http;
-use TiMacDonald\JsonApi\JsonApiResource;
-
-class UserResource extends JsonApiResource
-{
-    /**
-     * The available attributes.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array<string, mixed>
-     */
-    public function toAttributes($request)
-    {
-        return [
-            'name' => $this->name,
-            'website' => $this->website,
-            'twitterHandle' => $this->twitter_handle,
-            'avatar' => Http::get('https://avatar.example.com', [
-                'email' => $this->email,
-            ])->body(),
-        ];
-    }
-}
-```
-
-The above implementation would make a HTTP request to our microservice even when the client is exluding the `avatar` attribute via [sparse fieldsets](#sparse-fieldsets).
-
-If we wrap this attribute in a Closure, it will only be evaluated when the `avatar` is to be returned in the response. This means we can remove the need for a HTTP request and improve performance in some cases.
+As an example, let's imagine that we expose a base64 encoded avatar for each user. Our implementation downloads the avatar from our avatar microservice.
 
 ```php
 <?php
@@ -580,9 +546,39 @@ class UserResource extends JsonApiResource
     {
         return [
             /* ... */
-            'avatar' => fn () => base64_encode(
-                Http::get('https://avatar.acme.com/'.md5($this->email))->body()
-            ),
+            'avatar' => Http::get('https://avatar.example.com', [
+                'email' => $this->email,
+            ])->body(),
+        ];
+    }
+}
+```
+
+This implementation would make a HTTP request to our microservice even when the client is excluding the `avatar` attribute via [sparse fieldsets](#sparse-fieldsets), however if we wrap this attribute in a Closure it will only be evaluated when the `avatar` is to be returned in the response. This means we can remove the need for a HTTP request and improve performance.
+
+```php
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Support\Facades\Http;
+use TiMacDonald\JsonApi\JsonApiResource;
+
+class UserResource extends JsonApiResource
+{
+    /**
+     * The available attributes.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array<string, mixed>
+     */
+    public function toAttributes($request)
+    {
+        return [
+            /* ... */
+            'avatar' => fn () => Http::get('https://avatar.example.com', [
+                'email' => $this->email,
+            ])->body(),
         ];
     }
 }

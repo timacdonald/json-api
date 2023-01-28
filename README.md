@@ -276,6 +276,7 @@ This package does not handle [eager loading](https://laravel.com/docs/eloquent-r
 namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
+use App\Models\User;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class UserController

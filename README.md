@@ -296,6 +296,8 @@ class UserController
 
 ## Digging deeper
 
+We have now covered the basics of exposing attributes and relationships, so we will dive into some more advanced topics to give you even more control over your API responses.
+
 ### Attributes
 
 As we saw in the [Creating your first JSON:API resource](#creating-your-first-jsonapi-resource) section, the `$attributes` property is the fastest way to expose resource attributes. However, in some scenarios more complex configurations are required.

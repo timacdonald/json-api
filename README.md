@@ -82,7 +82,9 @@ use TiMacDonald\JsonApi\JsonApiResource;
 
 class UserResource extends JsonApiResource
 {
-    /** @var array<int, string> */
+    /**
+     * @var array<int, string>
+     */
     public $attributes = [
         'name',
         'website',

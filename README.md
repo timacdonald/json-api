@@ -553,7 +553,7 @@ class UserResource extends JsonApiResource
 }
 ```
 
-This implementation would make a HTTP request to our microservice even when the client is excluding the `avatar` attribute via sparse fieldsets or minimal attributes, however if we wrap this attribute in a Closure it will only be evaluated when the `avatar` is to be returned. This means we can remove the need for a HTTP request and improve performance.
+The above implementation would make a HTTP request to our microservice even when the client is excluding the `avatar` attribute via sparse fieldsets or minimal attributes. To improve performance when this attribute is not being returned we can wrap the value in a Closure. The Closure will only be evaluated when the `avatar` is to be returned.
 
 ```php
 <?php

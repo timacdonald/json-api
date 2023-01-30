@@ -524,9 +524,7 @@ class UserResource extends JsonApiResource
     {
         return [
             // ...
-            'avatar' => Http::get('https://avatar.example.com', [
-                'email' => $this->email,
-            ])->body(),
+            'avatar' => Http::get("https://avatar.example.com/{$this->id}")->body(),
         ];
     }
 }

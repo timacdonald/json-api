@@ -18,8 +18,8 @@ A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API st
         - [Remapping `$attributes`](#remapping-attributes)
         - [`toAttributes()`](#toAttributes)
         - [Sparse fieldsets](#sparse-fieldsets)
-        - [Lazy attribute evaluation](#lazy-attribute-evaluation)
         - [Minimal attributes](#minimal-attributes)
+        - [Lazy attribute evaluation](#lazy-attribute-evaluation)
     - [Relationships](#relationships)
 
 ## Version support
@@ -128,8 +128,8 @@ We will now dive into adding relationships to your `UserResource`, but if you wo
 - [Remapping `$attributes`](#remapping-attributes)
 - [`toAttributes()`](#toAttributes)
 - [Sparse fieldsets](#sparse-fieldsets)
-- [Lazy attribute evaluation](#lazy-attribute-evaluation)
 - [Minimal attributes](#minimal-attributes)
+- [Lazy attribute evaluation](#lazy-attribute-evaluation)
 
 ### Adding relationships
 
@@ -500,6 +500,29 @@ GET /posts?include=author&fields[posts]=title,excerpt&fields[users]=name
 ```
 </details>
 
+#### Minimal attributes
+
+Out of the box, resources expose a maximal attribute payload when [sparse fieldsets](#sparse-fieldsets) are not in use i.e. all declared attributes on the resource are returned. If you prefer to instead make it that sparse fieldsets are required in order to retrieve _any_ attributes, you may call the `minimalAttributes()` method in a service provider.
+
+```php
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Support\ServiceProvider;
+use TiMacDonald\JsonApi\JsonApiResource;
+
+class AppServiceProvider extends ServiceProvider
+{
+    public function boot()
+    {
+        JsonApiResource::minimalAttributes();
+
+        // ...
+    }
+}
+```
+
 #### Lazy attribute evaluation
 
 For attributes that are expensive to calculate, it is possible to have them evaluated _only_ when they are to be included in the response, i.e. they have not been excluded via [sparse fieldsets](#sparse-fieldsets). This may be useful if you are interacting with database or making HTTP requests in a resource.
@@ -530,7 +553,7 @@ class UserResource extends JsonApiResource
 }
 ```
 
-This implementation would make a HTTP request to our microservice even when the client is excluding the `avatar` attribute via [sparse fieldsets](#sparse-fieldsets), however if we wrap this attribute in a Closure it will only be evaluated when the `avatar` is to be returned. This means we can remove the need for a HTTP request and improve performance.
+This implementation would make a HTTP request to our microservice even when the client is excluding the `avatar` attribute via [sparse fieldsets](#sparse-fieldsets) or [minimal attributes](#minimal-attributes), however if we wrap this attribute in a Closure it will only be evaluated when the `avatar` is to be returned. This means we can remove the need for a HTTP request and improve performance.
 
 ```php
 <?php
@@ -556,27 +579,6 @@ class UserResource extends JsonApiResource
 }
 ```
 
-#### Minimal attributes
-
-Out of the box, resources expose a maximal attribute payload when [sparse fieldsets](#sparse-fieldsets) are not in use i.e. all declared attributes in the resource are returned. If you prefer to instead make it that sparse fieldsets are required in order to retrieve _any_ attributes, you may call the `minimalAttributes()` method in a service provider.
-
-```php
-<?php
-
-namespace App\Providers;
-
-use TiMacDonald\JsonApi\JsonApiResource;
-
-class AppServiceProvider extends ServiceProvider
-{
-    public function boot()
-    {
-        JsonApiResource::minimalAttributes();
-
-        // ...
-    }
-}
-```
 
 ### Relationships
 

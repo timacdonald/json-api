@@ -266,7 +266,7 @@ To learn about more complex relationship features you may like to jump ahead:
 
 ## A note on eager loading
 
-This package does not [eager loading](https://laravel.com/docs/eloquent-relationships#eager-loading) Eloquent relationships. If a relationship is not eagerly loaded, the package will lazy load the relationship on the fly. I _highly_ recommend using [Spatie's query builder](https://spatie.be/docs/laravel-query-builder/) which is built for eager loading against the JSON:API query parameter standards. Spatie provide comprehensive documentation on how to use the package, but I will briefly give an example of how you might use this in a controller.
+This package does not [eager loading](https://laravel.com/docs/eloquent-relationships#eager-loading) Eloquent relationships. If a relationship is not eagerly loaded, the package will lazy load the relationship on the fly, which may be problematic for your application. I _highly_ recommend using [Spatie's query builder](https://spatie.be/docs/laravel-query-builder/) which is built for eager loading against the JSON:API query parameter standards. Spatie provide comprehensive documentation on how to use the package, but I will briefly give an example of how you might use this in a controller.
 
 ```php
 <?php

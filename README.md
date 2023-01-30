@@ -123,7 +123,7 @@ the following JSON:API formatted data will be returned:
 
 Congratulations...and what. a. rush!
 
-We will now dive into adding relationships to your `UserResource`, but if you would like to explore more complex attribute features, you may like to jump ahead:
+We will now dive into adding relationships to your `UserResource`, but if you would like to explore more complex attribute features you may like to jump ahead:
 
 - [Remapping `$attributes`](#remapping-attributes)
 - [`toAttributes()`](#toAttributes)

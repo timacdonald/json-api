@@ -303,7 +303,7 @@ class UserController
 
 ## Digging deeper
 
-We have now covered the basics of exposing attributes and relationships, so we will dive into some more advanced topics to give you even more control over your API responses.
+We have now covered the basics of exposing attributes and relationships on your resources. We will now cover more advanced topics to give you even greater control.
 
 ### Attributes
 

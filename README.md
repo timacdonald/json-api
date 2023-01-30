@@ -433,7 +433,7 @@ To achieve this we will send the following request.
 GET /posts?include=author&fields[posts]=title,excerpt&fields[users]=name
 ```
 
-> **Note** The include query parameter is `author` while the sparse fieldset parameter is `users`. This is because authors _are_ users, e.g. the Eloquent `author()` relationship returns a `User` model.
+> **Note** The `include` query parameter key is `author`, while the sparse fieldset parameter key is `users`. This is because authors _are_ users, e.g. the Eloquent `author()` relationship returns a `User` model.
 
 <details>
 <summary>Example response</summary>

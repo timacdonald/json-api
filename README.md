@@ -355,7 +355,7 @@ The `twitter_handle` attribute will now be exposed as camel case, i.e. `twitterH
 
 #### `toAttributes()`
 
-In some scenarios you may need complete control over the attributes you are exposing or access to the current request. If that is the case, you may implement the `toAttributes()` method.
+In some scenarios you may need greater control over the attributes you are exposing. If that is the case, you may implement the `toAttributes()` method. This will grant you access to the current request and also allow for conditionals.
 
 ```php
 <?php
@@ -367,8 +367,6 @@ use TiMacDonald\JsonApi\JsonApiResource;
 class UserResource extends JsonApiResource
 {
     /**
-     * The available attributes.
-     *
      * @param  \Illuminate\Http\Request  $request
      * @return array<string, mixed>
      */

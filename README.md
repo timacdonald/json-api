@@ -530,7 +530,7 @@ class UserResource extends JsonApiResource
 }
 ```
 
-This implementation would make a HTTP request to our microservice even when the client is excluding the `avatar` attribute via [sparse fieldsets](#sparse-fieldsets), however if we wrap this attribute in a Closure it will only be evaluated when the `avatar` is to be returned in the response. This means we can remove the need for a HTTP request and improve performance.
+This implementation would make a HTTP request to our microservice even when the client is excluding the `avatar` attribute via [sparse fieldsets](#sparse-fieldsets), however if we wrap this attribute in a Closure it will only be evaluated when the `avatar` is to be returned. This means we can remove the need for a HTTP request and improve performance.
 
 ```php
 <?php
@@ -543,18 +543,14 @@ use TiMacDonald\JsonApi\JsonApiResource;
 class UserResource extends JsonApiResource
 {
     /**
-     * The available attributes.
-     *
      * @param  \Illuminate\Http\Request  $request
      * @return array<string, mixed>
      */
     public function toAttributes($request)
     {
         return [
-            /* ... */
-            'avatar' => fn () => Http::get('https://avatar.example.com', [
-                'email' => $this->email,
-            ])->body(),
+            // ...
+            'avatar' => fn () => Http::get("https://avatar.example.com/{$this->id}")->body(),
         ];
     }
 }

@@ -525,7 +525,7 @@ class AppServiceProvider extends ServiceProvider
 
 #### Lazy attribute evaluation
 
-For attributes that are expensive to calculate, it is possible to have them evaluated _only_ when they are to be included in the response, i.e. they have not been excluded via [sparse fieldsets](#sparse-fieldsets). This may be useful if you are interacting with database or making HTTP requests in a resource.
+For attributes that are expensive to calculate, it is possible to have them evaluated _only_ when they are to be included in the response, i.e. they have not been excluded via [sparse fieldsets](#sparse-fieldsets) or [minimal attributes](#minimal-attributes). This may be useful if you are interacting with database or making HTTP requests in a resource.
 
 As an example, let's imagine that we expose a base64 encoded avatar for each user. Our implementation downloads the avatar from our avatar microservice.
 
@@ -553,7 +553,7 @@ class UserResource extends JsonApiResource
 }
 ```
 
-This implementation would make a HTTP request to our microservice even when the client is excluding the `avatar` attribute via [sparse fieldsets](#sparse-fieldsets) or [minimal attributes](#minimal-attributes), however if we wrap this attribute in a Closure it will only be evaluated when the `avatar` is to be returned. This means we can remove the need for a HTTP request and improve performance.
+This implementation would make a HTTP request to our microservice even when the client is excluding the `avatar` attribute via sparse fieldsets or minimal attributes, however if we wrap this attribute in a Closure it will only be evaluated when the `avatar` is to be returned. This means we can remove the need for a HTTP request and improve performance.
 
 ```php
 <?php

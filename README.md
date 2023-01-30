@@ -502,7 +502,7 @@ GET /posts?include=author&fields[posts]=title,excerpt&fields[users]=name
 
 #### Lazy attribute evaluation
 
-To help improve performance for attributes that are expensive to calculate, it is possible to specify attributes that should be lazily evaluated. This is useful if you are making requests to the database or making HTTP requests in your resource.
+For attributes that are expensive to calculate, it is possible to have them lazily evaluated only when they are not excluded by [sparse fieldsets](#sparse-fieldsets). This may be useful if you are making requests to the database or making HTTP requests in a resource.
 
 As an example, let's imagine that we expose a base64 encoded avatar for each user. Our implementation downloads the avatar from our avatar microservice.
 
@@ -517,15 +517,13 @@ use TiMacDonald\JsonApi\JsonApiResource;
 class UserResource extends JsonApiResource
 {
     /**
-     * The available attributes.
-     *
      * @param  \Illuminate\Http\Request  $request
      * @return array<string, mixed>
      */
     public function toAttributes($request)
     {
         return [
-            /* ... */
+            // ...
             'avatar' => Http::get('https://avatar.example.com', [
                 'email' => $this->email,
             ])->body(),

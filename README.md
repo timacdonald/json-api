@@ -173,7 +173,7 @@ class UserResource extends JsonApiResource
 
 `GET /users/74812?include=posts,license`
 
-> **Note** Relationships are not included in the response unless the calling client specifically requests them via the `include` query parameter. This is intended and is part of the JSON:API specification.
+> **Note** Relationships are not included in the response unless they are requested by the calling client via the `include` query parameter. This is intended and is part of the JSON:API specification.
 
 #### Response
 

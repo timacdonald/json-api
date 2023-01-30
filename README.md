@@ -148,8 +148,6 @@ use TiMacDonald\JsonApi\JsonApiResource;
 class UserResource extends JsonApiResource
 {
     /**
-     * The available attributes.
-     *
      * @var array<int, string>
      */
     public $attributes = [
@@ -159,8 +157,6 @@ class UserResource extends JsonApiResource
     ];
 
     /**
-     * The available relationships.
-     *
      * @var array<string, class-string<JsonApiResource>>
      */
     public $relationships = [

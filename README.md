@@ -525,7 +525,7 @@ class AppServiceProvider extends ServiceProvider
 
 #### Lazy attribute evaluation
 
-For attributes that are expensive to calculate, it is possible to have them evaluated _only_ when they are to be included in the response, i.e. they have not been excluded via [sparse fieldsets](#sparse-fieldsets) or [minimal attributes](#minimal-attributes). This may be useful if you are interacting with database or making HTTP requests in a resource.
+For attributes that are expensive to calculate, it is possible to have them evaluated _only_ when they are to be included in the response, i.e. they have not been excluded via [sparse fieldsets](#sparse-fieldsets) or [minimal attributes](#minimal-attributes). This may be useful if you are interacting with a database or making HTTP requests in a resource.
 
 As an example, let's imagine that we expose a base64 encoded avatar for each user. Our implementation downloads the avatar from our avatar microservice.
 

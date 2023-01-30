@@ -37,7 +37,7 @@ composer require timacdonald/json-api
 
 ## Getting started
 
-The `JsonApiResource` class provided by this package is a specialisation of Laravel's [Eloquent API resources](https://laravel.com/docs/eloquent-resources). All the public facing APIs are still accessible. In a controller, for example, you interact with `JsonApiResource` classes as you would with Laravel's standard `JsonResource` class.
+The `JsonApiResource` class provided by this package is a specialisation of Laravel's [Eloquent API resources](https://laravel.com/docs/eloquent-resources). All the public facing APIs are still accessible; in a controller, for example, you interact with `JsonApiResource` classes as you would with Laravel's `JsonResource` class.
 
 ```php
 <?php
@@ -65,7 +65,7 @@ class UserController
 }
 ```
 
-As we make our way through the examples you will notice that we have introduce new APIs for interacting with the class _internally_, e.g. you no longer implement the `toArray()` method.
+As we make our way through the examples you will see that we have introduce new APIs for interacting with the class _internally_, e.g. the `toArray()` method is no longer used.
 
 ### Creating your first JSON:API resource
 

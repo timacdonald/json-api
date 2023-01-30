@@ -83,7 +83,7 @@ use TiMacDonald\JsonApi\JsonApiResource;
 class UserResource extends JsonApiResource
 {
     /**
-     * @var array<int, string>
+     * @var string[]
      */
     public $attributes = [
         'name',
@@ -148,7 +148,7 @@ use TiMacDonald\JsonApi\JsonApiResource;
 class UserResource extends JsonApiResource
 {
     /**
-     * @var array<int, string>
+     * @var string[]
      */
     public $attributes = [
         'name',

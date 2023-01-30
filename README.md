@@ -425,7 +425,7 @@ Sparse fieldsets are a feature of the JSON:API specification that allows clients
 
 We will cover them briefly here, but we recommend reading the specification to learn more.
 
-As an example, say we are building out an index page for our blog posts where we show the post title, excerpt, and the authors name. If the client wishes, they may limit the response to only include these attributes for the returned resources.
+As an example, say we are building out an index page for our blog posts. The page will show each post's title and excerpt, and also the name of the post's author. If the client wishes, they may limit the response to only include these attributes for the returned resources.
 
 To achieve this we will send the following request.
 

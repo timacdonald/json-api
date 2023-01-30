@@ -323,9 +323,7 @@ use TiMacDonald\JsonApi\JsonApiResource;
 class UserResource extends JsonApiResource
 {
     /**
-     * The available attributes.
-     *
-     * @var array<array-key, string>
+     * @var array<int|string, string>
      */
     public $attributes = [
         'name',

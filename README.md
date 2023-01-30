@@ -135,8 +135,8 @@ We will now dive into adding relationships to your `UserResource`, but if you wo
 
 Available relationships may be specified in a `$relationships` property, similar to the [`$attributes` property](#creating-your-first-jsonapi-resource). We will expose two relationships:
 
-- `$user->license`: a `toOne` / `HasOne` relationship.
-- `$user->posts`: a `toMany` / `HasMany` relationship.
+- `$user->license`: a "toOne" / `HasOne` relationship.
+- `$user->posts`: a "toMany" / `HasMany` relationship.
 
 ```php
 <?php

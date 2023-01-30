@@ -69,7 +69,7 @@ As we make our way through the examples you will see that we have introduce new 
 
 ### Creating your first JSON:API resource
 
-To get started, let's create a `UserResource` that includes a few attributes. We will assume the underlying resource, in this example an Eloquent user model, has `$user->name`, `$user->website`, and `$user->twitter_handle` attributes that we want to expose.
+To get started, let's create a `UserResource` that includes a few attributes. We will assume the underlying resource, in this example an Eloquent user model, has `$user->name`, `$user->website`, and `$user->twitter_handle` attributes that we want to expose in the response.
 
 To achieve this, we will create an `$attributes` property on the resource.
 
@@ -82,11 +82,7 @@ use TiMacDonald\JsonApi\JsonApiResource;
 
 class UserResource extends JsonApiResource
 {
-    /**
-     * The available attributes.
-     *
-     * @var array<int, string>
-     */
+    /** @var array<int, string> */
     public $attributes = [
         'name',
         'website',

@@ -558,7 +558,7 @@ class UserResource extends JsonApiResource
 
 #### Minimal attributes
 
-Out of the box resources expose a maximal attribute payload when [sparse fieldsets](#sparse-fieldsets) are not used i.e. all declared attributes in the resource are returned. If you prefer to instead make it that sparse fieldsets are required in order to retrieve _any_ attributes, you may call the `minimalAttributes()` method in a service provider.
+Out of the box, resources expose a maximal attribute payload when [sparse fieldsets](#sparse-fieldsets) are not in use i.e. all declared attributes in the resource are returned. If you prefer to instead make it that sparse fieldsets are required in order to retrieve _any_ attributes, you may call the `minimalAttributes()` method in a service provider.
 
 ```php
 <?php

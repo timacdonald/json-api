@@ -71,7 +71,22 @@ As we make our way through the examples you will see that new APIs are introduce
 
 To get started, let's create a `UserResource` for our `App\Models\User`. We want to return the model's `$user->name`, `$user->website`, and `$user->twitter_handle` attributes in the response.
 
-To achieve this, we will create an `$attributes` property on the resource.
+First we will create a new API resource that extends `JsonApiResource`.
+
+```php
+<?php
+
+namespace App\Http\Resources;
+
+use TiMacDonald\JsonApi\JsonApiResource;
+
+class UserResource extends JsonApiResource
+{
+    //
+}
+```
+
+We may then create an `$attributes` property on the API resource and list the model's attributes we want to return.
 
 ```php
 <?php

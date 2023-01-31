@@ -2,7 +2,7 @@
 
 # JSON:API Resource for Laravel
 
-A lightweight JSON Resource for Laravel that helps you adhere to the JSON:API standard with support for sparse fieldsets, compound documents, and more.
+A lightweight API Resource for Laravel that helps you adhere to the `JSON:API` standard. Supports sparse fieldsets, compound documents, and more.
 
 > **Note** These docs are not designed to introduce you to the JSON:API specification and the associated concepts, instead you should [head over and read the specification](https://jsonapi.org) if you are not yet familiar with it. The documentation that follows only contains information on _how_ to implement the specification via the package.
 

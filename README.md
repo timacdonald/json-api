@@ -114,7 +114,7 @@ When making a request to an endpoint that returns the `UserResource`, for exampl
 Route::get('users/{user}', fn (User $user) => UserResource::make($user));
 ```
 
-the following `JSON:API` formatted data will be returned:
+The following `JSON:API` formatted data would be returned:
 
 ```json
 {

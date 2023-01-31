@@ -110,8 +110,8 @@ class UserResource extends JsonApiResource
 
 When making a request to an endpoint that returns the `UserResource`, for example:
 
-```
-GET /users/74812
+```php
+Route::get('users/{user}', fn (User $user) => UserResource::make($user));
 ```
 
 the following `JSON:API` formatted data will be returned:

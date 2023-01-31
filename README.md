@@ -69,7 +69,7 @@ As we make our way through the examples you will see that new APIs are introduce
 
 ### Creating your first `JSON:API` resource
 
-To get started, let's create a `UserResource` for our `App\Models\User`. We want to return the model's `$user->name`, `$user->website`, and `$user->twitter_handle` attributes in the response.
+To get started, let's create a `UserResource` for our user model. We want to return the model's `$user->name`, `$user->website`, and `$user->twitter_handle` attributes in the response.
 
 First we will create a new API resource that extends `TiMacDonald\JsonApi\JsonApiResource`.
 

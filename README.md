@@ -86,7 +86,7 @@ class UserResource extends JsonApiResource
 }
 ```
 
-We may then create an `$attributes` property on the API resource and list the model's attributes we want to return.
+We will now create an `$attributes` property and list the model's attributes we want to return.
 
 ```php
 <?php

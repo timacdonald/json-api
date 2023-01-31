@@ -69,7 +69,7 @@ As we make our way through the examples you will see that new APIs are introduce
 
 ### Creating your first JSON:API resource
 
-To get started, let's create a `UserResource` that includes a few attributes. We will assume the underlying resource, in this example an Eloquent user model, has `$user->name`, `$user->website`, and `$user->twitter_handle` attributes that we want to expose in the response.
+To get started, let's create a `UserResource` for our `App\Models\User`. We want to return the `$user->name`, `$user->website`, and `$user->twitter_handle` model attributes in the response.
 
 To achieve this, we will create an `$attributes` property on the resource.
 

@@ -1,16 +1,16 @@
 <p align="center"><img src="https://raw.githubusercontent.com/timacdonald/json-api/main/art/header.png" alt="JSON:API Resource: a Laravel package by Tim MacDonald"></p>
 
-# JSON:API Resource for Laravel
+# `JSON:API` Resource for Laravel
 
 A lightweight API resource for Laravel that helps you adhere to the `JSON:API` standard. Supports sparse fieldsets, compound documents, and more.
 
-> **Note** These docs are not designed to introduce you to the JSON:API specification and the associated concepts, instead you should [head over and read the specification](https://jsonapi.org) if you are not yet familiar with it. The documentation that follows only covers _how_ to implement the specification via the package.
+> **Note** These docs are not designed to introduce you to the `JSON:API` specification and the associated concepts, instead you should [head over and read the specification](https://jsonapi.org) if you are not yet familiar with it. The documentation that follows only covers _how_ to implement the specification via the package.
 
 **Table of contents**
 - [Version support](#version-support)
 - [Installation](#installation)
 - [Getting started](#getting-started)
-    - [Creating your first JSON:API resource](#creating-your-first-jsonapi-resource)
+    - [Creating your first `JSON:API` resource](#creating-your-first-jsonapi-resource)
     - [Adding relationships](#adding-relationships)
 - [A note on eager loading](#a-note-on-eager-loading)
 - [Digging deeper](#digging-deeper)
@@ -67,7 +67,7 @@ class UserController
 
 As we make our way through the examples you will see that new APIs are introduced when interacting with the class _internally_, e.g. the `toArray()` method is no longer used.
 
-### Creating your first JSON:API resource
+### Creating your first `JSON:API` resource
 
 To get started, let's create a `UserResource` for our `App\Models\User`. We want to return the model's `$user->name`, `$user->website`, and `$user->twitter_handle` attributes in the response.
 
@@ -114,7 +114,7 @@ When making a request to an endpoint that returns the `UserResource`, for exampl
 GET /users/74812
 ```
 
-the following JSON:API formatted data will be returned:
+the following `JSON:API` formatted data will be returned:
 
 ```json
 {
@@ -134,7 +134,7 @@ the following JSON:API formatted data will be returned:
 }
 ```
 
-🎉 You have just created your first JSON:API resource 🎉
+🎉 You have just created your first `JSON:API` resource 🎉
 
 Congratulations...and what. a. rush!
 
@@ -188,7 +188,7 @@ class UserResource extends JsonApiResource
 
 `GET /users/74812?include=posts,license`
 
-> **Note** Relationships are not included in the response unless they are requested by the calling client via the `include` query parameter. This is intended and is part of the JSON:API specification.
+> **Note** Relationships are not included in the response unless they are requested by the calling client via the `include` query parameter. This is intended and is part of the `JSON:API` specification.
 
 #### Response
 
@@ -237,7 +237,7 @@ class UserResource extends JsonApiResource
       "id": "25240",
       "type": "posts",
       "attributes": {
-        "title": "So what is JSON:API all about anyway?",
+        "title": "So what is `JSON:API` all about anyway?",
         "content": "...",
         "excerpt": "..."
       },
@@ -249,7 +249,7 @@ class UserResource extends JsonApiResource
       "id": "39974",
       "type": "posts",
       "attributes": {
-        "title": "Building an API with Laravel, using the JSON:API specification.",
+        "title": "Building an API with Laravel, using the `JSON:API` specification.",
         "content": "...",
         "excerpt": "..."
       },
@@ -281,7 +281,7 @@ To learn about more complex relationship features you may like to jump ahead:
 
 ## A note on eager loading
 
-This package does not [eager loading](https://laravel.com/docs/eloquent-relationships#eager-loading) Eloquent relationships. If a relationship is not eagerly loaded, the package will lazy load the relationship on the fly. I _highly_ recommend using [Spatie's query builder](https://spatie.be/docs/laravel-query-builder/) package which will eager load your models against the JSON:API query parameter standards.
+This package does not [eager loading](https://laravel.com/docs/eloquent-relationships#eager-loading) Eloquent relationships. If a relationship is not eagerly loaded, the package will lazy load the relationship on the fly. I _highly_ recommend using [Spatie's query builder](https://spatie.be/docs/laravel-query-builder/) package which will eager load your models against the `JSON:API` query parameter standards.
 
 Spatie provide comprehensive documentation on how to use the package, but I will briefly give an example of how you might use this in a controller.
 
@@ -322,7 +322,7 @@ We have now covered the basics of exposing attributes and relationships on your 
 
 ### Attributes
 
-As we saw in the [Creating your first JSON:API resource](#creating-your-first-jsonapi-resource) section, the `$attributes` property is the fastest way to expose resource attributes. However, in some scenarios more complex configurations are required.
+As we saw in the [Creating your first `JSON:API` resource](#creating-your-first-jsonapi-resource) section, the `$attributes` property is the fastest way to expose resource attributes. However, in some scenarios more complex configurations are required.
 
 #### Remapping `$attributes`
 
@@ -436,7 +436,7 @@ class UserResource extends JsonApiResource
 
 #### Sparse fieldsets
 
-Sparse fieldsets are a feature of the JSON:API specification that allows clients to specify which attributes, for any given resource type, they would like to receive. This allows for more deterministic responses, while also improving server-side performance and reducing payload sizes. Sparse fieldsets work out of the box for your resources.
+Sparse fieldsets are a feature of the `JSON:API` specification that allows clients to specify which attributes, for any given resource type, they would like to receive. This allows for more deterministic responses, while also improving server-side performance and reducing payload sizes. Sparse fieldsets work out of the box for your resources.
 
 We will cover them briefly here, but we recommend reading the specification to learn more.
 
@@ -460,7 +460,7 @@ GET /posts?include=author&fields[posts]=title,excerpt&fields[users]=name
       "id": "25240",
       "type": "posts",
       "attributes": {
-        "title": "So what is JSON:API all about anyway?",
+        "title": "So what is `JSON:API` all about anyway?",
         "excerpt": "..."
       },
       "relationships": {
@@ -481,7 +481,7 @@ GET /posts?include=author&fields[posts]=title,excerpt&fields[users]=name
       "id": "39974",
       "type": "posts",
       "attributes": {
-        "title": "Building an API with Laravel, using the JSON:API specification.",
+        "title": "Building an API with Laravel, using the `JSON:API` specification.",
         "excerpt": "..."
       },
       "relationships": {
@@ -601,7 +601,7 @@ class UserResource extends JsonApiResource
 
 ## Resource Identification
 
-[JSON:API docs: Identification](https://jsonapi.org/format/#document-resource-object-identification)
+`[JSON:API` docs: Identification](https://jsonapi.org/format/#document-resource-object-identification)
 
 We have defined a sensible default for you so you can hit the ground running without having to fiddle with the small stuff.
 
@@ -616,7 +616,7 @@ Nice. Well that was easy, so let's move onto...
 
 ## Resource Relationships
 
-[JSON:API docs: Relationships](https://jsonapi.org/format/#document-resource-object-relationships)
+`[JSON:API` docs: Relationships](https://jsonapi.org/format/#document-resource-object-relationships)
 
 Just like we saw with attributes above, we can specify relationships that should be available on the resource by using the `toRelationships(Request $request)` method, however with relationships you should _always_ wrap the values in a `Closure`.
 
@@ -645,7 +645,7 @@ Each `Closure` is only resolved when the relationship has been included by the c
 
 ### Including relationships
 
-[JSON:API docs: Inclusion of Related Resources](https://jsonapi.org/format/#fetching-includes)
+`[JSON:API` docs: Inclusion of Related Resources](https://jsonapi.org/format/#fetching-includes)
 
 As previously mentioned, relationships are not included in the response unless the calling client requests them. To do this, the calling client needs to "include" them by utilising the `include` query parameter.
 
@@ -662,7 +662,7 @@ As previously mentioned, relationships are not included in the response unless t
 
 ## Resource Links
 
-[JSON:API docs: Links](https://jsonapi.org/format/#document-resource-object-links)
+`[JSON:API` docs: Links](https://jsonapi.org/format/#document-resource-object-links)
 
 To provide links for a resource, you can implement the `toLinks($request)` method...
 
@@ -685,7 +685,7 @@ class UserResource extends JsonApiResource
 
 ## Resource Meta
 
-[JSON:API docs: Meta](https://jsonapi.org/format/#document-meta)
+`[JSON:API` docs: Meta](https://jsonapi.org/format/#document-meta)
 
 To provide meta information for a resource, you can implement the `toMeta($request)` method...
 
@@ -703,9 +703,9 @@ class UserResource extends JsonApiResource
 }
 ```
 
-## Refactoring to the JSON:API standard
+## Refactoring to the `JSON:API` standard
 
-If you have an existing API that utilises Laravel's `JsonApiResource` or other values that you would like to migrate over to the JSON:API standard via this package, it might be a big job. For this reason, we've enabled you to migrate piece by piece so you can slowly refactor your API.
+If you have an existing API that utilises Laravel's `JsonApiResource` or other values that you would like to migrate over to the `JSON:API` standard via this package, it might be a big job. For this reason, we've enabled you to migrate piece by piece so you can slowly refactor your API.
 
 From a relationship `Closure` you can return anything. If what you return is not a `JsonApiResource` or `JsonApiResourceCollection`, then the value will be "inlined" in the relationships object.
 
@@ -792,7 +792,7 @@ Although it is not recommended, you can also override the `toType(Request $reque
 
 ## Resource Relationships
 
-[JSON:API docs: Inclusion of Related Resources](https://jsonapi.org/format/#fetching-includes)
+`[JSON:API` docs: Inclusion of Related Resources](https://jsonapi.org/format/#fetching-includes)
 
 Relationships can be resolved deeply and also multiple relationship paths can be included. Of course you should be careful about n+1 issues, which is why we recommend using this package in conjunction with [Spatie's Query Builder](https://github.com/spatie/laravel-query-builder/).
 

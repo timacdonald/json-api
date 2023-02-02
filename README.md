@@ -348,7 +348,7 @@ class UserResource extends JsonApiResource
 }
 ```
 
-The `twitter_handle` attribute will now be exposed as camel case, i.e. `twitterHandle`, instead of snake case.
+The `twitter_handle` attribute will now be exposed as camel case, i.e. `twitterHandle`, instead of snake case as seen in the following response.
 
 ```json
 {
@@ -401,14 +401,7 @@ class UserResource extends JsonApiResource
 }
 ```
 
-<details>
-<summary>Example response</summary>
-
-##### Request
-
-`GET /users/74812`
-
-##### Response
+##### Example Response
 
 ```json
 {
@@ -432,7 +425,6 @@ class UserResource extends JsonApiResource
   "included": []
 }
 ```
-</details>
 
 #### Sparse fieldsets
 

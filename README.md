@@ -181,16 +181,11 @@ class UserResource extends JsonApiResource
 }
 ```
 
-<details>
-<summary>Example response</summary>
-
-#### Request
+##### Example request and response
 
 `GET /users/74812?include=posts,license`
 
 > **Note** Relationships are not included in the response unless they are requested by the calling client via the `include` query parameter. This is intended and is part of the `JSON:API` specification.
-
-#### Response
 
 ```json
 {
@@ -270,7 +265,6 @@ class UserResource extends JsonApiResource
   ]
 }
 ```
-</details>
 
 > **Note** Whether to return a `toOne` or `toMany` relationship is be handled automatically 🤖
 

@@ -501,7 +501,7 @@ GET /posts?include=author&fields[posts]=title,excerpt&fields[users]=name
 
 #### Minimal attributes
 
-Out of the box, resources expose a maximal attribute payload when [sparse fieldsets](#sparse-fieldsets) are not in use i.e. all declared attributes on the resource are returned. If you prefer to instead make it that sparse fieldsets are required in order to retrieve _any_ attributes, you may call the `minimalAttributes()` method in a service provider.
+Resources expose a maximal attribute payload when [sparse fieldsets](#sparse-fieldsets) are not in use i.e. all declared attributes on the resource are returned. If you prefer to instead make it that sparse fieldsets are required in order to retrieve _any_ attributes, you may call the `minimalAttributes()` method in a service provider.
 
 ```php
 <?php
@@ -627,23 +627,6 @@ class UserResource extends JsonApiResource
 
 Each `Closure` is only resolved when the relationship has been included by the client...
 
-### Including relationships
-
-`[JSON:API` docs: Inclusion of Related Resources](https://jsonapi.org/format/#fetching-includes)
-
-As previously mentioned, relationships are not included in the response unless the calling client requests them. To do this, the calling client needs to "include" them by utilising the `include` query parameter.
-
-```sh
-# Include the posts...
-/api/users/8?include=posts
-
-# Include the subscription...
-/api/users/8?include=subscription
-
-# Include both...
-/api/users/8?include=posts,subscription
-```
-
 ## Resource Links
 
 `[JSON:API` docs: Links](https://jsonapi.org/format/#document-resource-object-links)
@@ -684,49 +667,6 @@ class UserResource extends JsonApiResource
             'resourceDeprecated' => true,
         ];
     }
-}
-```
-
-## Refactoring to the `JSON:API` standard
-
-If you have an existing API that utilises Laravel's `JsonApiResource` or other values that you would like to migrate over to the `JSON:API` standard via this package, it might be a big job. For this reason, we've enabled you to migrate piece by piece so you can slowly refactor your API.
-
-From a relationship `Closure` you can return anything. If what you return is not a `JsonApiResource` or `JsonApiResourceCollection`, then the value will be "inlined" in the relationships object.
-
-```php
-<?php
-
-class UserResource extends JsonApiResource
-{
-    public function toRelationships($request): array
-    {
-        return [
-            'nonJsonApiResource' => fn (): JsonResource => LicenseResource::make($this->license),
-        ];
-    }
-}
-
-```
-
-Here is what that response might look like. Notice that the resource is "inlined" and is not moved out to the "included" section of the payload.
-
-```json
-{
-    "data": {
-        "id": "1",
-        "type": "users",
-        "attributes": {},
-        "relationships": {
-            "nonJsonApiResource": {
-                "id": "5",
-                "key": "4h29kaKlWja)99ja72kafj&&jalkfh",
-                "created_at": "2020-01-04 12:44:12"
-            }
-        },
-        "meta": {},
-        "links": {}
-    },
-    "included": []
 }
 ```
 

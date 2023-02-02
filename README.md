@@ -21,6 +21,7 @@ A lightweight API resource for Laravel that helps you adhere to the `JSON:API` s
         - [Minimal attributes](#minimal-attributes)
         - [Lazy attribute evaluation](#lazy-attribute-evaluation)
     - [Relationships](#relationships)
+        - [Remapping `$relationships`](#remapping-relationships)
 
 ## Version support
 
@@ -318,7 +319,7 @@ As we saw in the [Creating your first `JSON:API` resource](#creating-your-first-
 
 #### Remapping `$attributes`
 
-You may remap the response key of an attribute by creating a key / value pair in the `$attributes` array. The key should be the attribute on the underlying resource, such as the user model, and the value is what will be used for the response.
+You may remap the response key of an attribute by creating a key / value pair in the `$attributes` array. The key should be the attribute on the underlying resource, such as the user model, and the value is what will be used as the key in the response.
 
 ```php
 <?php
@@ -581,6 +582,50 @@ class UserResource extends JsonApiResource
 
 ### Relationships
 
+#### Remapping `$relationships`
+
+You may remap the response key of a relationships by creating a key / value pair in the `$relationships` array. The key should be the relationship on the underlying resource, such as the user model, and the value will become a tuple. The tuple should contain the key to be used in the response as the first item and the resource class as the second.
+
+```php
+<?php
+
+namespace App\Http\Resources;
+
+use TiMacDonald\JsonApi\JsonApiResource;
+
+class UserResource extends JsonApiResource
+{
+    /**
+     * @var array<string, class-string<JsonApiResource>>
+     */
+    public $relationships = [
+        'license' => LicenseResource::class,
+        'posts' => PostResource::class,
+    ];
+}
+```
+
+The `twitter_handle` attribute will now be exposed as camel case, i.e. `twitterHandle`, instead of snake case.
+
+##### Example response
+
+```json
+{
+  "data": {
+    "type": "users",
+    "id": "74812",
+    "attributes": {
+      "name": "Tim",
+      "website": "https://timacdonald.me",
+      "twitterHandle": "@timacdonald87"
+    },
+    "relationships": {},
+    "meta": {},
+    "links": {}
+  },
+  "included": []
+}
+```
 //----- Everything that follows is WIP and should be ignored ------- //
 
 ## Resource Identification

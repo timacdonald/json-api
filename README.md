@@ -266,8 +266,6 @@ class UserResource extends JsonApiResource
 }
 ```
 
-> **Note** Whether to return a `toOne` or `toMany` relationship is be handled automatically 🤖
-
 To learn about more complex relationship features you may like to jump ahead:
 
 - [Remapping `$relationships`](#remapping-relationships)

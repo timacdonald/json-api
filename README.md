@@ -173,11 +173,11 @@ class UserResource extends JsonApiResource
     ];
 
     /**
-     * @var array<string, class-string<JsonApiResource>>
+     * @var string[]
      */
     public $relationships = [
-        'license' => LicenseResource::class,
-        'posts' => PostResource::class,
+        'license',
+        'posts',
     ];
 }
 ```

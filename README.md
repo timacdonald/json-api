@@ -15,13 +15,11 @@ A lightweight API resource for Laravel that helps you adhere to the `JSON:API` s
 - [A note on eager loading](#a-note-on-eager-loading)
 - [Digging deeper](#digging-deeper)
     - [Attributes](#attributes)
-        - [Remapping `$attributes`](#remapping-attributes)
         - [`toAttributes()`](#toAttributes)
         - [Sparse fieldsets](#sparse-fieldsets)
         - [Minimal attributes](#minimal-attributes)
         - [Lazy attribute evaluation](#lazy-attribute-evaluation)
     - [Relationships](#relationships)
-        - [Remapping `$relationships`](#remapping-relationships)
 
 ## Version support
 
@@ -141,7 +139,6 @@ Congratulations...and what. a. rush!
 
 We will now dive into adding relationships to your resources, but if you would like to explore more complex attribute features you may like to jump ahead:
 
-- [Remapping `$attributes`](#remapping-attributes)
 - [`toAttributes()`](#toAttributes)
 - [Sparse fieldsets](#sparse-fieldsets)
 - [Minimal attributes](#minimal-attributes)
@@ -269,7 +266,6 @@ class UserResource extends JsonApiResource
 
 To learn about more complex relationship features you may like to jump ahead:
 
-- [Remapping `$relationships`](#remapping-relationships)
 - [`toRelationships()`](#toRelationships)
 
 ## A note on eager loading
@@ -315,57 +311,9 @@ We have now covered the basics of exposing attributes and relationships on your 
 
 ### Attributes
 
-As we saw in the [Creating your first `JSON:API` resource](#creating-your-first-jsonapi-resource) section, the `$attributes` property is the fastest way to expose resource attributes. However, in some scenarios more complex configurations are required.
-
-#### Remapping `$attributes`
-
-You may remap the response key of an attribute by creating a key / value pair in the `$attributes` array. The key should be the attribute on the underlying resource, such as the user model, and the value is what will be used as the key in the response.
-
-```php
-<?php
-
-namespace App\Http\Resources;
-
-use TiMacDonald\JsonApi\JsonApiResource;
-
-class UserResource extends JsonApiResource
-{
-    /**
-     * @var array<int|string, string>
-     */
-    public $attributes = [
-        'name',
-        'website',
-        'twitter_handle' => 'twitterHandle',
-    ];
-}
-```
-
-The `twitter_handle` attribute will now be exposed as camel case, i.e. `twitterHandle`, instead of snake case.
-
-##### Example response
-
-```json
-{
-  "data": {
-    "type": "users",
-    "id": "74812",
-    "attributes": {
-      "name": "Tim",
-      "website": "https://timacdonald.me",
-      "twitterHandle": "@timacdonald87"
-    },
-    "relationships": {},
-    "meta": {},
-    "links": {}
-  },
-  "included": []
-}
-```
-
 #### `toAttributes()`
 
-In some scenarios you may need greater control over the attributes you are exposing. If that is the case, you may implement the `toAttributes()` method. This will grant you access to the current request and also allow for conditionals.
+As we saw in the [Creating your first `JSON:API` resource](#creating-your-first-jsonapi-resource) section, the `$attributes` property is the fastest way to expose resource attributes. However, in some scenarios you may need greater control over the attributes you are exposing. If that is the case, you may implement the `toAttributes()` method. This will grant you access to the current request and also allow for conditionals.
 
 ```php
 <?php
@@ -385,7 +333,7 @@ class UserResource extends JsonApiResource
         return [
             'name' => $this->name,
             'website' => $this->website,
-            'twitterHandle' => $this->twitter_handle,
+            'twitter_handle' => $this->twitter_handle,
             'email' => $this->when($this->email_is_public, $this->email, '<private>'),
             'address' => [
                 'city' => $this->address('city'),
@@ -406,7 +354,7 @@ class UserResource extends JsonApiResource
     "attributes": {
       "name": "Tim",
       "website": "https://timacdonald.me",
-      "twitterHandle": "@timacdonald87",
+      "twitter_handle": "@timacdonald87",
       "email": "<private>",
       "address": {
         "city": "Melbourne",
@@ -579,53 +527,8 @@ class UserResource extends JsonApiResource
 }
 ```
 
-
 ### Relationships
 
-#### Remapping `$relationships`
-
-You may remap the response key of a relationships by creating a key / value pair in the `$relationships` array. The key should be the relationship on the underlying resource, such as the user model, and the value will become a tuple. The tuple should contain the key to be used in the response as the first item and the resource class as the second.
-
-```php
-<?php
-
-namespace App\Http\Resources;
-
-use TiMacDonald\JsonApi\JsonApiResource;
-
-class UserResource extends JsonApiResource
-{
-    /**
-     * @var array<string, class-string<JsonApiResource>>
-     */
-    public $relationships = [
-        'license' => LicenseResource::class,
-        'posts' => PostResource::class,
-    ];
-}
-```
-
-The `twitter_handle` attribute will now be exposed as camel case, i.e. `twitterHandle`, instead of snake case.
-
-##### Example response
-
-```json
-{
-  "data": {
-    "type": "users",
-    "id": "74812",
-    "attributes": {
-      "name": "Tim",
-      "website": "https://timacdonald.me",
-      "twitterHandle": "@timacdonald87"
-    },
-    "relationships": {},
-    "meta": {},
-    "links": {}
-  },
-  "included": []
-}
-```
 //----- Everything that follows is WIP and should be ignored ------- //
 
 ## Resource Identification

@@ -125,7 +125,7 @@ trait Identification
      */
     private static function idResolver()
     {
-        return self::$idResolver ??= function (mixed $resource, Request $request): string {
+        return self::$idResolver ?? function (mixed $resource, Request $request): string {
             if (! $resource instanceof Model) {
                 throw ResourceIdentificationException::attemptingToDetermineIdFor($resource);
             }
@@ -144,7 +144,7 @@ trait Identification
      */
     private static function typeResolver()
     {
-        return self::$typeResolver ??= function (mixed $resource, Request $request): string {
+        return self::$typeResolver ?? function (mixed $resource, Request $request): string {
             if (! $resource instanceof Model) {
                 throw ResourceIdentificationException::attemptingToDetermineTypeFor($resource);
             }

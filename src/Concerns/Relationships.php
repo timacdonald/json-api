@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
+use RuntimeException;
 use TiMacDonald\JsonApi\Exceptions\UnknownRelationshipException;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
@@ -17,13 +19,32 @@ use TiMacDonald\JsonApi\Support\Includes;
 use Traversable;
 
 use function is_array;
+use function is_int;
 
 trait Relationships
 {
     /**
      * @internal
+     *
+     * @var (callable(string, JsonApiResource): class-string)|null
+     */
+    private static $relationshipResourceGuesser = null;
+
+    /**
+     * @internal
      */
     private string $includePrefix = '';
+
+    /**
+     * @api
+     *
+     * @param  (callable(string, JsonApiResource): class-string)|null  $callback
+     * @return void
+     */
+    public static function guessRelationshipResourceUsing(callable|null $callback)
+    {
+        self::$relationshipResourceGuesser = $callback;
+    }
 
     /**
      * @internal
@@ -109,8 +130,13 @@ trait Relationships
     private function resolveRelationships(Request $request)
     {
         return Collection::make($this->relationships ?? [])
+            ->mapWithKeys(fn (string $value, int|string $key) => ! is_int($key) ? [
+                $key => $value,
+            ] : [
+                $value => self::guessRelationshipResource($value, $this),
+            ])
             ->map(fn (string $class, string $relation): Closure => function () use ($class, $relation): JsonApiResource|JsonApiResourceCollection {
-                return with($this->resource->{$relation}, function ($resource) use ($class): JsonApiResource|JsonApiResourceCollection {
+                return with($this->resource->{$relation}, function (mixed $resource) use ($class): JsonApiResource|JsonApiResourceCollection {
                     if ($resource instanceof Traversable || (is_array($resource) && ! Arr::isAssoc($resource))) {
                         return $class::collection($resource);
                     }
@@ -148,5 +174,28 @@ trait Relationships
     private function shouldBePresentInIncludes()
     {
         return $this->resource !== null;
+    }
+
+    /**
+     * @internal
+     *
+     * @return class-string
+     */
+    private static function guessRelationshipResource(string $relationship, JsonApiResource $resource)
+    {
+        return (self::$relationshipResourceGuesser ?? function (string $relationship, JsonApiResource $resource): string {
+            $relationship = Str::of($relationship);
+
+            foreach ([
+                "App\\Http\\Resources\\{$relationship->singular()->studly()}Resource",
+                "App\\Http\\Resources\\{$relationship->studly()}Resource",
+            ] as $class) {
+                if (class_exists($class)) {
+                    return $class;
+                }
+            }
+
+            throw new RuntimeException('Unable to guess the resource class for relationship ['.$value.'] for ['.$resource::class.'].');
+        })($relationship, $resource);
     }
 }

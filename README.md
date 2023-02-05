@@ -2,7 +2,7 @@
 
 # `JSON:API` Resource for Laravel
 
-A lightweight API resource for Laravel that helps you adhere to the `JSON:API` standard. Supports sparse fieldsets, compound documents, and more.
+A lightweight API resource for Laravel that helps you adhere to the `JSON:API` standard with support for sparse fieldsets, compound documents, and more baked in.
 
 > **Note** These docs are not designed to introduce you to the `JSON:API` specification and the associated concepts, instead you should [head over and read the specification](https://jsonapi.org) if you are not yet familiar with it. The documentation that follows only covers _how_ to implement the specification via the package.
 
@@ -11,6 +11,7 @@ A lightweight API resource for Laravel that helps you adhere to the `JSON:API` s
 - [Installation](#installation)
 - [Getting started](#getting-started)
     - [Creating your first `JSON:API` resource](#creating-your-first-jsonapi-resource)
+    - [Adding attributes](#adding-attributes)
     - [Adding relationships](#adding-relationships)
 - [A note on eager loading](#a-note-on-eager-loading)
 - [Digging deeper](#digging-deeper)
@@ -68,7 +69,7 @@ As we make our way through the examples you will see that new APIs are introduce
 
 ### Creating your first `JSON:API` resource
 
-To get started, let's create a `UserResource` for our user model. We want to return the model's `$user->name`, `$user->website`, and `$user->twitter_handle` attributes in the response.
+To get started, let's create a `UserResource` for our `User` model. In our user resource will expose the users's `name`, `website`, and `twitter_handle` in the response.
 
 First we will create a new API resource that extends `TiMacDonald\JsonApi\JsonApiResource`.
 
@@ -85,7 +86,9 @@ class UserResource extends JsonApiResource
 }
 ```
 
-We will now create an `$attributes` property and list the model's attributes we want to return.
+### Adding attributes
+
+We will now create an `$attributes` property and list the model's attributes we want to expose.
 
 ```php
 <?php
@@ -146,7 +149,7 @@ We will now dive into adding relationships to your resources, but if you would l
 
 ### Adding relationships
 
-Available relationships may be specified in a `$relationships` property, similar to the [`$attributes` property](#creating-your-first-jsonapi-resource). We will expose two relationships:
+Available relationships may be specified in a `$relationships` property, similar to the [`$attributes` property](#adding-attributes). We will make two relationships available on the resource:
 
 - `$user->license`: a "toOne" / `HasOne` relationship.
 - `$user->posts`: a "toMany" / `HasMany` relationship.
@@ -183,7 +186,7 @@ class UserResource extends JsonApiResource
 
 `GET /users/74812?include=posts,license`
 
-> **Note** Relationships are not included in the response unless they are requested by the calling client via the `include` query parameter. This is intended and is part of the `JSON:API` specification.
+> **Note** Relationships are not exposed in the response unless they are requested by the calling client via the `include` query parameter. This is intended and is part of the `JSON:API` specification.
 
 ```json
 {
@@ -313,7 +316,7 @@ We have now covered the basics of exposing attributes and relationships on your 
 
 #### `toAttributes()`
 
-As we saw in the [Creating your first `JSON:API` resource](#creating-your-first-jsonapi-resource) section, the `$attributes` property is the fastest way to expose resource attributes. However, in some scenarios you may need greater control over the attributes you are exposing. If that is the case, you may implement the `toAttributes()` method. This will grant you access to the current request and also allow for conditionals.
+As we saw in the [adding attributes](#adding-attributes) section, the `$attributes` property is the fastest way to expose attributes for a resource. However, in some scenarios you may need greater control over the attributes you are exposing. If that is the case, you may implement the `toAttributes()` method. This will grant you access to the current request and allow for conditional logic.
 
 ```php
 <?php
@@ -375,7 +378,7 @@ Sparse fieldsets are a feature of the `JSON:API` specification that allows clien
 
 We will cover them briefly here, but we recommend reading the specification to learn more.
 
-As an example, say we are building out an index page for a blog. The page will show each post's title and excerpt, and also the name of the post's author. If the client wishes, they may limit the response to _only_ include the required attributes for each resource type, and exclude the other attributes, such as the post's content and the authors twitter handle.
+As an example, say we are building out an index page for a blog. The page will show each post's `title` and `excerpt`, and also the `name` of the post's author. If the client wishes, they may limit the response to _only_ include the required attributes for each resource type, and exclude the other attributes, such as the post's `content` and the authors `twitter_handle`.
 
 To achieve this we will send the following request.
 
@@ -450,7 +453,9 @@ GET /posts?include=author&fields[posts]=title,excerpt&fields[users]=name
 
 #### Minimal attributes
 
-Resources expose a maximal attribute payload when [sparse fieldsets](#sparse-fieldsets) are not in use i.e. all declared attributes on the resource are returned. If you prefer to instead make it that sparse fieldsets are required in order to retrieve _any_ attributes, you may call the `minimalAttributes()` method in a service provider.
+Resources return a maximal attribute payload when [sparse fieldsets](#sparse-fieldsets) are not in use i.e. all declared attributes on the resource are returned. If you prefer you can make the use of sparse fieldsets required in order to retrieve _any_ attributes.
+
+You may call the `minimalAttributes()` method in an application service provider.
 
 ```php
 <?php
@@ -694,3 +699,4 @@ And a special (vegi) thanks to [Caneco](https://twitter.com/caneco) for the logo
 - Support dot notation of both the key and value of `$attributes`.
 - Camel case everything
 - Allow resources to specify their JsonResource class.
+- Make all caches WeakMaps.

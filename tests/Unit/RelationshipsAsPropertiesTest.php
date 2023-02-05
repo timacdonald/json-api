@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Tests\Models\BasicModel;
 use Tests\Resources\CommentResource;
 use Tests\Resources\LicenseResource;
 use Tests\Resources\PostResource;
 use Tests\Resources\UserResource;
 use Tests\TestCase;
+use TiMacDonald\JsonApi\JsonApiResource;
 
 class RelationshipsAsPropertiesTest extends TestCase
 {
@@ -161,5 +163,63 @@ class RelationshipsAsPropertiesTest extends TestCase
                 'links' => [],
             ],
         ], $response->getData(true)['included']);
+    }
+
+    public function testItCanSpecifyRelationshipsAsPropertiesWithoutAClass()
+    {
+        JsonApiResource::guessRelationshipResourceUsing(
+            fn (string $relationship): string => 'Tests\\Resources\\'.Str::of($relationship)->singular()->studly().'Resource'
+        );
+        $user = BasicModel::make([
+            'id' => 'author-id',
+            'name' => 'author-name',
+        ])->setRelation('posts', [
+            BasicModel::make([
+                'id' => 'post-id',
+                'title' => 'post-title',
+                'content' => 'post-content',
+            ]),
+        ]);
+        $class = new class ($user) extends UserResource {
+            protected array $relationships = [
+                'posts',
+            ];
+
+            public function toRelationships($request)
+            {
+                return [];
+            }
+        };
+
+        $response = $class->toResponse(Request::create('https://timacdonald.me?include=posts'));
+
+        $this->assertValidJsonApi($response->content());
+        $this->assertSame([
+            'posts' => [
+                'data' => [
+                    [
+                        'type' => 'basicModels',
+                        'id' => 'post-id',
+                        'meta' => [],
+                    ],
+                ],
+                'meta' => [],
+                'links' => [],
+            ],
+        ], $response->getData(true)['data']['relationships']);
+        $this->assertSame([
+            [
+                'id' => 'post-id',
+                'type' => 'basicModels',
+                'attributes' => [
+                    'title' => 'post-title',
+                    'content' => 'post-content',
+                ],
+                'relationships' => [],
+                'meta' => [],
+                'links' => [],
+            ],
+        ], $response->getData(true)['included']);
+        JsonApiResource::guessRelationshipResourceUsing(null);
     }
 }

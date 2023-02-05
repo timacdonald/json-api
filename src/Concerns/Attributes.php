@@ -72,7 +72,7 @@ trait Attributes
     {
         return Collection::make($this->attributes)
             ->mapWithKeys(fn (string $attribute, int|string $key): array => [
-                $attribute => fn () => $this->resource->{(is_string($key) ? $key : $attribute)},
+                $attribute => fn () => $this->resource->{$attribute},
             ])
             ->merge($this->toAttributes($request));
     }

@@ -78,37 +78,4 @@ class AttributesAsPropertiesTest extends TestCase
             'links' => [],
         ], $response->getData(true)['data']);
     }
-
-    public function testItCanRemapAttributes()
-    {
-        $post = BasicModel::make([
-            'id' => 'post-id',
-            'title' => 'post-title',
-            'content' => 'post-content',
-        ]);
-        $class = new class ($post) extends PostResource {
-            protected $attributes = [
-                'content' => 'body',
-            ];
-
-            public function toAttributes($request)
-            {
-                return [];
-            }
-        };
-
-        $response = $class->toResponse(Request::create('https://timacdonald.me'));
-
-        $this->assertValidJsonApi($response->content());
-        $this->assertSame([
-            'id' => 'post-id',
-            'type' => 'basicModels',
-            'attributes' => [
-                'body' => 'post-content',
-            ],
-            'relationships' => [],
-            'meta' => [],
-            'links' => [],
-        ], $response->getData(true)['data']);
-    }
 }

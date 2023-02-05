@@ -151,6 +151,9 @@ We will now dive into adding relationships to your resources, but if you would l
 
 Available relationships may be specified in a `$relationships` property, similar to the [`$attributes` property](#adding-attributes). We will make two relationships available on the resource:
 
+// TODO: clarify that the resource classes must already exist and that we guess the class. Guessing may be customised.
+// maybe actually use key => value as an example, and then show stripping that out and talk about guessing.
+
 - `$user->license`: a "toOne" / `HasOne` relationship.
 - `$user->posts`: a "toMany" / `HasMany` relationship.
 

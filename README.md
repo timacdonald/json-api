@@ -184,6 +184,16 @@ class UserResource extends JsonApiResource
 }
 ```
 
+To streamline things further, the package supports detecting the resource class conventionally. Assuming the key / value pair follows the convention `'{myKey}' => {MyKey}Resource::class`
+
+```php
+<?php
+
+public $relationships = [
+    '{key}' => {key}Resource::class,
+];
+```
+
 ##### Example request and response
 
 `GET /users/74812?include=posts,team`

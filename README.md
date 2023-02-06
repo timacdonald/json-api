@@ -351,7 +351,7 @@ We have now covered the basics of exposing attributes and relationships on your 
 
 #### `toAttributes()`
 
-As we saw in the [adding attributes](#adding-attributes) section, the `$attributes` property is the fastest way to expose attributes for a resource. However, in some scenarios you may need greater control over the attributes you are exposing. If that is the case, you may implement the `toAttributes()` method. This will grant you access to the current request and allow for conditional logic.
+As we saw in the [adding attributes](#adding-attributes) section, the `$attributes` property is the fastest way to expose attributes for a resource. In some scenarios you may need greater control over the attributes you are exposing. If that is the case, you may implement the `toAttributes()` method. This will grant you access to the current request and allow for conditional logic.
 
 ```php
 <?php
@@ -372,12 +372,13 @@ class UserResource extends JsonApiResource
             'name' => $this->name,
             'website' => $this->website,
             'twitter_handle' => $this->twitter_handle,
-            // Only expose the users email address if it is marked as public...
-            'email' => $this->when($this->email_is_public, $this->email, '<private>'),
             'address' => [
                 'city' => $this->address('city'),
                 'country' => $this->address('country'),
             ],
+
+            // Only expose the users email address if it is marked as public...
+            'email' => $this->when($this->email_is_public, $this->email, '<private>'),
         ];
     }
 }
@@ -572,7 +573,7 @@ class UserResource extends JsonApiResource
 
 #### `toRelationships()`
 
-As we saw in the [adding relationships](#adding-relationships) section, the `$relationships` property is the fastest way to specify the available relationships for a resource. However, in some scenarios you may need greater control over the relationships you are making available. If that is the case, you may implement the `toRelationships()` method. This will grant you access to the current request and allow for conditional logic.
+As we saw in the [adding relationships](#adding-relationships) section, the `$relationships` property is the fastest way to specify the available relationships for a resource. In some scenarios you may need greater control over the relationships you are making available. If that is the case, you may implement the `toRelationships()` method. This will grant you access to the current request and allow for conditional logic.
 
 The value must always be wrapped in a Closure. The Closure will only be called if the relationships is requested by the client.
 
@@ -593,6 +594,7 @@ class UserResource extends JsonApiResource
     {
         return [
             'team' => fn () => TeamResource::make($this->team),
+
             // Only expose unpublished posts to the author of the post...
             'posts' => fn () => $this->when(
                 $request->user()->is($this->resource),

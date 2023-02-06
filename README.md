@@ -541,7 +541,7 @@ class UserResource extends JsonApiResource
 }
 ```
 
-The above implementation would make a HTTP request to our microservice even when the client is excluding the `avatar` attribute via sparse fieldsets or minimal attributes. To improve performance when this attribute is not being returned we can wrap the value in a Closure. The Closure will only be evaluated when the `avatar` is to be returned.
+The above implementation would make a HTTP request to our microservice even when the client is excluding the `avatar` attribute via sparse fieldsets or minimal attributes. To improve performance when this attribute is not being returned we can wrap the value in a `Closure`. The `Closure` will only be evaluated when the `avatar` is to be returned.
 
 ```php
 <?php
@@ -573,7 +573,7 @@ class UserResource extends JsonApiResource
 
 As we saw in the [adding relationships](#adding-relationships) section, the `$relationships` property is the fastest way to specify the available relationships for a resource. In some scenarios you may need greater control over the relationships you are making available. If that is the case, you may implement the `toRelationships()` method. This will grant you access to the current request and allow for conditional logic.
 
-The value must always be wrapped in a Closure. The Closure will only be called if the relationships is requested by the client.
+The value must always be wrapped in a `Closure`, which will only be called if the relationships is requested by the client.
 
 ```php
 <?php
@@ -604,6 +604,10 @@ class UserResource extends JsonApiResource
 
 #### Customising the relationship resource class guessing
 
+```php
+
+```
+
 //----- Everything that follows is WIP and should be ignored ------- //
 
 ## Resource Identification
@@ -619,36 +623,6 @@ The `"id"` and `"type"` of a resource is automatically resolved for you under-th
 You can customise how this works to support other types of objects and behaviours, but that will follow in the [advanced usage](#advanced-usage) section.
 
 Nice. Well that was easy, so let's move onto...
-
-
-## Resource Relationships
-
-`[JSON:API` docs: Relationships](https://jsonapi.org/format/#document-resource-object-relationships)
-
-Just like we saw with attributes above, we can specify relationships that should be available on the resource by using the `toRelationships(Request $request)` method, however with relationships you should _always_ wrap the values in a `Closure`.
-
-```php
-<?php
-
-class UserResource extends JsonApiResource
-{
-    public function toRelationships($request): array
-    {
-        return [
-            'posts' => fn () => PostResource::collection($this->posts),
-            'subscription' => fn () => SubscriptionResource::make($this->subscription),
-            'profileImage' => fn () => optional($this->profileImage, fn (ProfileImage $profileImage) => ProfileImageResource::make($profileImage)),
-            // if the relationship has been loaded and is null, can we not just return the resource still and have a nice default? That way you never have to handle any of this
-            // optional noise?
-            // also is there a usecase for returning a resource linkage right from here and not a full resource?
-        ];
-    }
-}
-```
-
-> Note: "links" and "meta" are not yet supported for relationships, but they are WIP. Resource linkage "meta" is not yet implemented. Let me know if you have a use-case you'd like to use it for!
-
-Each `Closure` is only resolved when the relationship has been included by the client...
 
 ## Resource Links
 

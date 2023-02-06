@@ -21,6 +21,8 @@ A lightweight API resource for Laravel that helps you adhere to the `JSON:API` s
         - [Minimal attributes](#minimal-attributes)
         - [Lazy attribute evaluation](#lazy-attribute-evaluation)
     - [Relationships](#relationships)
+        - [`toRelationships()`](#toRelationships)
+        - [Customising the relationship resource guessing](#customising-the-relationship-resource-guessing)
 
 ## Version support
 
@@ -302,6 +304,7 @@ class UserResource extends JsonApiResource
 To learn about more complex relationship features you may like to jump ahead:
 
 - [`toRelationships()`](#toRelationships)
+- [Customising the relationship resource guessing](#customising-the-relationship-resource-guessing)
 
 ## A note on eager loading
 

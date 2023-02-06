@@ -39,7 +39,6 @@ abstract class JsonApiResource extends JsonResource
     /**
      * @api
      *
-     * @TODO: callable needs type information
      * @return array<string, (callable(): JsonApiResource|JsonApiResourceCollection|PotentiallyMissing)>
      */
     public function toRelationships(Request $request)

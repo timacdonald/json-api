@@ -184,14 +184,34 @@ class UserResource extends JsonApiResource
 }
 ```
 
-To streamline things further, the package supports detecting the resource class conventionally. Assuming the key / value pair follows the convention `'{myKey}' => {MyKey}Resource::class`
+To streamline things further, the package supports detecting the resource class conventionally. Assuming the key / value pair follows the convention `'{myKey}' => {MyKey}Resource::class`, the class may be omitted.
 
 ```php
 <?php
 
-public $relationships = [
-    '{key}' => {key}Resource::class,
-];
+namespace App\Http\Resources;
+
+use TiMacDonald\JsonApi\JsonApiResource;
+
+class UserResource extends JsonApiResource
+{
+    /**
+     * @var string[]
+     */
+    public $attributes = [
+        'name',
+        'website',
+        'twitter_handle',
+    ];
+
+    /**
+     * @var string[]
+     */
+    public $relationships = [
+        'team',
+        'posts',
+    ];
+}
 ```
 
 ##### Example request and response

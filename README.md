@@ -177,7 +177,7 @@ class UserResource extends JsonApiResource
     ];
 
     /**
-     * @var string[]
+     * @var array<string, class-string>
      */
     public $relationships = [
         'team' => TeamResource::class,
@@ -207,7 +207,7 @@ class UserResource extends JsonApiResource
     ];
 
     /**
-     * @var string[]
+     * @var array<int|string, string>
      */
     public $relationships = [
         'team',

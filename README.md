@@ -149,12 +149,11 @@ We will now dive into adding relationships to your resources, but if you would l
 
 ### Adding relationships
 
-Available relationships may be specified in a `$relationships` property, similar to the [`$attributes` property](#adding-attributes). We will make two relationships available on the resource:
+Available relationships may be specified in a `$relationships` property, similar to the [`$attributes` property](#adding-attributes), however you may use a key / value pair to provide the resource class that should be used for the given relationship.
 
-// TODO: clarify that the resource classes must already exist and that we guess the class. Guessing may be customised.
-// maybe actually use key => value as an example, and then show stripping that out and talk about guessing.
+We will make two relationships available on the resource:
 
-- `$user->license`: a "toOne" / `HasOne` relationship.
+- `$user->team`: a "toOne" / `HasOne` relationship.
 - `$user->posts`: a "toMany" / `HasMany` relationship.
 
 ```php
@@ -179,15 +178,15 @@ class UserResource extends JsonApiResource
      * @var string[]
      */
     public $relationships = [
-        'license',
-        'posts',
+        'team' => TeamResource::class,
+        'posts' => PostResource::class,
     ];
 }
 ```
 
 ##### Example request and response
 
-`GET /users/74812?include=posts,license`
+`GET /users/74812?include=posts,team`
 
 > **Note** Relationships are not exposed in the response unless they are requested by the calling client via the `include` query parameter. This is intended and is part of the `JSON:API` specification.
 
@@ -218,9 +217,9 @@ class UserResource extends JsonApiResource
         "meta": {},
         "links": {}
       },
-      "license": {
+      "team": {
         "data": {
-          "type": "licenses",
+          "type": "teams",
           "id": "18986",
           "meta": {}
         },
@@ -258,9 +257,9 @@ class UserResource extends JsonApiResource
     },
     {
       "id": "18986",
-      "type": "licenses",
+      "type": "teams",
       "attributes": {
-        "key": "lic_CNlpZVVrsLlChLBSgS1GK7zJR8EFdupW"
+        "name": "Laravel"
       },
       "relationships": {},
       "meta": {},
@@ -294,7 +293,7 @@ class UserController
     public function index()
     {
         $users = QueryBuilder::for(User::class)
-            ->allowedIncludes(['license', 'posts'])
+            ->allowedIncludes(['team', 'posts'])
             ->paginate();
 
         return UserResource::collection($users);
@@ -303,7 +302,7 @@ class UserController
     public function show($id)
     {
         $user = QueryBuilder::for(User::class)
-            ->allowedIncludes(['license', 'posts'])
+            ->allowedIncludes(['team', 'posts'])
             ->findOrFail($id);
 
         return UserResource::make($user);

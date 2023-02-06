@@ -22,7 +22,7 @@ A lightweight API resource for Laravel that helps you adhere to the `JSON:API` s
         - [Lazy attribute evaluation](#lazy-attribute-evaluation)
     - [Relationships](#relationships)
         - [`toRelationships()`](#toRelationships)
-        - [Customising the relationship resource guessing](#customising-the-relationship-resource-guessing)
+        - [Customising the relationship resource class guessing](#customising-the-relationship-resource-class-guessing)
 
 ## Version support
 
@@ -304,7 +304,7 @@ class UserResource extends JsonApiResource
 To learn about more complex relationship features you may like to jump ahead:
 
 - [`toRelationships()`](#toRelationships)
-- [Customising the relationship resource guessing](#customising-the-relationship-resource-guessing)
+- [Customising the relationship resource class guessing](#customising-the-relationship-resource-class-guessing)
 
 ## A note on eager loading
 
@@ -729,9 +729,6 @@ And a special (vegi) thanks to [Caneco](https://twitter.com/caneco) for the logo
 # v1 todo
 - Server implementation rethink.
 - Rethink naming of objects and properties
-- Guess relationship class for relationships.
-- Support mapping `$attributes` values to different keys.
-- Support dot notation of both the key and value of `$attributes`.
 - Camel case everything
 - Allow resources to specify their JsonResource class.
 - Make all caches WeakMaps.

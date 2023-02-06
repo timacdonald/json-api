@@ -372,13 +372,11 @@ class UserResource extends JsonApiResource
             'name' => $this->name,
             'website' => $this->website,
             'twitter_handle' => $this->twitter_handle,
+            'email' => $this->when($this->email_is_public, $this->email, '<private>'),
             'address' => [
                 'city' => $this->address('city'),
                 'country' => $this->address('country'),
             ],
-
-            // Only expose the users email address if it is marked as public...
-            'email' => $this->when($this->email_is_public, $this->email, '<private>'),
         ];
     }
 }
@@ -594,8 +592,6 @@ class UserResource extends JsonApiResource
     {
         return [
             'team' => fn () => TeamResource::make($this->team),
-
-            // Only expose unpublished posts to the author of the post...
             'posts' => fn () => $this->when(
                 $request->user()->is($this->resource),
                 fn () => PostResource::collection($this->posts),

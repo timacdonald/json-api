@@ -602,6 +602,8 @@ class UserResource extends JsonApiResource
 }
 ```
 
+#### Customising the relationship resource class guessing
+
 //----- Everything that follows is WIP and should be ignored ------- //
 
 ## Resource Identification

@@ -592,11 +592,9 @@ class UserResource extends JsonApiResource
     {
         return [
             'team' => fn () => TeamResource::make($this->team),
-            'posts' => fn () => $this->when(
-                $request->user()->is($this->resource),
-                fn () => PostResource::collection($this->posts),
-                fn () => PostResource::collection($this->posts->where('published', true)),
-            ),
+            'posts' => fn () => $request->user()->is($this->resource)
+                ? PostResource::collection($this->posts)
+                : PostResource::collection($this->posts->where('published', true)),
         ];
     }
 }

@@ -184,7 +184,7 @@ class UserResource extends JsonApiResource
 }
 ```
 
-To streamline things further, the package supports detecting the resource class conventionally. Assuming the key / value pair follows the convention `'{myKey}' => {MyKey}Resource::class`, the class may be omitted.
+Assuming the key / value pair follows the convention `'{myKey}' => {MyKey}Resource::class`, the class may be omitted to streamline things further.
 
 ```php
 <?php

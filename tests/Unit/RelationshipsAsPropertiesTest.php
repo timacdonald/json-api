@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Tests\Models\BasicModel;
@@ -221,5 +222,23 @@ class RelationshipsAsPropertiesTest extends TestCase
             ],
         ], $response->getData(true)['included']);
         JsonApiResource::guessRelationshipResourceUsing(null);
+    }
+
+    public function testItDoesntTryToAccessMagicAttributeProperty()
+    {
+        $instance = new class extends Model {
+            public function getRelationshipsAttribute()
+            {
+                throw new \Exception('xxxx');
+            }
+        };
+        $resource = new class ($instance) extends JsonApiResource {
+            //
+        };
+
+        $response = $resource->toResponse(Request::create('https://timacdonald.me'));
+
+        $this->assertValidJsonApi($response->content());
+        $this->assertSame([], $response->getData(true)['data']['relationships']);
     }
 }

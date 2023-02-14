@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use Exception;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Tests\Models\BasicModel;
 use Tests\Resources\PostResource;
 use Tests\TestCase;
+use TiMacDonald\JsonApi\JsonApiResource;
 
 class AttributesAsPropertiesTest extends TestCase
 {
@@ -77,5 +80,23 @@ class AttributesAsPropertiesTest extends TestCase
             'meta' => [],
             'links' => [],
         ], $response->getData(true)['data']);
+    }
+
+    public function testItDoesntTryToAccessMagicAttributeProperty()
+    {
+        $instance = new class extends Model {
+            public function getAttributesAttribute()
+            {
+                throw new \Exception('xxxx');
+            }
+        };
+        $resource = new class ($instance) extends JsonApiResource {
+            //
+        };
+
+        $response = $resource->toResponse(Request::create('https://timacdonald.me'));
+
+        $this->assertValidJsonApi($response->content());
+        $this->assertSame([], $response->getData(true)['data']['attributes']);
     }
 }

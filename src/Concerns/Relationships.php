@@ -129,7 +129,7 @@ trait Relationships
      */
     private function resolveRelationships(Request $request)
     {
-        return Collection::make($this->relationships ?? [])
+        return Collection::make(property_exists($this, 'relationships') ? $this->relationships : [])
             ->mapWithKeys(fn (string $value, int|string $key) => ! is_int($key) ? [
                 $key => $value,
             ] : [

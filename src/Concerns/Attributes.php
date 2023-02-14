@@ -68,7 +68,7 @@ trait Attributes
      */
     private function resolveAttributes(Request $request)
     {
-        return Collection::make($this->attributes)
+        return Collection::make(property_exists($this, 'attributes') ? $this->attributes : [])
             ->mapWithKeys(fn (string $attribute, int|string $key): array => [
                 $attribute => fn () => $this->resource->{$attribute},
             ])

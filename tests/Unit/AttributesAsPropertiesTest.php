@@ -84,10 +84,10 @@ class AttributesAsPropertiesTest extends TestCase
 
     public function testItDoesntTryToAccessMagicAttributeProperty()
     {
-        $instance = new class extends Model {
+        $instance = new class () extends Model {
             public function getAttributesAttribute()
             {
-                throw new \Exception('xxxx');
+                throw new Exception('xxxx');
             }
         };
         $resource = new class ($instance) extends JsonApiResource {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -226,10 +227,10 @@ class RelationshipsAsPropertiesTest extends TestCase
 
     public function testItDoesntTryToAccessMagicAttributeProperty()
     {
-        $instance = new class extends Model {
+        $instance = new class () extends Model {
             public function getRelationshipsAttribute()
             {
-                throw new \Exception('xxxx');
+                throw new Exception('xxxx');
             }
         };
         $resource = new class ($instance) extends JsonApiResource {

@@ -739,3 +739,4 @@ And a special (vegi) thanks to [Caneco](https://twitter.com/caneco) for the logo
 - Camel case everything
 - Allow resources to specify their JsonResource class.
 - Make all caches WeakMaps.
+- Things that "must" need to be first in the __consstructor. See Links:href

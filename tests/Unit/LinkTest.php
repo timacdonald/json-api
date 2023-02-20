@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use Illuminate\Container\Container;
+use Illuminate\Http\Request;
 use PHPUnit\Framework\TestCase;
+use Tests\Resources\BasicJsonApiResource;
+use TiMacDonald\JsonApi\Concerns\Links;
+use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\Link;
 
 class LinkTest extends TestCase
@@ -52,5 +57,19 @@ class LinkTest extends TestCase
         $this->assertSame('related', Link::related('https://related.com')->type);
         $this->assertSame('self', Link::self('https://self.com')->type);
         $this->assertSame('expected-type', (new Link('expected-type', 'https://another.com'))->type);
+    }
+
+    public function testItCanUseHash()
+    {
+        JsonApiResource::resolveIdUsing(fn () => 'id');
+        JsonApiResource::resolveTypeUsing(fn () => 'type');
+        $resource = new BasicJsonApiResource(null);
+        $request = Request::create('http://bar.com');
+
+        $resource->withLinks([
+            'foo' => 'http://foo.com',
+        ]);
+
+        dd($resource->toArray($request));
     }
 }

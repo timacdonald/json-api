@@ -51,3 +51,28 @@ public function toRelationships(Request $request): array
     ];
 }
 ```
+
+## `RelationshipLink` in now `ResourceObject`
+
+This class has been renamed.
+
+## Format fix
+
+There was an issue with the formatting of Collection identifiers that was in conflict with the JSON:API standard. Previously an collection's value was formatted as an array:
+
+```json
+{
+    "data": {
+        "type": "...",
+        "id": "...",
+        "attributes": {},
+        "relationships": {
+            "posts": [
+                { ... },
+                { ... },
+                { ... }
+            ]
+        }
+    }
+}
+```

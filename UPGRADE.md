@@ -68,10 +68,31 @@ There was an issue with the formatting of Collection identifiers that was in con
         "attributes": {},
         "relationships": {
             "posts": [
-                { ... },
-                { ... },
-                { ... }
+                { "data": { "type": "...", "id": "..."}},
+                { "data": { "type": "...", "id": "..."}},
+                { "data": { "type": "...", "id": "..."}}
             ]
+        }
+    }
+}
+```
+
+Now collections are formatted correctly. The `posts` value is now an object and the `posts.data` key is an array:
+
+```json
+{
+    "data": {
+        "type": "...",
+        "id": "...",
+        "attributes": {},
+        "relationships": {
+            "posts": {
+                "data": [
+                    { "type": "...", "id": "..."},
+                    { "type": "...", "id": "..."},
+                    { "type": "...", "id": "..."}
+                ]
+            }
         }
     }
 }

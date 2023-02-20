@@ -16,7 +16,7 @@ The following methods should now me marked as `public`:
 
 ### `toRelationships` should always return a resource
 
-Even if the relationships is `null` or an empty array, a resource should still be returned from a relationship closure. Previously, you may have done the following:
+Even if the relationships is `null` or an empty collection, a resource should still be returned from a relationship closure. Previously, you may have done the following:
 
 ```php
 protected function toRelationships(Request $request): array
@@ -30,7 +30,7 @@ protected function toRelationships(Request $request): array
             return AvatarResource::make($this->avatar);
         },
         'posts' => function () {
-            if ($this->posts === null) {
+            if ($this->posts->isEmpty()) {
                 return null;
             }
 
@@ -40,7 +40,7 @@ protected function toRelationships(Request $request): array
 }
 ```
 
-Now you should always return a resource and pass `null` or `[]` through to the resource constructor:
+Now you should always return a resource and pass `null` or the empty collection through to the resource constructor:
 
 ```php
 public function toRelationships(Request $request): array

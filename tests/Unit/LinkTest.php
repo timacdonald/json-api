@@ -54,9 +54,9 @@ class LinkTest extends TestCase
 
     public function testTypeIsSet(): void
     {
-        $this->assertSame('related', Link::related('https://related.com')->type);
-        $this->assertSame('self', Link::self('https://self.com')->type);
-        $this->assertSame('expected-type', (new Link('expected-type', 'https://another.com'))->type);
+        $this->assertSame('related', Link::related('https://related.com')->key);
+        $this->assertSame('self', Link::self('https://self.com')->key);
+        $this->assertSame('expected-type', (new Link('expected-type', 'https://another.com'))->key);
     }
 
     public function testItCanUseHash()
@@ -70,6 +70,8 @@ class LinkTest extends TestCase
             'foo' => 'http://foo.com',
         ]);
 
-        dd($resource->toArray($request));
+        $links = json_encode($resource->toArray($request)['links']);
+
+        $this->assertSame('{"foo":{"href":"http:\/\/foo.com","meta":{}}}', $links);
     }
 }

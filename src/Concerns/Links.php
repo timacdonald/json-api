@@ -24,7 +24,13 @@ trait Links
      */
     public function withLinks(array $links)
     {
-        $this->links = array_merge($this->links, $links);
+        $this->links = array_merge(
+            $this->links,
+            Collection::make($links)
+                ->map(fn ($value, $key) => is_string($key) ? new Link($key, $value) : $value)
+                    ->values()
+                    ->all()
+        );
 
         return $this;
     }
@@ -39,7 +45,7 @@ trait Links
     {
         return Collection::make($links)
             ->mapWithKeys(fn (Link $link): array => [
-                $link->type => $link,
+                $link->key => $link,
             ])
             ->all();
     }

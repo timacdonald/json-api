@@ -14,7 +14,7 @@ final class Link implements JsonSerializable
     /**
      * @internal
      */
-    public string $type;
+    public string $key;
 
     /**
      * @internal
@@ -48,9 +48,9 @@ final class Link implements JsonSerializable
      *
      * @param array<string, mixed> $meta
      */
-    public function __construct(string $type, string $href, array $meta = [])
+    public function __construct(string $key, string $href, array $meta = [])
     {
-        $this->type = $type;
+        $this->key = $key;
 
         $this->href = $href;
 

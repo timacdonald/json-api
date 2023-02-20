@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use Illuminate\Container\Container;
 use Illuminate\Http\Request;
 use PHPUnit\Framework\TestCase;
 use Tests\Resources\BasicJsonApiResource;
-use TiMacDonald\JsonApi\Concerns\Links;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\Link;
 
@@ -73,5 +71,8 @@ class LinkTest extends TestCase
         $links = json_encode($resource->toArray($request)['links']);
 
         $this->assertSame('{"foo":{"href":"http:\/\/foo.com","meta":{}}}', $links);
+
+        JsonApiResource::resolveIdNormally();
+        JsonApiResource::resolveTypeNormally();
     }
 }

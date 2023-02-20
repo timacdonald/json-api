@@ -7,6 +7,8 @@ namespace TiMacDonald\JsonApi\Concerns;
 use Illuminate\Support\Collection;
 use TiMacDonald\JsonApi\Link;
 
+use function is_string;
+
 trait Links
 {
     /**

@@ -67,7 +67,7 @@ class UserController
 }
 ```
 
-As we make our way through the examples you will see that new APIs are introduced when interacting with the class _internally_, e.g. the `toArray()` method is no longer used.
+As we make our way through the examples you will see that new APIs are introduced when interacting with the class _internally_, for example, the `toArray()` method is no longer used.
 
 ### Creating your first `JSON:API` resource
 

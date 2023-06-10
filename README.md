@@ -235,30 +235,21 @@ The client may now request these relationships via the `include` query parameter
         "data": [
           {
             "type": "posts",
-            "id": "25240",
-            "meta": {}
+            "id": "25240"
           },
           {
             "type": "posts",
-            "id": "39974",
-            "meta": {}
+            "id": "39974"
           }
-        ],
-        "meta": {},
-        "links": {}
+        ]
       },
       "team": {
         "data": {
           "type": "teams",
-          "id": "18986",
-          "meta": {}
-        },
-        "meta": {},
-        "links": {}
+          "id": "18986"
+        }
       }
-    },
-    "meta": {},
-    "links": {}
+    }
   },
   "included": [
     {
@@ -268,10 +259,7 @@ The client may now request these relationships via the `include` query parameter
         "title": "So what is `JSON:API` all about anyway?",
         "content": "...",
         "excerpt": "..."
-      },
-      "relationships": {},
-      "meta": {},
-      "links": {}
+      }
     },
     {
       "id": "39974",
@@ -280,20 +268,14 @@ The client may now request these relationships via the `include` query parameter
         "title": "Building an API with Laravel, using the `JSON:API` specification.",
         "content": "...",
         "excerpt": "..."
-      },
-      "relationships": {},
-      "meta": {},
-      "links": {}
+      }
     },
     {
       "id": "18986",
       "type": "teams",
       "attributes": {
         "name": "Laravel"
-      },
-      "relationships": {},
-      "meta": {},
-      "links": {}
+      }
     }
   ]
 }

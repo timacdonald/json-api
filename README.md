@@ -129,12 +129,8 @@ The following `JSON:API` formatted data would be returned:
       "name": "Tim",
       "website": "https://timacdonald.me",
       "twitter_handle": "@timacdonald87"
-    },
-    "relationships": {},
-    "meta": {},
-    "links": {}
-  },
-  "included": []
+    }
+  }
 }
 ```
 

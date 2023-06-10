@@ -214,6 +214,8 @@ class UserResource extends JsonApiResource
 
 ##### Example request and response
 
+The client may now request these relationships via the `include` query parameter.
+
 `GET /users/74812?include=posts,team`
 
 > **Note** Relationships are not exposed in the response unless they are requested by the calling client via the `include` query parameter. This is intended and is part of the `JSON:API` specification.

@@ -378,12 +378,8 @@ class UserResource extends JsonApiResource
         "city": "Melbourne",
         "country": "Australia"
       }
-    },
-    "relationships": {},
-    "meta": {},
-    "links": {}
-  },
-  "included": []
+    }
+  }
 }
 ```
 

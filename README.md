@@ -203,7 +203,7 @@ class UserResource extends JsonApiResource
     ];
 
     /**
-     * @var array<int|string, string>
+     * @var string[]
      */
     public $relationships = [
         'team',

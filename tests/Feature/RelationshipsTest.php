@@ -255,6 +255,112 @@ class RelationshipsTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
+    public function testItCanIncludeDeepNestedResourcesForASingleResource(): void
+    {
+        $post = (new BasicModel([
+            'id' => 'post-id',
+            'title' => 'post-title',
+            'content' => 'post-content',
+        ]));
+        $post->author = (new BasicModel([
+            'id' => 'author-id',
+            'name' => 'author-name',
+        ]));
+        $post->author->license = (new BasicModel([
+            'id' => 'license-id',
+            'key' => 'license-key',
+        ]));
+        $post->author->license->user = (new BasicModel([
+            'id' => 'user-id',
+            'name' => 'Average Joe',
+        ]));
+        Route::get('test-route', fn () => PostResource::make($post));
+
+        $response = $this->getJson('test-route?include=author.license.user');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                'id' => 'post-id',
+                'type' => 'basicModels',
+                'attributes' => [
+                    'title' => 'post-title',
+                    'content' => 'post-content',
+                ],
+                'relationships' => [
+                    'author' => [
+                        'data' => [
+                            'id' => 'author-id',
+                            'type' => 'basicModels',
+                            'meta' => [],
+                        ],
+                        'links' => [],
+                        'meta' => [],
+                    ],
+                ],
+                'links' => [],
+                'meta' => [],
+            ],
+            'jsonapi' => [
+                'version' => '1.0',
+                'meta' => [],
+            ],
+            'included' => [
+                [
+                    'id' => 'author-id',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'name' => 'author-name',
+                    ],
+                    'relationships' => [
+                        'license' => [
+                            'data' => [
+                                'id' => 'license-id',
+                                'type' => 'basicModels',
+                                'meta' => [],
+                            ],
+                            'links' => [],
+                            'meta' => [],
+                        ],
+                    ],
+                    'links' => [],
+                    'meta' => [],
+                ],
+                [
+                    'id' => 'license-id',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'key' => 'license-key',
+                    ],
+                    'relationships' => [
+                        'user' => [
+                            'data' => [
+                                'id' => 'user-id',
+                                'type' => 'basicModels',
+                                'meta' => [],
+                            ],
+                            'links' => [],
+                            'meta' => [],
+                        ],
+                    ],
+                    'links' => [],
+                    'meta' => [],
+                ],
+                [
+                    'id' => 'user-id',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'name' => 'Average Joe',
+                    ],
+                    'relationships' => [],
+                    'links' => [],
+                    'meta' => [],
+                ],
+            ],
+        ]);
+        $this->assertValidJsonApi($response);
+    }
+
     public function testItCanIncludeNestedResourcesWhenTheirKeyIsTheSame(): void
     {
         $parent = (new BasicModel([

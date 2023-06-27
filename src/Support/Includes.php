@@ -46,7 +46,7 @@ final class Includes
         return $this->rememberIncludes($request, $prefix, function () use ($request, $prefix): Collection {
             return $this->all($request)
                 ->when($prefix !== '')
-                ->filter(fn (string $include): bool => str_starts_with($include, $prefix))
+                ->filter(fn (string $include): bool => str_contains($include, $prefix))
                 ->map(fn ($include): string => (string) Str::of($include)->after($prefix)->before('.'))
                 ->uniqueStrict()
                 ->values();

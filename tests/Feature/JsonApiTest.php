@@ -37,7 +37,6 @@ class JsonApiTest extends TestCase
                     'name' => 'user-name',
                 ],
             ],
-            'included' => [],
             'jsonapi' => [
                 'version' => '1.0',
             ],
@@ -79,7 +78,6 @@ class JsonApiTest extends TestCase
                     ],
                 ],
             ],
-            'included' => [],
             'jsonapi' => [
                 'version' => '1.0',
             ],
@@ -122,7 +120,6 @@ class JsonApiTest extends TestCase
                     'meta-key' => 'meta-value',
                 ],
             ],
-            'included' => [],
             'jsonapi' => [
                 'version' => '1.0',
             ],
@@ -167,7 +164,6 @@ class JsonApiTest extends TestCase
                     ],
                 ],
             ],
-            'included' => [],
             'jsonapi' => [
                 'version' => '1.0',
             ],
@@ -207,7 +203,6 @@ class JsonApiTest extends TestCase
                 'id' => 'expected-id',
                 'type' => 'Tests\\Models\\BasicModel',
             ],
-            'included' => [],
             'jsonapi' => [
                 'version' => '1.0',
             ],
@@ -229,7 +224,6 @@ class JsonApiTest extends TestCase
                 'id' => 'expected-id',
                 'type' => 'basicModels',
             ],
-            'included' => [],
             'jsonapi' => [
                 'version' => '1.0',
             ],
@@ -288,7 +282,6 @@ class JsonApiTest extends TestCase
                     'name' => 'user-name',
                 ],
             ],
-            'included' => [],
             'jsonapi' => [
                 'version' => '1.4.3',
                 'meta' => [
@@ -297,8 +290,6 @@ class JsonApiTest extends TestCase
             ],
         ]);
         $this->assertValidJsonApi($response);
-
-        BasicJsonApiResource::resolveServerImplementationNormally();
     }
 
     public function testItExcludesEmptyRelationshipLinkMeta()
@@ -744,7 +735,5 @@ class JsonApiTest extends TestCase
             ],
         ]);
         $this->assertValidJsonApi($response);
-
-        JsonApiResource::resolveServerImplementationNormally();
     }
 }

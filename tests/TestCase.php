@@ -9,6 +9,7 @@ use Opis\JsonSchema\Validator;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use RuntimeException;
 
+use TiMacDonald\JsonApi\JsonApiResource;
 use function is_string;
 
 class TestCase extends BaseTestCase
@@ -20,6 +21,8 @@ class TestCase extends BaseTestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        JsonApiResource::resolveServerImplementationNormally();
 
         $this->withoutExceptionHandling();
     }

@@ -45,7 +45,6 @@ class AttributesTest extends TestCase
             'jsonapi' => [
                 'version' => '1.0',
             ],
-            'included' => [],
         ]);
         $this->assertValidJsonApi($response);
     }
@@ -84,7 +83,6 @@ class AttributesTest extends TestCase
             'jsonapi' => [
                 'version' => '1.0',
             ],
-            'included' => [],
         ]);
         $this->assertValidJsonApi($response);
     }
@@ -119,7 +117,6 @@ class AttributesTest extends TestCase
             'jsonapi' => [
                 'version' => '1.0',
             ],
-            'included' => [],
         ]);
         $this->assertValidJsonApi($response);
     }
@@ -153,7 +150,6 @@ class AttributesTest extends TestCase
             'jsonapi' => [
                 'version' => '1.0',
             ],
-            'included' => [],
         ]);
         $this->assertValidJsonApi($response);
     }
@@ -183,7 +179,6 @@ class AttributesTest extends TestCase
             'jsonapi' => [
                 'version' => '1.0',
             ],
-            'included' => [],
         ]);
         $this->assertValidJsonApi($response);
     }
@@ -234,7 +229,6 @@ class AttributesTest extends TestCase
                 'jsonapi' => [
                     'version' => '1.0',
                 ],
-                'included' => [],
             ]);
             $this->assertValidJsonApi($response);
         });
@@ -264,7 +258,6 @@ class AttributesTest extends TestCase
                 'jsonapi' => [
                     'version' => '1.0',
                 ],
-                'included' => [],
             ]);
             $this->assertValidJsonApi($response);
         });
@@ -367,7 +360,6 @@ class AttributesTest extends TestCase
             'jsonapi' => [
                 'version' => '1.0',
             ],
-            'included' => [],
         ]);
         $this->assertValidJsonApi($response);
     }
@@ -407,7 +399,6 @@ class AttributesTest extends TestCase
             'jsonapi' => [
                 'version' => '1.0',
             ],
-            'included' => [],
         ]);
         $this->assertValidJsonApi($response);
     }
@@ -448,7 +439,6 @@ class AttributesTest extends TestCase
             'jsonapi' => [
                 'version' => '1.0',
             ],
-            'included' => [],
         ]);
         $this->assertValidJsonApi($response);
     }

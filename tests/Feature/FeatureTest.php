@@ -51,7 +51,6 @@ class FeatureTest extends TestCase
                     ],
                 ],
             ],
-            'included' => [],
             'links' => [
                 'first' => 'http://localhost/test-route?page=1',
                 'last' => 'http://localhost/test-route?page=3',

@@ -64,7 +64,7 @@ final class RelationshipObject implements JsonSerializable
     /**
      * @internal
      *
-     * @return array{data: ResourceIdentifier|null|array<int, ResourceIdentifier>, meta: stdClass, links: stdClass}
+     * @return array{data: ResourceIdentifier|null|array<int, ResourceIdentifier>, meta?: stdClass, links?: stdClass}
      */
     public function jsonSerialize(): array
     {

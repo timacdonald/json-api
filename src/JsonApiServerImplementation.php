@@ -26,7 +26,7 @@ final class JsonApiServerImplementation implements JsonSerializable
     /**
      * @internal
      *
-     * @return array{version: string, meta: stdClass}
+     * @return array{version: string, meta?: stdClass}
      */
     public function jsonSerialize(): array
     {

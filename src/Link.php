@@ -60,7 +60,7 @@ final class Link implements JsonSerializable
     /**
      * @internal
      *
-     * @return array{href: string, meta: stdClass}
+     * @return array{href: string, meta?: stdClass}
      */
     public function jsonSerialize(): array
     {

@@ -339,7 +339,7 @@ class AttributesTest extends TestCase
             public function toAttributes($request): array
             {
                 return [
-                    'name' => $this->when(false, fn () =>$this->name),
+                    'name' => $this->when(false, fn () => $this->name),
                     'address' => fn () => $this->when(false, fn () => $this->address),
                     'email' => $this->email,
                 ];

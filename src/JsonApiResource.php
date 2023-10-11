@@ -130,7 +130,7 @@ abstract class JsonApiResource extends JsonResource
                 'relationships' => $this->requestedRelationshipsAsIdentifiers($request)->all(),
                 'links' => self::parseLinks(array_merge($this->toLinks($request), $this->links)),
                 'meta' => array_merge($this->toMeta($request), $this->meta),
-            ])->filter()->map(fn ($value) => (object) $value)->all(),
+            ])->filter()->map(fn ($value) => (object) $value),
         ];
     }
 

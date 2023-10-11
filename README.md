@@ -101,9 +101,6 @@ use TiMacDonald\JsonApi\JsonApiResource;
 
 class UserResource extends JsonApiResource
 {
-    /**
-     * @var string[]
-     */
     public $attributes = [
         'name',
         'website',
@@ -163,18 +160,12 @@ use TiMacDonald\JsonApi\JsonApiResource;
 
 class UserResource extends JsonApiResource
 {
-    /**
-     * @var string[]
-     */
     public $attributes = [
         'name',
         'website',
         'twitter_handle',
     ];
 
-    /**
-     * @var array<string, class-string<JsonApiResource>>
-     */
     public $relationships = [
         'team' => TeamResource::class,
         'posts' => PostResource::class,
@@ -193,18 +184,12 @@ use TiMacDonald\JsonApi\JsonApiResource;
 
 class UserResource extends JsonApiResource
 {
-    /**
-     * @var string[]
-     */
     public $attributes = [
         'name',
         'website',
         'twitter_handle',
     ];
 
-    /**
-     * @var string[]
-     */
     public $relationships = [
         'team',
         'posts',

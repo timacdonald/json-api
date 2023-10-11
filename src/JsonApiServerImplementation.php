@@ -32,7 +32,7 @@ final class JsonApiServerImplementation implements JsonSerializable
     {
         return [
             'version' => $this->version,
-            'meta' => (object) $this->meta,
+            ...$this->meta ? ['meta' => (object) $this->meta] : [],
         ];
     }
 }

@@ -22,21 +22,21 @@ class ServerApiImplementationTest extends TestCase
         self::assertSame('{"version":"5.0","meta":{"expected":"meta","more":"meta"}}', $json);
     }
 
-    public function testEmptyMetaIsObject(): void
+    public function testEmptyMetaIsExcluded(): void
     {
         $instance = new JsonApiServerImplementation('5.0', []);
 
         $json = json_encode($instance);
 
-        $this->assertSame('{"version":"5.0","meta":{}}', $json);
+        $this->assertSame('{"version":"5.0"}', $json);
     }
 
-    public function testMissingMetaIsObject(): void
+    public function testMissingMetaIsExcluded(): void
     {
         $instance = new JsonApiServerImplementation('5.0');
 
         $json = json_encode($instance);
 
-        $this->assertSame('{"version":"5.0","meta":{}}', $json);
+        $this->assertSame('{"version":"5.0"}', $json);
     }
 }

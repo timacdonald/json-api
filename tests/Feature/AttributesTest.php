@@ -41,13 +41,9 @@ class AttributesTest extends TestCase
                     'name' => 'Tim',
                     'email' => 'tim@example.com',
                 ],
-                'relationships' => [],
-                'meta' => [],
-                'links' => [],
             ],
             'jsonapi' => [
                 'version' => '1.0',
-                'meta' => [],
             ],
             'included' => [],
         ]);
@@ -84,13 +80,9 @@ class AttributesTest extends TestCase
                     'name' => 'Tim',
                     'location' => 'Melbourne',
                 ],
-                'relationships' => [],
-                'links' => [],
-                'meta' => [],
             ],
             'jsonapi' => [
                 'version' => '1.0',
-                'meta' => [],
             ],
             'included' => [],
         ]);
@@ -123,14 +115,9 @@ class AttributesTest extends TestCase
             'data' => [
                 'id' => 'expected-id',
                 'type' => 'basicModels',
-                'attributes' => [],
-                'relationships' => [],
-                'meta' => [],
-                'links' => [],
             ],
             'jsonapi' => [
                 'version' => '1.0',
-                'meta' => [],
             ],
             'included' => [],
         ]);
@@ -162,13 +149,9 @@ class AttributesTest extends TestCase
                 'attributes' => [
                     'location' => 'Melbourne',
                 ],
-                'relationships' => [],
-                'links' => [],
-                'meta' => [],
             ],
             'jsonapi' => [
                 'version' => '1.0',
-                'meta' => [],
             ],
             'included' => [],
         ]);
@@ -196,14 +179,9 @@ class AttributesTest extends TestCase
             'data' => [
                 'id' => 'expected-id',
                 'type' => 'basicModels',
-                'attributes' => [],
-                'relationships' => [],
-                'links' => [],
-                'meta' => [],
             ],
             'jsonapi' => [
                 'version' => '1.0',
-                'meta' => [],
             ],
             'included' => [],
         ]);
@@ -252,14 +230,9 @@ class AttributesTest extends TestCase
                 'data' => [
                     'type' => 'basicModels',
                     'id' => 'user-id',
-                    'attributes' => [],
-                    'relationships' => [],
-                    'meta' => [],
-                    'links' => [],
                 ],
                 'jsonapi' => [
                     'version' => '1.0',
-                    'meta' => [],
                 ],
                 'included' => [],
             ]);
@@ -287,13 +260,9 @@ class AttributesTest extends TestCase
                     'attributes' => [
                         'name' => 'user-name',
                     ],
-                    'relationships' => [],
-                    'meta' => [],
-                    'links' => [],
                 ],
                 'jsonapi' => [
                     'version' => '1.0',
-                    'meta' => [],
                 ],
                 'included' => [],
             ]);
@@ -327,31 +296,23 @@ class AttributesTest extends TestCase
             'data' => [
                 'id' => 'user-id',
                 'type' => 'basicModels',
-                'attributes' =>  [],
                 'relationships' => [
                     'posts' => [
                         'data' => [
                             [
                                 'id' => 'post-id-1',
-                                'meta' => [],
                                 'type' => 'basicModels',
                             ],
                             [
                                 'id' => 'post-id-2',
-                                'meta' => [],
                                 'type' => 'basicModels',
                             ],
                         ],
-                        'links' => [],
-                        'meta' => [],
                     ],
                 ],
-                'meta' => [],
-                'links' => [],
             ],
             'jsonapi' => [
                 'version' => '1.0',
-                'meta' => [],
             ],
             'included' => [
                 [
@@ -360,9 +321,6 @@ class AttributesTest extends TestCase
                     'attributes' => [
                         'title' => 'post-title-1',
                     ],
-                    'relationships' => [],
-                    'links' => [],
-                    'meta' => [],
                 ],
                 [
                     'id' => 'post-id-2',
@@ -370,9 +328,6 @@ class AttributesTest extends TestCase
                     'attributes' => [
                         'title' => 'post-title-2',
                     ],
-                    'relationships' => [],
-                    'links' => [],
-                    'meta' => [],
                 ],
             ],
         ]);
@@ -408,13 +363,9 @@ class AttributesTest extends TestCase
                 'attributes' => [
                     'email' => 'tim@example.com',
                 ],
-                'relationships' => [],
-                'meta' => [],
-                'links' => [],
             ],
             'jsonapi' => [
                 'version' => '1.0',
-                'meta' => [],
             ],
             'included' => [],
         ]);
@@ -452,13 +403,9 @@ class AttributesTest extends TestCase
                     'email' => 'tim@example.com',
                     'address' => '123 fake street',
                 ],
-                'relationships' => [],
-                'meta' => [],
-                'links' => [],
             ],
             'jsonapi' => [
                 'version' => '1.0',
-                'meta' => [],
             ],
             'included' => [],
         ]);
@@ -497,13 +444,9 @@ class AttributesTest extends TestCase
                     'email' => 'tim@example.com',
                     'address' => '123 fake street',
                 ],
-                'relationships' => [],
-                'meta' => [],
-                'links' => [],
             ],
             'jsonapi' => [
                 'version' => '1.0',
-                'meta' => [],
             ],
             'included' => [],
         ]);

@@ -17,25 +17,25 @@ class RelationshipObjectTest extends TestCase
 
         $serialized = json_encode($link);
 
-        $this->assertSame('{"data":{"type":"expected-type","id":"expected-id","meta":{}},"meta":{"expected":"meta"},"links":{"expected":{"href":"link","meta":{}}}}', $serialized);
+        $this->assertSame('{"data":{"type":"expected-type","id":"expected-id"},"meta":{"expected":"meta"},"links":{"expected":{"href":"link"}}}', $serialized);
     }
 
-    public function testEmptyMetaAndLinksIsObject(): void
+    public function testEmptyMetaAndLinksIsExcluded(): void
     {
         $link = RelationshipObject::toOne(new ResourceIdentifier('expected-type', 'expected-id'), [], []);
 
         $serialized = json_encode($link);
 
-        $this->assertSame('{"data":{"type":"expected-type","id":"expected-id","meta":{}},"meta":{},"links":{}}', $serialized);
+        $this->assertSame('{"data":{"type":"expected-type","id":"expected-id"}}', $serialized);
     }
 
-    public function testMissingMetaAndLinksIsObject(): void
+    public function testMissingMetaAndLinksIsExcluded(): void
     {
         $link = RelationshipObject::toOne(new ResourceIdentifier('expected-type', 'expected-id'));
 
         $serialized = json_encode($link);
 
-        $this->assertSame('{"data":{"type":"expected-type","id":"expected-id","meta":{}},"meta":{},"links":{}}', $serialized);
+        $this->assertSame('{"data":{"type":"expected-type","id":"expected-id"}}', $serialized);
     }
 
     public function testMetaAndLinksCanBeAppended(): void
@@ -47,6 +47,6 @@ class RelationshipObjectTest extends TestCase
                 ->withLinks([Link::self('self.com')])
         );
 
-        $this->assertSame('{"data":[{"type":"expected-type","id":"expected-id","meta":{}}],"meta":{"original":"meta","expected":"meta","another":"one"},"links":{"related":{"href":"related.com","meta":{}},"self":{"href":"self.com","meta":{}}}}', $serialized);
+        $this->assertSame('{"data":[{"type":"expected-type","id":"expected-id"}],"meta":{"original":"meta","expected":"meta","another":"one"},"links":{"related":{"href":"related.com"},"self":{"href":"self.com"}}}', $serialized);
     }
 }

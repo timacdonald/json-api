@@ -47,10 +47,7 @@ class RelationshipsAsPropertiesTest extends TestCase
                 'data' => [
                     'type' => 'basicModels',
                     'id' => 'author-id',
-                    'meta' => [],
                 ],
-                'meta' => [],
-                'links' => [],
             ],
         ], $response->getData(true)['data']['relationships']);
         $this->assertSame([
@@ -60,9 +57,6 @@ class RelationshipsAsPropertiesTest extends TestCase
                 'attributes' => [
                     'name' => 'author-name',
                 ],
-                'relationships' => [],
-                'meta' => [],
-                'links' => [],
             ],
         ], $response->getData(true)['included']);
     }
@@ -96,10 +90,7 @@ class RelationshipsAsPropertiesTest extends TestCase
                 'data' => [[
                     'type' => 'basicModels',
                     'id' => 'comment-id',
-                    'meta' => [],
                 ]],
-                'meta' => [],
-                'links' => [],
             ],
         ], $response->getData(true)['data']['relationships']);
         $this->assertSame([
@@ -109,9 +100,6 @@ class RelationshipsAsPropertiesTest extends TestCase
                 'attributes' => [
                     'content' => 'comment-content',
                 ],
-                'relationships' => [],
-                'meta' => [],
-                'links' => [],
             ],
         ], $response->getData(true)['included']);
     }
@@ -147,10 +135,7 @@ class RelationshipsAsPropertiesTest extends TestCase
                 'data' => [[
                     'type' => 'basicModels',
                     'id' => 'comment-id',
-                    'meta' => [],
                 ]],
-                'meta' => [],
-                'links' => [],
             ],
         ], $response->getData(true)['data']['relationships']);
         $this->assertSame([
@@ -160,9 +145,6 @@ class RelationshipsAsPropertiesTest extends TestCase
                 'attributes' => [
                     'content' => 'comment-content',
                 ],
-                'relationships' => [],
-                'meta' => [],
-                'links' => [],
             ],
         ], $response->getData(true)['included']);
     }
@@ -202,11 +184,8 @@ class RelationshipsAsPropertiesTest extends TestCase
                     [
                         'type' => 'basicModels',
                         'id' => 'post-id',
-                        'meta' => [],
                     ],
                 ],
-                'meta' => [],
-                'links' => [],
             ],
         ], $response->getData(true)['data']['relationships']);
         $this->assertSame([
@@ -217,9 +196,6 @@ class RelationshipsAsPropertiesTest extends TestCase
                     'title' => 'post-title',
                     'content' => 'post-content',
                 ],
-                'relationships' => [],
-                'meta' => [],
-                'links' => [],
             ],
         ], $response->getData(true)['included']);
         JsonApiResource::guessRelationshipResourceUsing(null);
@@ -240,6 +216,6 @@ class RelationshipsAsPropertiesTest extends TestCase
         $response = $resource->toResponse(Request::create('https://timacdonald.me'));
 
         $this->assertValidJsonApi($response->content());
-        $this->assertSame([], $response->getData(true)['data']['relationships']);
+        $this->assertSame([], $response->getData(true)['data']['relationships'] ?? []);
     }
 }

@@ -41,9 +41,6 @@ class AttributesAsPropertiesTest extends TestCase
             'attributes' => [
                 'content' => 'post-content',
             ],
-            'relationships' => [],
-            'meta' => [],
-            'links' => [],
         ], $response->getData(true)['data']);
     }
 
@@ -76,9 +73,6 @@ class AttributesAsPropertiesTest extends TestCase
             'attributes' => [
                 'title' => 'expected-title',
             ],
-            'relationships' => [],
-            'meta' => [],
-            'links' => [],
         ], $response->getData(true)['data']);
     }
 
@@ -97,6 +91,6 @@ class AttributesAsPropertiesTest extends TestCase
         $response = $resource->toResponse(Request::create('https://timacdonald.me'));
 
         $this->assertValidJsonApi($response->content());
-        $this->assertSame([], $response->getData(true)['data']['attributes']);
+        $this->assertSame([], $response->getData(true)['data']['attributes'] ?? []);
     }
 }

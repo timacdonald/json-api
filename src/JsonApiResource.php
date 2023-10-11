@@ -118,17 +118,19 @@ abstract class JsonApiResource extends JsonResource
      * @api
      *
      * @param Request $request
-     * @return array{id: string, type: string, attributes: stdClass, relationships: stdClass, meta: stdClass, links: stdClass}
+     * @return array{id: string, type: string, attributes?: stdClass, relationships?: stdClass, meta?: stdClass, links?: stdClass}
      */
     public function toArray($request)
     {
         return [
             'id' => $this->resolveId($request),
             'type' => $this->resolveType($request),
-            'attributes' => (object) $this->requestedAttributes($request)->all(),
-            'relationships' => (object) $this->requestedRelationshipsAsIdentifiers($request)->all(),
-            'meta' => (object) array_merge($this->toMeta($request), $this->meta),
-            'links' => (object) self::parseLinks(array_merge($this->toLinks($request), $this->links)),
+            ...Collection::make([
+                'attributes' => $this->requestedAttributes($request)->all(),
+                'relationships' => $this->requestedRelationshipsAsIdentifiers($request)->all(),
+                'links' => self::parseLinks(array_merge($this->toLinks($request), $this->links)),
+                'meta' => array_merge($this->toMeta($request), $this->meta),
+            ])->filter()->map(fn ($value) => (object) $value)->all(),
         ];
     }
 
@@ -141,9 +143,10 @@ abstract class JsonApiResource extends JsonResource
     public function with($request)
     {
         return [
-            'included' => $this->included($request)
+            ...$included = $this->included($request)
                 ->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request))
-                ->values(),
+                ->values()
+                ->all() ? ['included' => $included] : [],
             'jsonapi' => self::serverImplementationResolver()($request),
         ];
     }

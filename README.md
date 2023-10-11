@@ -415,15 +415,10 @@ GET /posts?include=author&fields[posts]=title,excerpt&fields[users]=name
         "author": {
           "data": {
             "type": "users",
-            "id": "74812",
-            "meta": {}
-          },
-          "meta": {},
-          "links": {}
+            "id": "74812"
+          }
         }
-      },
-      "meta": {},
-      "links": {}
+      }
     },
     {
       "id": "39974",
@@ -436,15 +431,10 @@ GET /posts?include=author&fields[posts]=title,excerpt&fields[users]=name
         "author": {
           "data": {
             "type": "users",
-            "id": "74812",
-            "meta": {}
-          },
-          "meta": {},
-          "links": {}
+            "id": "74812"
+          }
         }
-      },
-      "meta": {},
-      "links": {}
+      }
     }
   ],
   "included": [
@@ -453,10 +443,7 @@ GET /posts?include=author&fields[posts]=title,excerpt&fields[users]=name
       "id": "74812",
       "attributes": {
         "name": "Tim"
-      },
-      "relationships": {},
-      "meta": {},
-      "links": {}
+      }
     }
   ]
 }

@@ -70,8 +70,8 @@ final class RelationshipObject implements JsonSerializable
     {
         return [
             'data' => $this->data,
-            'meta' => (object) $this->meta,
-            'links' => (object) self::parseLinks($this->links),
+            ...$this->meta ? ['meta' => (object) $this->meta] : [],
+            ...$this->links ? ['links' => (object) self::parseLinks($this->links)] : [],
         ];
     }
 }

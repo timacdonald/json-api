@@ -36,14 +36,10 @@ class JsonApiTest extends TestCase
                 'attributes' => [
                     'name' => 'user-name',
                 ],
-                'relationships' => [],
-                'meta' => [],
-                'links' => [],
             ],
             'included' => [],
             'jsonapi' => [
                 'version' => '1.0',
-                'meta' => [],
             ],
         ]);
         $this->assertValidJsonApi($response);
@@ -74,9 +70,6 @@ class JsonApiTest extends TestCase
                     'attributes' => [
                         'name' => 'user-name-1',
                     ],
-                    'relationships' => [],
-                    'meta' => [],
-                    'links' => [],
                 ],
                 [
                     'id' => 'user-id-2',
@@ -84,27 +77,26 @@ class JsonApiTest extends TestCase
                     'attributes' => [
                         'name' => 'user-name-2',
                     ],
-                    'relationships' => [],
-                    'meta' => [],
-                    'links' => [],
                 ],
             ],
             'included' => [],
             'jsonapi' => [
                 'version' => '1.0',
-                'meta' => [],
             ],
         ]);
         $this->assertValidJsonApi($response);
     }
 
-    public function testItCastsEmptyAttributesAndRelationshipsToAnObject(): void
+    public function testItExcludesEmptyAttributesAndRelationships(): void
     {
         Route::get('test-route', fn () => UserResource::make((new BasicModel(['id' => 'user-id']))));
 
         $response = $this->getJson('test-route?fields[basicModels]=');
 
-        self::assertStringContainsString('"attributes":{},"relationships":{},"meta":{},"links":{}', $response->content());
+        self::assertStringNotContainsString('"attributes"', $response->content());
+        self::assertStringNotContainsString('"relationships"', $response->content());
+        self::assertStringNotContainsString('"meta"', $response->content());
+        self::assertStringNotContainsString('"links"', $response->content());
         $this->assertValidJsonApi($response);
     }
 
@@ -126,17 +118,13 @@ class JsonApiTest extends TestCase
             'data' => [
                 'id' => 'expected-id',
                 'type' => 'basicModels',
-                'attributes' => [],
-                'relationships' => [],
                 'meta' => [
                     'meta-key' => 'meta-value',
                 ],
-                'links' => [],
             ],
             'included' => [],
             'jsonapi' => [
                 'version' => '1.0',
-                'meta' => [],
             ],
         ]);
         $this->assertValidJsonApi($response);
@@ -164,9 +152,6 @@ class JsonApiTest extends TestCase
             'data' => [
                 'id' => 'expected-id',
                 'type' => 'basicModels',
-                'attributes' => [],
-                'relationships' => [],
-                'meta' => [],
                 'links' => [
                     'self' => [
                         'href' => 'https://example.test/self',
@@ -176,18 +161,15 @@ class JsonApiTest extends TestCase
                     ],
                     'related' => [
                         'href' => 'https://example.test/related',
-                        'meta' => [],
                     ],
                     'home' => [
                         'href' => 'https://example.test',
-                        'meta' => [],
                     ],
                 ],
             ],
             'included' => [],
             'jsonapi' => [
                 'version' => '1.0',
-                'meta' => [],
             ],
         ]);
         $this->assertValidJsonApi($response);
@@ -224,15 +206,10 @@ class JsonApiTest extends TestCase
             'data' => [
                 'id' => 'expected-id',
                 'type' => 'Tests\\Models\\BasicModel',
-                'relationships' => [],
-                'attributes' => [],
-                'meta' => [],
-                'links' => [],
             ],
             'included' => [],
             'jsonapi' => [
                 'version' => '1.0',
-                'meta' => [],
             ],
         ]);
         $this->assertValidJsonApi($response);
@@ -251,15 +228,10 @@ class JsonApiTest extends TestCase
             'data' => [
                 'id' => 'expected-id',
                 'type' => 'basicModels',
-                'relationships' => [],
-                'attributes' => [],
-                'meta' => [],
-                'links' => [],
             ],
             'included' => [],
             'jsonapi' => [
                 'version' => '1.0',
-                'meta' => [],
             ],
         ]);
         $this->assertValidJsonApi($response);
@@ -267,31 +239,31 @@ class JsonApiTest extends TestCase
         JsonApiResource::resolveIdNormally();
     }
 
-    public function testItCastsEmptyResourceIdentifierMetaToObject(): void
+    public function testItExcludesEmptyResourceIdentifierMeta(): void
     {
         $relationship = new ResourceIdentifier('users', '5');
 
         $json = json_encode($relationship);
 
-        self::assertSame('{"type":"users","id":"5","meta":{}}', $json);
+        self::assertSame('{"type":"users","id":"5"}', $json);
     }
 
-    public function testItCastsEmptyLinksMetaToObject(): void
+    public function testItExcludesEmptyLinksMeta(): void
     {
         $link = Link::self('https://timacdonald.me', []);
 
         $json = json_encode($link);
 
-        self::assertSame('{"href":"https:\/\/timacdonald.me","meta":{}}', $json);
+        self::assertSame('{"href":"https:\/\/timacdonald.me"}', $json);
     }
 
-    public function testItCastsEmptyImplementationMetaToObject(): void
+    public function testItExcludesEmptyImplementationMeta(): void
     {
         $implementation = new JsonApiServerImplementation('1.5', []);
 
         $json = json_encode($implementation);
 
-        self::assertSame('{"version":"1.5","meta":{}}', $json);
+        self::assertSame('{"version":"1.5"}', $json);
     }
 
     public function testItCanSpecifyAnImplementation(): void
@@ -315,9 +287,6 @@ class JsonApiTest extends TestCase
                 'attributes' => [
                     'name' => 'user-name',
                 ],
-                'relationships' => [],
-                'meta' => [],
-                'links' => [],
             ],
             'included' => [],
             'jsonapi' => [
@@ -332,7 +301,7 @@ class JsonApiTest extends TestCase
         BasicJsonApiResource::resolveServerImplementationNormally();
     }
 
-    public function testItCastsEmptyRelationshipLinkMetaToJsonObject()
+    public function testItExcludesEmptyRelationshipLinkMeta()
     {
         $resourceLink = RelationshipObject::toOne(
             new ResourceIdentifier('expected-type', 'expected-id')
@@ -340,7 +309,7 @@ class JsonApiTest extends TestCase
 
         $json = json_encode($resourceLink);
 
-        self::assertSame('{"data":{"type":"expected-type","id":"expected-id","meta":{}},"meta":{},"links":{}}', $json);
+        self::assertSame('{"data":{"type":"expected-type","id":"expected-id"}}', $json);
     }
 
     public function testItCanPopulateAllTheMetasAndAllTheLinks()
@@ -581,7 +550,6 @@ class JsonApiTest extends TestCase
             'data' => [
                 'id' => 'user-id',
                 'type' => 'basicModels',
-                'attributes' => [],
                 'relationships' => [
                     'profile' => [
                         'data' => null,
@@ -696,8 +664,6 @@ class JsonApiTest extends TestCase
                 [
                     'id' => 'avatar-id',
                     'type' => 'basicModels',
-                    'attributes' => [],
-                    'relationships' => [],
                     'meta' => [
                         'avatar-internal' => 'meta',
                         'avatar-external' => 'meta',
@@ -720,8 +686,6 @@ class JsonApiTest extends TestCase
                 [
                     'id' => 'post-id-1',
                     'type' => 'basicModels',
-                    'attributes' => [],
-                    'relationships' => [],
                     'meta' => [
                         'posts-internal' => 'meta',
                         'posts-internal-collection' => 'meta',
@@ -742,15 +706,12 @@ class JsonApiTest extends TestCase
                         ],
                         'external' => [
                             'href' => 'posts.com',
-                            'meta' => [],
                         ],
                     ],
                 ],
                 [
                     'id' => 'post-id-2',
                     'type' => 'basicModels',
-                    'attributes' => [],
-                    'relationships' => [],
                     'meta' => [
                         'posts-internal' => 'meta',
                         'posts-internal-collection' => 'meta',
@@ -771,7 +732,6 @@ class JsonApiTest extends TestCase
                         ],
                         'external' => [
                             'href' => 'posts.com',
-                            'meta' => [],
                         ],
                     ],
                 ],

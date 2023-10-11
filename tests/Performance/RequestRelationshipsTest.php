@@ -53,7 +53,7 @@ for ($i = 0; $i < $numberOfResourcesReturned; $i++) {
             $modelFactory()->setRelation('author', $modelFactory())->setRelation('avatar', $modelFactory()),
         ]);
 }
-$request = Request::create("https://example.com/users?include=posts.author.avatar,comments.author.avatar", 'GET');
+$request = Request::create('https://example.com/users?include=posts.author.avatar,comments.author.avatar', 'GET');
 Container::getInstance()->bind('request', fn () => $request);
 $resource = UserResource::collection($users);
 
@@ -61,5 +61,5 @@ $start = microtime(true);
 $resource->toResponse($request);
 $end = microtime(true);
 
-echo "Duration (milliseconds):".PHP_EOL;
+echo 'Duration (milliseconds):'.PHP_EOL;
 echo($end - $start) * 1000;

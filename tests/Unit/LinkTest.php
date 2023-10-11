@@ -44,7 +44,7 @@ class LinkTest extends TestCase
         $link = Link::related('https://related.com', ['original' => 'meta']);
 
         $serialized = json_encode(
-            $link->withMeta(['expected' => 'meta'])->withMeta(["another" => "one"])
+            $link->withMeta(['expected' => 'meta'])->withMeta(['another' => 'one'])
         );
 
         $this->assertSame('{"href":"https:\/\/related.com","meta":{"original":"meta","expected":"meta","another":"one"}}', $serialized);

@@ -40,7 +40,7 @@ class RelationshipObjectTest extends TestCase
 
     public function testMetaAndLinksCanBeAppended(): void
     {
-        $link = RelationshipObject::toMany([new ResourceIdentifier('expected-type', 'expected-id')], [Link::related('related.com')], ["original" => "meta"]);
+        $link = RelationshipObject::toMany([new ResourceIdentifier('expected-type', 'expected-id')], [Link::related('related.com')], ['original' => 'meta']);
 
         $serialized = json_encode(
             $link->withMeta(['expected' => 'meta'])->withMeta(['another' => 'one'])

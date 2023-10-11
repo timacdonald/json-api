@@ -38,7 +38,7 @@ final class ResourceIdentifier implements JsonSerializable
     /**
      * @internal
      *
-     * @return array{type: string, id: string, meta: stdClass}
+     * @return array{type: string, id: string, meta?: stdClass}
      */
     public function jsonSerialize(): array
     {

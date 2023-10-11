@@ -29,7 +29,7 @@
         "laravel/framework": "^9.0 || ^10.0",
         "opis/json-schema": "^2.3",
         "orchestra/testbench": "^7.0 || ^8.0",
-        "phpunit/phpunit": "^9.0"
+        "phpunit/phpunit": "^10.4"
     },
     "config": {
         "preferred-install": "dist",

@@ -42,9 +42,6 @@ class FeatureTest extends TestCase
                     'attributes' => [
                         'name' => 'name-0',
                     ],
-                    'relationships' => [],
-                    'links' => [],
-                    'meta' => [],
                 ],
                 [
                     'id' => '2',
@@ -52,9 +49,6 @@ class FeatureTest extends TestCase
                     'attributes' => [
                         'name' => 'name-1',
                     ],
-                    'relationships' => [],
-                    'links' => [],
-                    'meta' => [],
                 ],
             ],
             'included' => [],
@@ -100,7 +94,6 @@ class FeatureTest extends TestCase
                 ],
             ],
             'jsonapi' => [
-                'meta' => [],
                 'version' => '1.0',
             ],
         ]);

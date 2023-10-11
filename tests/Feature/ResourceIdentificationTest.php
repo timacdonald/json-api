@@ -29,15 +29,10 @@ class ResourceIdentificationTest extends TestCase
         "author": {
           "data": {
             "type": "users",
-            "id": "74812",
-            "meta": {}
-          },
-          "meta": {},
-          "links": {}
+            "id": "74812"
+          }
         }
-      },
-      "meta": {},
-      "links": {}
+      }
     },
     {
       "id": "39974",
@@ -50,15 +45,10 @@ class ResourceIdentificationTest extends TestCase
         "author": {
           "data": {
             "type": "users",
-            "id": "74812",
-            "meta": {}
-          },
-          "meta": {},
-          "links": {}
+            "id": "74812"
+          }
         }
-      },
-      "meta": {},
-      "links": {}
+      }
     }
   ],
   "included": [
@@ -67,10 +57,7 @@ class ResourceIdentificationTest extends TestCase
       "id": "74812",
       "attributes": {
         "name": "Tim"
-      },
-      "relationships": {},
-      "meta": {},
-      "links": {}
+      }
     }
   ]
 }
@@ -90,14 +77,9 @@ JSON);
             'data' => [
                 'id' => 'user-id',
                 'type' => 'basicModels',
-                'attributes' => [],
-                'relationships' => [],
-                'links' => [],
-                'meta' => [],
             ],
             'jsonapi' => [
                 'version' => '1.0',
-                'meta' => [],
             ],
             'included' => [],
         ]);
@@ -120,14 +102,9 @@ JSON);
             'data' => [
                 'id' => '55',
                 'type' => 'basicModels',
-                'attributes' => [],
-                'relationships' => [],
-                'links' => [],
-                'meta' => [],
             ],
             'jsonapi' => [
                 'version' => '1.0',
-                'meta' => [],
             ],
             'included' => [],
         ]);

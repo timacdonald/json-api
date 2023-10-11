@@ -66,7 +66,7 @@ final class Link implements JsonSerializable
     {
         return [
             'href' => $this->href,
-            'meta' => (object) $this->meta,
+            ...$this->meta ? ['meta' => (object) $this->meta] : [],
         ];
     }
 }

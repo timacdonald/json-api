@@ -45,7 +45,7 @@ final class ResourceIdentifier implements JsonSerializable
         return [
             'type' => $this->type,
             'id' => $this->id,
-            'meta' => (object) $this->meta,
+            ...$this->meta ? ['meta' => (object) $this->meta] : [],
         ];
     }
 }

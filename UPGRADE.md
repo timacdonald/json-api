@@ -2,6 +2,12 @@
 
 ## Upgrading To 1.x From 0.x
 
+## Empty properties are now removed
+
+Previously, optional keys were always included. Optional keys are now removed from the response. This includes empty `attributes`, `relationships`, `links`, `meta`, `included`.
+
+This may impact consumers of your API if they are expecting those keys to be present even when empty.
+
 ### Method visibility
 
 The following methods should now me marked as `public`:

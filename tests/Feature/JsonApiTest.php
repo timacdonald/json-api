@@ -196,7 +196,7 @@ class JsonApiTest extends TestCase
         JsonApiResource::resolveTypeUsing(fn (BasicModel $model): string => $model::class);
         Route::get('test-route', fn () => BasicJsonApiResource::make((new BasicModel(['id' => 'expected-id']))));
 
-        $response = $this->get("test-route");
+        $response = $this->get('test-route');
 
         $response->assertExactJson([
             'data' => [
@@ -217,7 +217,7 @@ class JsonApiTest extends TestCase
         JsonApiResource::resolveIdUsing(fn (BasicModel $model): string => 'expected-id');
         Route::get('test-route', fn () => BasicJsonApiResource::make((new BasicModel(['id' => 'missing-id']))));
 
-        $response = $this->get("test-route");
+        $response = $this->get('test-route');
 
         $response->assertExactJson([
             'data' => [

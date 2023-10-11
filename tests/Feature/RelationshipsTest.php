@@ -1049,7 +1049,7 @@ class RelationshipsTest extends TestCase
                 ],
                 'relationships' => [
                     'posts' => [
-                        "data" => [],
+                        'data' => [],
                     ],
                 ],
             ],
@@ -1066,7 +1066,7 @@ class RelationshipsTest extends TestCase
         $resource = UserResource::make($user);
         Route::get('test-route', fn () => $resource);
 
-        $response = $this->get("test-route?include=posts");
+        $response = $this->get('test-route?include=posts');
 
         $response->assertOk();
         $this->assertValidJsonApi($response);

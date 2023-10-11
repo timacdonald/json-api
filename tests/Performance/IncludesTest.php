@@ -41,5 +41,5 @@ foreach ($prefixes as $prefix) {
 }
 $end = microtime(true);
 
-echo "Duration (milliseconds):".PHP_EOL;
+echo 'Duration (milliseconds):'.PHP_EOL;
 echo($end - $start) * 1000;

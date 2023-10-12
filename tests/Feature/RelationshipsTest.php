@@ -1505,10 +1505,10 @@ class RelationshipsTest extends TestCase
                                 [
                                     'id' => 'nested-post-id',
                                     'type' => 'basicModels',
-                                ]
-                            ]
-                        ]
-                    ]
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
                 [
                     'id' => 'nested-post-id',
@@ -1522,17 +1522,17 @@ class RelationshipsTest extends TestCase
                             'data' => [
                                 'id' => 'nested-post-author-id',
                                 'type' => 'basicModels',
-                            ]
+                            ],
                         ],
                         'comments' => [
                             'data' => [
                                 [
                                     'id' => 'nested-post-comment-id',
                                     'type' => 'basicModels',
-                                ]
-                            ]
-                        ]
-                    ]
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
                 [
                     'id' => 'nested-post-author-id',
@@ -1547,7 +1547,7 @@ class RelationshipsTest extends TestCase
                     'attributes' => [
                         'content' => 'Oh hey there!',
                     ],
-                ]
+                ],
             ],
         ]);
         $this->assertValidJsonApi($response);

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit;
+namespace Tests\Unit\Exceptions;
 
 use PHPUnit\Framework\TestCase;
 use TiMacDonald\JsonApi\Exceptions\ResourceIdentificationException;
@@ -20,7 +20,7 @@ class ResourceIdentificationExceptionTest extends TestCase
     public function testItHandlesObjectsForId(): void
     {
         $this->expectException(ResourceIdentificationException::class);
-        $this->expectExceptionMessage('Unable to resolve resource object id for [Tests\Unit\MyTestClass].');
+        $this->expectExceptionMessage('Unable to resolve resource object id for [Tests\Unit\Exceptions\MyTestClass].');
 
         throw ResourceIdentificationException::attemptingToDetermineIdFor(new MyTestClass());
     }
@@ -36,7 +36,7 @@ class ResourceIdentificationExceptionTest extends TestCase
     public function testItHandlesObjectsForType(): void
     {
         $this->expectException(ResourceIdentificationException::class);
-        $this->expectExceptionMessage('Unable to resolve resource object type for [Tests\Unit\MyTestClass].');
+        $this->expectExceptionMessage('Unable to resolve resource object type for [Tests\Unit\Exceptions\MyTestClass].');
 
         throw ResourceIdentificationException::attemptingToDetermineTypeFor(new MyTestClass());
     }

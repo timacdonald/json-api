@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit;
+namespace Tests\Unit\Support;
 
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit;
+namespace Tests\Unit\Exceptions;
 
 use PHPUnit\Framework\TestCase;
 use stdClass;

@@ -117,7 +117,7 @@ JSON);
         $this->expectException(ResourceIdentificationException::class);
         $this->expectExceptionMessage('Unable to resolve resource object id for [array].');
 
-        $this->withoutExceptionHandling()->getJson('test-route');
+        $this->getJson('test-route');
     }
 
     public function testItThrowsWhenUnableToAutomaticallyResolveTheIdOfAnObject(): void
@@ -128,7 +128,7 @@ JSON);
         $this->expectException(ResourceIdentificationException::class);
         $this->expectExceptionMessage('Unable to resolve resource object id for [stdClass].');
 
-        $this->withoutExceptionHandling()->getJson('test-route');
+        $this->getJson('test-route');
     }
 
     public function testItThrowsWhenUnableToAutomaticallyResolveTheTypeOfANonObject(): void
@@ -144,7 +144,7 @@ JSON);
         $this->expectException(ResourceIdentificationException::class);
         $this->expectExceptionMessage('Unable to resolve resource object type for [array].');
 
-        $this->withoutExceptionHandling()->getJson('test-route');
+        $this->getJson('test-route');
     }
 
     public function testItThrowsWhenUnableToAutomaticallyResolveTypeOfAnObject(): void

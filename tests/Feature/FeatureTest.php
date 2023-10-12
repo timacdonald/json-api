@@ -31,7 +31,7 @@ class FeatureTest extends TestCase
         }
         Route::get('test-route', fn () => UserResource::collection(BasicModel::paginate(2)));
 
-        $response = $this->withoutExceptionHandling()->getJson('test-route');
+        $response = $this->getJson('test-route');
 
         $response->assertOk();
         $response->assertExactJson([

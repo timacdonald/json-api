@@ -53,10 +53,11 @@ trait Relationships
      */
     public function withIncludePrefix(string $prefix)
     {
-        $this->includePrefix = "{$this->includePrefix}{$prefix}.";
+        $this->includePrefix = self::joinIncludes($this->includePrefix, $prefix);
 
         return $this;
     }
+
 
     /**
      * @internal
@@ -117,7 +118,9 @@ trait Relationships
     {
         return match (true) {
             $resource instanceof PotentiallyMissing && $resource->isMissing() => null,
-            $resource instanceof JsonApiResource || $resource instanceof JsonApiResourceCollection => $resource->withIncludePrefix($prefix),
+            $resource instanceof JsonApiResource || $resource instanceof JsonApiResourceCollection => $resource->withIncludePrefix(
+                self::joinIncludes($this->includePrefix, $prefix)
+            ),
             default => throw UnknownRelationshipException::from($resource),
         };
     }
@@ -197,5 +200,21 @@ trait Relationships
 
             throw new RuntimeException('Unable to guess the resource class for relationship ['.$value.'] for ['.$resource::class.'].');
         })($relationship, $resource);
+    }
+
+    /**
+     * @internal
+     */
+    private static function joinIncludes(string $start, string $finish): string
+    {
+        $prefix = '';
+
+        if ($start !== '') {
+            $prefix = Str::finish($start, '.');
+        }
+
+        $prefix .= Str::finish($finish, '.');
+
+        return $prefix;
     }
 }

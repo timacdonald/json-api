@@ -1401,4 +1401,155 @@ class RelationshipsTest extends TestCase
         ]);
         $this->assertValidJsonApi($response);
     }
+
+    public function testItCanIncludeDeepNestedResourcesForASingleResource(): void
+    {
+        $post = new BasicModel([
+            'id' => 'post-id',
+            'title' => 'post-title',
+            'content' => 'post-content',
+        ]);
+        $post->author = new BasicModel([
+            'id' => 'author-id',
+            'name' => 'author-name',
+        ]);
+        $post->author->license = new BasicModel([
+            'id' => 'license-id',
+            'key' => 'license-key',
+        ]);
+        $post->author->license->user = new BasicModel([
+            'id' => 'user-id',
+            'name' => 'Average Joe',
+        ]);
+        $post->author->license->user->posts = Collection::make([
+            new BasicModel([
+                'id' => 'nested-post-id',
+                'title' => 'Hello world!',
+            ]),
+        ]);
+        $post->author->license->user->posts[0]->author = new BasicModel([
+            'id' => 'nested-post-author-id',
+            'name' => 'Tim Mac',
+        ]);
+        $post->author->license->user->posts[0]->comments = Collection::make([
+            new BasicModel([
+                'id' => 'nested-post-comment-id',
+                'content' => 'Oh hey there!',
+            ]),
+        ]);
+        Route::get('test-route', fn () => PostResource::make($post));
+
+        $response = $this->getJson('test-route?include=author.license.user.posts.comments,author.license.user.posts.author');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                'id' => 'post-id',
+                'type' => 'basicModels',
+                'attributes' => [
+                    'title' => 'post-title',
+                    'content' => 'post-content',
+                ],
+                'relationships' => [
+                    'author' => [
+                        'data' => [
+                            'id' => 'author-id',
+                            'type' => 'basicModels',
+                        ],
+                    ],
+                ],
+            ],
+            'jsonapi' => [
+                'version' => '1.0',
+            ],
+            'included' => [
+                [
+                    'id' => 'author-id',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'name' => 'author-name',
+                    ],
+                    'relationships' => [
+                        'license' => [
+                            'data' => [
+                                'id' => 'license-id',
+                                'type' => 'basicModels',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => 'license-id',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'key' => 'license-key',
+                    ],
+                    'relationships' => [
+                        'user' => [
+                            'data' => [
+                                'id' => 'user-id',
+                                'type' => 'basicModels',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => 'user-id',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'name' => 'Average Joe',
+                    ],
+                    'relationships' => [
+                        'posts' => [
+                            'data' => [
+                                [
+                                    'id' => 'nested-post-id',
+                                    'type' => 'basicModels',
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                [
+                    'id' => 'nested-post-id',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'title' => 'Hello world!',
+                        'content' => null,
+                    ],
+                    'relationships' => [
+                        'author' => [
+                            'data' => [
+                                'id' => 'nested-post-author-id',
+                                'type' => 'basicModels',
+                            ]
+                        ],
+                        'comments' => [
+                            'data' => [
+                                [
+                                    'id' => 'nested-post-comment-id',
+                                    'type' => 'basicModels',
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                [
+                    'id' => 'nested-post-author-id',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'name' => 'Tim Mac',
+                    ],
+                ],
+                [
+                    'id' => 'nested-post-comment-id',
+                    'type' => 'basicModels',
+                    'attributes' => [
+                        'content' => 'Oh hey there!',
+                    ],
+                ]
+            ],
+        ]);
+        $this->assertValidJsonApi($response);
+    }
 }

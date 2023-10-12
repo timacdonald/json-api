@@ -11,7 +11,7 @@ use Tests\Resources\UserResource;
 use Tests\TestCase;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
-use TiMacDonald\JsonApi\JsonApiServerImplementation;
+use TiMacDonald\JsonApi\ServerImplementation;
 use TiMacDonald\JsonApi\Link;
 use TiMacDonald\JsonApi\RelationshipObject;
 use TiMacDonald\JsonApi\ResourceIdentifier;
@@ -253,7 +253,7 @@ class JsonApiTest extends TestCase
 
     public function testItExcludesEmptyImplementationMeta(): void
     {
-        $implementation = new JsonApiServerImplementation('1.5', []);
+        $implementation = new ServerImplementation('1.5', []);
 
         $json = json_encode($implementation);
 
@@ -262,7 +262,7 @@ class JsonApiTest extends TestCase
 
     public function testItCanSpecifyAnImplementation(): void
     {
-        BasicJsonApiResource::resolveServerImplementationUsing(fn () => new JsonApiServerImplementation('1.4.3', [
+        BasicJsonApiResource::resolveServerImplementationUsing(fn () => new ServerImplementation('1.4.3', [
             'secure' => true,
         ]));
         $user = new BasicModel([
@@ -309,7 +309,7 @@ class JsonApiTest extends TestCase
         // 2. Single resource ✅
         // 3. Empty collection of resources.
         // 4. Collection of resources.
-        JsonApiResource::resolveServerImplementationUsing(fn () => (new JsonApiServerImplementation('1.0'))->withMeta([
+        JsonApiResource::resolveServerImplementationUsing(fn () => (new ServerImplementation('1.0'))->withMeta([
             'implementation' => 'meta',
         ]));
         $user = (new BasicModel([

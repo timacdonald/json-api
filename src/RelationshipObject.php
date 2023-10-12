@@ -13,40 +13,30 @@ final class RelationshipObject implements JsonSerializable
     use Concerns\Meta;
 
     /**
-     * @internal
-     *
      * @var ResourceIdentifier|null|array<int, ResourceIdentifier>
      */
     private ResourceIdentifier|array|null $data;
 
     /**
-     * @api
-     *
      * @param array<int, Link> $links
      * @param array<string, mixed> $meta
-     * @return self
      */
-    public static function toOne(ResourceIdentifier|null $data, array $links = [], array $meta = [])
+    public static function toOne(ResourceIdentifier|null $data, array $links = [], array $meta = []): self
     {
         return new self($data, $links, $meta);
     }
 
     /**
-     * @api
-     *
      * @param array<int, ResourceIdentifier> $data
      * @param array<int, Link> $links
      * @param array<string, mixed> $meta
-     * @return self
      */
-    public static function toMany(array $data, array $links = [], array $meta = [])
+    public static function toMany(array $data, array $links = [], array $meta = []): self
     {
         return new self($data, $links, $meta);
     }
 
     /**
-     * @internal
-     *
      * @param ResourceIdentifier|null|array<int, ResourceIdentifier> $data
      * @param array<int, Link> $links
      * @param array<string, mixed> $meta
@@ -62,8 +52,6 @@ final class RelationshipObject implements JsonSerializable
 
 
     /**
-     * @internal
-     *
      * @return array{data: ResourceIdentifier|null|array<int, ResourceIdentifier>, meta?: stdClass, links?: stdClass}
      */
     public function jsonSerialize(): array

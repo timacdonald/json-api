@@ -43,7 +43,7 @@ class TestCase extends BaseTestCase
 
         $data = json_decode(json_encode($data));
 
-        $result = tap(new Validator, function ($validator) {
+        $result = tap(new Validator(), function ($validator) {
             $validator->resolver()->registerFile(
                 self::JSON_API_SCHEMA_URL,
                 $this->localSchemaPath(self::JSON_API_SCHEMA_URL)

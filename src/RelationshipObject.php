@@ -20,8 +20,9 @@ final class RelationshipObject implements JsonSerializable
     /**
      * @param array<int, Link> $links
      * @param array<string, mixed> $meta
+     * @return self
      */
-    public static function toOne(ResourceIdentifier|null $data, array $links = [], array $meta = []): self
+    public static function toOne(ResourceIdentifier|null $data, array $links = [], array $meta = [])
     {
         return new self($data, $links, $meta);
     }
@@ -30,8 +31,9 @@ final class RelationshipObject implements JsonSerializable
      * @param array<int, ResourceIdentifier> $data
      * @param array<int, Link> $links
      * @param array<string, mixed> $meta
+     * @return self
      */
-    public static function toMany(array $data, array $links = [], array $meta = []): self
+    public static function toMany(array $data, array $links = [], array $meta = [])
     {
         return new self($data, $links, $meta);
     }
@@ -49,7 +51,6 @@ final class RelationshipObject implements JsonSerializable
 
         $this->meta = $meta;
     }
-
 
     /**
      * @return array{data: ResourceIdentifier|null|array<int, ResourceIdentifier>, meta?: stdClass, links?: stdClass}

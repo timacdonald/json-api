@@ -186,7 +186,7 @@ trait Relationships
      */
     private static function guessRelationshipResource(string $relationship, JsonApiResource $resource)
     {
-        return (self::$relationshipResourceGuesser ?? function (string $relationship, JsonApiResource $resource): string {
+        return (self::$relationshipResourceGuesser ??= function (string $relationship, JsonApiResource $resource): string {
             $relationship = Str::of($relationship);
 
             foreach ([

@@ -11,11 +11,12 @@ use TiMacDonald\JsonApi\JsonApiResourceCollection;
 use function gettype;
 use function is_object;
 
+/**
+ * @internal
+ */
 final class UnknownRelationshipException extends Exception
 {
     /**
-     * @internal
-     *
      * @return self
      */
     public static function from(mixed $resource)
@@ -24,8 +25,6 @@ final class UnknownRelationshipException extends Exception
     }
 
     /**
-     * @internal
-     *
      * @return string
      */
     private static function determineType(mixed $resource)

@@ -20,16 +20,18 @@ final class Link implements JsonSerializable
 
     /**
      * @param array<string, mixed> $meta
+     * @return self
      */
-    public static function self(string $href, array $meta = []): self
+    public static function self(string $href, array $meta = [])
     {
         return new self('self', $href, $meta);
     }
 
     /**
      * @param array<string, mixed> $meta
+     * @return self
      */
-    public static function related(string $href, array $meta = []): self
+    public static function related(string $href, array $meta = [])
     {
         return new self('related', $href, $meta);
     }

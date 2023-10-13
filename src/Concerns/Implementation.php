@@ -44,6 +44,6 @@ trait Implementation
      */
     public static function serverImplementationResolver()
     {
-        return self::$serverImplementationResolver ?? fn (Request $request): ServerImplementation => new ServerImplementation('1.0');
+        return self::$serverImplementationResolver ??= fn (Request $request): ServerImplementation => new ServerImplementation('1.0');
     }
 }

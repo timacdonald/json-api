@@ -9,7 +9,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use WeakMap;
-
 use function explode;
 use function is_array;
 

@@ -10,7 +10,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;
 use stdClass;
-
 use function property_exists;
 
 abstract class JsonApiResource extends JsonResource
@@ -25,8 +24,6 @@ abstract class JsonApiResource extends JsonResource
     use Concerns\Relationships;
 
     /**
-     * @api
-     *
      * @return array<string, mixed>
      */
     public function toAttributes(Request $request)
@@ -37,8 +34,6 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
-     * @api
-     *
      * @return array<string, (callable(): JsonApiResource|JsonApiResourceCollection|PotentiallyMissing)>
      */
     public function toRelationships(Request $request)
@@ -49,8 +44,6 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
-     * @api
-     *
      * @return array<int, Link>
      */
     public function toLinks(Request $request)
@@ -61,8 +54,6 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
-     * @api
-     *
      * @return array<string, mixed>
      */
     public function toMeta(Request $request)
@@ -73,8 +64,6 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
-     * @api
-     *
      * @return string
      */
     public function toId(Request $request)
@@ -83,8 +72,6 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
-    * @api
-     *
      * @return string
      */
     public function toType(Request $request)
@@ -93,8 +80,6 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
-     * @api
-     *
      * @return RelationshipObject
      */
     public function toResourceLink(Request $request)
@@ -105,8 +90,6 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
-     * @api
-     *
      * @return ResourceIdentifier
      */
     public function toResourceIdentifier(Request $request)
@@ -115,12 +98,9 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
-     * @api
-     *
-     * @param Request $request
      * @return array{id: string, type: string, attributes?: stdClass, relationships?: stdClass, meta?: stdClass, links?: stdClass}
      */
-    public function toArray($request)
+    public function toArray(Request $request)
     {
         return [
             'id' => $this->resolveId($request),
@@ -135,12 +115,9 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
-     * @api
-     *
-     * @param Request $request
-     * @return array{included: Collection<int, JsonApiResource>, jsonapi: JsonApiServerImplementation}
+     * @return array{included?: Collection<int, JsonApiResource>, jsonapi: JsonApiServerImplementation}
      */
-    public function with($request)
+    public function with(Request $request)
     {
         return [
             ...($included = $this->included($request)
@@ -152,12 +129,9 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
-     * @api
-     *
-     * @param mixed $resource
      * @return JsonApiResourceCollection<int, mixed>
      */
-    public static function collection($resource)
+    public static function collection(mixed $resource)
     {
         return tap(static::newCollection($resource), function (JsonApiResourceCollection $collection): void {
             if (property_exists(static::class, 'preserveKeys')) {
@@ -168,8 +142,6 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
-     * @api
-     *
      * @return JsonApiResourceCollection<int, mixed>
      */
     public static function newCollection(mixed $resource)
@@ -178,8 +150,6 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
-     * @api
-     *
      * @param Request $request
      * @return JsonResponse
      */

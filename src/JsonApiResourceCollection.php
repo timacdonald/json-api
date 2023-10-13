@@ -13,8 +13,6 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     use Concerns\RelationshipLinks;
 
     /**
-     * @api
-     *
      * @param (callable(JsonApiResource): JsonApiResource) $callback
      * @return $this
      */
@@ -26,8 +24,6 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     }
 
     /**
-     * @api
-     *
      * @return RelationshipObject
      */
     public function toResourceLink(Request $request)
@@ -36,8 +32,6 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     }
 
     /**
-     * @internal
-     *
      * @return Collection<int, ResourceIdentifier>
      */
     private function resolveResourceIdentifiers(Request $request)
@@ -48,12 +42,9 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     }
 
     /**
-     * @api
-     *
-     * @param Request $request
-     * @return array{included: Collection<int, JsonApiResource>, jsonapi: JsonApiServerImplementation}
+     * @return array{included?: Collection<int, JsonApiResource>, jsonapi: JsonApiServerImplementation}
      */
-    public function with($request)
+    public function with(Request $request)
     {
         return [
             ...($included = $this->collection
@@ -67,8 +58,6 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     }
 
     /**
-     * @api
-     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
@@ -78,14 +67,11 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     }
 
     /**
-     * @api
-     *
-     * @param Request $request
      * @param array<array-key, mixed> $paginated
      * @param array{links: array<string, ?string>} $default
      * @return array{links: array<string, string>}
      */
-    public function paginationInformation($request, $paginated, $default)
+    public function paginationInformation(Request $request, array $paginated, array $default)
     {
         if (isset($default['links'])) {
             $default['links'] = array_filter($default['links'], fn (?string $link): bool => $link !== null);

@@ -689,3 +689,4 @@ And a special (vegi) thanks to [Caneco](https://twitter.com/caneco) for the logo
 - Make all caches WeakMaps.
 - Things that "must" need to be first in the __consstructor. See Links:href
 - Should it be withResourceIdentifier or mapResourceIdentifier. Feel like we are mapping. or pipeResourceIdentifier
+- Should all caches use weakmap with request key?

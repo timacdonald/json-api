@@ -9,11 +9,11 @@ use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;
 use TiMacDonald\JsonApi\Support\Fields;
 
+/**
+ * @internal
+ */
 trait Attributes
 {
-    /**
-     * @internal
-     */
     private static bool $minimalAttributes = false;
 
     /**
@@ -25,19 +25,6 @@ trait Attributes
     }
 
     /**
-     * @api
-     * @infection-ignore-all
-     *
-     * @return void
-     */
-    public static function maximalAttributes()
-    {
-        self::$minimalAttributes = false;
-    }
-
-    /**
-     * @internal
-     *
      * @return Collection<string, mixed>
      */
     private function requestedAttributes(Request $request)
@@ -49,8 +36,6 @@ trait Attributes
     }
 
     /**
-     * @internal
-     *
      * @return Collection<string, mixed>
      */
     private function resolveAttributes(Request $request)
@@ -63,8 +48,6 @@ trait Attributes
     }
 
     /**
-     * @internal
-     *
      * @return array<int, string>|null
      */
     private function requestedFields(Request $request)

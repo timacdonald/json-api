@@ -17,24 +17,11 @@ trait Attributes
     private static bool $minimalAttributes = false;
 
     /**
-     * @api
-     *
-     * @param  (callable(): void)|null  $callback
      * @return void
      */
-    public static function minimalAttributes(callable|null $callback = null)
+    public static function minimalAttributes($value = true)
     {
-        self::$minimalAttributes = true;
-
-        if ($callback === null) {
-            return;
-        }
-
-        try {
-            $callback();
-        } finally {
-            self::$minimalAttributes = false;
-        }
+        self::$minimalAttributes = $value;
     }
 
     /**

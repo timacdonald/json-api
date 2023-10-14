@@ -29,6 +29,7 @@ class TestCase extends BaseTestCase
         parent::tearDown();
 
         JsonApiResource::resolveServerImplementationNormally();
+        JsonApiResource::maximalAttributes();
     }
 
     protected function assertValidJsonApi(TestResponse|string|array $data): void

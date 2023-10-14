@@ -211,56 +211,54 @@ class AttributesTest extends TestCase
 
     public function testItCanSpecifyMinimalAttributes(): void
     {
-        JsonApiResource::minimalAttributes(function () {
-            $user = (new BasicModel([
+        JsonApiResource::minimalAttributes();
+        $user = (new BasicModel([
+            'id' => 'user-id',
+            'name' => 'user-name',
+        ]));
+        Route::get('test-route', fn () => UserResource::make($user));
+
+        $response = $this->getJson('test-route');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                'type' => 'basicModels',
                 'id' => 'user-id',
-                'name' => 'user-name',
-            ]));
-            Route::get('test-route', fn () => UserResource::make($user));
-
-            $response = $this->getJson('test-route');
-
-            $response->assertOk();
-            $response->assertExactJson([
-                'data' => [
-                    'type' => 'basicModels',
-                    'id' => 'user-id',
-                ],
-                'jsonapi' => [
-                    'version' => '1.0',
-                ],
-            ]);
-            $this->assertValidJsonApi($response);
-        });
+            ],
+            'jsonapi' => [
+                'version' => '1.0',
+            ],
+        ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItCanRequestAttributesWhenUsingMinimalAttributes()
     {
-        JsonApiResource::minimalAttributes(function () {
-            $user = (new BasicModel([
+        JsonApiResource::minimalAttributes();
+        $user = (new BasicModel([
+            'id' => 'user-id',
+            'name' => 'user-name',
+            'location' => 'Melbourne',
+        ]));
+        Route::get('test-route', fn () => UserResource::make($user));
+
+        $response = $this->getJson('test-route?fields[basicModels]=name');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                'type' => 'basicModels',
                 'id' => 'user-id',
-                'name' => 'user-name',
-                'location' => 'Melbourne',
-            ]));
-            Route::get('test-route', fn () => UserResource::make($user));
-
-            $response = $this->getJson('test-route?fields[basicModels]=name');
-
-            $response->assertOk();
-            $response->assertExactJson([
-                'data' => [
-                    'type' => 'basicModels',
-                    'id' => 'user-id',
-                    'attributes' => [
-                        'name' => 'user-name',
-                    ],
+                'attributes' => [
+                    'name' => 'user-name',
                 ],
-                'jsonapi' => [
-                    'version' => '1.0',
-                ],
-            ]);
-            $this->assertValidJsonApi($response);
-        });
+            ],
+            'jsonapi' => [
+                'version' => '1.0',
+            ],
+        ]);
+        $this->assertValidJsonApi($response);
     }
 
     public function testItCanUseSparseFieldsetsWithIncludedCollections(): void

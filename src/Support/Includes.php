@@ -24,9 +24,9 @@ final class Includes
      */
     private WeakMap $cache;
 
-    private function __construct()
+    private function __construct(WeakMap $cache = new WeakMap)
     {
-        $this->cache = new WeakMap();
+        $this->cache = $cache;
     }
 
     /**

@@ -12,6 +12,10 @@ use TiMacDonald\JsonApi\ResourceIdentifier;
 
 trait Identification
 {
+    private string|null $idCache = null;
+
+    private string|null $typeCache = null;
+
     /**
      * @internal
      *
@@ -105,7 +109,7 @@ trait Identification
      */
     private function resolveId(Request $request)
     {
-        return $this->rememberId(fn (): string => $this->toId($request));
+        return $this->idCache ??= $this->toId($request);
     }
 
     /**
@@ -115,7 +119,7 @@ trait Identification
      */
     private function resolveType(Request $request)
     {
-        return $this->rememberType(fn (): string => $this->toType($request));
+        return $this->typeCache ??= $this->toType($request);
     }
 
     /**

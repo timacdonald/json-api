@@ -10,6 +10,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;
 use stdClass;
+
 use function property_exists;
 
 abstract class JsonApiResource extends JsonResource
@@ -115,7 +116,7 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
-     * @return array{included?: Collection<int, JsonApiResource>, jsonapi: JsonApiServerImplementation}
+     * @return array{included?: array<int, JsonApiResource>, jsonapi: JsonApiServerImplementation}
      */
     public function with(Request $request)
     {
@@ -129,6 +130,8 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
+     * TODO this may be removed once all supported versions have `newCollection`.
+     *
      * @return JsonApiResourceCollection<int, mixed>
      */
     public static function collection(mixed $resource)
@@ -155,7 +158,7 @@ abstract class JsonApiResource extends JsonResource
      */
     public function toResponse($request)
     {
-        // TODO: the flush call here is triggering repeated Includes::flush() cals, because of collection.s
-        return tap(parent::toResponse($request)->header('Content-type', 'application/vnd.api+json'), fn () => $this->flush());
+        // TODO: should this header be configurable? Should it be a middleware? Should we not set it if one exists?
+        return tap(parent::toResponse($request)->header('Content-type', 'application/vnd.api+json'), $this->flush(...));
     }
 }

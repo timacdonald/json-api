@@ -11,10 +11,10 @@ use Tests\Resources\UserResource;
 use Tests\TestCase;
 use TiMacDonald\JsonApi\JsonApiResource;
 use TiMacDonald\JsonApi\JsonApiResourceCollection;
-use TiMacDonald\JsonApi\ServerImplementation;
 use TiMacDonald\JsonApi\Link;
 use TiMacDonald\JsonApi\RelationshipObject;
 use TiMacDonald\JsonApi\ResourceIdentifier;
+use TiMacDonald\JsonApi\ServerImplementation;
 
 class JsonApiTest extends TestCase
 {

@@ -24,6 +24,11 @@ use function is_int;
 trait Relationships
 {
     /**
+     * @var Collection<string, JsonApiResource|JsonApiResourceCollection>|null
+     */
+    private Collection|null $requestedRelationshipsCache = null;
+
+    /**
      * @internal
      *
      * @var (callable(string, JsonApiResource): class-string)|null
@@ -103,10 +108,10 @@ trait Relationships
      */
     private function requestedRelationships(Request $request)
     {
-        return $this->rememberRequestRelationships(fn (): Collection => $this->resolveRelationships($request)
+        return $this->requestedRelationshipsCache ??= $this->resolveRelationships($request)
             ->only($this->requestedIncludes($request))
             ->map(fn (callable $value, string $prefix): null|JsonApiResource|JsonApiResourceCollection => $this->resolveInclude($value(), $prefix))
-            ->reject(fn (JsonApiResource|JsonApiResourceCollection|null $resource): bool => $resource === null));
+            ->reject(fn (JsonApiResource|JsonApiResourceCollection|null $resource): bool => $resource === null);
     }
 
     /**

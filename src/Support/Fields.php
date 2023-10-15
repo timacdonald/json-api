@@ -25,7 +25,7 @@ final class Fields
      */
     private WeakMap $cache;
 
-    private function __construct(WeakMap $cache = new WeakMap)
+    private function __construct(WeakMap $cache = new WeakMap())
     {
         $this->cache = $cache;
     }
@@ -77,13 +77,5 @@ final class Fields
         $this->cache[$request] ??= [];
 
         return $this->cache[$request][$resourceType] ??= $callback();
-    }
-
-    /**
-     * @return void
-     */
-    public function flush()
-    {
-        $this->cache = new WeakMap();
     }
 }

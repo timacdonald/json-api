@@ -9,6 +9,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use WeakMap;
+
 use function explode;
 use function is_array;
 
@@ -24,7 +25,7 @@ final class Includes
      */
     private WeakMap $cache;
 
-    private function __construct(WeakMap $cache = new WeakMap)
+    private function __construct(WeakMap $cache = new WeakMap())
     {
         $this->cache = $cache;
     }
@@ -79,13 +80,5 @@ final class Includes
         $this->cache[$request] ??= [];
 
         return $this->cache[$request][$prefix] ??= $callback();
-    }
-
-    /**
-     * @return void
-     */
-    public function flush()
-    {
-        $this->cache = new WeakMap();
     }
 }

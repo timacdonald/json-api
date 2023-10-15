@@ -42,7 +42,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     }
 
     /**
-     * @return array{included?: Collection<int, JsonApiResource>, jsonapi: JsonApiServerImplementation}
+     * @return array{included?: array<int, JsonApiResource>, jsonapi: JsonApiServerImplementation}
      */
     public function with(Request $request)
     {
@@ -63,7 +63,8 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
      */
     public function toResponse($request)
     {
-        return tap(parent::toResponse($request)->header('Content-type', 'application/vnd.api+json'), fn () => $this->flush());
+        // TODO: should this header be configurable? Should it be a middleware? Should we not set it if one exists?
+        return tap(parent::toResponse($request)->header('Content-type', 'application/vnd.api+json'), $this->flush(...));
     }
 
     /**
@@ -98,9 +99,9 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
      */
     public function withIncludePrefix(string $prefix)
     {
-        return tap($this, function (JsonApiResourceCollection $resource) use ($prefix): void {
-            $resource->collection->each(fn (JsonApiResource $resource): JsonApiResource => $resource->withIncludePrefix($prefix));
-        });
+        $this->collection->each(fn (JsonApiResource $resource): JsonApiResource => $resource->withIncludePrefix($prefix));
+
+        return $this;
     }
 
     /**

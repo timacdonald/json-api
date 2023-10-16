@@ -71,7 +71,7 @@ As we make our way through the examples you will see that new APIs are introduce
 
 ### Creating your first `JSON:API` resource
 
-To get started, let's create a `UserResource` for our `User` model. In our user resource will expose the users's `name`, `website`, and `twitter_handle` in the response.
+To get started, let's create a `UserResource` for our `User` model. In our user resource will expose the user's `name`, `website`, and `twitter_handle` in the response.
 
 First we will create a new API resource that extends `TiMacDonald\JsonApi\JsonApiResource`.
 

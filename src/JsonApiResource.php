@@ -101,7 +101,7 @@ abstract class JsonApiResource extends JsonResource
     /**
      * @return array{id: string, type: string, attributes?: stdClass, relationships?: stdClass, meta?: stdClass, links?: stdClass}
      */
-    public function toArray(Request $request)
+    public function toArray($request)
     {
         return [
             'id' => $this->resolveId($request),

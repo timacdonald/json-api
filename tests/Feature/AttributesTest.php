@@ -211,7 +211,7 @@ class AttributesTest extends TestCase
 
     public function testItCanSpecifyMinimalAttributes(): void
     {
-        JsonApiResource::minimalAttributes();
+        JsonApiResource::useMinimalAttributes();
         $user = (new BasicModel([
             'id' => 'user-id',
             'name' => 'user-name',
@@ -235,7 +235,7 @@ class AttributesTest extends TestCase
 
     public function testItCanRequestAttributesWhenUsingMinimalAttributes()
     {
-        JsonApiResource::minimalAttributes();
+        JsonApiResource::useMinimalAttributes();
         $user = (new BasicModel([
             'id' => 'user-id',
             'name' => 'user-name',

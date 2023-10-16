@@ -20,7 +20,7 @@ trait Attributes
     /**
      * @return void
      */
-    public static function minimalAttributes($value = true)
+    public static function useMinimalAttributes($value = true)
     {
         App::instance(self::MINIMAL_ATTRIBUTES_KEY, $value);
     }

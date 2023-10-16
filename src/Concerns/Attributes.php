@@ -20,9 +20,19 @@ trait Attributes
     /**
      * @return void
      */
-    public static function useMinimalAttributes($value = true)
+    public static function useMinimalAttributes()
     {
-        App::instance(self::MINIMAL_ATTRIBUTES_KEY, $value);
+        App::instance(self::MINIMAL_ATTRIBUTES_KEY, true);
+    }
+
+    /**
+     * @return bool
+     */
+    private static function minimalAttributes()
+    {
+        return App::bound(self::MINIMAL_ATTRIBUTES_KEY)
+            ? App::make(self::MINIMAL_ATTRIBUTES_KEY)
+            : false;
     }
 
     /**
@@ -53,13 +63,6 @@ trait Attributes
      */
     private function requestedFields(Request $request)
     {
-        return Fields::getInstance()->parse($request, $this->toType($request), self::resolveMinimalAttributes());
-    }
-
-    private static function resolveMinimalAttributes(): bool
-    {
-        return App::bound(self::MINIMAL_ATTRIBUTES_KEY)
-            ? (bool) App::make(self::MINIMAL_ATTRIBUTES_KEY)
-            : false;
+        return Fields::getInstance()->parse($request, $this->toType($request), self::minimalAttributes());
     }
 }

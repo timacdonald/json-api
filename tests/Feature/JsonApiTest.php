@@ -380,7 +380,7 @@ class JsonApiTest extends TestCase
                         Link::related('profile-external.com')->withMeta([
                             'profile-external.com' => 'meta',
                         ]),
-                    ])->withResourceIdentifier(
+                    ])->pipeResourceIdentifier(
                         // This should not be in the response.
                         fn (ResourceIdentifier $identifier) => $identifier->withMeta([
                             'profile-external-resource-identifier' => 'meta',
@@ -434,7 +434,7 @@ class JsonApiTest extends TestCase
                         Link::related('avatar-external.com')->withMeta([
                             'avatar-external.com' => 'meta',
                         ]),
-                    ])->withResourceIdentifier(
+                    ])->pipeResourceIdentifier(
                         fn (ResourceIdentifier $identifier) => $identifier->withMeta([
                             'avatar-external-resource-identifier' => 'meta',
                         ])
@@ -500,7 +500,7 @@ class JsonApiTest extends TestCase
                                         Link::related('posts-internal-collection.com')->withMeta([
                                             'posts-internal-collection.com' => 'meta',
                                         ]),
-                                    ])->withResourceIdentifier(fn ($identifier) => $identifier->withMeta([
+                                    ])->pipeResourceIdentifier(fn ($identifier) => $identifier->withMeta([
                                         'posts-internal-collection-resource-identifier' => 'meta',
                                     ]))
                                 );
@@ -513,7 +513,7 @@ class JsonApiTest extends TestCase
                         ])->withMeta([
                             'posts-external-resource-link' => 'meta',
                         ]))
-                        ->map(fn ($post) => $post->withResourceIdentifier(static fn ($identifier) => $identifier->withMeta([
+                        ->map(fn ($post) => $post->pipeResourceIdentifier(static fn ($identifier) => $identifier->withMeta([
                             'posts-external-resource-identifier' => 'meta',
                         ]))->withMeta([
                             'posts-external' => 'meta',

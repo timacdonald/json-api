@@ -37,7 +37,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     private function resolveResourceIdentifiers(Request $request)
     {
         return $this->collection
-            ->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request))
+            ->uniqueStrict(fn (JsonApiResource $resource): array => $resource->uniqueKey($request))
             ->map(fn (JsonApiResource $resource): ResourceIdentifier => $resource->resolveResourceIdentifier($request));
     }
 
@@ -50,7 +50,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
             ...($included = $this->collection
                 ->map(fn (JsonApiResource $resource): Collection => $resource->included($request))
                 ->flatten()
-                ->uniqueStrict(fn (JsonApiResource $resource): string => $resource->toUniqueResourceIdentifier($request))
+                ->uniqueStrict(fn (JsonApiResource $resource): array => $resource->uniqueKey($request))
                 ->values()
                 ->all()) ? ['included' => $included] : [],
             'jsonapi' => JsonApiResource::serverImplementationResolver()($request),

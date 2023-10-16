@@ -208,8 +208,6 @@ class JsonApiTest extends TestCase
             ],
         ]);
         $this->assertValidJsonApi($response);
-
-        JsonApiResource::resolveTypeNormally();
     }
 
     public function testItCanCustomiseTheIdResolution(): void
@@ -229,8 +227,6 @@ class JsonApiTest extends TestCase
             ],
         ]);
         $this->assertValidJsonApi($response);
-
-        JsonApiResource::resolveIdNormally();
     }
 
     public function testItExcludesEmptyResourceIdentifierMeta(): void

@@ -71,8 +71,5 @@ class LinkTest extends TestCase
         $links = json_encode($resource->toArray($request)['links']);
 
         $this->assertSame('{"foo":{"href":"http:\/\/foo.com"}}', $links);
-
-        JsonApiResource::resolveIdNormally();
-        JsonApiResource::resolveTypeNormally();
     }
 }

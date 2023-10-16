@@ -438,7 +438,7 @@ GET /posts?include=author&fields[posts]=title,excerpt&fields[users]=name
 
 Resources return a maximal attribute payload when [sparse fieldsets](#sparse-fieldsets) are not in use i.e. all declared attributes on the resource are returned. If you prefer you can make the use of sparse fieldsets required in order to retrieve _any_ attributes.
 
-You may call the `minimalAttributes()` method in an application service provider.
+You may call the `useMinimalAttributes()` method in an application service provider.
 
 ```php
 <?php
@@ -452,7 +452,7 @@ class AppServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        JsonApiResource::minimalAttributes();
+        JsonApiResource::useMinimalAttributes();
 
         // ...
     }

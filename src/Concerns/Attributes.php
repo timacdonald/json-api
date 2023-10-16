@@ -15,14 +15,12 @@ use TiMacDonald\JsonApi\Support\Fields;
  */
 trait Attributes
 {
-    private const MINIMAL_ATTRIBUTES_KEY = self::class.':$minimalAttributes';
-
     /**
      * @return void
      */
     public static function useMinimalAttributes()
     {
-        App::instance(self::MINIMAL_ATTRIBUTES_KEY, true);
+        App::instance(self::class.':$minimalAttributes', true);
     }
 
     /**
@@ -30,8 +28,8 @@ trait Attributes
      */
     private static function minimalAttributes()
     {
-        return App::bound(self::MINIMAL_ATTRIBUTES_KEY)
-            ? App::make(self::MINIMAL_ATTRIBUTES_KEY)
+        return App::bound(self::class.':$minimalAttributes')
+            ? App::make(self::class.':$minimalAttributes')
             : false;
     }
 

@@ -16,10 +16,6 @@ use TiMacDonald\JsonApi\ResourceIdentifier;
  */
 trait Identification
 {
-    private const ID_RESOLVER_KEY = self::class.':$idResolver';
-
-    private const TYPE_RESOLVER_KEY = self::class.':$typeResolver';
-
     private string|null $idCache = null;
 
     private string|null $typeCache = null;
@@ -35,7 +31,7 @@ trait Identification
      */
     public static function resolveIdUsing(callable $callback)
     {
-        App::instance(self::ID_RESOLVER_KEY, $callback);
+        App::instance(self::class.':$idResolver', $callback);
     }
 
     /**
@@ -44,7 +40,7 @@ trait Identification
      */
     public static function resolveTypeUsing(callable $callback)
     {
-        App::instance(self::TYPE_RESOLVER_KEY, $callback);
+        App::instance(self::class.':$typeResolver', $callback);
     }
 
     /**
@@ -52,8 +48,8 @@ trait Identification
      */
     private static function idResolver()
     {
-        if (! App::bound(self::ID_RESOLVER_KEY)) {
-            return App::instance(self::ID_RESOLVER_KEY, function (mixed $resource, Request $request): string {
+        if (! App::bound(self::class.':$idResolver')) {
+            return App::instance(self::class.':$idResolver', function (mixed $resource, Request $request): string {
                 if (! $resource instanceof Model) {
                     throw ResourceIdentificationException::attemptingToDetermineIdFor($resource);
                 }
@@ -65,7 +61,7 @@ trait Identification
             });
         }
 
-        return App::make(self::ID_RESOLVER_KEY);
+        return App::make(self::class.':$idResolver');
     }
 
     /**
@@ -73,8 +69,8 @@ trait Identification
      */
     private static function typeResolver()
     {
-        if (! App::bound(self::TYPE_RESOLVER_KEY)) {
-            return App::instance(self::TYPE_RESOLVER_KEY, function (mixed $resource, Request $request): string {
+        if (! App::bound(self::class.':$typeResolver')) {
+            return App::instance(self::class.':$typeResolver', function (mixed $resource, Request $request): string {
                 if (! $resource instanceof Model) {
                     throw ResourceIdentificationException::attemptingToDetermineTypeFor($resource);
                 }
@@ -83,7 +79,7 @@ trait Identification
             });
         }
 
-        return App::make(self::TYPE_RESOLVER_KEY);
+        return App::make(self::class.':$typeResolver');
     }
 
     /**

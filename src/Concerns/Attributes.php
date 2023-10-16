@@ -7,6 +7,7 @@ namespace TiMacDonald\JsonApi\Concerns;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\App;
 use TiMacDonald\JsonApi\Support\Fields;
 
 /**
@@ -14,14 +15,14 @@ use TiMacDonald\JsonApi\Support\Fields;
  */
 trait Attributes
 {
-    private static bool $minimalAttributes = false;
+    private const MINIMAL_ATTRIBUTES_KEY = self::class.':$minimalAttributes';
 
     /**
      * @return void
      */
     public static function minimalAttributes($value = true)
     {
-        self::$minimalAttributes = $value;
+        App::instance(self::MINIMAL_ATTRIBUTES_KEY, $value);
     }
 
     /**
@@ -52,6 +53,13 @@ trait Attributes
      */
     private function requestedFields(Request $request)
     {
-        return Fields::getInstance()->parse($request, $this->toType($request), self::$minimalAttributes);
+        return Fields::getInstance()->parse($request, $this->toType($request), self::resolveMinimalAttributes());
+    }
+
+    private static function resolveMinimalAttributes(): bool
+    {
+        return App::bound(self::MINIMAL_ATTRIBUTES_KEY)
+            ? (bool) App::make(self::MINIMAL_ATTRIBUTES_KEY)
+            : false;
     }
 }

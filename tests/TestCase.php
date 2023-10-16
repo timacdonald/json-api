@@ -29,7 +29,6 @@ class TestCase extends BaseTestCase
         parent::tearDown();
 
         JsonApiResource::resolveServerImplementationNormally();
-        JsonApiResource::minimalAttributes(false);
     }
 
     protected function assertValidJsonApi(TestResponse|string|array $data): void

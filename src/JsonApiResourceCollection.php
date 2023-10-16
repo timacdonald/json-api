@@ -42,7 +42,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     }
 
     /**
-     * @return array{included?: array<int, JsonApiResource>, jsonapi: JsonApiServerImplementation}
+     * @return array{included?: array<int, JsonApiResource>, jsonapi?: JsonApiServerImplementation}
      */
     public function with(Request $request)
     {
@@ -53,7 +53,8 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
                 ->uniqueStrict(fn (JsonApiResource $resource): array => $resource->uniqueKey($request))
                 ->values()
                 ->all()) ? ['included' => $included] : [],
-            'jsonapi' => JsonApiResource::serverImplementationResolver()($request),
+            ...($implementation = $this->collects::toServerImplementation($request))
+                ? ['jsonapi' => $implementation] : [],
         ];
     }
 

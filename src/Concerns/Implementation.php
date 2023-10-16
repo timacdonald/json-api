@@ -5,17 +5,11 @@ declare(strict_types=1);
 namespace TiMacDonald\JsonApi\Concerns;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use TiMacDonald\JsonApi\ServerImplementation;
 
 trait Implementation
 {
-    /**
-     * @internal
-     *
-     * @var (callable(): JsonApiServerImplementation)|null
-     */
-    private static $serverImplementationResolver;
-
     /**
      * @api
      *
@@ -24,26 +18,18 @@ trait Implementation
      */
     public static function resolveServerImplementationUsing(callable $callback)
     {
-        self::$serverImplementationResolver = $callback;
+        App::instance(self::class.':$serverImplementationResolver', $callback);
     }
 
     /**
      * @internal
      *
-     * @return void
-     */
-    public static function resolveServerImplementationNormally()
-    {
-        self::$serverImplementationResolver = null;
-    }
-
-    /**
-     * @internal
-     *
-     * @return (callable(Request): JsonApiServerImplementation)
+     * @return (callable(Request): (JsonApiServerImplementation|null))
      */
     public static function serverImplementationResolver()
     {
-        return self::$serverImplementationResolver ??= fn (Request $request): ServerImplementation => new ServerImplementation('1.0');
+        return App::bound(self::class.':$serverImplementationResolver')
+            ? App::make(self::class.':$serverImplementationResolver')
+            : fn () => null;
     }
 }

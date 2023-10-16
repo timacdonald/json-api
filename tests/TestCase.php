@@ -24,13 +24,6 @@ class TestCase extends BaseTestCase
         $this->withoutExceptionHandling();
     }
 
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-
-        JsonApiResource::resolveServerImplementationNormally();
-    }
-
     protected function assertValidJsonApi(TestResponse|string|array $data): void
     {
         if ($data instanceof TestResponse) {

@@ -99,6 +99,14 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
+     * @return JsonApiServerImplementation|null
+     */
+    public static function toServerImplementation(Request $request)
+    {
+        return self::serverImplementationResolver()($request);
+    }
+
+    /**
      * @return array{id: string, type: string, attributes?: stdClass, relationships?: stdClass, meta?: stdClass, links?: stdClass}
      */
     public function toArray($request)
@@ -125,7 +133,8 @@ abstract class JsonApiResource extends JsonResource
                 ->uniqueStrict(fn (JsonApiResource $resource): array => $resource->uniqueKey($request))
                 ->values()
                 ->all()) ? ['included' => $included] : [],
-            'jsonapi' => self::serverImplementationResolver()($request),
+            ...($implementation = self::toServerImplementation($request))
+                ? ['jsonapi' => $implementation] : [],
         ];
     }
 

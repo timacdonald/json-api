@@ -1,128 +1,135 @@
 name: CI
 
 on:
-    push:
-        branches: [ main ]
-    pull_request:
-        branches: [ main ]
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-    lint:
-        runs-on: ubuntu-latest
-        name: 'Lint'
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v3
+  lint:
+    runs-on: ubuntu-latest
 
-            - name: Get composer cache directory
-              id: composer-cache
-              run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
-            - name: Cache dependencies
-              uses: actions/cache@v3
-              with:
-                path: ${{ steps.composer-cache.outputs.dir }}
-                key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
-                restore-keys: ${{ runner.os }}-composer-
+    name: Lint
 
-            - name: Setup PHP
-              uses: shivammathur/setup-php@v2
-              with:
-                  php-version: '8.1'
-                  coverage: pcov
 
-            - name: Install dependencies
-              run: composer update
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-            - name: Check platform requirements
-              run: composer check-platform-reqs
 
-            - name: PHP-CS-Fixer
-              run: composer fix -- --dry-run
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
-            # - name: composer normalize
-            #   run: composer normalize --dry-run --no-interaction --verbose
 
-            # - name: test coverage
-            #   run: |
-            #       ./vendor/bin/phpunit --coverage-clover=coverage.xml --debug --verbose
-            #       bash <(curl -s https://codecov.io/bash)
-            #   env:
-            #       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
 
-            # - name: Infection
-            #   run: ./vendor/bin/infection --show-mutations --min-covered-msi=100 --no-progress --no-interaction --verbose
-              # env:
-              #     INFECTION_BADGE_API_KEY: ${{ secrets.INFECTION_BADGE_API_KEY }}
 
-            # - name: Psalm
-            #   run: ./vendor/bin/psalm --shepherd --no-progress
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: pcov
 
-            # - name: PHPStan
-            #   run: ./vendor/bin/phpstan --no-interaction --verbose
-            #
-            #   composer-require-checker
-            #   composer-unused
 
-    tests:
-        runs-on: ubuntu-latest
-        name: 'PHP: ${{ matrix.php }}; Laravel: ${{ matrix.laravel }}; Prefer: ${{ matrix.prefer }}'
-        strategy:
-            matrix:
-                php: ['8.1', '8.2']
-                laravel: ['^9.0', '^10.0']
-                prefer: ['prefer-lowest', 'prefer-stable']
-                include:
-                    - testbench: '^7.0'
-                      laravel: '^9.0'
-                    - testbench: '^8.0'
-                      laravel: '^10.0'
+      - name: Install dependencies
+        run: composer update
 
-        steps:
-            - name: checkout code
-              uses: actions/checkout@v3
 
-            - name: Get composer cache directory
-              id: composer-cache
-              run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+      - name: Check platform requirements
+        run: composer check-platform-reqs
 
-            - name: Cache dependencies
-              uses: actions/cache@v3
-              with:
-                  path: ${{ steps.composer-cache.outputs.dir }}
-                  key: ${{ runner.os }}-php-${{ matrix.php }}-laravel-${{ matrix.laravel }}-prefer-${{ matrix.prefer }}-composer-${{ hashFiles('**/composer.json') }}
-                  restore-keys: ${{ runner.os }}-php-${{ matrix.php }}-laravel-{{ matrix.laravel }}-prefer-${{ matrix.prefer}}-composer-
 
-            - name: Setup PHP
-              uses: shivammathur/setup-php@v2
-              with:
-                  php-version: ${{ matrix.php }}
-                  coverage: none
+      - name: PHP-CS-Fixer
+        run: composer fix -- --dry-run
 
-            - name: Remove dev packages
-              run: |
-                  composer remove --dev --no-update \
-                      friendsofphp/php-cs-fixer \
-                      infection/infection \
-                      nunomaduro/larastan \
-                      phpstan/phpstan-strict-rules
+  tests:
+    runs-on: ubuntu-latest
 
-            - name: Require Laravel and Testbench version
-              run: composer require --no-update laravel/framework:"${{ matrix.laravel }}" illuminate/collections:"${{ matrix.laravel }}" illuminate/database:"${{ matrix.laravel }}" illuminate/http:"${{ matrix.laravel }}" illuminate/support:"${{ matrix.laravel }}" orchestra/testbench:"${{ matrix.testbench }}"
 
-            - name: Support prefer-lowest in PHP 8.1
-              if: ${{ matrix.php == 8.1 && matrix.prefer == 'prefer-lowest' }}
-              run: composer require --no-update nesbot/carbon:"^2.62.1"
+    name: PHP: ${{ matrix.php }}; Laravel: ${{ matrix.laravel }}; Prefer: ${{ matrix.prefer }}
 
-            - name: Support prefer-lowest in PHP 8.2
-              if: ${{ matrix.php == 8.2 && matrix.prefer == 'prefer-lowest' }}
-              run: composer require --no-update nesbot/carbon:"^2.62.1"
+    strategy:
+      matrix:
+        php: ['8.1', '8.2']
+        laravel: ['11.0', ^9.0, ^10.0]
+        prefer: [prefer-lowest, prefer-stable]
+        include:
+          - testbench: ^7.0
+            laravel: ^9.0
+          - testbench: ^8.0
+            laravel: ^10.0
+          - testbench: ^9.0
+            laravel: '11.0'
+        exclude:
+          - laravel: '11.0'
+            php: '8.1'
 
-            - name: Install dependencies
-              run: composer update --${{ matrix.prefer }}
 
-            - name: Check platform requirements
-              run: composer check-platform-reqs --verbose
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v3
 
-            - name: Run tests
-              run: composer test
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-php-${{ matrix.php }}-laravel-${{ matrix.laravel }}-prefer-${{ matrix.prefer }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-php-${{ matrix.php }}-laravel-{{ matrix.laravel }}-prefer-${{ matrix.prefer}}-composer-
+
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+
+
+      - name: Remove dev packages
+        run: |
+          composer remove --dev --no-update \
+              friendsofphp/php-cs-fixer \
+              infection/infection \
+              nunomaduro/larastan \
+              phpstan/phpstan-strict-rules
+
+
+      - name: Require Laravel and Testbench version
+        run: composer require --no-update laravel/framework:"${{ matrix.laravel }}" illuminate/collections:"${{ matrix.laravel }}" illuminate/database:"${{ matrix.laravel }}" illuminate/http:"${{ matrix.laravel }}" illuminate/support:"${{ matrix.laravel }}" orchestra/testbench:"${{ matrix.testbench }}"
+
+
+      - name: Support prefer-lowest in PHP 8.1
+        if: "${{ matrix.php == 8.1 && matrix.prefer == 'prefer-lowest' }}"
+        run: composer require --no-update nesbot/carbon:"^2.62.1"
+
+
+      - name: Support prefer-lowest in PHP 8.2
+        if: "${{ matrix.php == 8.2 && matrix.prefer == 'prefer-lowest' }}"
+        run: composer require --no-update nesbot/carbon:"^2.62.1"
+
+
+      - name: Install dependencies
+        run: composer update --${{ matrix.prefer }}
+
+
+      - name: Check platform requirements
+        run: composer check-platform-reqs --verbose
+
+
+      - name: Run tests
+        run: composer test

@@ -99,7 +99,7 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
-     * @return JsonApiServerImplementation|null
+     * @return ServerImplementation|null
      */
     public static function toServerImplementation(Request $request)
     {
@@ -124,7 +124,7 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
-     * @return array{included?: array<int, JsonApiResource>, jsonapi: JsonApiServerImplementation}
+     * @return array{included?: array<int, JsonApiResource>, jsonapi: ServerImplementation}
      */
     public function with(Request $request)
     {

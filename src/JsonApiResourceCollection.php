@@ -42,7 +42,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     }
 
     /**
-     * @return array{included?: array<int, JsonApiResource>, jsonapi?: JsonApiServerImplementation}
+     * @return array{included?: array<int, JsonApiResource>, jsonapi?: ServerImplementation}
      */
     public function with(Request $request)
     {

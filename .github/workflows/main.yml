@@ -42,6 +42,28 @@ jobs:
       - name: PHP-CS-Fixer
         run: composer fix -- --dry-run
 
+      # - name: composer normalize
+      #   run: composer normalize --dry-run --no-interaction --verbose
+
+      # - name: test coverage
+      #   run: "./vendor/bin/phpunit --coverage-clover=coverage.xml --debug --verbose && bash <(curl -s https://codecov.io/bash)"
+      #   env:
+      #       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      # - name: Infection
+      #   run: "./vendor/bin/infection --show-mutations --min-covered-msi=100 --no-progress --no-interaction --verbose"
+      #   env:
+      #       INFECTION_BADGE_API_KEY: ${{ secrets.INFECTION_BADGE_API_KEY }}
+
+      # - name: Psalm
+      #   run: ./vendor/bin/psalm --shepherd --no-progress
+
+      # - name: PHPStan
+      #   run: ./vendor/bin/phpstan --no-interaction --verbose
+
+      #   composer-require-checker
+      #   composer-unused
+
   tests:
     runs-on: ubuntu-latest
     name: "PHP: ${{ matrix.php }}; Laravel: ${{ matrix.laravel }}; Prefer: ${{ matrix.prefer }}"

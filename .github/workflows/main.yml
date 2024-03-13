@@ -42,6 +42,7 @@ jobs:
       - name: PHP-CS-Fixer
         run: composer fix -- --dry-run
 
+
       # - name: composer normalize
       #   run: composer normalize --dry-run --no-interaction --verbose
 

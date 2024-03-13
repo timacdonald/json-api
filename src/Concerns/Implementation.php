@@ -13,7 +13,7 @@ trait Implementation
     /**
      * @api
      *
-     * @param (callable(): JsonApiServerImplementation) $callback
+     * @param (callable(): ServerImplementation) $callback
      * @return void
      */
     public static function resolveServerImplementationUsing(callable $callback)
@@ -24,7 +24,7 @@ trait Implementation
     /**
      * @internal
      *
-     * @return (callable(Request): (JsonApiServerImplementation|null))
+     * @return (callable(Request): (ServerImplementation|null))
      */
     public static function serverImplementationResolver()
     {

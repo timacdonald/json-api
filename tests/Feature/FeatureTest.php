@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Route;
 use Tests\Models\BasicModel;
 use Tests\Resources\UserResource;
@@ -12,12 +12,15 @@ use Tests\TestCase;
 
 class FeatureTest extends TestCase
 {
-    use RefreshDatabase;
+    use LazilyRefreshDatabase;
 
-    public function setUp(): void
+    /**
+     * Define database migrations.
+     *
+     * @return void
+     */
+    protected function defineDatabaseMigrations()
     {
-        parent::setUp();
-
         $this->loadMigrationsFrom(__DIR__ . '/../database');
     }
 
@@ -91,9 +94,6 @@ class FeatureTest extends TestCase
                         'url' => 'http://localhost/test-route?page=2',
                     ],
                 ],
-            ],
-            'jsonapi' => [
-                'version' => '1.0',
             ],
         ]);
         $this->assertValidJsonApi($response);

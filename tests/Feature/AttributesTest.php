@@ -42,9 +42,6 @@ class AttributesTest extends TestCase
                     'email' => 'tim@example.com',
                 ],
             ],
-            'jsonapi' => [
-                'version' => '1.0',
-            ],
         ]);
         $this->assertValidJsonApi($response);
     }
@@ -80,9 +77,6 @@ class AttributesTest extends TestCase
                     'location' => 'Melbourne',
                 ],
             ],
-            'jsonapi' => [
-                'version' => '1.0',
-            ],
         ]);
         $this->assertValidJsonApi($response);
     }
@@ -114,9 +108,6 @@ class AttributesTest extends TestCase
                 'id' => 'expected-id',
                 'type' => 'basicModels',
             ],
-            'jsonapi' => [
-                'version' => '1.0',
-            ],
         ]);
         $this->assertValidJsonApi($response);
     }
@@ -147,9 +138,6 @@ class AttributesTest extends TestCase
                     'location' => 'Melbourne',
                 ],
             ],
-            'jsonapi' => [
-                'version' => '1.0',
-            ],
         ]);
         $this->assertValidJsonApi($response);
     }
@@ -175,9 +163,6 @@ class AttributesTest extends TestCase
             'data' => [
                 'id' => 'expected-id',
                 'type' => 'basicModels',
-            ],
-            'jsonapi' => [
-                'version' => '1.0',
             ],
         ]);
         $this->assertValidJsonApi($response);
@@ -226,9 +211,6 @@ class AttributesTest extends TestCase
                 'type' => 'basicModels',
                 'id' => 'user-id',
             ],
-            'jsonapi' => [
-                'version' => '1.0',
-            ],
         ]);
         $this->assertValidJsonApi($response);
     }
@@ -253,9 +235,6 @@ class AttributesTest extends TestCase
                 'attributes' => [
                     'name' => 'user-name',
                 ],
-            ],
-            'jsonapi' => [
-                'version' => '1.0',
             ],
         ]);
         $this->assertValidJsonApi($response);
@@ -301,9 +280,6 @@ class AttributesTest extends TestCase
                         ],
                     ],
                 ],
-            ],
-            'jsonapi' => [
-                'version' => '1.0',
             ],
             'included' => [
                 [
@@ -355,9 +331,6 @@ class AttributesTest extends TestCase
                     'email' => 'tim@example.com',
                 ],
             ],
-            'jsonapi' => [
-                'version' => '1.0',
-            ],
         ]);
         $this->assertValidJsonApi($response);
     }
@@ -393,9 +366,6 @@ class AttributesTest extends TestCase
                     'email' => 'tim@example.com',
                     'address' => '123 fake street',
                 ],
-            ],
-            'jsonapi' => [
-                'version' => '1.0',
             ],
         ]);
         $this->assertValidJsonApi($response);
@@ -433,9 +403,6 @@ class AttributesTest extends TestCase
                     'email' => 'tim@example.com',
                     'address' => '123 fake street',
                 ],
-            ],
-            'jsonapi' => [
-                'version' => '1.0',
             ],
         ]);
         $this->assertValidJsonApi($response);

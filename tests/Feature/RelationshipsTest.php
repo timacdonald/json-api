@@ -57,9 +57,6 @@ class RelationshipsTest extends TestCase
                     'content' => 'post-content',
                 ],
             ],
-            'jsonapi' => [
-                'version' => '1.0',
-            ],
         ]);
         $this->assertValidJsonApi($response);
     }
@@ -96,9 +93,6 @@ class RelationshipsTest extends TestCase
                         ],
                     ],
                 ],
-            ],
-            'jsonapi' => [
-                'version' => '1.0',
             ],
             'included' => [
                 [
@@ -163,9 +157,6 @@ class RelationshipsTest extends TestCase
                         ],
                     ],
                 ],
-            ],
-            'jsonapi' => [
-                'version' => '1.0',
             ],
             'included' => [
                 [
@@ -256,9 +247,6 @@ class RelationshipsTest extends TestCase
                     ],
                 ],
             ],
-            'jsonapi' => [
-                'version' => '1.0',
-            ],
             'included' => [
                 [
                     'id' => 'child-id-1',
@@ -322,9 +310,6 @@ class RelationshipsTest extends TestCase
                         ],
                     ],
                 ],
-            ],
-            'jsonapi' => [
-                'version' => '1.0',
             ],
             'included' => [
                 [
@@ -418,9 +403,6 @@ class RelationshipsTest extends TestCase
                     ],
                 ],
             ],
-            'jsonapi' => [
-                'version' => '1.0',
-            ],
             'included' => [
                 [
                     'id' => 'author-id-1',
@@ -485,9 +467,6 @@ class RelationshipsTest extends TestCase
                         ],
                     ],
                 ],
-            ],
-            'jsonapi' => [
-                'version' => '1.0',
             ],
             'included' => [
                 [
@@ -622,9 +601,6 @@ class RelationshipsTest extends TestCase
                         ],
                     ],
                 ],
-            ],
-            'jsonapi' => [
-                'version' => '1.0',
             ],
             'included' => [
                 [
@@ -797,9 +773,6 @@ class RelationshipsTest extends TestCase
                     ],
                 ],
             ],
-            'jsonapi' => [
-                'version' => '1.0',
-            ],
             'included' => [
                 [
                     'id' => 'relation-id',
@@ -869,9 +842,6 @@ class RelationshipsTest extends TestCase
                     ],
                 ],
             ],
-            'jsonapi' => [
-                'version' => '1.0',
-            ],
             'included' => [
                 [
                     'id' => 'avatar-id',
@@ -925,9 +895,6 @@ class RelationshipsTest extends TestCase
                     ],
                 ],
             ],
-            'jsonapi' => [
-                'version' => '1.0',
-            ],
             'included' => [
                 [
                     'id' => 'post-id',
@@ -963,9 +930,6 @@ class RelationshipsTest extends TestCase
                     'name' => 'user-name',
                 ],
             ],
-            'jsonapi' => [
-                'version' => '1.0',
-            ],
         ]);
         $this->assertValidJsonApi($response);
     }
@@ -992,9 +956,6 @@ class RelationshipsTest extends TestCase
                         'name' => 'user-name',
                     ],
                 ],
-            ],
-            'jsonapi' => [
-                'version' => '1.0',
             ],
         ]);
         $this->assertValidJsonApi($response);
@@ -1023,9 +984,6 @@ class RelationshipsTest extends TestCase
                     ],
                 ],
             ],
-            'jsonapi' => [
-                'version' => '1.0',
-            ],
         ]);
         $this->assertValidJsonApi($response);
     }
@@ -1052,9 +1010,6 @@ class RelationshipsTest extends TestCase
                         'data' => [],
                     ],
                 ],
-            ],
-            'jsonapi' => [
-                'version' => '1.0',
             ],
         ]);
         $this->assertValidJsonApi($response);
@@ -1150,9 +1105,6 @@ class RelationshipsTest extends TestCase
                         ],
                     ],
                 ],
-            ],
-            'jsonapi' => [
-                'version' => '1.0',
             ],
             'included' => [
                 [
@@ -1250,9 +1202,6 @@ class RelationshipsTest extends TestCase
                         ],
                     ],
                 ],
-                'jsonapi' => [
-                    'version' => '1.0',
-                ],
             ]
         );
     }
@@ -1283,9 +1232,6 @@ class RelationshipsTest extends TestCase
                 'attributes' => [
                     'name' => 'user-name',
                 ],
-            ],
-            'jsonapi' => [
-                'version' => '1.0',
             ],
         ]);
         $this->assertValidJsonApi($response);
@@ -1329,9 +1275,6 @@ class RelationshipsTest extends TestCase
                         ],
                     ],
                 ],
-            ],
-            'jsonapi' => [
-                'version' => '1.0',
             ],
             'included' => [
                 [
@@ -1385,9 +1328,6 @@ class RelationshipsTest extends TestCase
                         ],
                     ],
                 ],
-            ],
-            'jsonapi' => [
-                'version' => '1.0',
             ],
             'included' => [
                 [
@@ -1458,9 +1398,6 @@ class RelationshipsTest extends TestCase
                         ],
                     ],
                 ],
-            ],
-            'jsonapi' => [
-                'version' => '1.0',
             ],
             'included' => [
                 [

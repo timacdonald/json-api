@@ -103,3 +103,30 @@ Now collections are formatted correctly. The `posts` value is now an object and 
     }
 }
 ```
+
+## Server implementation no longer included by default
+
+Previously, the top level `jsonapi` property was included in every response...
+
+```json5
+{
+    // ...
+    "jsonapi": {
+        "version": "1.0"
+    }
+}
+```
+
+This is no longer the case. If you would like to include a server implementation in your API responses you may call the `JsonApiResource::resolveServerImplementationUsing` method in a service provider or middleware:
+
+```php
+use TiMacDonald\JsonApi\JsonApiResource;
+use TiMacDonald\JsonApi\ServerImplementation;
+
+
+JsonApiResource::resolveServerImplementationUsing(function () {
+    return new ServerImplementation(version: '1.4.3', meta: [
+        'secure' => true,
+    ]);
+});
+```

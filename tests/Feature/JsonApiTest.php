@@ -37,9 +37,6 @@ class JsonApiTest extends TestCase
                     'name' => 'user-name',
                 ],
             ],
-            'jsonapi' => [
-                'version' => '1.0',
-            ],
         ]);
         $this->assertValidJsonApi($response);
     }
@@ -77,9 +74,6 @@ class JsonApiTest extends TestCase
                         'name' => 'user-name-2',
                     ],
                 ],
-            ],
-            'jsonapi' => [
-                'version' => '1.0',
             ],
         ]);
         $this->assertValidJsonApi($response);
@@ -119,9 +113,6 @@ class JsonApiTest extends TestCase
                 'meta' => [
                     'meta-key' => 'meta-value',
                 ],
-            ],
-            'jsonapi' => [
-                'version' => '1.0',
             ],
         ]);
         $this->assertValidJsonApi($response);
@@ -164,9 +155,6 @@ class JsonApiTest extends TestCase
                     ],
                 ],
             ],
-            'jsonapi' => [
-                'version' => '1.0',
-            ],
         ]);
         $this->assertValidJsonApi($response);
     }
@@ -203,9 +191,6 @@ class JsonApiTest extends TestCase
                 'id' => 'expected-id',
                 'type' => 'Tests\\Models\\BasicModel',
             ],
-            'jsonapi' => [
-                'version' => '1.0',
-            ],
         ]);
         $this->assertValidJsonApi($response);
     }
@@ -221,9 +206,6 @@ class JsonApiTest extends TestCase
             'data' => [
                 'id' => 'expected-id',
                 'type' => 'basicModels',
-            ],
-            'jsonapi' => [
-                'version' => '1.0',
             ],
         ]);
         $this->assertValidJsonApi($response);

@@ -4,20 +4,25 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
+use Orchestra\Testbench\Attributes\WithMigration;
 use Tests\Models\BasicModel;
 use Tests\Resources\UserResource;
 use Tests\TestCase;
 
 class FeatureTest extends TestCase
 {
-    use RefreshDatabase;
+    use LazilyRefreshDatabase;
 
-    public function setUp(): void
+    /**
+     * Define database migrations.
+     *
+     * @return void
+     */
+    protected function defineDatabaseMigrations()
     {
-        parent::setUp();
-
         $this->loadMigrationsFrom(__DIR__ . '/../database');
     }
 

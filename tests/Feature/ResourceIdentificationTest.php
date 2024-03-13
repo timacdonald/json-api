@@ -78,9 +78,6 @@ JSON);
                 'id' => 'user-id',
                 'type' => 'basicModels',
             ],
-            'jsonapi' => [
-                'version' => '1.0',
-            ],
         ]);
         $this->assertValidJsonApi($response);
     }
@@ -101,9 +98,6 @@ JSON);
             'data' => [
                 'id' => '55',
                 'type' => 'basicModels',
-            ],
-            'jsonapi' => [
-                'version' => '1.0',
             ],
         ]);
         $this->assertValidJsonApi($response);

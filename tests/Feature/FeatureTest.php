@@ -92,9 +92,6 @@ class FeatureTest extends TestCase
                     ],
                 ],
             ],
-            'jsonapi' => [
-                'version' => '1.0',
-            ],
         ]);
         $this->assertValidJsonApi($response);
     }

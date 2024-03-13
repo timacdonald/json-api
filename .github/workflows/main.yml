@@ -123,6 +123,10 @@ jobs:
         if: ${{ matrix.php == 8.2 && matrix.prefer == 'prefer-lowest' }}
         run: composer require --no-update nesbot/carbon:"^2.62.1"
 
+      - name: Support prefer-lowest in PHP 8.3
+        if: ${{ matrix.php == 8.3 && matrix.prefer == 'prefer-lowest' }}
+        run: composer require --no-update nesbot/carbon:"^2.62.1"
+
       - name: Install dependencies
         run: composer update --${{ matrix.prefer }}
 

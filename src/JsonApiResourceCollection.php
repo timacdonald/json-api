@@ -42,9 +42,10 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     }
 
     /**
+     * @param  Request  $request
      * @return array{included?: array<int, JsonApiResource>, jsonapi?: ServerImplementation}
      */
-    public function with(Request $request)
+    public function with($request)
     {
         return [
             ...($included = $this->collection

@@ -124,9 +124,10 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
+     * @param  Request  $request
      * @return array{included?: array<int, JsonApiResource>, jsonapi: ServerImplementation}
      */
-    public function with(Request $request)
+    public function with($request)
     {
         return [
             ...($included = $this->included($request)

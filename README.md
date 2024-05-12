@@ -26,8 +26,8 @@ A lightweight API resource for Laravel that helps you adhere to the `JSON:API` s
 
 ## Version support
 
-- **PHP**: `8.1`, `8.2`
-- **Laravel**: `9.0`, `10.0`
+- **PHP**: `8.1`, `8.2`, `8.3`
+- **Laravel**: `9.0`, `10.0`, `11.0`
 
 ## Installation
 

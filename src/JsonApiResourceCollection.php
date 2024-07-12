@@ -65,7 +65,6 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
      */
     public function toResponse($request)
     {
-        // TODO: should this header be configurable? Should it be a middleware? Should we not set it if one exists?
         return tap(parent::toResponse($request)->header('Content-type', 'application/vnd.api+json'), $this->flush(...));
     }
 

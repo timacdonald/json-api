@@ -190,7 +190,7 @@ class AttributesTest extends TestCase
 
         $response->assertStatus(400);
         $response->assertExactJson([
-            'message' => 'The fields parameter value must be a comma seperated list of attributes.',
+            'message' => 'The fields parameter value must be a comma separated list of attributes.',
         ]);
     }
 

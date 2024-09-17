@@ -25,7 +25,7 @@ class RelationshipsTest extends TestCase
 
         $response->assertStatus(400);
         $response->assertExactJson([
-            'message' => 'The include parameter must be a comma seperated list of relationship paths.',
+            'message' => 'The include parameter must be a comma separated list of relationship paths.',
         ]);
     }
 

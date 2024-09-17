@@ -21,7 +21,7 @@ class LinkTest extends TestCase
         $this->assertSame('{"href":"https:\/\/related.com","meta":{"expected":"meta"}}', $serialized);
     }
 
-    public function testEmptyMetaIsExluded(): void
+    public function testEmptyMetaIsExcluded(): void
     {
         $link = Link::related('https://related.com', []);
 

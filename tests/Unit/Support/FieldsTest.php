@@ -66,7 +66,7 @@ class FieldsTest extends TestCase
             Fields::getInstance()->parse($request, 'foo', true);
             $this->fail('Exception should have been thrown');
         } catch (HttpException $e) {
-            $this->assertSame('The fields parameter value must be a comma seperated list of attributes.', $e->getMessage());
+            $this->assertSame('The fields parameter value must be a comma separated list of attributes.', $e->getMessage());
             $this->assertSame(400, $e->getStatusCode());
         } catch (Throwable) {
             $this->fail('Http exception should have been thrown');

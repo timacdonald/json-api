@@ -59,7 +59,7 @@ final class Fields
             $fields = $typeFields[$resourceType] ?? '';
 
             if (! is_string($fields)) {
-                throw new HttpException(400, 'The fields parameter value must be a comma seperated list of attributes.');
+                throw new HttpException(400, 'The fields parameter value must be a comma separated list of attributes.');
             }
 
             return array_filter(explode(',', $fields), fn (string $value): bool => $value !== '');

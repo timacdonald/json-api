@@ -69,7 +69,7 @@ jobs:
     name: "PHP: ${{ matrix.php }}; Laravel: ${{ matrix.laravel }}; Prefer: ${{ matrix.prefer }}"
     strategy:
       matrix:
-        php: ['8.1', '8.2', '8.3']
+        php: ['8.1', '8.2', '8.3', '8.4']
         laravel: [^9.0, ^10.0, ^11.0]
         prefer: [prefer-lowest, prefer-stable]
         include:
@@ -125,6 +125,10 @@ jobs:
 
       - name: Support prefer-lowest in PHP 8.3
         if: ${{ matrix.php == 8.3 && matrix.prefer == 'prefer-lowest' }}
+        run: composer require --no-update nesbot/carbon:"^2.62.1"
+
+      - name: Support prefer-lowest in PHP 8.4
+        if: ${{ matrix.php == 8.4 && matrix.prefer == 'prefer-lowest' }}
         run: composer require --no-update nesbot/carbon:"^2.62.1"
 
       - name: Install dependencies

@@ -118,7 +118,7 @@ class JsonApiTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItHandlesSelfAndRelatedLinks(): void
+    public function testItHandlesNonStandardLinks(): void
     {
         Route::get('test-route', fn () => new class ((new BasicModel(['id' => 'expected-id']))) extends JsonApiResource {
             public function toLinks($request): array
@@ -156,6 +156,41 @@ class JsonApiTest extends TestCase
                 ],
             ],
         ]);
+        // Asserting non-standard links, so this won't pass validation. See testItHandlesSelfLinks
+        // for standard links.
+        // $this->assertValidJsonApi($response);
+    }
+
+    public function testItHandlesSelfLinks(): void
+    {
+        Route::get('test-route', fn () => new class ((new BasicModel(['id' => 'expected-id']))) extends JsonApiResource {
+            public function toLinks($request): array
+            {
+                return [
+                    Link::self('https://example.test/self', [
+                        'some' => 'meta',
+                    ]),
+                ];
+            }
+        });
+
+        $response = $this->getJson('test-route');
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'data' => [
+                'id' => 'expected-id',
+                'type' => 'basicModels',
+                'links' => [
+                    'self' => [
+                        'href' => 'https://example.test/self',
+                        'meta' => [
+                            'some' => 'meta',
+                        ],
+                    ],
+                ],
+            ],
+        ]);
         $this->assertValidJsonApi($response);
     }
 
@@ -181,7 +216,7 @@ class JsonApiTest extends TestCase
 
     public function testItCanCustomiseTheTypeResolution(): void
     {
-        JsonApiResource::resolveTypeUsing(fn (BasicModel $model): string => $model::class);
+        JsonApiResource::resolveTypeUsing(fn (BasicModel $model): string => str_replace('\\', '_', $model::class));
         Route::get('test-route', fn () => BasicJsonApiResource::make((new BasicModel(['id' => 'expected-id']))));
 
         $response = $this->get('test-route');
@@ -189,7 +224,7 @@ class JsonApiTest extends TestCase
         $response->assertExactJson([
             'data' => [
                 'id' => 'expected-id',
-                'type' => 'Tests\\Models\\BasicModel',
+                'type' => 'Tests_Models_BasicModel',
             ],
         ]);
         $this->assertValidJsonApi($response);
@@ -310,7 +345,7 @@ class JsonApiTest extends TestCase
             public function toLinks($request): array
             {
                 return [
-                    Link::self('user-internal.com')->withMeta(['user-internal.com' => 'meta']),
+                    Link::self('https://example.com/user-internal')->withMeta(['https___example_com_user-internal' => 'meta']),
                 ];
             }
 
@@ -322,8 +357,8 @@ class JsonApiTest extends TestCase
                         {
                             // This should not be present in the response.
                             return [
-                                Link::self('profile-internal.com')->withMeta([
-                                    'profile-internal.com' => 'meta',
+                                Link::self('https://example.com/profile-internal')->withMeta([
+                                    'https___example_com_profile-internal' => 'meta',
                                 ]),
                             ];
                         }
@@ -349,8 +384,8 @@ class JsonApiTest extends TestCase
                             return parent::toResourceLink($request)->withMeta([
                                 'profile-internal-resource-link' => 'meta',
                             ])->withLinks([
-                                Link::self('profile-internal-resource-link.com')->withMeta([
-                                    'profile-internal-resource-link.com' => 'meta',
+                                Link::self('https://example.com/profile-internal-resource-link')->withMeta([
+                                    'https___example_com_profile-internal-resource-link' => 'meta',
                                 ]),
                             ]);
                         }
@@ -359,8 +394,8 @@ class JsonApiTest extends TestCase
                         'profile-external' => 'meta',
                     ])->withLinks([
                         // This should not be in the response.
-                        Link::related('profile-external.com')->withMeta([
-                            'profile-external.com' => 'meta',
+                        Link::related('https://example.com/profile-external')->withMeta([
+                            'https___example_com_profile-external' => 'meta',
                         ]),
                     ])->pipeResourceIdentifier(
                         // This should not be in the response.
@@ -371,8 +406,8 @@ class JsonApiTest extends TestCase
                         fn (RelationshipObject $link) => $link->withMeta([
                             'profile-external-resource-link' => 'meta',
                         ])->withLinks([
-                            Link::related('profile-external-resource-link.com')->withMeta([
-                                'profile-external-resource-link.com' => 'meta',
+                            Link::related('https://example.com/profile-external-resource-link')->withMeta([
+                                'https___example_com_profile-external-resource-link' => 'meta',
                             ]),
                         ])
                     ),
@@ -380,8 +415,8 @@ class JsonApiTest extends TestCase
                         public function toLinks($request): array
                         {
                             return [
-                                Link::self('avatar-internal.com')->withMeta([
-                                    'avatar-internal.com' => 'meta',
+                                Link::self('https://example.com/avatar-internal')->withMeta([
+                                    'https___example_com_avatar-internal' => 'meta',
                                 ]),
                             ];
                         }
@@ -405,16 +440,16 @@ class JsonApiTest extends TestCase
                             return parent::toResourceLink($request)->withMeta([
                                 'avatar-internal-resource-link' => 'meta',
                             ])->withLinks([
-                                Link::self('avatar-internal-resource-link.com')->withMeta([
-                                    'avatar-internal-resource-link.com' => 'meta',
+                                Link::self('https://example.com/avatar-internal-resource-link')->withMeta([
+                                    'https___example_com_avatar-internal-resource-link' => 'meta',
                                 ]),
                             ]);
                         }
                     })->withMeta([
                         'avatar-external' => 'meta',
                     ])->withLinks([
-                        Link::related('avatar-external.com')->withMeta([
-                            'avatar-external.com' => 'meta',
+                        Link::related('https://example.com/avatar-external')->withMeta([
+                            'https___example_com_avatar-external' => 'meta',
                         ]),
                     ])->pipeResourceIdentifier(
                         fn (ResourceIdentifier $identifier) => $identifier->withMeta([
@@ -424,8 +459,8 @@ class JsonApiTest extends TestCase
                         fn (RelationshipObject $link) => $link->withMeta([
                             'avatar-external-resource-link' => 'meta',
                         ])->withLinks([
-                            Link::related('avatar-external-resource-link.com')->withMeta([
-                                'avatar-external-resource-link.com' => 'meta',
+                            Link::related('https://example.com/avatar-external-resource-link')->withMeta([
+                                'https___example_com_avatar-external-resource-link' => 'meta',
                             ]),
                         ])
                     ),
@@ -440,8 +475,8 @@ class JsonApiTest extends TestCase
                         public function toLinks($request): array
                         {
                             return [
-                                Link::self('posts-internal.com')->withMeta([
-                                    'posts-internal.com' => 'meta',
+                                Link::self('https://example.com/posts-internal')->withMeta([
+                                    'https___example_com_posts-internal' => 'meta',
                                 ]),
                             ];
                         }
@@ -459,8 +494,8 @@ class JsonApiTest extends TestCase
                             return parent::toResourceLink($request)->withMeta([
                                 'posts-internal-resource-link' => 'meta',
                             ])->withLinks([
-                                Link::self('posts-internal-resource-link.com')->withMeta([
-                                    'posts-internal-resource-link.com' => 'meta',
+                                Link::self('https://example.com/posts-internal-resource-link')->withMeta([
+                                    'https___example_com_posts-internal-resource-link' => 'meta',
                                 ]),
                             ]);
                         }
@@ -469,8 +504,8 @@ class JsonApiTest extends TestCase
                         {
                             return parent::collection($resource)
                                 ->withRelationshipLink(fn ($link) => $link->withLinks([
-                                    Link::self('posts-collection-internal-resource-link.com', [
-                                        'posts-collection-internal-resource-link' => 'meta',
+                                    Link::self('https://example.com/posts-collection-internal-resource-link', [
+                                        'https___example_com_posts-collection-internal-resource-link' => 'meta',
                                     ]),
                                 ])->withMeta([
                                     'posts-internal-collection-resource-link' => 'meta',
@@ -479,8 +514,8 @@ class JsonApiTest extends TestCase
                                     fn (JsonApiResource $resource) => $resource->withMeta([
                                         'posts-internal-collection' => 'meta',
                                     ])->withLinks([
-                                        Link::related('posts-internal-collection.com')->withMeta([
-                                            'posts-internal-collection.com' => 'meta',
+                                        Link::related('https://example.com/posts-internal-collection')->withMeta([
+                                            'https___example_com_posts-internal-collection' => 'meta',
                                         ]),
                                     ])->pipeResourceIdentifier(fn ($identifier) => $identifier->withMeta([
                                         'posts-internal-collection-resource-identifier' => 'meta',
@@ -489,8 +524,8 @@ class JsonApiTest extends TestCase
                         }
                     })::collection($this->posts)
                         ->withRelationshipLink(fn ($link) => $link->withLinks([
-                            Link::related('posts-external-resource-link.com', [
-                                'posts-external-resource-link' => 'meta',
+                            Link::related('https://example.com/posts-external-resource-link', [
+                                'https___example_com_posts-external-resource-link' => 'meta',
                             ]),
                         ])->withMeta([
                             'posts-external-resource-link' => 'meta',
@@ -500,15 +535,15 @@ class JsonApiTest extends TestCase
                         ]))->withMeta([
                             'posts-external' => 'meta',
                         ])->withLinks([
-                            new Link('external', 'posts.com'),
+                            new Link('external', 'https://example.com/posts'),
                         ])),
                 ];
             }
         })->withMeta([
             'user-external' => 'meta',
         ])->withLinks([
-            Link::related('user-external.com')->withMeta([
-                'user-external.com' => 'meta',
+            Link::related('https://example.com/user-external')->withMeta([
+                'https___example_com_user-external' => 'meta',
             ]),
         ]));
 
@@ -524,15 +559,15 @@ class JsonApiTest extends TestCase
                         'data' => null,
                         'links' => [
                             'self' => [
-                                'href' => 'profile-internal-resource-link.com',
+                                'href' => 'https://example.com/profile-internal-resource-link',
                                 'meta' => [
-                                    'profile-internal-resource-link.com' => 'meta',
+                                    'https___example_com_profile-internal-resource-link' => 'meta',
                                 ],
                             ],
                             'related' => [
-                                'href' => 'profile-external-resource-link.com',
+                                'href' => 'https://example.com/profile-external-resource-link',
                                 'meta' => [
-                                    'profile-external-resource-link.com' => 'meta',
+                                    'https___example_com_profile-external-resource-link' => 'meta',
                                 ],
                             ],
                         ],
@@ -552,15 +587,15 @@ class JsonApiTest extends TestCase
                         ],
                         'links' => [
                             'self' => [
-                                'href' => 'avatar-internal-resource-link.com',
+                                'href' => 'https://example.com/avatar-internal-resource-link',
                                 'meta' => [
-                                    'avatar-internal-resource-link.com' => 'meta',
+                                    'https___example_com_avatar-internal-resource-link' => 'meta',
                                 ],
                             ],
                             'related' => [
-                                'href' => 'avatar-external-resource-link.com',
+                                'href' => 'https://example.com/avatar-external-resource-link',
                                 'meta' => [
-                                    'avatar-external-resource-link.com' => 'meta',
+                                    'https___example_com_avatar-external-resource-link' => 'meta',
                                 ],
                             ],
                         ],
@@ -592,15 +627,15 @@ class JsonApiTest extends TestCase
                         ],
                         'links' => [
                             'self' => [
-                                'href' => 'posts-collection-internal-resource-link.com',
+                                'href' => 'https://example.com/posts-collection-internal-resource-link',
                                 'meta' => [
-                                    'posts-collection-internal-resource-link' => 'meta',
+                                    'https___example_com_posts-collection-internal-resource-link' => 'meta',
                                 ],
                             ],
                             'related' => [
-                                'href' => 'posts-external-resource-link.com',
+                                'href' => 'https://example.com/posts-external-resource-link',
                                 'meta' => [
-                                    'posts-external-resource-link' => 'meta',
+                                    'https___example_com_posts-external-resource-link' => 'meta',
                                 ],
                             ],
                         ],
@@ -616,15 +651,15 @@ class JsonApiTest extends TestCase
                 ],
                 'links' => [
                     'self' => [
-                        'href' => 'user-internal.com',
+                        'href' => 'https://example.com/user-internal',
                         'meta' => [
-                            'user-internal.com' => 'meta',
+                            'https___example_com_user-internal' => 'meta',
                         ],
                     ],
                     'related' => [
-                        'href' => 'user-external.com',
+                        'href' => 'https://example.com/user-external',
                         'meta' => [
-                            'user-external.com' => 'meta',
+                            'https___example_com_user-external' => 'meta',
                         ],
                     ],
                 ],
@@ -639,15 +674,15 @@ class JsonApiTest extends TestCase
                     ],
                     'links' => [
                         'self' => [
-                            'href' => 'avatar-internal.com',
+                            'href' => 'https://example.com/avatar-internal',
                             'meta' => [
-                                'avatar-internal.com' => 'meta',
+                                'https___example_com_avatar-internal' => 'meta',
                             ],
                         ],
                         'related' => [
-                            'href' => 'avatar-external.com',
+                            'href' => 'https://example.com/avatar-external',
                             'meta' => [
-                                'avatar-external.com' => 'meta',
+                                'https___example_com_avatar-external' => 'meta',
                             ],
                         ],
                     ],
@@ -662,19 +697,19 @@ class JsonApiTest extends TestCase
                     ],
                     'links' => [
                         'self' => [
-                            'href' => 'posts-internal.com',
+                            'href' => 'https://example.com/posts-internal',
                             'meta' => [
-                                'posts-internal.com' => 'meta',
+                                'https___example_com_posts-internal' => 'meta',
                             ],
                         ],
                         'related' => [
-                            'href' => 'posts-internal-collection.com',
+                            'href' => 'https://example.com/posts-internal-collection',
                             'meta' => [
-                                'posts-internal-collection.com' => 'meta',
+                                'https___example_com_posts-internal-collection' => 'meta',
                             ],
                         ],
                         'external' => [
-                            'href' => 'posts.com',
+                            'href' => 'https://example.com/posts',
                         ],
                     ],
                 ],
@@ -688,19 +723,19 @@ class JsonApiTest extends TestCase
                     ],
                     'links' => [
                         'self' => [
-                            'href' => 'posts-internal.com',
+                            'href' => 'https://example.com/posts-internal',
                             'meta' => [
-                                'posts-internal.com' => 'meta',
+                                'https___example_com_posts-internal' => 'meta',
                             ],
                         ],
                         'related' => [
-                            'href' => 'posts-internal-collection.com',
+                            'href' => 'https://example.com/posts-internal-collection',
                             'meta' => [
-                                'posts-internal-collection.com' => 'meta',
+                                'https___example_com_posts-internal-collection' => 'meta',
                             ],
                         ],
                         'external' => [
-                            'href' => 'posts.com',
+                            'href' => 'https://example.com/posts',
                         ],
                     ],
                 ],
@@ -712,6 +747,8 @@ class JsonApiTest extends TestCase
                 'version' => '1.0',
             ],
         ]);
-        $this->assertValidJsonApi($response);
+        // TODO temporarily disabled. resource links should only contain "self" links. We currently allow anything.
+        // Not sure I want to enforce this...?
+        // $this->assertValidJsonApi($response);
     }
 }

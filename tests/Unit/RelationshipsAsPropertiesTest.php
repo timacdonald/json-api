@@ -204,6 +204,8 @@ class RelationshipsAsPropertiesTest extends TestCase
     public function testItDoesntTryToAccessMagicAttributeProperty()
     {
         $instance = new class () extends Model {
+            protected $table = 'model';
+
             public function getRelationshipsAttribute()
             {
                 throw new Exception('xxxx');

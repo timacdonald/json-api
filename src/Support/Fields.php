@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace TiMacDonald\JsonApi\Support;
 
 use Illuminate\Http\Request;
-
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use WeakMap;
 

@@ -60,7 +60,7 @@ class IncludesTest extends TestCase
             Includes::getInstance()->forPrefix($request, '');
             $this->fail('Exception should have been thrown');
         } catch (HttpException $e) {
-            $this->assertSame('The include parameter must be a comma seperated list of relationship paths.', $e->getMessage());
+            $this->assertSame('The include parameter must be a comma separated list of relationship paths.', $e->getMessage());
             $this->assertSame(400, $e->getStatusCode());
         } catch (Throwable) {
             $this->fail('Http exception should have been thrown');

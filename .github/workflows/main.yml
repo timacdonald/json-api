@@ -70,7 +70,7 @@ jobs:
     strategy:
       matrix:
         php: ['8.1', '8.2', '8.3', '8.4']
-        laravel: [^9.0, ^10.0, ^11.0]
+        laravel: [^9.0, ^10.0, ^11.0, ^12.0]
         prefer: [prefer-lowest, prefer-stable]
         include:
           - testbench: ^7.0
@@ -79,10 +79,13 @@ jobs:
             laravel: ^10.0
           - testbench: ^9.0
             laravel: ^11.0
+          - testbench: ^10.0
+            laravel: ^12.0
         exclude:
           - laravel: ^11.0
             php: '8.1'
-
+          - laravel: ^12.0
+            php: '8.1'
     steps:
       - name: checkout code
         uses: actions/checkout@v3
@@ -125,11 +128,11 @@ jobs:
 
       - name: Support prefer-lowest in PHP 8.3
         if: ${{ matrix.php == 8.3 && matrix.prefer == 'prefer-lowest' }}
-        run: composer require --no-update nesbot/carbon:"^2.62.1"
+        run: composer require --no-update nesbot/carbon:"^3.0"
 
       - name: Support prefer-lowest in PHP 8.4
         if: ${{ matrix.php == 8.4 && matrix.prefer == 'prefer-lowest' }}
-        run: composer require --no-update nesbot/carbon:"^2.62.1"
+        run: composer require --no-update nesbot/carbon:"^3.0"
 
       - name: Install dependencies
         run: composer update --${{ matrix.prefer }}

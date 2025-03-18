@@ -25,7 +25,6 @@
         "symfony/http-kernel": "^7.0"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.13",
         "laravel/framework": "^11.0 || ^12.0",
         "opis/json-schema": "^2.3",
         "orchestra/testbench": "^9.0 || ^10.0",
@@ -33,10 +32,7 @@
     },
     "config": {
         "preferred-install": "dist",
-        "sort-packages": true,
-        "allow-plugins": {
-            "infection/extension-installer": true
-        }
+        "sort-packages": true
     },
     "autoload": {
         "psr-4": {
@@ -47,10 +43,6 @@
         "psr-4": {
             "Tests\\": "tests/"
         }
-    },
-    "scripts": {
-        "test": "./vendor/bin/phpunit",
-        "fix": "./vendor/bin/php-cs-fixer fix"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

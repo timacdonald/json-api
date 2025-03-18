@@ -7,7 +7,6 @@ A lightweight API resource for Laravel that helps you adhere to the `JSON:API` s
 > **Note** These docs are not designed to introduce you to the `JSON:API` specification and the associated concepts, instead you should [head over and read the specification](https://jsonapi.org) if you are not yet familiar with it. The documentation that follows only covers _how_ to implement the specification via the package.
 
 **Table of contents**
-- [Version support](#version-support)
 - [Installation](#installation)
 - [Getting started](#getting-started)
     - [Creating your first `JSON:API` resource](#creating-your-first-jsonapi-resource)
@@ -23,11 +22,6 @@ A lightweight API resource for Laravel that helps you adhere to the `JSON:API` s
     - [Relationships](#relationships)
         - [`toRelationships()`](#toRelationships)
         - [Customising the relationship resource class guessing](#customising-the-relationship-resource-class-guessing)
-
-## Version support
-
-- **PHP**: `8.1`, `8.2`, `8.3`, `8.4`
-- **Laravel**: `9.0`, `10.0`, `11.0`, `12.0`
 
 ## Installation
 

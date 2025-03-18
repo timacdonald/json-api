@@ -15,7 +15,7 @@ class TestCase extends BaseTestCase
 {
     public const JSON_API_SCHEMA_URL = 'https://raw.githubusercontent.com/json-api/json-api/refs/heads/gh-pages/_schemas/1.0/schema.json';
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -34,7 +34,7 @@ class TestCase extends BaseTestCase
 
         $data = json_decode(json_encode($data));
 
-        $result = tap(new Validator(), function ($validator) {
+        $result = tap(new Validator, function ($validator) {
             $validator->resolver()->registerFile(
                 self::JSON_API_SCHEMA_URL,
                 $this->localSchemaPath(self::JSON_API_SCHEMA_URL)
@@ -49,7 +49,7 @@ class TestCase extends BaseTestCase
 
         $this->assertTrue(
             $result->isValid(),
-            print_r((new \Opis\JsonSchema\Errors\ErrorFormatter())->format($result->error()), true)
+            print_r((new \Opis\JsonSchema\Errors\ErrorFormatter)->format($result->error()), true)
         );
     }
 

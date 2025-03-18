@@ -21,7 +21,7 @@ trait Links
     /**
      * @api
      *
-     * @param array<int, Link> $links
+     * @param  array<int, Link>  $links
      * @return $this
      */
     public function withLinks(array $links)
@@ -30,8 +30,8 @@ trait Links
             $this->links,
             Collection::make($links)
                 ->map(fn ($value, $key) => is_string($key) ? new Link($key, $value) : $value)
-                    ->values()
-                    ->all()
+                ->values()
+                ->all()
         );
 
         return $this;
@@ -40,7 +40,7 @@ trait Links
     /**
      * @internal
      *
-     * @param array<int, Link> $links
+     * @param  array<int, Link>  $links
      * @return array<string, Link>
      */
     private static function parseLinks(array $links)

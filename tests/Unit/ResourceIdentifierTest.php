@@ -9,7 +9,7 @@ use TiMacDonald\JsonApi\ResourceIdentifier;
 
 class ResourceIdentifierTest extends TestCase
 {
-    public function testItSerializes(): void
+    public function test_it_serializes(): void
     {
         $identifier = new ResourceIdentifier('expected-type', 'expected-id', ['expected' => 'meta']);
 
@@ -18,7 +18,7 @@ class ResourceIdentifierTest extends TestCase
         $this->assertSame('{"type":"expected-type","id":"expected-id","meta":{"expected":"meta"}}', $serialized);
     }
 
-    public function testEmptyMetaIsExcluded(): void
+    public function test_empty_meta_is_excluded(): void
     {
         $identifier = new ResourceIdentifier('expected-type', 'expected-id', []);
 
@@ -27,7 +27,7 @@ class ResourceIdentifierTest extends TestCase
         $this->assertSame('{"type":"expected-type","id":"expected-id"}', $serialized);
     }
 
-    public function testMissingMetaIsExcluded(): void
+    public function test_missing_meta_is_excluded(): void
     {
         $identifier = new ResourceIdentifier('expected-type', 'expected-id');
 
@@ -36,7 +36,7 @@ class ResourceIdentifierTest extends TestCase
         $this->assertSame('{"type":"expected-type","id":"expected-id"}', $serialized);
     }
 
-    public function testMetaCanBeAppended(): void
+    public function test_meta_can_be_appended(): void
     {
         $identifier = (new ResourceIdentifier('expected-type', 'expected-id', ['original' => 'meta']));
 

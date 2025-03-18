@@ -9,7 +9,7 @@ use TiMacDonald\JsonApi\ServerImplementation;
 
 class ServerApiImplementationTest extends TestCase
 {
-    public function testItSerializes(): void
+    public function test_it_serializes(): void
     {
         $instance = (new ServerImplementation('5.0', [
             'expected' => 'meta',
@@ -22,7 +22,7 @@ class ServerApiImplementationTest extends TestCase
         self::assertSame('{"version":"5.0","meta":{"expected":"meta","more":"meta"}}', $json);
     }
 
-    public function testEmptyMetaIsExcluded(): void
+    public function test_empty_meta_is_excluded(): void
     {
         $instance = new ServerImplementation('5.0', []);
 
@@ -31,7 +31,7 @@ class ServerApiImplementationTest extends TestCase
         $this->assertSame('{"version":"5.0"}', $json);
     }
 
-    public function testMissingMetaIsExcluded(): void
+    public function test_missing_meta_is_excluded(): void
     {
         $instance = new ServerImplementation('5.0');
 

@@ -26,7 +26,7 @@ trait Relationships
     /**
      * @var Collection<string, JsonApiResource|JsonApiResourceCollection>|null
      */
-    private Collection|null $requestedRelationshipsCache = null;
+    private ?Collection $requestedRelationshipsCache = null;
 
     /**
      * @internal
@@ -46,7 +46,7 @@ trait Relationships
      * @param  (callable(string, JsonApiResource): class-string)|null  $callback
      * @return void
      */
-    public static function guessRelationshipResourceUsing(callable|null $callback)
+    public static function guessRelationshipResourceUsing(?callable $callback)
     {
         self::$relationshipResourceGuesser = $callback;
     }
@@ -62,7 +62,6 @@ trait Relationships
 
         return $this;
     }
-
 
     /**
      * @internal

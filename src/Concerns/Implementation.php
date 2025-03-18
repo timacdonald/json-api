@@ -13,7 +13,7 @@ trait Implementation
     /**
      * @api
      *
-     * @param (callable(): ServerImplementation) $callback
+     * @param  (callable(): ServerImplementation)  $callback
      * @return void
      */
     public static function resolveServerImplementationUsing(callable $callback)

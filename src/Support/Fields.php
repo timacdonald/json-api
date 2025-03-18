@@ -17,14 +17,14 @@ use function is_string;
  */
 final class Fields
 {
-    private static self|null $instance;
+    private static ?self $instance;
 
     /**
      * @var WeakMap<Request, array<string, array<int, string>|null>>
      */
     private WeakMap $cache;
 
-    private function __construct(WeakMap $cache = new WeakMap())
+    private function __construct(WeakMap $cache = new WeakMap)
     {
         $this->cache = $cache;
     }
@@ -34,7 +34,7 @@ final class Fields
      */
     public static function getInstance()
     {
-        return self::$instance ??= new static();
+        return self::$instance ??= new self;
     }
 
     /**
@@ -68,7 +68,7 @@ final class Fields
     /**
      * @infection-ignore-all
      *
-     * @param (callable(): (array<int, string>|null)) $callback
+     * @param  (callable(): (array<int, string>|null))  $callback
      * @return array<int, string>|null
      */
     private function rememberResourceType(Request $request, string $resourceType, callable $callback)

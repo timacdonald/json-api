@@ -21,10 +21,10 @@ class FeatureTest extends TestCase
      */
     protected function defineDatabaseMigrations()
     {
-        $this->loadMigrationsFrom(__DIR__ . '/../database');
+        $this->loadMigrationsFrom(__DIR__.'/../database');
     }
 
-    public function testItCanPaginate(): void
+    public function test_it_can_paginate(): void
     {
         $users = [];
         for ($i = 0; $i < 5; $i++) {

@@ -10,12 +10,14 @@ use TiMacDonald\JsonApi\JsonApiResourceCollection;
 
 /**
  * @internal
+ *
  * @todo can we get rid of this?
  */
 trait Caching
 {
     /**
      * @internal
+     *
      * @infection-ignore-all
      *
      * @return void

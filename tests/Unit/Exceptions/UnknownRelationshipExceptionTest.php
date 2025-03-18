@@ -10,24 +10,24 @@ use TiMacDonald\JsonApi\Exceptions\UnknownRelationshipException;
 
 class UnknownRelationshipExceptionTest extends TestCase
 {
-    public function testFromForAString()
+    public function test_from_for_a_string()
     {
         $this->expectExceptionMessage('Unknown relationship encountered. Relationships should always return a class that extends TiMacDonald\JsonApi\JsonApiResource or TiMacDonald\JsonApi\JsonApiResourceCollection. Instead found [string].');
 
         throw UnknownRelationshipException::from('');
     }
 
-    public function testFromForAArray()
+    public function test_from_for_a_array()
     {
         $this->expectExceptionMessage('Unknown relationship encountered. Relationships should always return a class that extends TiMacDonald\JsonApi\JsonApiResource or TiMacDonald\JsonApi\JsonApiResourceCollection. Instead found [array].');
 
         throw UnknownRelationshipException::from([]);
     }
 
-    public function testFromForAObject()
+    public function test_from_for_a_object()
     {
         $this->expectExceptionMessage('Unknown relationship encountered. Relationships should always return a class that extends TiMacDonald\JsonApi\JsonApiResource or TiMacDonald\JsonApi\JsonApiResourceCollection. Instead found [stdClass].');
 
-        throw UnknownRelationshipException::from(new stdClass());
+        throw UnknownRelationshipException::from(new stdClass);
     }
 }

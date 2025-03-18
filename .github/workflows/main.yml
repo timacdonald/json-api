@@ -9,9 +9,51 @@ on:
       - main
 
 jobs:
-  lint:
+  code-style:
+    name: Code style
     runs-on: ubuntu-latest
-    name: Lint
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          ## Temporarily version pinned as 1.21.0 does not work
+          tools: pint:1.20.0
+          coverage: none
+
+      - name: Pint
+        run: pint --test
+
+      # - name: composer normalize
+      #   run: composer normalize --dry-run --no-interaction --verbose
+
+      # - name: test coverage
+      #   run: "./vendor/bin/phpunit --coverage-clover=coverage.xml --debug --verbose && bash <(curl -s https://codecov.io/bash)"
+      #   env:
+      #       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      # - name: Infection
+      #   run: "./vendor/bin/infection --show-mutations --min-covered-msi=100 --no-progress --no-interaction --verbose"
+      #   env:
+      #       INFECTION_BADGE_API_KEY: ${{ secrets.INFECTION_BADGE_API_KEY }}
+
+      # - name: Psalm
+      #   run: ./vendor/bin/psalm --shepherd --no-progress
+
+      # - name: PHPStan
+      #   run: ./vendor/bin/phpstan --no-interaction --verbose
+
+      #   composer-require-checker
+      #   composer-unused
+
+  code-style:
+    name: Code style
+    runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -30,7 +72,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: 8.1
           coverage: pcov
 
       - name: Install dependencies
@@ -69,7 +111,7 @@ jobs:
     name: "PHP: ${{ matrix.php }}; Laravel: ${{ matrix.laravel }}; Prefer: ${{ matrix.prefer }}"
     strategy:
       matrix:
-        php: ['8.1', '8.2', '8.3', '8.4']
+        php: [8.1, 8.2, 8.3, 8.4]
         laravel: [^9.0, ^10.0, ^11.0, ^12.0]
         prefer: [prefer-lowest, prefer-stable]
         include:
@@ -83,9 +125,9 @@ jobs:
             laravel: ^12.0
         exclude:
           - laravel: ^11.0
-            php: '8.1'
+            php: 8.1
           - laravel: ^12.0
-            php: '8.1'
+            php: 8.1
     steps:
       - name: checkout code
         uses: actions/checkout@v3

@@ -88,8 +88,8 @@ jobs:
           composer require --no-update --dev \
             laravel/framework:^${{ matrix.laravel }} \
 
-      - name: Support prefer-lowest in PHP 8.2
-        if: ${{ matrix.php == 8.2 && matrix.prefer == 'prefer-lowest' }}
+      - name: Support prefer-lowest in PHP 8.2 and Laravel 10
+        if: ${{ matrix.php == 8.2 && matrix.laravel == 11.0 && matrix.prefer == 'prefer-lowest' }}
         run: composer require --no-update nesbot/carbon:^2.62.1
 
       - name: Support prefer-lowest in PHP 8.3

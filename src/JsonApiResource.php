@@ -163,7 +163,7 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      * @return JsonResponse
      */
     public function toResponse($request)

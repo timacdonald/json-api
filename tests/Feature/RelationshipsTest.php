@@ -16,7 +16,7 @@ use TiMacDonald\JsonApi\JsonApiResource;
 
 class RelationshipsTest extends TestCase
 {
-    public function testItThrowsWhenTheIncludeQueryParameterIsAnArray(): void
+    public function test_it_throws_when_the_include_query_parameter_is_an_array(): void
     {
         $post = (new BasicModel([]));
         Route::get('test-route', fn () => PostResource::make($post));
@@ -29,14 +29,15 @@ class RelationshipsTest extends TestCase
         ]);
     }
 
-    public function testItDoesntResolveRelationshipClosuresUnlessIncluded(): void
+    public function test_it_doesnt_resolve_relationship_closures_unless_included(): void
     {
         $post = (new BasicModel([
             'id' => 'post-id',
             'title' => 'post-title',
             'content' => 'post-content',
         ]));
-        Route::get('test-route', fn () => new class ($post) extends PostResource {
+        Route::get('test-route', fn () => new class($post) extends PostResource
+        {
             public function toRelationships($request): array
             {
                 return [
@@ -61,7 +62,7 @@ class RelationshipsTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItCanIncludeASingleToOneResourceForASingleResource(): void
+    public function test_it_can_include_a_single_to_one_resource_for_a_single_resource(): void
     {
         $post = (new BasicModel([
             'id' => 'post-id',
@@ -107,7 +108,7 @@ class RelationshipsTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItCanIncludeNestedToOneResourcesForASingleResource(): void
+    public function test_it_can_include_nested_to_one_resources_for_a_single_resource(): void
     {
         $post = (new BasicModel([
             'id' => 'post-id',
@@ -206,7 +207,7 @@ class RelationshipsTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItCanIncludeNestedResourcesWhenTheirKeyIsTheSame(): void
+    public function test_it_can_include_nested_resources_when_their_key_is_the_same(): void
     {
         $parent = (new BasicModel([
             'id' => 'parent-id',
@@ -215,11 +216,13 @@ class RelationshipsTest extends TestCase
         ]))->setRelation('child', (new BasicModel([
             'id' => 'child-id-2',
         ]))));
-        Route::get('test-route', fn () => new class ($parent) extends JsonApiResource {
+        Route::get('test-route', fn () => new class($parent) extends JsonApiResource
+        {
             public function toRelationships($request): array
             {
                 return [
-                    'child' => fn () => new class ($this->child) extends JsonApiResource {
+                    'child' => fn () => new class($this->child) extends JsonApiResource
+                    {
                         public function toRelationships($request): array
                         {
                             return [
@@ -269,7 +272,7 @@ class RelationshipsTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItCanIncludeANestedCollectionOfResourcesWhenTheirKeyIsTheSame(): void
+    public function test_it_can_include_a_nested_collection_of_resources_when_their_key_is_the_same(): void
     {
         $parent = (new BasicModel([
             'id' => 'parent-id',
@@ -279,11 +282,13 @@ class RelationshipsTest extends TestCase
             (new BasicModel(['id' => 'child-id-2'])),
             (new BasicModel(['id' => 'child-id-3'])),
         ]));
-        Route::get('test-route', fn () => new class ($parent) extends JsonApiResource {
+        Route::get('test-route', fn () => new class($parent) extends JsonApiResource
+        {
             public function toRelationships($request): array
             {
                 return [
-                    'child' => fn () => new class ($this->child) extends JsonApiResource {
+                    'child' => fn () => new class($this->child) extends JsonApiResource
+                    {
                         public function toRelationships($request): array
                         {
                             return [
@@ -343,7 +348,7 @@ class RelationshipsTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItCanIncludeToOneResourcesForACollectionOfResources(): void
+    public function test_it_can_include_to_one_resources_for_a_collection_of_resources(): void
     {
         $posts = [
             (new BasicModel([
@@ -423,7 +428,7 @@ class RelationshipsTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItCanIncludeACollectionOfResourcesForASingleResource(): void
+    public function test_it_can_include_a_collection_of_resources_for_a_single_resource(): void
     {
         $author = (new BasicModel([
             'id' => 'author-id',
@@ -490,7 +495,7 @@ class RelationshipsTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItCanIncludeAManyManyManyRelationship(): void
+    public function test_it_can_include_a_many_many_many_relationship(): void
     {
         $posts = [
             (new BasicModel([
@@ -724,18 +729,20 @@ class RelationshipsTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testRelationshipsClosuresGetTheRequestAsAnArgument(): void
+    public function test_relationships_closures_get_the_request_as_an_argument(): void
     {
         $post = (new BasicModel([
             'id' => 'post-id',
             'title' => 'post-title',
             'content' => 'post-content',
         ]));
-        Route::get('test-route', fn () => new class ($post) extends JsonApiResource {
+        Route::get('test-route', fn () => new class($post) extends JsonApiResource
+        {
             public function toRelationships($request): array
             {
                 return [
-                    'relation' => fn () => new class ($request) extends JsonApiResource {
+                    'relation' => fn () => new class($request) extends JsonApiResource
+                    {
                         public function toId($request): string
                         {
                             return 'relation-id';
@@ -786,7 +793,7 @@ class RelationshipsTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItFiltersOutDuplicateIncludesForACollectionOfResources(): void
+    public function test_it_filters_out_duplicate_includes_for_a_collection_of_resources(): void
     {
         $users = [
             (new BasicModel([
@@ -855,7 +862,7 @@ class RelationshipsTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItFiltersOutDuplicateResourceObjectsIncludesForASingleResource(): void
+    public function test_it_filters_out_duplicate_resource_objects_includes_for_a_single_resource(): void
     {
         $user = (new BasicModel([
             'id' => 'user-id',
@@ -909,7 +916,7 @@ class RelationshipsTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItHasIncludedArrayWhenIncludeParameterIsPresentForASingleResource(): void
+    public function test_it_has_included_array_when_include_parameter_is_present_for_a_single_resource(): void
     {
         $user = (new BasicModel([
             'id' => 'user-id',
@@ -934,7 +941,7 @@ class RelationshipsTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItHasIncludedArrayWhenIncludeParameterIsPresentForACollectionOfResources(): void
+    public function test_it_has_included_array_when_include_parameter_is_present_for_a_collection_of_resources(): void
     {
         $user = (new BasicModel([
             'id' => 'user-id',
@@ -961,7 +968,7 @@ class RelationshipsTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItCanReturnNullForEmptyToOneRelationships(): void
+    public function test_it_can_return_null_for_empty_to_one_relationships(): void
     {
         $user = (new BasicModel([
             'id' => 'user-id',
@@ -988,7 +995,7 @@ class RelationshipsTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItCanReturnAnEmptyArrayForEmptyToManyRelationships(): void
+    public function test_it_can_return_an_empty_array_for_empty_to_many_relationships(): void
     {
         $user = (new BasicModel([
             'id' => 'user-id',
@@ -1015,7 +1022,7 @@ class RelationshipsTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItFlushesTheRelationshipCache(): void
+    public function test_it_flushes_the_relationship_cache(): void
     {
         $user = (new BasicModel(['id' => '1']))->setRelation('posts', [(new BasicModel(['id' => '2']))]);
         $resource = UserResource::make($user);
@@ -1028,7 +1035,7 @@ class RelationshipsTest extends TestCase
         $this->assertNull($resource->requestedRelationshipsCache());
     }
 
-    public function testCollectionIncludesDoesntBecomeNumericKeyedObjectAfterFilteringDuplicateRecords(): void
+    public function test_collection_includes_doesnt_become_numeric_keyed_object_after_filtering_duplicate_records(): void
     {
         $users = [
             BasicModel::make([
@@ -1125,7 +1132,7 @@ class RelationshipsTest extends TestCase
         ]);
     }
 
-    public function testSingleResourceIncludesDoesntBecomeNumericKeyedObjectAfterFilteringDuplicateRecords(): void
+    public function test_single_resource_includes_doesnt_become_numeric_keyed_object_after_filtering_duplicate_records(): void
     {
         $user = BasicModel::make([
             'id' => 1,
@@ -1148,7 +1155,7 @@ class RelationshipsTest extends TestCase
                 'id' => 2,
                 'title' => 'Title 2',
                 'content' => 'Content 2',
-            ])->setRelation('comments', new Collection()),
+            ])->setRelation('comments', new Collection),
         ]);
 
         Route::get('test-route', fn () => UserResource::make($user));
@@ -1206,13 +1213,14 @@ class RelationshipsTest extends TestCase
         );
     }
 
-    public function testItRemovesPotentiallyMissingRelationships(): void
+    public function test_it_removes_potentially_missing_relationships(): void
     {
         $user = new BasicModel([
             'id' => '1',
             'name' => 'user-name',
         ]);
-        $resource = new class ($user) extends UserResource {
+        $resource = new class($user) extends UserResource
+        {
             public function toRelationships($request): array
             {
                 return [
@@ -1237,21 +1245,18 @@ class RelationshipsTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItShowsPotentiallyMissingRelationships(): void
+    public function test_it_shows_potentially_missing_relationships(): void
     {
         $user = new BasicModel([
             'id' => '1',
             'name' => 'user-name',
         ]);
-        $resource = new class ($user) extends UserResource {
+        $resource = new class($user) extends UserResource
+        {
             public function toRelationships($request): array
             {
                 return [
-                    'relation' => fn () => $this->when(true, fn () => new class (new BasicModel([
-                        'id' => '2',
-                        'name' => 'relation-name',
-                    ])) extends UserResource {
-                    }),
+                    'relation' => fn () => $this->when(true, fn () => new class(new BasicModel(['id' => '2', 'name' => 'relation-name'])) extends UserResource {}),
                 ];
             }
         };
@@ -1289,22 +1294,19 @@ class RelationshipsTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testPotentiallyMissingValuesAreRespectedOverSparseFieldsets()
+    public function test_potentially_missing_values_are_respected_over_sparse_fieldsets()
     {
         $user = new BasicModel([
             'id' => '1',
             'name' => 'user-name',
         ]);
-        $resource = new class ($user) extends UserResource {
+        $resource = new class($user) extends UserResource
+        {
             public function toRelationships($request): array
             {
                 return [
                     'relation_1' => fn () => $this->when(false, fn () => ['hello' => 'world']),
-                    'relation_2' => fn () => $this->when(true, fn () => new class (new BasicModel([
-                        'id' => '2',
-                        'name' => 'relation-name',
-                    ])) extends UserResource {
-                    }),
+                    'relation_2' => fn () => $this->when(true, fn () => new class(new BasicModel(['id' => '2', 'name' => 'relation-name'])) extends UserResource {}),
                 ];
             }
         };
@@ -1342,7 +1344,7 @@ class RelationshipsTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItCanIncludeDeepNestedResourcesForASingleResource(): void
+    public function test_it_can_include_deep_nested_resources_for_a_single_resource(): void
     {
         $post = new BasicModel([
             'id' => 'post-id',

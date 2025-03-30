@@ -13,12 +13,12 @@ use TiMacDonald\JsonApi\Support\Fields;
 
 class FieldsTest extends TestCase
 {
-    public function testItIsASingleton(): void
+    public function test_it_is_a_singleton(): void
     {
         $this->assertSame(Fields::getInstance(), Fields::getInstance());
     }
 
-    public function testItHandlesMultipleRequests(): void
+    public function test_it_handles_multiple_requests(): void
     {
         $requests = [
             Request::create('https://example.com?fields[a]=a'),
@@ -34,14 +34,14 @@ class FieldsTest extends TestCase
         $this->assertSame(['b'], $fields[1]);
     }
 
-    public function testItHandlesEmptyValues(): void
+    public function test_it_handles_empty_values(): void
     {
         $request = Request::create('https://example.com?fields[a]=');
 
         $this->assertSame([], Fields::getInstance()->parse($request, 'a', true));
     }
 
-    public function testItAbortsWhenFieldsIsNotAnArray(): void
+    public function test_it_aborts_when_fields_is_not_an_array(): void
     {
         Application::getInstance();
         $request = Request::create('https://example.com?fields=as');
@@ -57,7 +57,7 @@ class FieldsTest extends TestCase
         }
     }
 
-    public function testItMustProvideStringForFields(): void
+    public function test_it_must_provide_string_for_fields(): void
     {
         Application::getInstance();
         $request = Request::create('https://example.com?fields[foo][bar]=1');
@@ -73,7 +73,7 @@ class FieldsTest extends TestCase
         }
     }
 
-    public function testWhenRequestingEmptyListItReturnsEmptyArray()
+    public function test_when_requesting_empty_list_it_returns_empty_array()
     {
         $request = Request::create('https://example.com?fields[foo]=');
 
@@ -82,7 +82,7 @@ class FieldsTest extends TestCase
         $this->assertSame([], $includes);
     }
 
-    public function testWhenNotSpecifyingResourceFieldsReturnsNull()
+    public function test_when_not_specifying_resource_fields_returns_null()
     {
         $request = Request::create('https://example.com?fields[foo]=bar');
 
@@ -91,7 +91,7 @@ class FieldsTest extends TestCase
         $this->assertNull($includes);
     }
 
-    public function testWhenNotSpecifyingResourceFieldsReturnsEmptyArrayForMinimalFields()
+    public function test_when_not_specifying_resource_fields_returns_empty_array_for_minimal_fields()
     {
         $request = Request::create('https://example.com?fields[foo]=bar');
 

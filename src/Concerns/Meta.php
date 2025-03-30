@@ -9,14 +9,14 @@ trait Meta
     /**
      * @internal
      *
-     * @var array<string, mixed> $meta
+     * @var array<string, mixed>
      */
     private array $meta = [];
 
     /**
      * @api
      *
-     * @param array<string, mixed> $meta
+     * @param  array<string, mixed>  $meta
      * @return $this
      */
     public function withMeta(array $meta)

@@ -18,7 +18,7 @@ use TiMacDonald\JsonApi\JsonApiResource;
 
 class RelationshipsAsPropertiesTest extends TestCase
 {
-    public function testItCanSpecifyRelationshipsAsProperties()
+    public function test_it_can_specify_relationships_as_properties()
     {
         $post = BasicModel::make([
             'id' => 'post-id',
@@ -28,7 +28,8 @@ class RelationshipsAsPropertiesTest extends TestCase
             'id' => 'author-id',
             'name' => 'author-name',
         ]));
-        $class = new class ($post) extends PostResource {
+        $class = new class($post) extends PostResource
+        {
             protected array $relationships = [
                 'author' => UserResource::class,
             ];
@@ -61,7 +62,7 @@ class RelationshipsAsPropertiesTest extends TestCase
         ], $response->getData(true)['included']);
     }
 
-    public function testItCanSpecifyCollectionBasedRelationshipsAsProperties()
+    public function test_it_can_specify_collection_based_relationships_as_properties()
     {
         $post = BasicModel::make([
             'id' => 'post-id',
@@ -71,7 +72,8 @@ class RelationshipsAsPropertiesTest extends TestCase
             'id' => 'comment-id',
             'content' => 'comment-content',
         ])]);
-        $class = new class ($post) extends PostResource {
+        $class = new class($post) extends PostResource
+        {
             protected array $relationships = [
                 'comments' => CommentResource::class,
             ];
@@ -104,14 +106,15 @@ class RelationshipsAsPropertiesTest extends TestCase
         ], $response->getData(true)['included']);
     }
 
-    public function testRelationshipMethodTakesPrecedence()
+    public function test_relationship_method_takes_precedence()
     {
         $post = BasicModel::make([
             'id' => 'post-id',
             'title' => 'post-title',
             'content' => 'post-content',
         ]);
-        $class = new class ($post) extends PostResource {
+        $class = new class($post) extends PostResource
+        {
             protected array $relationships = [
                 'comments[]' => LicenseResource::class,
             ];
@@ -149,7 +152,7 @@ class RelationshipsAsPropertiesTest extends TestCase
         ], $response->getData(true)['included']);
     }
 
-    public function testItCanSpecifyRelationshipsAsPropertiesWithoutAClass()
+    public function test_it_can_specify_relationships_as_properties_without_a_class()
     {
         JsonApiResource::guessRelationshipResourceUsing(
             fn (string $relationship): string => 'Tests\\Resources\\'.Str::of($relationship)->singular()->studly().'Resource'
@@ -164,7 +167,8 @@ class RelationshipsAsPropertiesTest extends TestCase
                 'content' => 'post-content',
             ]),
         ]);
-        $class = new class ($user) extends UserResource {
+        $class = new class($user) extends UserResource
+        {
             protected array $relationships = [
                 'posts',
             ];
@@ -201,9 +205,10 @@ class RelationshipsAsPropertiesTest extends TestCase
         JsonApiResource::guessRelationshipResourceUsing(null);
     }
 
-    public function testItDoesntTryToAccessMagicAttributeProperty()
+    public function test_it_doesnt_try_to_access_magic_attribute_property()
     {
-        $instance = new class () extends Model {
+        $instance = new class extends Model
+        {
             protected $table = 'model';
 
             public function getRelationshipsAttribute()
@@ -211,7 +216,8 @@ class RelationshipsAsPropertiesTest extends TestCase
                 throw new Exception('xxxx');
             }
         };
-        $resource = new class ($instance) extends JsonApiResource {
+        $resource = new class($instance) extends JsonApiResource
+        {
             //
         };
 

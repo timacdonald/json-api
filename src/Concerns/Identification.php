@@ -16,9 +16,9 @@ use TiMacDonald\JsonApi\ResourceIdentifier;
  */
 trait Identification
 {
-    private string|null $idCache = null;
+    private ?string $idCache = null;
 
-    private string|null $typeCache = null;
+    private ?string $typeCache = null;
 
     /**
      * @var array<int, (callable(ResourceIdentifier): void)>
@@ -26,7 +26,7 @@ trait Identification
     private array $resourceIdentifierCallbacks = [];
 
     /**
-     * @param (callable(mixed): string) $callback
+     * @param  (callable(mixed): string)  $callback
      * @return void
      */
     public static function resolveIdUsing(callable $callback)
@@ -35,7 +35,7 @@ trait Identification
     }
 
     /**
-     * @param (callable(mixed): string) $callback
+     * @param  (callable(mixed): string)  $callback
      * @return void
      */
     public static function resolveTypeUsing(callable $callback)
@@ -83,7 +83,7 @@ trait Identification
     }
 
     /**
-     * @param (callable(ResourceIdentifier): void) $callback
+     * @param  (callable(ResourceIdentifier): void)  $callback
      * @return $this
      */
     public function pipeResourceIdentifier(callable $callback)

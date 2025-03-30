@@ -14,14 +14,15 @@ use TiMacDonald\JsonApi\JsonApiResource;
 
 class AttributesAsPropertiesTest extends TestCase
 {
-    public function testItCanSpecifyAttributesAsProperties()
+    public function test_it_can_specify_attributes_as_properties()
     {
         $post = BasicModel::make([
             'id' => 'post-id',
             'title' => 'post-title',
             'content' => 'post-content',
         ]);
-        $class = new class ($post) extends PostResource {
+        $class = new class($post) extends PostResource
+        {
             protected $attributes = [
                 'content',
             ];
@@ -44,14 +45,15 @@ class AttributesAsPropertiesTest extends TestCase
         ], $response->getData(true)['data']);
     }
 
-    public function testAttributesMethodTakesPrecedence()
+    public function test_attributes_method_takes_precedence()
     {
         $post = BasicModel::make([
             'id' => 'post-id',
             'title' => 'post-title',
             'content' => 'post-content',
         ]);
-        $class = new class ($post) extends PostResource {
+        $class = new class($post) extends PostResource
+        {
             protected $attributes = [
                 'title',
             ];
@@ -76,9 +78,10 @@ class AttributesAsPropertiesTest extends TestCase
         ], $response->getData(true)['data']);
     }
 
-    public function testItDoesntTryToAccessMagicAttributeProperty()
+    public function test_it_doesnt_try_to_access_magic_attribute_property()
     {
-        $instance = new class () extends Model {
+        $instance = new class extends Model
+        {
             protected $table = 'model';
 
             public function getAttributesAttribute()
@@ -86,7 +89,8 @@ class AttributesAsPropertiesTest extends TestCase
                 throw new Exception('xxxx');
             }
         };
-        $resource = new class ($instance) extends JsonApiResource {
+        $resource = new class($instance) extends JsonApiResource
+        {
             //
         };
 

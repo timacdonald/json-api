@@ -18,14 +18,14 @@ use function is_array;
  */
 final class Includes
 {
-    private static self|null $instance;
+    private static ?self $instance;
 
     /**
      * @var WeakMap<Request, array<string, Collection<int, non-empty-string>>>
      */
     private WeakMap $cache;
 
-    private function __construct(WeakMap $cache = new WeakMap())
+    private function __construct(WeakMap $cache = new WeakMap)
     {
         $this->cache = $cache;
     }
@@ -35,7 +35,7 @@ final class Includes
      */
     public static function getInstance()
     {
-        return self::$instance ??= new static();
+        return self::$instance ??= new self;
     }
 
     /**
@@ -72,7 +72,7 @@ final class Includes
     /**
      * @infection-ignore-all
      *
-     * @param (callable(): Collection<int, non-empty-string>) $callback
+     * @param  (callable(): Collection<int, non-empty-string>)  $callback
      * @return Collection<int, non-empty-string>
      */
     private function rememberIncludes(Request $request, string $prefix, callable $callback)

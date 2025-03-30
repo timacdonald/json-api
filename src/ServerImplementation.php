@@ -14,7 +14,7 @@ final class ServerImplementation implements JsonSerializable
     private string $version;
 
     /**
-     * @param array<string, mixed> $meta
+     * @param  array<string, mixed>  $meta
      */
     public function __construct(string $version, array $meta = [])
     {

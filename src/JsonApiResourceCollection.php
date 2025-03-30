@@ -13,7 +13,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     use Concerns\RelationshipLinks;
 
     /**
-     * @param (callable(JsonApiResource): JsonApiResource) $callback
+     * @param  (callable(JsonApiResource): JsonApiResource)  $callback
      * @return $this
      */
     public function map(callable $callback)
@@ -60,7 +60,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     }
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function toResponse($request)
@@ -69,8 +69,8 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     }
 
     /**
-     * @param array<array-key, mixed> $paginated
-     * @param array{links: array<string, ?string>} $default
+     * @param  array<array-key, mixed>  $paginated
+     * @param  array{links: array<string, ?string>}  $default
      * @return array{links: array<string, string>}
      */
     public function paginationInformation(Request $request, array $paginated, array $default)
@@ -127,6 +127,7 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
 
     /**
      * @internal
+     *
      * @infection-ignore-all
      *
      * @return void

@@ -19,7 +19,7 @@ trait RelationshipLinks
     /**
      * @api
      *
-     * @param (callable(RelationshipObject): void) $callback
+     * @param  (callable(RelationshipObject): void)  $callback
      * @return $this
      */
     public function withRelationshipLink(callable $callback)

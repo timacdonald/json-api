@@ -16,7 +16,7 @@ final class ResourceIdentifier implements JsonSerializable
     private string $id;
 
     /**
-     * @param array<string, mixed> $meta
+     * @param  array<string, mixed>  $meta
      */
     public function __construct(string $type, string $id, array $meta = [])
     {

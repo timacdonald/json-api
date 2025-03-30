@@ -19,7 +19,7 @@ final class ResourceIdentificationException extends RuntimeException
      */
     public static function attemptingToDetermineIdFor(mixed $resource)
     {
-        return new self('Unable to resolve resource object id for ['.static::determineType($resource).'].');
+        return new self('Unable to resolve resource object id for ['.self::determineType($resource).'].');
     }
 
     /**
@@ -27,7 +27,7 @@ final class ResourceIdentificationException extends RuntimeException
      */
     public static function attemptingToDetermineTypeFor(mixed $resource)
     {
-        return new self('Unable to resolve resource object type for ['.static::determineType($resource).'].');
+        return new self('Unable to resolve resource object type for ['.self::determineType($resource).'].');
     }
 
     /**

@@ -13,7 +13,7 @@ use TiMacDonald\JsonApi\Exceptions\ResourceIdentificationException;
 
 class ResourceIdentificationTest extends TestCase
 {
-    public function testIt()
+    public function test_it()
     {
         $this->assertValidJsonApi(<<<'JSON'
 {
@@ -63,7 +63,8 @@ class ResourceIdentificationTest extends TestCase
 }
 JSON);
     }
-    public function testItResolvesTheIdAndTypeOfAModel(): void
+
+    public function test_it_resolves_the_id_and_type_of_a_model(): void
     {
         $user = (new BasicModel([
             'id' => 'user-id',
@@ -82,7 +83,7 @@ JSON);
         $this->assertValidJsonApi($response);
     }
 
-    public function testItCastsAModelsIntegerIdToAString(): void
+    public function test_it_casts_a_models_integer_id_to_a_string(): void
     {
         $user = (new BasicModel([
             'id' => 55,
@@ -103,7 +104,7 @@ JSON);
         $this->assertValidJsonApi($response);
     }
 
-    public function testItThrowsWhenUnableToAutomaticallyResolveTheIdOfANonObject(): void
+    public function test_it_throws_when_unable_to_automatically_resolve_the_id_of_a_non_object(): void
     {
         $array = [];
         Route::get('test-route', fn () => (new BasicJsonApiResource($array)));
@@ -114,9 +115,9 @@ JSON);
         $this->getJson('test-route');
     }
 
-    public function testItThrowsWhenUnableToAutomaticallyResolveTheIdOfAnObject(): void
+    public function test_it_throws_when_unable_to_automatically_resolve_the_id_of_an_object(): void
     {
-        $array = new stdClass();
+        $array = new stdClass;
         Route::get('test-route', fn () => (new BasicJsonApiResource($array)));
 
         $this->expectException(ResourceIdentificationException::class);
@@ -125,10 +126,11 @@ JSON);
         $this->getJson('test-route');
     }
 
-    public function testItThrowsWhenUnableToAutomaticallyResolveTheTypeOfANonObject(): void
+    public function test_it_throws_when_unable_to_automatically_resolve_the_type_of_a_non_object(): void
     {
         $array = [];
-        Route::get('test-route', fn () => new class ($array) extends BasicJsonApiResource {
+        Route::get('test-route', fn () => new class($array) extends BasicJsonApiResource
+        {
             public function toId($request): string
             {
                 return 'id';
@@ -141,10 +143,11 @@ JSON);
         $this->getJson('test-route');
     }
 
-    public function testItThrowsWhenUnableToAutomaticallyResolveTypeOfAnObject(): void
+    public function test_it_throws_when_unable_to_automatically_resolve_type_of_an_object(): void
     {
-        $object = new stdClass();
-        Route::get('test-route', fn () => new class ($object) extends BasicJsonApiResource {
+        $object = new stdClass;
+        Route::get('test-route', fn () => new class($object) extends BasicJsonApiResource
+        {
             public function toId($request): string
             {
                 return 'id';

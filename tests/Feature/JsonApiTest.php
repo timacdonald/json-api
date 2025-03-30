@@ -18,7 +18,7 @@ use TiMacDonald\JsonApi\ServerImplementation;
 
 class JsonApiTest extends TestCase
 {
-    public function testItCanReturnASingleResource(): void
+    public function test_it_can_return_a_single_resource(): void
     {
         $user = (new BasicModel([
             'id' => 'user-id',
@@ -41,7 +41,7 @@ class JsonApiTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItCanReturnACollection(): void
+    public function test_it_can_return_a_collection(): void
     {
         $users = [
             (new BasicModel([
@@ -79,7 +79,7 @@ class JsonApiTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItExcludesEmptyAttributesAndRelationships(): void
+    public function test_it_excludes_empty_attributes_and_relationships(): void
     {
         Route::get('test-route', fn () => UserResource::make((new BasicModel(['id' => 'user-id']))));
 
@@ -92,9 +92,10 @@ class JsonApiTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItAddsMetaToIndividualResources(): void
+    public function test_it_adds_meta_to_individual_resources(): void
     {
-        Route::get('test-route', fn () => new class ((new BasicModel(['id' => 'expected-id']))) extends JsonApiResource {
+        Route::get('test-route', fn () => new class((new BasicModel(['id' => 'expected-id']))) extends JsonApiResource
+        {
             public function toMeta($request): array
             {
                 return [
@@ -118,9 +119,10 @@ class JsonApiTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItHandlesNonStandardLinks(): void
+    public function test_it_handles_non_standard_links(): void
     {
-        Route::get('test-route', fn () => new class ((new BasicModel(['id' => 'expected-id']))) extends JsonApiResource {
+        Route::get('test-route', fn () => new class((new BasicModel(['id' => 'expected-id']))) extends JsonApiResource
+        {
             public function toLinks($request): array
             {
                 return [
@@ -161,9 +163,10 @@ class JsonApiTest extends TestCase
         // $this->assertValidJsonApi($response);
     }
 
-    public function testItHandlesSelfLinks(): void
+    public function test_it_handles_self_links(): void
     {
-        Route::get('test-route', fn () => new class ((new BasicModel(['id' => 'expected-id']))) extends JsonApiResource {
+        Route::get('test-route', fn () => new class((new BasicModel(['id' => 'expected-id']))) extends JsonApiResource
+        {
             public function toLinks($request): array
             {
                 return [
@@ -194,7 +197,7 @@ class JsonApiTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItSetsTheContentTypeHeaderForASingleResource(): void
+    public function test_it_sets_the_content_type_header_for_a_single_resource(): void
     {
         Route::get('test-route', fn () => BasicJsonApiResource::make((new BasicModel(['id' => 'xxxx']))));
 
@@ -204,7 +207,7 @@ class JsonApiTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItSetsTheContentTypeHeaderForACollectionOfResources(): void
+    public function test_it_sets_the_content_type_header_for_a_collection_of_resources(): void
     {
         Route::get('test-route', fn () => BasicJsonApiResource::collection([(new BasicModel(['id' => 'xxxx']))]));
 
@@ -214,7 +217,7 @@ class JsonApiTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItCanCustomiseTheTypeResolution(): void
+    public function test_it_can_customise_the_type_resolution(): void
     {
         JsonApiResource::resolveTypeUsing(fn (BasicModel $model): string => str_replace('\\', '_', $model::class));
         Route::get('test-route', fn () => BasicJsonApiResource::make((new BasicModel(['id' => 'expected-id']))));
@@ -230,7 +233,7 @@ class JsonApiTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItCanCustomiseTheIdResolution(): void
+    public function test_it_can_customise_the_id_resolution(): void
     {
         JsonApiResource::resolveIdUsing(fn (BasicModel $model): string => 'expected-id');
         Route::get('test-route', fn () => BasicJsonApiResource::make((new BasicModel(['id' => 'missing-id']))));
@@ -246,7 +249,7 @@ class JsonApiTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItExcludesEmptyResourceIdentifierMeta(): void
+    public function test_it_excludes_empty_resource_identifier_meta(): void
     {
         $relationship = new ResourceIdentifier('users', '5');
 
@@ -255,7 +258,7 @@ class JsonApiTest extends TestCase
         self::assertSame('{"type":"users","id":"5"}', $json);
     }
 
-    public function testItExcludesEmptyLinksMeta(): void
+    public function test_it_excludes_empty_links_meta(): void
     {
         $link = Link::self('https://timacdonald.me', []);
 
@@ -264,7 +267,7 @@ class JsonApiTest extends TestCase
         self::assertSame('{"href":"https:\/\/timacdonald.me"}', $json);
     }
 
-    public function testItExcludesEmptyImplementationMeta(): void
+    public function test_it_excludes_empty_implementation_meta(): void
     {
         $implementation = new ServerImplementation('1.5', []);
 
@@ -273,7 +276,7 @@ class JsonApiTest extends TestCase
         self::assertSame('{"version":"1.5"}', $json);
     }
 
-    public function testItCanSpecifyAnImplementation(): void
+    public function test_it_can_specify_an_implementation(): void
     {
         BasicJsonApiResource::resolveServerImplementationUsing(fn () => new ServerImplementation('1.4.3', [
             'secure' => true,
@@ -305,7 +308,7 @@ class JsonApiTest extends TestCase
         $this->assertValidJsonApi($response);
     }
 
-    public function testItExcludesEmptyRelationshipLinkMeta()
+    public function test_it_excludes_empty_relationship_link_meta()
     {
         $resourceLink = RelationshipObject::toOne(
             new ResourceIdentifier('expected-type', 'expected-id')
@@ -316,7 +319,7 @@ class JsonApiTest extends TestCase
         self::assertSame('{"data":{"type":"expected-type","id":"expected-id"}}', $json);
     }
 
-    public function testItCanPopulateAllTheMetasAndAllTheLinks()
+    public function test_it_can_populate_all_the_metas_and_all_the_links()
     {
         // 1. Null resource ✅
         // 2. Single resource ✅
@@ -334,7 +337,8 @@ class JsonApiTest extends TestCase
             (new BasicModel(['id' => 'post-id-1'])),
             (new BasicModel(['id' => 'post-id-2'])),
         ]);
-        Route::get('test-route', fn () => (new class ($user) extends JsonApiResource {
+        Route::get('test-route', fn () => (new class($user) extends JsonApiResource
+        {
             public function toMeta($request): array
             {
                 return [
@@ -352,7 +356,8 @@ class JsonApiTest extends TestCase
             public function toRelationships($request): array
             {
                 return [
-                    'profile' => fn () => (new class (null) extends JsonApiResource {
+                    'profile' => fn () => (new class(null) extends JsonApiResource
+                    {
                         public function toLinks($request): array
                         {
                             // This should not be present in the response.
@@ -411,7 +416,8 @@ class JsonApiTest extends TestCase
                             ]),
                         ])
                     ),
-                    'avatar' => fn () => (new class ($this->resource->avatar) extends JsonApiResource {
+                    'avatar' => fn () => (new class($this->resource->avatar) extends JsonApiResource
+                    {
                         public function toLinks($request): array
                         {
                             return [
@@ -464,7 +470,8 @@ class JsonApiTest extends TestCase
                             ]),
                         ])
                     ),
-                    'posts' => fn () => (new class ($this->posts) extends JsonApiResource {
+                    'posts' => fn () => (new class($this->posts) extends JsonApiResource
+                    {
                         public function toMeta($request): array
                         {
                             return [

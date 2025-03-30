@@ -17,26 +17,22 @@
         }
     ],
     "require": {
-        "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0",
-        "illuminate/collections": "^9.0 || ^10.0 || ^11.0",
-        "illuminate/database": "^9.0 || ^10.0 || ^11.0",
-        "illuminate/http": "^9.0 || ^10.0 || ^11.0",
-        "illuminate/support": "^9.0 || ^10.0 || ^11.0",
-        "symfony/http-kernel": "^6.0 || ^7.0"
+        "php": "^8.2",
+        "illuminate/collections": "^11.0 || ^12.0",
+        "illuminate/database": "^11.0 || ^12.0",
+        "illuminate/http": "^11.0 || ^12.0",
+        "illuminate/support": "^11.0 || ^12.0",
+        "symfony/http-kernel": "^7.0"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.13",
-        "laravel/framework": "^9.0 || ^10.0 || ^11.0",
+        "laravel/framework": "^11.0 || ^12.0",
         "opis/json-schema": "^2.3",
-        "orchestra/testbench": "^7.0 || ^8.0 || ^9.0",
-        "phpunit/phpunit": "^9.0 || ^10.5"
+        "orchestra/testbench": "^9.0 || ^10.0",
+        "phpunit/phpunit": "^9.0 || ^10.5 || ^11.5"
     },
     "config": {
         "preferred-install": "dist",
-        "sort-packages": true,
-        "allow-plugins": {
-            "infection/extension-installer": true
-        }
+        "sort-packages": true
     },
     "autoload": {
         "psr-4": {
@@ -47,10 +43,6 @@
         "psr-4": {
             "Tests\\": "tests/"
         }
-    },
-    "scripts": {
-        "test": "./vendor/bin/phpunit",
-        "fix": "./vendor/bin/php-cs-fixer fix"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

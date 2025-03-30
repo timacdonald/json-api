@@ -19,7 +19,7 @@ final class Link implements JsonSerializable
     private string $href;
 
     /**
-     * @param array<string, mixed> $meta
+     * @param  array<string, mixed>  $meta
      * @return self
      */
     public static function self(string $href, array $meta = [])
@@ -28,7 +28,7 @@ final class Link implements JsonSerializable
     }
 
     /**
-     * @param array<string, mixed> $meta
+     * @param  array<string, mixed>  $meta
      * @return self
      */
     public static function related(string $href, array $meta = [])
@@ -37,7 +37,7 @@ final class Link implements JsonSerializable
     }
 
     /**
-     * @param array<string, mixed> $meta
+     * @param  array<string, mixed>  $meta
      */
     public function __construct(string $key, string $href, array $meta = [])
     {

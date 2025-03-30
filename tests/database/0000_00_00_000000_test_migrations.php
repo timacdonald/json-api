@@ -16,4 +16,4 @@ class TestMigrations extends Migration
             $table->timestamps();
         });
     }
-};
+}

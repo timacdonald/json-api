@@ -21,7 +21,7 @@ final class UnknownRelationshipException extends Exception
      */
     public static function from(mixed $resource)
     {
-        return new self('Unknown relationship encountered. Relationships should always return a class that extends '.JsonApiResource::class.' or '.JsonApiResourceCollection::class.'. Instead found ['.static::determineType($resource).'].');
+        return new self('Unknown relationship encountered. Relationships should always return a class that extends '.JsonApiResource::class.' or '.JsonApiResourceCollection::class.'. Instead found ['.self::determineType($resource).'].');
     }
 
     /**

@@ -56,6 +56,13 @@ jobs:
         php: [8.2, 8.3, 8.4]
         laravel: [11.0, 12.0]
         prefer: [prefer-lowest, prefer-stable]
+        include:
+          - php: 8.5
+            laravel: 12.0
+            prefer: prefer-stable
+          - php: 8.5
+            laravel: 12.45
+            prefer: prefer-stable
 
     steps:
       - name: checkout code

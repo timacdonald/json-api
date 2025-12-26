@@ -170,4 +170,15 @@ abstract class JsonApiResource extends JsonResource
     {
         return tap(parent::toResponse($request)->header('Content-type', 'application/vnd.api+json'), $this->flush(...));
     }
+
+    /**
+     * Resolve the resource data to an array.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    public function resolveResourceData(Request $request)
+    {
+        return $this->toArray($request);
+    }
 }

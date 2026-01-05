@@ -15,6 +15,8 @@ class TestCase extends BaseTestCase
 {
     public const JSON_API_SCHEMA_URL = 'https://raw.githubusercontent.com/json-api/json-api/refs/heads/gh-pages/_schemas/1.0/schema.json';
 
+    protected static $latestResponse = null;
+
     protected function setUp(): void
     {
         parent::setUp();

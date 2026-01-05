@@ -53,16 +53,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: [8.2, 8.3, 8.4]
-        laravel: [11.0, 12.0]
+        php: [8.2, 8.3, 8.4, 8.5]
+        laravel: ['^11.0', '^12.0', '12.x-dev']
         prefer: [prefer-lowest, prefer-stable]
-        include:
-          - php: 8.5
-            laravel: 12.0
-            prefer: prefer-stable
-          - php: 8.5
-            laravel: 12.45
-            prefer: prefer-stable
 
     steps:
       - name: checkout code
@@ -88,15 +81,15 @@ jobs:
       - name: Require Laravel version
         run: |
           composer require --no-update \
-            illuminate/collections:^${{ matrix.laravel }} \
-            illuminate/database:^${{ matrix.laravel }} \
-            illuminate/http:^${{ matrix.laravel }} \
-            illuminate/support:^${{ matrix.laravel }}
+            illuminate/collections:${{ matrix.laravel }} \
+            illuminate/database:${{ matrix.laravel }} \
+            illuminate/http:${{ matrix.laravel }} \
+            illuminate/support:${{ matrix.laravel }}
           composer require --no-update --dev \
-            laravel/framework:^${{ matrix.laravel }} \
+            laravel/framework:${{ matrix.laravel }} \
 
       - name: Support prefer-lowest in PHP 8.2 and Laravel 10
-        if: ${{ matrix.php == 8.2 && matrix.laravel == 11.0 && matrix.prefer == 'prefer-lowest' }}
+        if: ${{ matrix.php == 8.2 && matrix.laravel == '^11.0' && matrix.prefer == 'prefer-lowest' }}
         run: composer require --no-update nesbot/carbon:^2.62.1
 
       - name: Support prefer-lowest in PHP 8.3

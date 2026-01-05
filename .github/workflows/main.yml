@@ -86,7 +86,7 @@ jobs:
             illuminate/http:${{ matrix.laravel }} \
             illuminate/support:${{ matrix.laravel }}
           composer require --no-update --dev \
-            laravel/framework:${{ matrix.laravel }} \
+            laravel/framework:${{ matrix.laravel }}
 
       - name: Support prefer-lowest in PHP 8.2 and Laravel 10
         if: ${{ matrix.php == 8.2 && matrix.laravel == '^11.0' && matrix.prefer == 'prefer-lowest' }}

@@ -125,6 +125,15 @@ abstract class JsonApiResource extends JsonResource
 
     /**
      * @param  Request  $request
+     * @return array{id: string, type: string, attributes?: stdClass, relationships?: stdClass, meta?: stdClass, links?: stdClass}
+     */
+    public function resolveResourceData($request)
+    {
+        return $this->toArray($request);
+    }
+
+    /**
+     * @param  Request  $request
      * @return array{included?: array<int, JsonApiResource>, jsonapi: ServerImplementation}
      */
     public function with($request)

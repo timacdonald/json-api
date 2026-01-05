@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 use Tests\Models\BasicModel;
 use Tests\Resources\UserResource;
@@ -35,6 +37,8 @@ class FeatureTest extends TestCase
         Route::get('test-route', fn () => UserResource::collection(BasicModel::paginate(2)));
 
         $response = $this->getJson('test-route');
+
+        $excludes = version_compare(Application::VERSION, '12.23.0', '>=') ? [] : ['page'];
 
         $response->assertOk();
         $response->assertExactJson([
@@ -68,31 +72,36 @@ class FeatureTest extends TestCase
                 'total' => 5,
                 'path' => 'http://localhost/test-route',
                 'links' => [
-                    [
+                    Arr::except([
                         'active' => false,
                         'label' => '&laquo; Previous',
+                        'page' => null,
                         'url' => null,
-                    ],
-                    [
+                    ], $excludes),
+                    Arr::except([
                         'active' => true,
                         'label' => '1',
+                        'page' => 1,
                         'url' => 'http://localhost/test-route?page=1',
-                    ],
-                    [
+                    ], $excludes),
+                    Arr::except([
                         'active' => false,
                         'label' => '2',
+                        'page' => 2,
                         'url' => 'http://localhost/test-route?page=2',
-                    ],
-                    [
+                    ], $excludes),
+                    Arr::except([
                         'active' => false,
                         'label' => '3',
+                        'page' => 3,
                         'url' => 'http://localhost/test-route?page=3',
-                    ],
-                    [
+                    ], $excludes),
+                    Arr::except([
                         'active' => false,
                         'label' => 'Next &raquo;',
+                        'page' => 2,
                         'url' => 'http://localhost/test-route?page=2',
-                    ],
+                    ], $excludes),
                 ],
             ],
         ]);

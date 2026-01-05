@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 use Tests\Models\BasicModel;
 use Tests\Resources\UserResource;
 use Tests\TestCase;
-
-use function Orchestra\Testbench\laravel_version_compare;
 
 class FeatureTest extends TestCase
 {
@@ -39,7 +38,7 @@ class FeatureTest extends TestCase
 
         $response = $this->getJson('test-route');
 
-        $excludes = laravel_version_compare('12.23.0', '>=') ? [] : ['page'];
+        $excludes = version_compare(Application::VERSION, '12.23.0', '>=') ? [] : ['page'];
 
         $response->assertOk();
         $response->assertExactJson([

@@ -174,7 +174,6 @@ abstract class JsonApiResource extends JsonResource
     /**
      * Resolve the resource data to an array.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function resolveResourceData(Request $request)

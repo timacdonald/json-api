@@ -35,7 +35,7 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
-     * @return array<string, (callable(): JsonApiResource|JsonApiResourceCollection|PotentiallyMissing)>
+     * @return array<string, callable(): (JsonApiResource|JsonApiResourceCollection|PotentiallyMissing)>
      */
     public function toRelationships(Request $request)
     {

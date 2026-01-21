@@ -143,7 +143,7 @@ trait Relationships
                 $value => self::guessRelationshipResource($value, $this),
             ])
             ->map(fn (string $class, string $relation): Closure => function () use ($class, $relation): JsonApiResource|JsonApiResourceCollection {
-                return with($this->resource->{$relation}, function (mixed $resource) use ($class): JsonApiResource|JsonApiResourceCollection {
+                return with($this->resource?->{$relation}, function (mixed $resource) use ($class): JsonApiResource|JsonApiResourceCollection {
                     if ($resource instanceof Traversable || (is_array($resource) && ! Arr::isAssoc($resource))) {
                         return $class::collection($resource);
                     }

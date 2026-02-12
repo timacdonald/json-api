@@ -56,7 +56,7 @@ final class Includes
     /**
      * @return Collection<int, non-empty-string>
      */
-    private function all(Request $request)
+    public function all(Request $request)
     {
         return $this->rememberIncludes($request, '__all__', function () use ($request) {
             $includes = $request->query('include') ?? '';

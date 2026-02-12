@@ -140,15 +140,17 @@ trait Relationships
             ->mapWithKeys(fn (string $value, int|string $key) => ! is_int($key) ? [
                 $key => $value,
             ] : [
-                $value => self::guessRelationshipResource($value, $this),
+                $value => null,
             ])
-            ->map(fn (string $class, string $relation): Closure => function () use ($class, $relation): JsonApiResource|JsonApiResourceCollection {
-                return with($this->resource?->{$relation}, function (mixed $resource) use ($class): JsonApiResource|JsonApiResourceCollection {
+            ->map(fn (?string $class, string $relation): Closure => function () use ($class, $relation): JsonApiResource|JsonApiResourceCollection {
+                $resolvedClass = $class ?? self::guessRelationshipResource($relation, $this);
+
+                return with($this->resource?->{$relation}, function (mixed $resource) use ($resolvedClass): JsonApiResource|JsonApiResourceCollection {
                     if ($resource instanceof Traversable || (is_array($resource) && ! Arr::isAssoc($resource))) {
-                        return $class::collection($resource);
+                        return $resolvedClass::collection($resource);
                     }
 
-                    return $class::make($resource);
+                    return $resolvedClass::make($resource);
                 });
             })->merge($this->toRelationships($request));
     }

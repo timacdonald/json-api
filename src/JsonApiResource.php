@@ -10,6 +10,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\PotentiallyMissing;
 use Illuminate\Support\Collection;
 use stdClass;
+use TiMacDonald\JsonApi\Support\Includes;
 
 use function property_exists;
 
@@ -96,6 +97,14 @@ abstract class JsonApiResource extends JsonResource
     public function toResourceIdentifier(Request $request)
     {
         return new ResourceIdentifier($this->resolveType($request), $this->resolveId($request));
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public static function requestedIncludePaths(Request $request)
+    {
+        return Includes::getInstance()->all($request)->all();
     }
 
     /**

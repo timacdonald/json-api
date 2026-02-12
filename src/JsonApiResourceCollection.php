@@ -47,16 +47,42 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
      */
     public function with($request)
     {
-        return [
-            ...($included = $this->collection
-                ->map(fn (JsonApiResource $resource): Collection => $resource->included($request))
-                ->flatten()
-                ->uniqueStrict(fn (JsonApiResource $resource): array => $resource->uniqueKey($request))
-                ->values()
-                ->all()) ? ['included' => $included] : [],
+        $included = $this->collection
+            ->map(fn (JsonApiResource $resource): Collection => $resource->included($request))
+            ->flatten()
+            ->uniqueStrict(fn (JsonApiResource $resource): array => $resource->uniqueKey($request))
+            ->values()
+            ->all();
+
+        $with = [
+            ...$included ? ['included' => $included] : [],
             ...($implementation = $this->collects::toServerImplementation($request))
                 ? ['jsonapi' => $implementation] : [],
         ];
+
+        if (isset($with['included'])) {
+            $primaryKeys = $this->collection
+                ->map(fn (JsonApiResource $resource): string => self::resourceKey($resource, $request))
+                ->flip();
+
+            $included = Collection::make($with['included'])
+                ->reject(fn (JsonApiResource $resource): bool => $primaryKeys->has(self::resourceKey($resource, $request)))
+                ->values()
+                ->all();
+
+            if ($included === []) {
+                unset($with['included']);
+            } else {
+                $with['included'] = $included;
+            }
+        }
+
+        return $with;
+    }
+
+    private static function resourceKey(JsonApiResource $resource, Request $request): string
+    {
+        return json_encode($resource->uniqueKey($request), JSON_THROW_ON_ERROR);
     }
 
     /**

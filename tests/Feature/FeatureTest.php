@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 use Tests\Models\BasicModel;
 use Tests\Resources\UserResource;
 use Tests\TestCase;
+use TiMacDonald\JsonApi\JsonApiResourceCollection;
 
 class FeatureTest extends TestCase
 {
@@ -106,5 +107,28 @@ class FeatureTest extends TestCase
             ],
         ]);
         $this->assertValidJsonApi($response);
+    }
+
+    public function test_it_can_camel_case_pagination_meta(): void
+    {
+        JsonApiResourceCollection::camelCasePaginationMeta();
+
+        for ($i = 0; $i < 5; $i++) {
+            BasicModel::create(['name' => 'name-'.$i]);
+        }
+        Route::get('test-route', fn () => UserResource::collection(BasicModel::paginate(2)));
+
+        $response = $this->getJson('test-route');
+
+        $response->assertOk();
+        $response->assertJsonPath('meta.currentPage', 1);
+        $response->assertJsonPath('meta.perPage', 2);
+        $response->assertJsonPath('meta.lastPage', 3);
+        $response->assertJsonPath('meta.total', 5);
+        $response->assertJsonMissing(['current_page' => 1]);
+        $response->assertJsonMissing(['per_page' => 2]);
+        $response->assertJsonMissing(['last_page' => 3]);
+
+        JsonApiResourceCollection::camelCasePaginationMeta(false);
     }
 }

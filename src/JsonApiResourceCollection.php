@@ -12,6 +12,13 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
 {
     use Concerns\RelationshipLinks;
 
+    protected static bool $camelCaseMeta = false;
+
+    public static function camelCasePaginationMeta(bool $camelCase = true): void
+    {
+        static::$camelCaseMeta = $camelCase;
+    }
+
     /**
      * @param  (callable(JsonApiResource): JsonApiResource)  $callback
      * @return $this
@@ -90,6 +97,10 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
             );
         }
 
+        if (static::$camelCaseMeta && isset($default['meta'])) {
+            $default['meta'] = $this->convertKeysToCamelCase($default['meta']);
+        }
+
         return $default;
     }
 
@@ -135,5 +146,23 @@ class JsonApiResourceCollection extends AnonymousResourceCollection
     public function flush()
     {
         $this->collection->each(fn (JsonApiResource $resource) => $resource->flush());
+    }
+
+    /**
+     * @param  array<array-key, mixed>  $array
+     * @return array<array-key, mixed>
+     */
+    private function convertKeysToCamelCase(array $array): array
+    {
+        $result = [];
+
+        foreach ($array as $key => $value) {
+            $camelKey = is_string($key)
+                ? lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $key))))
+                : $key;
+            $result[$camelKey] = is_array($value) ? $this->convertKeysToCamelCase($value) : $value;
+        }
+
+        return $result;
     }
 }

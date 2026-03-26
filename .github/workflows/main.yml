@@ -54,7 +54,7 @@ jobs:
     strategy:
       matrix:
         php: [8.2, 8.3, 8.4, 8.5]
-        laravel: ['^11.0', '^12.0', '^13.0', '13.x-dev']
+        laravel: ['^11.0', '^12.0', '^13.0']
         prefer: [prefer-lowest, prefer-stable]
         exclude:
           - php: 8.2

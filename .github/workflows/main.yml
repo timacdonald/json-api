@@ -59,8 +59,6 @@ jobs:
         exclude:
           - php: 8.2
             laravel: '^13.0'
-          - php: 8.2
-            laravel: '13.x-dev'
 
     steps:
       - name: checkout code

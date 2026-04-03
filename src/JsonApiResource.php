@@ -138,14 +138,38 @@ abstract class JsonApiResource extends JsonResource
      */
     public function with($request)
     {
-        return [
-            ...($included = $this->included($request)
-                ->uniqueStrict(fn (JsonApiResource $resource): array => $resource->uniqueKey($request))
-                ->values()
-                ->all()) ? ['included' => $included] : [],
+        $included = $this->included($request)
+            ->uniqueStrict(fn (JsonApiResource $resource): array => $resource->uniqueKey($request))
+            ->values()
+            ->all();
+
+        $with = [
+            ...$included ? ['included' => $included] : [],
             ...($implementation = self::toServerImplementation($request))
                 ? ['jsonapi' => $implementation] : [],
         ];
+
+        if (isset($with['included'])) {
+            $primaryKey = self::resourceKey($this, $request);
+
+            $included = Collection::make($with['included'])
+                ->reject(fn (JsonApiResource $resource): bool => self::resourceKey($resource, $request) === $primaryKey)
+                ->values()
+                ->all();
+
+            if ($included === []) {
+                unset($with['included']);
+            } else {
+                $with['included'] = $included;
+            }
+        }
+
+        return $with;
+    }
+
+    private static function resourceKey(JsonApiResource $resource, Request $request): string
+    {
+        return json_encode($resource->uniqueKey($request), JSON_THROW_ON_ERROR);
     }
 
     /**

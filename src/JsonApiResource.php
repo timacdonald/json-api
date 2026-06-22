@@ -151,7 +151,7 @@ abstract class JsonApiResource extends JsonResource
     /**
      * TODO this may be removed once all supported versions have `newCollection`.
      *
-     * @return JsonApiResourceCollection<int, mixed>
+     * @return JsonApiResourceCollection
      */
     public static function collection(mixed $resource)
     {
@@ -164,7 +164,7 @@ abstract class JsonApiResource extends JsonResource
     }
 
     /**
-     * @return JsonApiResourceCollection<int, mixed>
+     * @return JsonApiResourceCollection
      */
     public static function newCollection(mixed $resource)
     {
